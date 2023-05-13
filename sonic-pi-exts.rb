@@ -250,7 +250,7 @@ class Bounce
     @g = g.to_f
     @rho = coeff_restitution.to_f
     @tau = contact_time.to_f
-    @h_stop = h_stop
+    @h_stop = h_stop.to_f
 
     @inited = false
   end
@@ -260,40 +260,8 @@ class Bounce
     @times.last
   end
 
-  # def sample(t, normed: false)
-  #   ensure_inited
-
-  #   if normed then
-  #     sample_idx = t.to_f * (@samples.length - 1)
-  #   else
-  #     sample_idx = (t.to_f / DT).floor
-  #   end
-
-  #   return 0 if sample_idx > @samples.length - 1
-  #   # return @samples.last if sample_idx == @samples.length - 1
-  #   return @h0 if sample_idx < 0
-
-  #   # dt is small enough that i don't think we need to lerp
-  #   @samples[sample_idx]
-  #   # (@samples[sample_idx] + @samples[sample_idx + 1]) / 2
-  # end
-
   def sample(t)
     ensure_inited
-
-    # if normed then
-    #   sample_idx = t.to_f * (@samples.length - 1)
-    # else
-    #   sample_idx = (t.to_f / DT).floor
-    # end
-
-    # return 0 if sample_idx > @samples.length - 1
-    # # return @samples.last if sample_idx == @samples.length - 1
-    # return @h0 if sample_idx < 0
-
-    # # dt is small enough that i don't think we need to lerp
-    # @samples[sample_idx]
-    # # (@samples[sample_idx] + @samples[sample_idx + 1]) / 2
 
     idx = idx_for_time(t)
     return @h0 if idx <= 0
@@ -306,51 +274,59 @@ class Bounce
     s0 = @samples[idx - 1]
     s1 = @samples[idx]
     Underscore.remap(t, t0, t1, s0, s1)
-    # printf("t=%.3f in [%.3f, %.3f] ==> %.3f in [%.3f, %.3f]\n", t, t0, t1, res, s0, s1)
   end
 
-  # todo:
-  # maybe record bounce start times and expose those nicely
-  # each_sample definitely misses bounces if the factor is too high...
-  # clean that up and figure out its purpose exactly
+  alias [] sample
 
-  def each_sample(factor: 1, &block)
+  # TODO: clean this up and figure out its purpose exactly
+  # def each_sample(factor: 1, &block)
+  #   ensure_inited
+
+  #   steps = (@samples.length / factor.to_f).ceil
+  #   printf("will do %d steps\n", steps)
+  #   steps.times do |i|
+  #     i *= factor
+  #     prev_i = i - factor
+  #     next_i = i + factor
+  #     prev_i = 0 if prev_i < 0
+  #     i = @samples.length - 1 if i > @samples.length - 1
+  #     next_i = @samples.length - 1 if next_i > @samples.length - 1
+
+  #     s = @samples[i]
+  #     t = @times[i]
+  #     if i < @samples.length - 1
+  #       # dt = @times[i + 1] - @times[i]
+  #       # dt = @times[next_i] - @times[i]
+  #       dt = @times[i] - @times[prev_i]
+  #     else
+  #       dt = nil
+  #     end
+
+  #     # bounce_start = i > 0 && @samples[i] == 0 && @samples[prev_i] > 0
+  #     bounce_start = i > 0 && @samples[i] <= @samples[prev_i] && @samples[i] <= @samples[next_i]
+
+  #     if block.arity == 2
+  #       block[t, s]
+  #     elsif block.arity == 3
+  #       block[t, s, dt]
+  #     else
+  #       block[t, s, dt, bounce_start]
+  #     end
+  #   end
+  # end
+
+  def samples
     ensure_inited
-
-    steps = (@samples.length / factor.to_f).ceil
-    printf("will do %d steps\n", steps)
-    steps.times do |i|
-      i *= factor
-      prev_i = i - factor
-      next_i = i + factor
-      prev_i = 0 if prev_i < 0
-      i = @samples.length - 1 if i > @samples.length - 1
-      next_i = @samples.length - 1 if next_i > @samples.length - 1
-
-      s = @samples[i]
-      t = @times[i]
-      if i < @samples.length - 1
-        # dt = @times[i + 1] - @times[i]
-        # dt = @times[next_i] - @times[i]
-        dt = @times[i] - @times[prev_i]
-      else
-        dt = nil
-      end
-
-      # bounce_start = i > 0 && @samples[i] == 0 && @samples[prev_i] > 0
-      bounce_start = i > 0 && @samples[i] <= @samples[prev_i] && @samples[i] <= @samples[next_i]
-
-      if block.arity == 2
-        block[t, s]
-      elsif block.arity == 3
-        block[t, s, dt]
-      else
-        block[t, s, dt, bounce_start]
-      end
-    end
+    @times.zip(@samples)
   end
 
-  # todo: private
+  def contact_times
+    ensure_inited
+    @contact_times
+  end
+
+  private
+
   def idx_for_time(t)
     ensure_inited
 
@@ -367,45 +343,20 @@ class Bounce
   end
 
   def strip_zeroes
-    i = @samples.length - 1
-    while @samples[i] == 0
-      i -= 1
-      break if i < 0
+    return if @samples.empty? || @samples.length == 1
+
+    for i in 1..@samples.length
+      break if @samples[-i] != 0
     end
 
-    # printf("i=%d after loop\n", i)
-
-    # if a[i + 1] == 0
-    #   printf("last zero @ idx=%d\n", i + 1)
-    # else
-    #   printf("no trailing zeroes\n")
-    # end
-
-    if @samples[i + 1] == 0
-      printf("slicing @ idx=%d\n", i + 1)
-      @samples.slice!(i + 1, @samples.length)
-      @times.slice!(i + 1, @samples.length)
+    # leave behind one final zero
+    # if i == 1, we didn't find any (@samples[-1] != 0)
+    # if i == 2, we only found one
+    if i > 2 then
+      @samples.pop(i - 2)
+      @times.pop(i - 2)
     end
   end
-
-  # todo: remove
-  def samples
-    ensure_inited
-    @samples
-  end
-
-  # todo: remove
-  def times
-    ensure_inited
-    @times
-  end
-
-  def contact_times
-    ensure_inited
-    @contact_times
-  end
-
-  private
 
   def ensure_inited
     return if @inited
@@ -424,7 +375,7 @@ class Bounce
     @contact_times = []
 
     while hmax > @h_stop
-      printf("t=%.3f h=%.3f hmax=%.3f\n", t, h, hmax)
+      # printf("t=%.3f h=%.3f hmax=%.3f\n", t, h, hmax)
       if freefall then
         hnew = h + v * DT - 0.5 * @g * DT * DT
         if hnew < 0 then
@@ -433,12 +384,12 @@ class Bounce
           freefall = false
           t_last = t + @tau
           h = 0
-          printf("contact: t->%.3f hnew=%.3f\n", t, hnew)
+          # printf("contact: t->%.3f hnew=%.3f\n", t, hnew)
         else
           t += DT
           v -= @g * DT
           h = hnew
-          printf("freefall: t->%.3f hnew=%.3f v=%.3f\n", t, hnew, v)
+          # printf("freefall: t->%.3f hnew=%.3f v=%.3f\n", t, hnew, v)
         end
       else
         t += @tau
@@ -446,7 +397,7 @@ class Bounce
         v = vmax
         freefall = true
         h = 0
-        printf("bounce: t->%.3f v=%.3f\n", t, v)
+        # printf("bounce: t->%.3f v=%.3f\n", t, v)
       end
 
       hmax = 0.5 * vmax * vmax / @g
@@ -454,11 +405,11 @@ class Bounce
       @times << t
     end
 
-    printf("stopped bouncing after %d samples, t=%.3f, h=%.3f\n", @samples.length, t, h)
+    # printf("stopped bouncing after %d samples, t=%.3f, h=%.3f\n", @samples.length, t, h)
 
     strip_zeroes
 
-    printf("after stripping, have %d samples, max t=%.3f, h=%.3f\n", @samples.length, @times.last, @samples.last)
+    # printf("after stripping, have %d samples, max t=%.3f, h=%.8f\n", @samples.length, @times.last, @samples.last)
   end
 end
 
@@ -566,6 +517,8 @@ end
 
 module Enumerable
   def each_with_pct
+    return to_enum(:each_with_pct) unless block_given?
+
     len = self.count
     self.each_with_index do |e, i|
       pct = i.to_f / (len - 1)
@@ -574,6 +527,8 @@ module Enumerable
   end
 
   def each_with_next(skip_last: false)
+    return to_enum(:each_with_next, skip_last: skip_last) unless block_given?
+
     len = self.count
     last_idx = len - 1
     last_idx -= 1 if skip_last
@@ -596,6 +551,8 @@ end
 
 class Integer
   def times_with_pct
+    return to_enum(:times_with_pct) unless block_given?
+
     for i in 0...self
       pct = i.to_f / (self - 1)
       yield i, pct
