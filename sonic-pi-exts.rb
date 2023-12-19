@@ -140,6 +140,16 @@ end
 
 
 module Easings
+  # everything in here has some things in common:
+  # 1. each can be called with a single argument t using [] (like a Proc)
+  # 2. f[0] == 0 and f[1] == 1
+  # 3. f[t] for t in (0, 1) is roughly in the range of [0, 1].
+  #    if f[t] is outside of [0, 1] it represents some "bouncing" and will
+  #    probably translate to values going outside of the intended range.
+  # 4. f[t] for t outside of [0, 1] is not an error but is pretty inconsistent.
+  #    it may stick at 0 or 1, or interpolate based on the slope of the function
+  #    at the endpoints. probably don't rely on it.
+
   Linear = ->(t) { t }
 
   # named CSS easings
@@ -450,6 +460,7 @@ module Underscore
     res
   end
 
+  # interpolate between [min, max] along the given curve
   def self.ease(min, max, pct, curve, clamp: false)
     lerp(min, max, curve[pct], clamp: clamp)
   end
