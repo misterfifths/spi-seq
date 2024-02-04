@@ -29,6 +29,8 @@ end
 # given range and quantized to quantum. That value will then be set with
 # `control` for the given parameter on the given fx as retrieved from the
 # Time State by its key.
+# The special Time State key `:global` may be used to refer to the parameters
+# of the global mixer. Those will be set with `set_mixer_control!`.
 # The loop will initially sleep until all needed fx keys exist in the Time
 # State. CCs not in the given map will be ignored.
 def cc_fx_control_loop(loop_name = :cc_fx_control, midi_source: "*", **cc_mappings)
@@ -39,8 +41,9 @@ def cc_fx_control_loop(loop_name = :cc_fx_control, midi_source: "*", **cc_mappin
 
     unless got_fx
       # first run? hang out until all the effect keys exist
-      $spi.puts "waiting on fx from the time state..."
       needed_fx = Set.new(cc_mappings.values) { |fx_info| fx_info[0] }
+      needed_fx.delete(:global)
+      $spi.puts "waiting on fx from the time state: #{needed_fx.to_a}"
       $spi.sleep(1) until needed_fx.none? { |key| $spi.get(key).nil? }
       $spi.puts "got all fx!"
     end
@@ -49,8 +52,13 @@ def cc_fx_control_loop(loop_name = :cc_fx_control, midi_source: "*", **cc_mappin
     cc, val = $spi.sync("/midi:#{midi_source}/control_change")
     effect_key, param, val_range, quantum = cc_mappings[cc]
 
-    effect = nil
-    effect = $spi.get(effect_key) unless effect_key.nil?
+    if effect_key.nil?
+      effect = nil
+    elsif effect_key == :global
+      effect = :global
+    else
+      effect = $spi.get(effect_key)
+    end
 
     unless effect.nil?
       val_range = 0..1 if val_range.nil?
@@ -65,7 +73,11 @@ def cc_fx_control_loop(loop_name = :cc_fx_control, midi_source: "*", **cc_mappin
       args = { param => val }
 
       $spi.puts "val=#{val} --> #{args}"
-      $spi.control(effect, **args)
+      if effect == :global
+        $spi.set_mixer_control!(**args)
+      else
+        $spi.control(effect, **args)
+      end
     end
 
     true
