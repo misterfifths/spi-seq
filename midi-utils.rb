@@ -6,8 +6,8 @@ def midi_clock_live_loop(loop_name = :midi_clock)
   $spi.live_loop loop_name do
     if $spi.tick == 0
       # kill any residual notes. this doesn't seem to work for the microfreak :-(
-      $spi.midi_all_notes_off
-      $spi.midi_stop
+      # $spi.midi_all_notes_off
+      # $spi.midi_stop
 
       $spi.midi_start
     end
