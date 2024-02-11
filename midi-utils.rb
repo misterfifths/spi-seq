@@ -1,5 +1,6 @@
 $spi ||= self
 
+
 # Start a live_loop named loop_name that sends MIDI clock beats for the global
 # BPM. Sends all notes off, stop, and start messages on the first iteration.
 def midi_clock_live_loop(loop_name = :midi_clock)
