@@ -121,41 +121,38 @@ end
 # Control the given parameter of the given effect with polyphonic aftertouch.
 # Arguments are as described in cc_fx_control_loop.
 def aftertouch_fx_control_loop(effect_key, param, val_range=0..1, quantum=0.1, midi_source: "*")
-  pressed_notes = []  # we're using this like a Set, but we want order
+  pressed_notes = []  # we're using this like a Set, but order is important
 
-  # TODO: combine this into one live_loop with a broader glob that catches note events & aftertouch?
-
-  $spi.live_loop :_midi_note_tracker do
+  $spi.live_loop :_aftertouch_fx_control, init: false do |got_fx|
     $spi.use_real_time
 
-    event_glob = "/midi:#{midi_source}/note_{on,off}"
+    unless got_fx
+      $spi.puts "[aftertouch control] waiting on fx from the time state: #{effect_key}"
+      $spi.sleep(1) while $spi.get(effect_key).nil?
+      $spi.puts "[aftertouch control] got fx"
+    end
 
-    note, _ = $spi.sync(event_glob)
+    event_glob = "/midi:#{midi_source}/{note_on,note_off,aftertouch}"
+    note, vel = $spi.sync(event_glob)
 
     # get_event is undocumented. it gives the name of the event we just `sync`ed to
-    on = $spi.get_event(event_glob).split_path[-1] == 'note_on'
+    event = $spi.get_event(event_glob).split_path[-1]
 
-    if on
+    case event
+    when "note_on"
+      # TODO: consider initial velocity?
       pressed_notes << note unless pressed_notes.include?(note)
-    else
+    when "note_off"
       pressed_notes.delete(note)
+    when "aftertouch"
+      # only care about changes on the oldest pressed note
+      # the "vel != 0" is intended to not do a jarring cutoff when you lift your finger, but it's not great
+      # TODO: all of this is not great
+      if pressed_notes.find_index(note) == 0 && vel != 0
+        __midi_fx_control(vel, effect_key, param, val_range, quantum)
+      end
     end
-  end
 
-  $spi.live_loop :_aftertouch_fx_control do
-    $spi.use_real_time
-
-    $spi.puts "[aftertouch control] waiting on fx from the time state: #{effect_key}"
-    $spi.sleep(1) while $spi.get(effect_key).nil?
-    $spi.puts "[aftertouch control] got fx"
-
-    note, vel = $spi.sync("/midi:#{midi_source}/aftertouch")
-
-    # only care about changes on the oldest pressed note
-    # the "vel != 0" is intended to not do a jarring cutoff when you lift your finger, but it's not great
-    # TODO: all of this is not great
-    if pressed_notes.find_index(note) == 0 && vel != 0
-      __midi_fx_control(vel, effect_key, param, val_range, quantum)
-    end
+    true
   end
 end
