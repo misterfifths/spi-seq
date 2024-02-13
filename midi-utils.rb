@@ -2,7 +2,7 @@ $spi ||= self
 
 
 # Start a live_loop named loop_name that sends MIDI clock beats for the global
-# BPM. Sends all notes off, stop, and start messages on the first iteration.
+# BPM. Sends a MIDI start message on the first iteration.
 def midi_clock_live_loop(loop_name = :midi_clock)
   $spi.live_loop loop_name do
     if $spi.tick == 0
@@ -53,6 +53,16 @@ def __midi_fx_control(val, effect_key, param, val_range, quantum)
 end
 
 
+def __send_cc_name_sysex(cc, name, port: nil)
+  # Ad-hoc format parsed by a script in TouchOSC. sysex messages have to be
+  # bookended by 0xf0 and 0xf7.
+  bytes = [0xf0, "=".ord, cc, *name.bytes, 0xf7]
+
+  kwargs = port.nil? ? {} : { port: port }
+  $spi.midi_sysex(*bytes, **kwargs)
+end
+
+
 # Starts a live_loop named loop_name that watches for MIDI CC events on the
 # given source and translates them to `control` calls for synths/effects in the
 # Time State.
@@ -60,8 +70,8 @@ end
 # [ fx time state key, fx parameter symbol, value range, quantum, default: ]
 # The latter three values in each array are optional. Range defaults to 0..1 and
 # quantum defaults to 0.1.
-# When the given CC number is received, its value will be converted into the
-# given range and quantized to quantum. That value will then be set with
+# When the given CC number is received, its MIDI value will be converted into
+# the given range and quantized to quantum. The result will then be set with
 # `control` for the given parameter on the given fx as retrieved from the
 # Time State by its key.
 # The special Time State key `:global` may be used to refer to the parameters
@@ -69,10 +79,15 @@ end
 # If the `default` hash key is given, a CC message for the given value (which
 # will be scaled to a MIDI value based on the value range) is sent the first
 # time the loop executes. This can be useful to synchronize external MIDI
-# devices with the starting value for the parameter.
+# controllers with the starting value for the parameter.
+# If send_name_sysex is true, a special MIDI sysex message with the name of the
+# control and its CC number will be sent on sysex_name_port the first time the
+# loop executes. If sysex_name_port is nil, the message will be sent on all
+# ports.
 # The loop will initially sleep until all needed fx keys exist in the Time
-# State. CCs not in the given map will be ignored.
-def cc_fx_control_loop(loop_name = :cc_fx_control, midi_source: "*", **cc_mappings)
+# State.
+# Received CCs that are not in the given map will be ignored by this loop.
+def cc_fx_control_loop(loop_name = :cc_fx_control, midi_source: "*", send_name_sysex: true, sysex_name_port: nil, **cc_mappings)
   $spi.live_loop loop_name, init: false do |got_fx|
     $spi.use_real_time
 
@@ -87,20 +102,34 @@ def cc_fx_control_loop(loop_name = :cc_fx_control, midi_source: "*", **cc_mappin
       $spi.puts "[cc control] got all fx!"
 
       cc_mappings.each do |cc, mapping|
-        effect_key, _, val_range = mapping
-        next if effect_key == :global
-        val_range = 0..1 if val_range.nil? || !val_range.is_a?(Range)
+        effect_key, param, val_range = mapping
 
+        # Send out the name of this control as a sysex
+        if send_name_sysex
+          pretty_name = effect_key.to_s.delete_suffix("_fx").gsub("_", " ") + "\n" + param.to_s
+          $spi.puts "[cc control] sending name '#{pretty_name}' for CC #{cc}"
+          __send_cc_name_sysex(cc, pretty_name, port: sysex_name_port)
+        end
+
+        # TODO: support a default on :global effects by doing an initial
+        # set_mixer_control?
+        next if effect_key == :global
+
+        # Compute the MIDI equivalent of the default, if one was given, and send
+        # it out as a CC.
+        # TODO: also set the default on the effect itself?
         if mapping[-1].is_a? Hash
           kwargs = mapping.pop
           default = kwargs[:default]
           unless default.nil?
+            val_range = 0..1 if val_range.nil? || !val_range.is_a?(Range)
+
             midi_default = (default - val_range.min) / (val_range.max - val_range.min).to_f * 127.0
             midi_default = midi_default.round
             midi_default = 127 if midi_default > 127
             midi_default = 0 if midi_default < 0
 
-            puts "[cc control] sending default CC #{cc} value #{default} --> midi #{midi_default}"
+            $spi.puts "[cc control] sending default CC #{cc} value #{default} --> midi #{midi_default}"
             midi_cc(cc, midi_default)
           end
         end
