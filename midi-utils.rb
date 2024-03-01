@@ -106,7 +106,8 @@ def cc_fx_control_loop(loop_name = :cc_fx_control, midi_source: "*", send_name_s
 
         # Send out the name of this control as a sysex
         if send_name_sysex
-          pretty_name = effect_key.to_s.delete_suffix("_fx").gsub("_", " ") + "\n" + param.to_s
+          pretty_name = effect_key.to_s.delete_suffix("_fx") + "\n" + param.to_s
+          pretty_name.gsub!("_", " ")
           $spi.puts "[cc control] sending name '#{pretty_name}' for CC #{cc}"
           __send_cc_name_sysex(cc, pretty_name, port: sysex_name_port)
         end
