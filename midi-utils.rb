@@ -3,7 +3,7 @@ $spi ||= self
 
 # Start a live_loop named loop_name that sends MIDI clock beats for the global
 # BPM. Sends a MIDI start message on the first iteration if send_start is true.
-def midi_clock_live_loop(loop_name = :midi_clock, send_start: true)
+def midi_clock_live_loop(loop_name = :midi_clock, send_start: true, port: nil)
   $spi.live_loop loop_name do
     if $spi.tick == 0
       # kill any residual notes. this doesn't seem to work for the microfreak :-(
@@ -13,7 +13,12 @@ def midi_clock_live_loop(loop_name = :midi_clock, send_start: true)
       $spi.midi_start if send_start
     end
 
-    $spi.midi_clock_beat
+    if port.nil?
+      $spi.midi_clock_beat
+    else
+      $spi.midi_clock_beat(port: port)
+    end
+
     $spi.sleep 1
   end
 end
