@@ -66,11 +66,14 @@ def __send_cc_name_sysex(cc, name, port: nil)
 end
 
 
-# Starts a live_loop named loop_name that watches for MIDI CC events on the
-# given source and translates them to `control` calls for synths/effects in the
-# Time State.
-# Provide a map from a CC number to an array:
+# Starts a live_loop named loop_name that watches for MIDI CC events and acts
+# on them.
+# Provide a map from a CC number to one of two types of array:
+#
+# MAPPING TYPE 1: AUTOMATIC EFFECT CONTROL
 # [ fx time state key, fx parameter symbol, value range, quantum, default: ]
+# This type of CC mapping automatically translates incoming CC events into
+# `control` calls for effects in the type state.
 # The latter three values in each array are optional. Range defaults to 0..1 and
 # quantum defaults to 0.1.
 # When the given CC number is received, its MIDI value will be converted into
@@ -83,6 +86,18 @@ end
 # will be scaled to a MIDI value based on the value range) is sent the first
 # time the loop executes. This can be useful to synchronize external MIDI
 # controllers with the starting value for the parameter.
+#
+# MAPPING TYPE 2: MANUAL CALLBACK
+# [ name symbol, callback:, default: ]
+# Type type of CC mapping calls the given callback with the value of the CC
+# whenever one is received. `callback` must be a Proc or something that responds
+# to `call`. It will be invoked with one argument, the value of the CC. If
+# `default` is provided, it acts identically to type 1 mappings, except that it
+# is not subject to a value range or quantum; it should be a verbatim MIDI
+# value (0 - 127).
+# The first element of the array in this case is solely used for formulating
+# the name used in the sysex message; it can be whatever you wish.
+#
 # If send_name_sysex is true, a special MIDI sysex message with the name of the
 # control and its CC number will be sent on sysex_name_port the first time the
 # loop executes. If sysex_name_port is nil, the message will be sent on all
@@ -91,25 +106,55 @@ end
 # State.
 # Received CCs that are not in the given map will be ignored by this loop.
 def cc_fx_control_loop(loop_name = :cc_fx_control, midi_source: "*", send_name_sysex: true, sysex_name_port: nil, **cc_mappings)
+  return if cc_mappings.size == 0
+
+  # time state keys for all effects we'll be controlling
+  needed_fx = Set.new
+
+  # all effect control mappings.
+  # CC number => [fx time state key, parameter sym, value range, quantum]
+  # any trailing hash is stripped from the values
+  fx_mappings = Hash.new
+
+  # all callback mappings.
+  # CC number => callable
+  callback_mappings = Hash.new
+
+  # defaults & the name sysexes are handled in the first go-round of the
+  # live_loop by iterating over the raw cc_mappings hash.
+
+  # collate the mappings and gather needed effects keys
+  cc_mappings.each do |cc, mapping|
+    if mapping[-1].is_a?(Hash) and mapping[-1].has_key?(:callback)
+      callback_mappings[cc] = mapping[-1][:callback]
+    else
+      needed_fx << mapping[0]
+      cloned_mapping = mapping.clone
+      cloned_mapping.pop if mapping[-1].is_a?(Hash)
+      fx_mappings[cc] = cloned_mapping
+    end
+  end
+
+  needed_fx.delete(:global)
+
+
   $spi.live_loop loop_name, init: false do |got_fx|
     $spi.use_real_time
 
-    $spi.stop if cc_mappings.size == 0
-
     unless got_fx
       # first run? hang out until all the effect keys exist
-      needed_fx = Set.new(cc_mappings.values) { |fx_info| fx_info[0] }
-      needed_fx.delete(:global)
       $spi.puts "[cc control] waiting on fx from the time state: #{needed_fx.to_a}"
       $spi.sleep(1) until needed_fx.none? { |key| $spi.get(key).nil? }
       $spi.puts "[cc control] got all fx!"
 
+      # send out the sysex name messages & defaults for all mappings
       cc_mappings.each do |cc, mapping|
         effect_key, param, val_range = mapping
 
         # Send out the name of this control as a sysex
         if send_name_sysex
-          pretty_name = effect_key.to_s.delete_suffix("_fx") + "\n" + param.to_s
+          pretty_name = effect_key.to_s.delete_suffix("_fx")
+          pretty_name += "\n#{param.to_s}" if param.is_a?(Symbol)
           pretty_name.gsub!("_", " ")
           $spi.puts "[cc control] sending name '#{pretty_name}' for CC #{cc}"
           __send_cc_name_sysex(cc, pretty_name, port: sysex_name_port)
@@ -122,9 +167,8 @@ def cc_fx_control_loop(loop_name = :cc_fx_control, midi_source: "*", send_name_s
         # Compute the MIDI equivalent of the default, if one was given, and send
         # it out as a CC.
         # TODO: also set the default on the effect itself?
-        if mapping[-1].is_a? Hash
-          kwargs = mapping.pop
-          default = kwargs[:default]
+        if mapping[-1].is_a?(Hash)
+          default = mapping[-1][:default]
           unless default.nil?
             val_range = 0..1 if val_range.nil? || !val_range.is_a?(Range)
 
@@ -142,9 +186,14 @@ def cc_fx_control_loop(loop_name = :cc_fx_control, midi_source: "*", send_name_s
 
     # wait for a cc on the source
     cc, val = $spi.sync("/midi:#{midi_source}/control_change")
-    effect_key, param, val_range, quantum = cc_mappings[cc]
 
-    __midi_fx_control(val, effect_key, param, val_range, quantum)
+    if fx_mappings.has_key?(cc)
+      effect_key, param, val_range, quantum = fx_mappings[cc]
+      __midi_fx_control(val, effect_key, param, val_range, quantum)
+    elsif callback_mappings.has_key?(cc)
+      lambda = callback_mappings[cc]
+      lambda.call(val)
+    end
 
     true
   end
