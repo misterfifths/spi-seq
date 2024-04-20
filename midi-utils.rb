@@ -56,12 +56,13 @@ def __midi_fx_control(val, effect_key, param, val_range, quantum)
 end
 
 
-def __send_cc_name_sysex(cc, name, port: nil)
+def __send_cc_name_sysex(cc, name, port: nil, channel: nil)
   # Ad-hoc format parsed by a script in TouchOSC. sysex messages have to be
   # bookended by 0xf0 and 0xf7.
   bytes = [0xf0, "=".ord, cc, *name.bytes, 0xf7]
 
   kwargs = port.nil? ? {} : { port: port }
+  kwargs[:channel] = channel unless channel.nil?
   $spi.midi_sysex(*bytes, **kwargs)
 end
 
@@ -105,7 +106,12 @@ end
 # The loop will initially sleep until all needed fx keys exist in the Time
 # State.
 # Received CCs that are not in the given map will be ignored by this loop.
-def cc_fx_control_loop(loop_name = :cc_fx_control, midi_source: "*", send_name_sysex: true, sysex_name_port: nil, **cc_mappings)
+# TODO: clean this up with regards to port/channel - this should only receive
+# and send to one port/channel, or (if none is specified) to all.
+def cc_fx_control_loop(loop_name = :cc_fx_control, midi_source: "*",
+                       send_name_sysex: true, sysex_name_port: nil, sysex_name_channel: nil,
+                       default_cc_port: nil, default_cc_channel: nil,
+                       **cc_mappings)
   return if cc_mappings.size == 0
 
   # time state keys for all effects we'll be controlling
@@ -157,7 +163,7 @@ def cc_fx_control_loop(loop_name = :cc_fx_control, midi_source: "*", send_name_s
           pretty_name += "\n#{param.to_s}" if param.is_a?(Symbol)
           pretty_name.gsub!("_", " ")
           $spi.puts "[cc control] sending name '#{pretty_name}' for CC #{cc}"
-          __send_cc_name_sysex(cc, pretty_name, port: sysex_name_port)
+          __send_cc_name_sysex(cc, pretty_name, port: sysex_name_port, channel: sysex_name_channel)
         end
 
         # TODO: support a default on :global effects by doing an initial
@@ -179,6 +185,12 @@ def cc_fx_control_loop(loop_name = :cc_fx_control, midi_source: "*", send_name_s
 
             $spi.puts "[cc control] sending default CC #{cc} value #{default} --> midi #{midi_default}"
             midi_cc(cc, midi_default)
+
+            if !default_cc_port.nil? or !default_cc_port.nil?
+              def_cc_kwargs = default_cc_port.nil? ? {} : { port: default_cc_port }
+              def_cc_kwargs[:channel] = default_cc_channel unless default_cc_channel.nil?
+              midi_cc(cc, midi_default, **def_cc_kwargs)
+            end
           end
         end
       end
