@@ -208,9 +208,9 @@ class Step
   # 1. nil - the Step will always trigger
   # 2. a number between 0 and 1 inclusive that represents the chance that the
   #    Step will trigger
-  # 3. a callable predicate lambda/proc that takes two arguments step and cycle.
-  #    This will be wrapped in a Prob instance. If the predicate returns true,
-  #    the step will trigger.
+  # 3. a callable predicate lambda/proc that takes two arguments, step and
+  #    cycle. This will be wrapped in a Prob instance. If the predicate returns
+  #    true, the step will trigger.
   # 4. an instance of Prob. See that class for some common cases.
   def initialize(note, vel: 127, gate: 1.0, prob: nil)
     @note, @note_number, @octave = NoteUtils::normalize(note)
@@ -303,6 +303,16 @@ def S(*args, **kwargs)
 end
 
 
+# A Track is mostly a "grid" of Steps together with a granularity. The grid is a
+# 2d array, each element of which is a "slot". A slot contains some number
+# (possibly 0) of Steps. Those are the Steps that should trigger (subject to
+# their probabilities) when that slot is played. Each slot represents the Steps
+# for a timespan equal to the Track's granularity, which is some fraction of a
+# beat (e.g. 1/4 for sixteenth note granularity). Thus the length of a Track in
+# beats is the granularity multiplied by the number of slots in the grid.
+# Tracks also have a timescale, which is the speed at which this track will play
+# relative to the global bpm. A timescale of 2 means that this track will play
+# at twice the global bpm, e.g., and 0.5 means half-speed.
 # TODO: make mutable? seems tricky. plus would probably need to make a Grid
 # class (or at least a bunch of Track methods) to make manipulation ergonomic.
 # TODO: does timescale belong here? really only effects the Player, so it could
@@ -310,16 +320,11 @@ end
 class Track
   attr_reader :granularity, :grid, :timescale
 
-  # grid is an array of arrays.
-  # each element of grid is a "slot" and represents the state for a duration the
-  # length of the granularity.
-  # each slot is an array of Steps, which may be empty to represent a rest.
-  # that is, each slot is filled with zero or more Steps.
-  # the length of grid is the number of slots in this Track, and the
-  # duration of this Track in beats is granularity * grid.length.
 
-  # timescale is the speed at which this track plays, relative to the global
-  # bpm. a timescale of 2 means this track plays at twice the global bpm, e.g.
+  ### Basic constructors
+  # TODO:
+  # - arp
+  # - euclidean
 
   # Constructs a monophonic track with the given Steps. steps must be an array,
   # each element of which is either a Step object or nil to represent a rest.
@@ -345,9 +350,21 @@ class Track
     new(grid: grid, granularity: granularity, timescale: timescale)
   end
 
+  # Constructs an empty sequence that lasts for the given number of steps.
+  def self.rest(num_steps, granularity: NoteLength::Quarter, timescale: 1)
+    grid = [[]] * num_steps
+    new(grid: grid, granularity: granularity, timescale: 1)
+  end
+
+
+  ### Properties
+
   def num_slots
     @grid.length
   end
+
+
+  ### Playback support
 
   # Returns an array: [newly triggered Steps, continued (tied) Steps, newly ended Steps]
   # Wraps the slot index if it exceeds the number of slots in the grid.
@@ -386,6 +403,9 @@ class Track
     [new_steps, tied_steps, ended_steps]
   end
 
+
+  ### Etc.
+
   def inspect
     res = "Track slots=#{num_slots} granularity=#{NoteLength::stringify(granularity)}/#{granularity} timescale=#{timescale} grid:\n"
     @grid.each_with_index do |slot, i|
@@ -394,6 +414,189 @@ class Track
     end
     res
   end
+
+
+  ### Mutators
+
+  ## Grid-level mutations
+
+  # TODO:
+  # - destructive granularity changes (compress/expand)
+  #   see what the oxi does about gates here
+  # - nondestructive granularity changes (x2 & /2)
+  # - global gate & velocity changes / scaling
+
+  def with_rate(rate)
+    mutate(timescale: @timescale * rate)
+  end
+
+  alias rate with_rate
+
+  def append(other_track)
+    assert_compatible_track(other_track)
+    mutate(grid: @grid + other_track.grid)
+  end
+
+  alias concat append
+  alias add append
+  alias + append
+
+  def merge(other_track)
+    assert_compatible_track(other_track)
+    new_grid_length = [num_slots, other_track.num_slots].max
+    new_grid = []
+    new_grid_length.times { |_| new_grid << [] }
+
+    @grid.each_with_index { |slot, i| new_grid[i].concat(slot) }
+    other_track.grid.each_with_index { |slot, i| new_grid[i].concat(slot) }
+
+    mutate(grid: new_grid)
+  end
+
+  alias | merge
+
+  def zip(other_track, cycle: false)
+    assert_compatible_track(other_track)
+    other_grid = other_track.grid
+    other_grid = other_grid.cycle if cycle
+    new_grid = @grid.zip(other_grid).flatten(1)
+
+    # convert any nils that might have happened from a length mismatch into
+    # rests.
+    new_grid.map! { |slot| slot.nil? ? [] : slot } unless cycle
+
+    mutate(grid: new_grid)
+  end
+
+  def repeat(n)
+    mutate(grid: @grid * n)
+  end
+
+  alias * repeat
+
+  def reverse
+    mutate(grid: @grid.reverse)
+  end
+
+  alias rev reverse
+  alias bw reverse
+
+  def mirror
+    mutate(grid: @grid + @grid.reverse)
+  end
+
+  def reflect
+    mutate(grid: @grid + @grid.reverse.drop(1))
+  end
+
+  alias bnf reflect
+
+  def shuffle
+    mutate(grid: @grid.shuffle)
+  end
+
+  def rotate(rightward_shift = 1)
+    mutate(grid: @grid.rotate(rightward_shift))
+  end
+
+  alias right rotate
+  alias rshift rotate
+  alias shr rotate
+
+  def left(leftward_shift = 1)
+    rotate(-leftward_shift)
+  end
+
+  alias lshift left
+  alias shl rotate
+
+  def drop(n)
+    mutate(grid: @grid.drop(n))
+  end
+
+  def take(n)
+    mutate(grid: @grid.take(n))
+  end
+
+  def slice(*args)
+    mutate(grid: @grid.slice(*args))
+  end
+
+  alias [] slice
+
+  def sample(n)
+    mutate(grid: @grid.sample(n))
+  end
+
+  # Drops all Steps in every nth slot. The duration of the Track does not
+  # change; the dropped slots simply become rests.
+  def drop_every(n)
+    # # e.g., drop every 3:
+    # # keep  | 0 1 - 3 4 - 6 7 - 9
+    # # drop  |     2     5     8
+    # # i % 3 | 0 1 2 0 1 2 0 1 2 0
+    new_grid = @grid.map.with_index do |slot, i|
+      if i % n == n - 1
+        []
+      else
+        slot
+      end
+    end
+
+    mutate(grid: new_grid)
+  end
+
+  alias dropout drop_every
+
+
+  ## Step-level mutations
+
+  def mutate_each_step
+    new_grid = @grid.map do |slot|
+      slot.map do |step|
+        yield step
+      end
+    end
+
+    mutate(grid: new_grid)
+  end
+
+  def with_octave(new_octave)
+    mutate_each_step { |step| step.with_octave(new_octave) }
+  end
+
+  alias octave with_octave
+  alias oct octave
+
+  def shift_octave(shift)
+    mutate_each_step { |step| step.shift_octave(new_octave) }
+  end
+
+  def up(octave_shift = 1)
+    shift_octave(octave_shift)
+  end
+
+  def down(octave_shift = 1)
+    shift_octave(-octave_shift)
+  end
+
+  def shift_tone(shift)
+    mutate_each_step { |step| step.shift_tone(shift) }
+  end
+
+  alias tone shift_tone
+
+  def semi_up(tone_shift = 1)
+    shift_tone(tone_shift)
+  end
+
+  alias sup semi_up
+
+  def semi_down(tone_shift = 1)
+    shift_tone(-tone_shift)
+  end
+
+  alias sdown semi_down
 
 
   private
@@ -409,6 +612,26 @@ class Track
     @grid = grid.map { |slot| slot.clone.freeze }.freeze
     @granularity = granularity
     @timescale = timescale
+  end
+
+  def mutate(mutations)
+    mutations = mutations.dup
+    [:grid, :granularity, :timescale].each do |ivar|
+      mutations[ivar] = send(ivar) unless mutations.has_key?(ivar)
+    end
+
+    Track.new(**mutations)
+  end
+
+  # TODO: do automatic granularity adjustment when possible?
+  def assert_compatible_track(other_track)
+    if @granularity != other_track.granularity
+      raise "Granularity mismatch: #{NoteLength::stringify(@granularity)} != #{NoteLength::stringify(other_track.granularity)}"
+    end
+
+    if @timescale != other_track.timescale
+      raise "Timescale mismatch: #{@timescale} != #{other_track.timescale}"
+    end
   end
 end
 
