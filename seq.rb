@@ -117,14 +117,85 @@ module NoteUtils
 end
 
 
+class Prob
+  # Use a custom trigger probability predicate. The callable must respond to
+  # call and arity, and must have an arity of 2. It will be called with the
+  # step and the cycle number, and should return true to trigger the step.
+  def self.custom(callable)
+    new(callable, "custom")
+  end
+
+  # Step will trigger with the given probability (0-1 inclusive).
+  def self.chance(p)
+    new(->(step, cycle) { $spi.rand < p }, "#{p.round(2)}")
+  end
+
+  # Step will trigger with a probablity of 1 in n.
+  def self.one_in(n)
+    new(->(step, cycle) { $spi.one_in(n) }, "one in #{n}")
+  end
+
+  # Step is guaranteed to trigger the xth cycle out of each set of y cycles. x
+  # should be <= y. For example, x_of_y(3, 4) means that the Step will trigger
+  # on the third of every four cycles.
+  def self.x_of_y(x, y)
+    new(->(step, cycle) { cycle % y == x - 1 }, "#{x}|#{y}")
+  end
+
+  # The inverse of x_of_y - the Step will trigger on every cycle except for the
+  # xth out of every y cycles.
+  def self.not_x_of_y(x, y)
+    new(->(step, cycle) { cycle % y != x - 1 }, "!#{x}|#{y}")
+  end
+
+  # Step will trigger only on the first cycle.
+  def self.first
+    new(->(step, cycle) { cycle == 0 }, "first")
+  end
+
+  # Step will trigger on every cycle except the first.
+  def self.not_first
+    new(->(step, cycle) { cycle != 0 }, "!first")
+  end
+
+  # Evaluates the probability function for the given step in the given cycle of
+  # the Track. Returns true if the step should trigger.
+  def should_trigger?(step, cycle)
+    res = @callable.call(step, cycle)
+    $spi.puts("prob(#{step.inspect}, cycle=#{cycle}) = #{res}")
+    res
+  end
+
+  def to_s
+    @desc
+  end
+
+  def inspect
+    "<Prob #{to_s}>"
+  end
+
+
+  private
+
+  def initialize(callable, desc)
+    if callable.respond_to?(:call) && callable.respond_to?(:arity) && callable.arity == 2
+      @callable = callable
+    else
+      raise "Invalid probability predicate: must be a callable that takes 2 arguments"
+    end
+
+    @desc = desc
+  end
+end
+
+
 # Immutable!
-# TODO: probability & electron-style x/y? or even a predicate function
 # TODO: legato?
 # TODO: distinguish between 100% gate and a tie? is that even useful? want the
 # full duration of the step, but want the note to retrigger on the next step?
 # TODO: microtiming?
 class Step
-  attr_reader :note, :note_number, :octave, :vel, :gate
+  attr_reader :note, :note_number, :octave, :vel, :gate, :prob
 
   # note can be a string, symbol, integer MIDI note. It is always normalized
   # to a lower-case symbol of the Sonic Pi note name.
@@ -133,7 +204,15 @@ class Step
   # gate is the percentage of the duration of the step for which the note will
   # be triggered. The note will not be played with a gate of 0, and will be
   # tied to the following step (if any) with a gate of 1.
-  def initialize(note, vel: 127, gate: 1.0)
+  # prob is the probability that the step will trigger. It should be either:
+  # 1. nil - the Step will always trigger
+  # 2. a number between 0 and 1 inclusive that represents the chance that the
+  #    Step will trigger
+  # 3. a callable predicate lambda/proc that takes two arguments step and cycle.
+  #    This will be wrapped in a Prob instance. If the predicate returns true,
+  #    the step will trigger.
+  # 4. an instance of Prob. See that class for some common cases.
+  def initialize(note, vel: 127, gate: 1.0, prob: nil)
     @note, @note_number, @octave = NoteUtils::normalize(note)
 
     @vel = vel.to_i
@@ -149,13 +228,25 @@ class Step
     elsif @gate > 1.0
       @gate = 1.0
     end
+
+    if prob.nil?
+      @prob = nil
+    elsif prob.is_a?(Numeric)
+      @prob = Prob.chance(prob)
+    elsif prob.is_a?(Prob)
+      @prob = prob
+    else
+      @prob = Prob.custom(prob)  # this will raise if this isn't an appropriate predicate
+    end
   end
 
   def mutate(mutations)
     mutations = mutations.clone
     note = mutations.delete(:note) || @note
-    mutations[:vel] = @vel unless mutations.has_key?(:vel)
-    mutations[:gate] = @gate unless mutations.has_key?(:gate)
+    [:vel, :gate, :prob].each do |ivar|
+      mutations[ivar] = send(ivar) unless mutations.has_key(ivar)
+    end
+
     Step.new(note, **mutations)
   end
 
@@ -169,6 +260,10 @@ class Step
 
   def with_gate(new_gate)
     mutate(gate: new_gate)
+  end
+
+  def with_prob(new_prob)
+    mutate(prob: new_prob)
   end
 
   def with_octave(new_octave)
@@ -188,8 +283,18 @@ class Step
     @gate == 1.0
   end
 
+  def should_trigger?(cycle)
+    return true if @prob.nil?
+    @prob.should_trigger?(self, cycle)
+  end
+
   def inspect
-    "<Step #{@note}/#{@note_number} vel=#{@vel} gate=#{gate}>"
+    if @prob.nil?
+      prob_desc = ""
+    else
+      prob_desc = " prob=#{@prob}"
+    end
+    "<Step #{@note}/#{@note_number} vel=#{@vel} gate=#{@gate}#{prob_desc}>"
   end
 end
 
@@ -257,8 +362,7 @@ class Track
     tied_steps = []
     ended_steps = []
 
-    # TODO: evaluate probabilities
-    cur_steps = @grid[i % num_slots]
+    cur_steps = @grid[i % num_slots].filter { |step| step.should_trigger?(cycle) }
     prev_steps ||= []
 
     # distinguish between tied notes and newly started ones
@@ -310,6 +414,7 @@ end
 
 
 # TODO: playhead direction - just a matter of how we move the slot index in play, i think
+# TODO: probably special-case Steps with a 0 gate
 class Player
   attr_reader :midi, :track
 
