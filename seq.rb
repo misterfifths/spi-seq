@@ -120,6 +120,9 @@ end
 # Immutable!
 # TODO: probability & electron-style x/y? or even a predicate function
 # TODO: legato?
+# TODO: distinguish between 100% gate and a tie? is that even useful? want the
+# full duration of the step, but want the note to retrigger on the next step?
+# TODO: microtiming?
 class Step
   attr_reader :note, :note_number, :octave, :vel, :gate
 
@@ -197,8 +200,8 @@ end
 
 # TODO: make mutable? seems tricky. plus would probably need to make a Grid
 # class (or at least a bunch of Track methods) to make manipulation ergonomic.
-# TODO: does timescale belong here? really only effects the Player, but this
-# feels like a convenient play for it (& to mutate it)
+# TODO: does timescale belong here? really only effects the Player, so it could
+# live there, but this feels like a convenient place for it (& to mutate it)
 class Track
   attr_reader :granularity, :grid, :timescale
 
@@ -242,48 +245,40 @@ class Track
   end
 
   # Returns an array: [newly triggered Steps, continued (tied) Steps, newly ended Steps]
-  # Wraps the index if it exceeds the number of slots in the grid.
-  # TODO: clarify the i == 0 behavior, or maybe add a `first` flag here too
-  def steps_at_slot(i)
-    prev_steps = @grid[(i - 1) % num_slots]
-    cur_steps = @grid[i % num_slots]
-
+  # Wraps the slot index if it exceeds the number of slots in the grid.
+  # prev_steps is an array of the Steps that were active in the most recently
+  # played slot. prev_steps should be nil or empty when playback is beginning.
+  # cycle is the number of times the Track has played in its entirety (used to
+  # handle Step probability).
+  # Intended to be called iteratively, increasing i and feeding back playing
+  # steps from the return value as prev_steps.
+  def steps_at_slot(i, prev_steps:, cycle:)
     new_steps = []
     tied_steps = []
     ended_steps = []
 
+    # TODO: evaluate probabilities
+    cur_steps = @grid[i % num_slots]
+    prev_steps ||= []
+
     # distinguish between tied notes and newly started ones
-    if i == 0
-      # special case: if i *as passed, before a mod* was zero, do not consider
-      # ties. all steps are new at the index 0.
-      new_steps = cur_steps  # TODO: probably clone this if we go mutable
-    else
-      cur_steps.each do |step|
-        # were we just playing this note as a tie?
-        is_tie = prev_steps.one? { |prev_step| prev_step.tied? && prev_step.note == step.note }
-        if is_tie
-          tied_steps << step
-        else
-          new_steps << step
-        end
+    cur_steps.each do |step|
+      # were we just playing this note as a tie?
+      is_tie = prev_steps.one? { |prev_step| prev_step.tied? && prev_step.note == step.note }
+      if is_tie
+        tied_steps << step
+      else
+        new_steps << step
       end
     end
 
-    # find notes from the last index that have ended.
-    # special case: if i *as passed, before a mod* was zero, do not wrap here
-    # either; nothing was playing before index 0, so nothing has ended.
-    # TODO: maybe if the note didn't have a full gate, it shouldn't go in
-    # ended_steps?
-    if i != 0
-      prev_steps.each do |prev_step|
-        # any note we were playing that is not tied has ended
-        continues = tied_steps.one? { |step| step.note == prev_step.note }
-        ended_steps << prev_step if !continues
-      end
+    # find notes from the last slot that have ended.
+    prev_steps.each do |prev_step|
+      # any note we were playing that is not tied has ended
+      note_continues = tied_steps.one? { |step| step.note == prev_step.note }
+      ended_steps << prev_step if !note_continues
     end
 
-    # TODO: for each new step, also find its total duration so we can play it
-    # with `play`? what about notes that continue indefinitely though?
     [new_steps, tied_steps, ended_steps]
   end
 
@@ -314,6 +309,7 @@ class Track
 end
 
 
+# TODO: playhead direction - just a matter of how we move the slot index in play, i think
 class Player
   attr_reader :midi, :track
 
@@ -322,66 +318,55 @@ class Player
     @midi = midi
     @active_synth_nodes = Hash.new  # note symbols -> synth nodes. unused when playing midi
     @active_midi_notes = Set.new  # active midi note symbols. unused when playing built-in synths
+
+    stop
   end
 
-  # Plays one cycle of the track.
-  def play(first:, ending:)
-    if first
-      # TODO: this is tricky. could argue that the first call to play on a
-      # Player should be the only one where first is set, and we should hide it
-      # from the user. or provide a stop/reset method?
-      @active_synth_nodes.clear
-      @active_midi_notes.clear
-    end
+  def stop
+    end_all_steps
+    @prev_steps = nil
+    @cycle = 0
+  end
 
+  # Plays one cycle of the track
+  def play
     $spi.with_bpm($spi.current_bpm * track.timescale) do
       @track.num_slots.times do |i|
-        # only feed steps_at_slot an actual 0 if this is the first play of this
-        # track - we don't want ties and ended notes on the first step.
-        # otherwise feed it num_slots (which will wrap around to 0), so that we
-        # get ends and ties.
-        i = @track.num_slots if i == 0 and !first
-        new_steps, tied_steps, ended_steps = @track.steps_at_slot(i)
-
-        if i % @track.num_slots == 0
-          if first
-            slot_desc = "0 (first)"
-          else
-            slot_desc = "0 (looped)"
-          end
-        else
-          slot_desc = i.to_s
-        end
-        $spi.puts "@ slot=#{slot_desc}"
-        $spi.puts "new steps: #{new_steps}"
-        $spi.puts "tied steps: #{tied_steps}"
-        $spi.puts "ended steps: #{ended_steps}"
-
-
-        # Turn off or kill ended notes
-        ended_steps.each { |step| end_step(step) }
-
-        # Schedule ends for continued notes that end before the next slot
-        tied_steps.each do |step|
-          schedule_end_for_step_with_partial_gate(step) unless step.tied?
-        end
-
-        # Start new notes
-        new_steps.each { |step| start_step(step) }
+        play_slot(i)
 
         # Sleep until it's time for the next slot
         $spi.sleep(@track.granularity)
       end
-
-      if ending
-        $spi.puts "ending; killing residual steps"
-        end_all_steps
-      end
     end
+
+    @cycle += 1
   end
 
 
   private
+
+  def play_slot(i)
+    new_steps, tied_steps, ended_steps = @track.steps_at_slot(i, prev_steps: @prev_steps, cycle: @cycle)
+
+    $spi.puts "@ slot=#{i} cycle=#{@cycle}"
+    $spi.puts "new steps: #{new_steps}"
+    $spi.puts "tied steps: #{tied_steps}"
+    $spi.puts "ended steps: #{ended_steps}"
+
+    # Turn off or kill ended notes
+    ended_steps.each { |step| end_step(step) }
+
+    # Schedule ends for continued notes that end before the next slot
+    tied_steps.each do |step|
+      schedule_end_for_step_with_partial_gate(step) unless step.tied?
+    end
+
+    # Start new notes
+    new_steps.each { |step| start_step(step) }
+
+    # Update prev_steps for the next round
+    @prev_steps = tied_steps + new_steps
+  end
 
   def end_step(step)
     # Stop the MIDI note or kill the synth node. Note that we may have already
