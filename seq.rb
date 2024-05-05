@@ -40,6 +40,12 @@ module NoteUtils
   # the result will be in octave 4.
   # Returns an array [note symbol, note number, octave number]
   def self.normalize(note, octave: nil)
+    if !octave.nil? && note.is_a?(Numeric)
+      # If we're overriding the octave of a numeric note, convert it to a symbol
+      # first so that note_info actually respects the octave.
+      note = sym(note)
+    end
+
     info = $spi.note_info(note, octave: octave)
     [info.midi_string.downcase.to_sym, info.midi_note, info.octave]
   end
