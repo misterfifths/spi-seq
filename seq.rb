@@ -241,10 +241,10 @@ class Step
   end
 
   def mutate(mutations)
-    mutations = mutations.clone
+    mutations = mutations.dup
     note = mutations.delete(:note) || @note
     [:vel, :gate, :prob].each do |ivar|
-      mutations[ivar] = send(ivar) unless mutations.has_key(ivar)
+      mutations[ivar] = send(ivar) unless mutations.has_key?(ivar)
     end
 
     Step.new(note, **mutations)
