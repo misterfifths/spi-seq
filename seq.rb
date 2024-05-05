@@ -425,6 +425,51 @@ class Track
     mono(steps, granularity: granularity, timescale: timescale)
   end
 
+  # Constructs a mono track that plays the given notes in a Euclidean rhythm.
+  # The length of the rhythm is slots, and the number of hits to play over those
+  # slots is pulses. notes should be an array of note numbers or symbols, or a
+  # single note number or symbol.
+  # The cycle_notes parameter controls how the notes array is used when placing
+  # notes in the track. If it is true, each time there is a hit in the rhythm,
+  # the next note from the notes array is used (wrapping around if needed). For
+  # example, when spreading [:c3, :d3] over 3 pulses and 4 slots, the result
+  # will be a track with the following steps:
+  #   :c3, rest, :d3, :c3
+  # If cycle_notes is false, when there is a hit in the rhythm, the note at the
+  # corresponding index of that hit in the notes array is used (wrapping around
+  # as needed). Using the same spread as above with cycle_notes false would
+  # result in:
+  #   :c3, rest, :c3, :d3
+  # The third note is :c3 because the hit index, 2, corresponds :c3 in the notes
+  # array (modulo the length of the array).
+  def self.euclid(notes, pulses, slots, invert: false, rotate: 0, cycle_notes: true, granularity: NoteLength::Quarter, gate: 1, vel: 127, timescale: 1)
+    if notes.is_a?(Numeric) || notes.is_a?(Symbol) || notes.is_a?(String)
+      notes = [notes]
+    end
+
+    hits = $spi.spread(pulses, slots).to_a
+    hits.rotate!(rotate) if rotate != 0
+    hits.map! { |hit| !hit } if invert
+
+    note_idx = 0
+    steps = hits.map.with_index do |hit, i|
+      if hit
+        if cycle_notes
+          note = notes[note_idx % notes.length]
+          note_idx += 1
+        else
+          note = notes[i % notes.length]
+        end
+
+        Step.new(note, vel: vel, gate: gate)
+      else
+        nil
+      end
+    end
+
+    mono(steps, granularity: granularity, timescale: timescale)
+  end
+
 
   ### Properties
 
