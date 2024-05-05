@@ -309,6 +309,60 @@ def S(*args, **kwargs)
 end
 
 
+module Arp
+  Up = :up
+  Down = :down
+  UpDown = :updown
+  TwoUpTwoDown = :twouptwodown
+  Pinky = :pinky
+  Thumb = :thumb
+  Order = :order
+
+  def self.arpeggiate(notes, direction, extra_octaves: [])
+    orig_notes = notes
+    notes = notes.to_a.dup  # to_a because this might be a SonicPi ring
+
+    extra_octaves.each do |octave_shift|
+      orig_notes.each do |n|
+        notes << NoteUtils::shift_octave(n, octave_shift)
+      end
+    end
+
+    # need to deal with note numbers internally; we'll be sorting
+    notes = notes.map { |n| NoteUtils::number(n) }
+
+    case direction
+    when Arp::Up
+      notes.sort!
+    when Arp::Down
+      notes.sort!.reverse!
+    when Arp::UpDown
+      notes.sort!
+      notes += notes.reverse.drop(1)  # don't repeat the middle note
+      notes.pop  # cycle cleanly without repeating the final note either
+    when Arp::TwoUpTwoDown
+      notes.sort!
+      notes += notes.reverse.drop(1)
+      notes.pop
+      notes = notes.zip(notes).flatten
+    when Arp::Pinky
+      # play the highest note after each (but don't double at end)
+      notes.sort!
+      highest = notes.pop
+      notes = notes.zip([highest].cycle).flatten
+    when Arp::Thumb
+      # play the lowest note after each (but don't double at beginning)
+      notes.sort!
+      lowest = notes.shift
+      notes = notes.zip([lowest].cycle).flatten
+    # nothing to do for Arp::Order
+    end
+
+    notes.map! { |n| NoteUtils::sym(n) }
+  end
+end
+
+
 # A Track is mostly a "grid" of Steps together with a granularity. The grid is a
 # 2d array, each element of which is a "slot". A slot contains some number
 # (possibly 0) of Steps. Those are the Steps that should trigger (subject to
@@ -328,9 +382,6 @@ class Track
 
 
   ### Basic constructors
-  # TODO:
-  # - arp
-  # - euclidean
 
   # Constructs a monophonic track with the given Steps. steps must be an array,
   # each element of which is either a Step object or nil to represent a rest.
@@ -360,6 +411,18 @@ class Track
   def self.rest(num_steps, granularity: NoteLength::Quarter, timescale: 1)
     grid = [[]] * num_steps
     new(grid: grid, granularity: granularity, timescale: 1)
+  end
+
+
+  ### More interesting constructors
+
+  # Constructs a mono track that arpeggiates the given notes. extra_octaves is
+  # an array of octave shifts. The arpeggiation will include all the notes from
+  # the note array in addition to copies of them with the given octave shifts.
+  def self.arp(notes, direction = Arp::Up, extra_octaves: [], granularity: NoteLength::Quarter, gate: 1, vel: 127, timescale: 1)
+    notes = Arp::arpeggiate(notes, direction, extra_octaves: extra_octaves)
+    steps = notes.map { |n| Step.new(n, vel: vel, gate: gate) }
+    mono(steps, granularity: granularity, timescale: timescale)
   end
 
 
