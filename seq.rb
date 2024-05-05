@@ -66,7 +66,7 @@ module NoteUtils
   # number), changing its octave to the given value. This is effectively an
   # alias for sym.
   def self.set_octave(note, octave)
-    sym(note, octave)
+    sym(note, octave: octave)
   end
 
   # Returns a normalized symbol for the given note, with its octave shifted by
