@@ -4,10 +4,11 @@
 $spi ||= self
 
 
+# TODO: this might deserve to be a class to avoid rounding error...
 module NoteLength
-  Whole = 4
-  Half = 2
-  Quarter = 1
+  Whole = 4.0
+  Half = 2.0
+  Quarter = 1.0
   Eighth = 1/2.0
   Sixteenth = 1/4.0
   ThirtySecond = 1/8.0
@@ -226,6 +227,7 @@ class Step
       @vel = 127
     end
 
+    # TODO: quantize this?
     @gate = gate.to_f
     if @gate < 0.0
       @gate = 0.0
@@ -524,12 +526,139 @@ class Track
 
   ### Mutators
 
+  ## Granularity manipulations
+
+  # Creates a new Track with twice the granularity of the current one, doubling
+  # the length of Steps as needed to keep the Track sounding roughly the same.
+  # For example, expanding a Track with 8th-note granularity will result in a
+  # Track with 16th-note granularity. A Step that had a gate of 90% would become
+  # two Steps in back-to-back slots, one a tie and the following with 80% gate.
+  def expand
+    raise "Cannot expand past 32nd-note granularity" if @granularity == NoteLength::ThirtySecond
+
+    # Gameplan: each slot in the grid will expand to two slots. Consider each
+    # slot individually. Each Step in that slot may expand to either one Step,
+    # or two Steps in each of the new slots. Find the "total gate" for each Step
+    # by multiplying its current gate by 2. If it is greater than one, the Step
+    # becomes two Steps: one a tie, and the other with gate of total_gate - 1.
+    # If the total gate is less than 1, the Step remains as one (longer) step in
+    # the first of the new slots.
+
+    def expand_step(step)
+      step1_prob = step.prob
+      total_gate = step.gate * 2.0
+      if total_gate > 1  # TODO: tolerance?
+        # If we expanded into two steps, only the second gets the probability
+        step1_prob = nil
+        step2 = step.with_gate(total_gate - 1)
+        total_gate = 1
+      else
+        step2 = nil
+      end
+
+      step1 = step.mutate(gate: total_gate, prob: step1_prob)
+
+      [step1, step2]
+    end
+
+    new_grid = []
+    @grid.each do |slot|
+      new_slots = [[], []]
+      slot.each do |step|
+        step1, step2 = expand_step(step)
+        new_slots[0] << step1
+        new_slots[1] << step2 unless step2.nil?
+      end
+
+      new_grid.concat(new_slots)
+    end
+
+    mutate(grid: new_grid, granularity: @granularity / 2.0)
+  end
+
+  # Creates a new Track with half the granularity of the current one, halving
+  # the length of Steps and ties as needed to keep the Track sounding roughly
+  # the same.
+  # For example, condensing a Track with 8th-note granularity will result in a
+  # Track with quarter-note granularity. Say the Track contained two Steps in
+  # back-to-back slots for the same note, the first a tie and the second with a
+  # gate of 80. That would become one Step in one slot in the new track, with a
+  # gate of 90.
+  # Note that this operation is potentially significantly more lossy than
+  # expand. Steps with short gates and those starting on off-beats may be
+  # completely absent from the result.
+  def condense
+    raise "Cannot condense past whole-note granularity" if @granularity == NoteLength::Whole
+
+    # Gameplan: each pair of slot in the grid will collapse into one slot in a
+    # new grid. In each pair, find the total gate of any given Step by checking
+    # if it is tied to a Step with the same note in the following slot. Divide
+    # that total gate by 2 and make a new step. Repeat, condensing all the steps
+    # from the pair of slots into shorter steps in one slot.
+
+    # Condense two Steps for the same note into one. The Steps are passed in-
+    # order as they appear in the Track. One or the other may be nil, but not
+    # both. May return nil if the steps condense to nothing.
+    def condense_steps(step1, step2)
+      # The Oxi seems to discard anything that begins on the second slot when
+      # condensing.
+      return nil if step1.nil?
+
+      if step2.nil?
+        total_gate = step1.gate / 2.0
+      else
+        total_gate = (step1.gate + step2.gate) / 2.0
+      end
+
+      # The probability and velocity of the second step is discarded; the first
+      # step wins.
+      step1.with_gate(total_gate)
+    end
+
+    # Condense the Steps from one or two slots into one new slot. The second
+    # slot will be nil for the last slot in a Track with an odd number of slots.
+    def condense_slots(slot1, slot2 = nil)
+      steps_by_note = Hash.new { |h, k| h[k] = [nil, nil] }
+      slot1.each { |step| steps_by_note[step.note][0] = step }
+      slot2.each { |step| steps_by_note[step.note][1] = step } unless slot2.nil?
+
+      new_slot = []
+      steps_by_note.each do |_, steps|
+        condensed_step = condense_steps(*steps)
+        new_slot << condensed_step unless condensed_step.nil?
+      end
+
+      new_slot
+    end
+
+    new_grid = []
+    @grid.each_slice(2) do |slot_chunk|
+      new_grid << condense_slots(*slot_chunk)
+    end
+
+    mutate(grid: new_grid, granularity: @granularity * 2.0)
+  end
+
+  # Calls expand or condense the appropriate number of times to return a new
+  # Track with the given granularity.
+  def regranularize(new_granularity)
+    return self if @granularity == new_granularity
+
+    # NOTE: this is obviously very silly, but the alternative would be making
+    # expand and condense way more complicated, which is not worth it.
+
+    steps = (Math.log2(@granularity) - Math.log2(new_granularity)).to_i.abs
+    new_track = self
+    steps.times do
+      new_track = new_granularity < @granularity ? new_track.expand : new_track.condense
+    end
+
+    new_track
+  end
+
   ## Grid-level mutations
 
   # TODO:
-  # - destructive granularity changes (compress/expand)
-  #   see what the oxi does about gates here
-  # - nondestructive granularity changes (x2 & /2)
   # - global gate & velocity changes / scaling
   # - right and left padding - just insert blank slots
 
@@ -538,6 +667,13 @@ class Track
   end
 
   alias rate with_rate
+
+  # Returns a new track with the given granularity. Does not effect the timing
+  # of any Steps; to change granularity while attempting to keep the track
+  # sounding roughly the same, use condense, expand, or regranularize.
+  def with_granularity(granularity)
+    mutate(granularity: granularity)
+  end
 
   def append(other_track)
     assert_compatible_track(other_track)
