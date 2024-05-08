@@ -553,12 +553,17 @@ class Track
   # length of the two tracks.
   def merge(other_track)
     assert_compatible_track(other_track)
-    new_grid_length = [num_slots, other_track.num_slots].max
-    new_grid = []
-    new_grid_length.times { |_| new_grid << [] }
 
-    @grid.each_with_index { |slot, i| new_grid[i].concat(slot) }
-    other_track.grid.each_with_index { |slot, i| new_grid[i].concat(slot) }
+    if num_slots > other_track.num_slots
+      longer_track = self
+      shorter_track = other_track
+    else
+      longer_track = other_track
+      shorter_track = self
+    end
+
+    new_grid = longer_track.grid.dup
+    shorter_track.grid.each_with_index { |slot, i| new_grid[i].concat(slot) }
 
     mutate(grid: new_grid)
   end
