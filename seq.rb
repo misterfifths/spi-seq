@@ -87,6 +87,11 @@ class NoteLength
     end
   end
 
+  # Attempts to convert the given value to a NoteLength. It may be:
+  # - A NoteLength, in which case it is returned verbatim
+  # - A symbol, which is fed to the constructor of the class
+  # - A number, which is fed to from_length.
+  # Any other type, invalid numbers, or invalid symbols are an error.
   def self.normalize(x)
     if x.is_a?(NoteLength)
       x
@@ -99,11 +104,17 @@ class NoteLength
     end
   end
 
+  # Returns a NoteLength with half the duration of this one. E.g., halving a
+  # quarter note length returns an eighth. It is an error to attempt to halve
+  # a sixty-forth note.
   def halve
     raise "No supported note length shorter than #{self}" if @next_shorter.nil?
     NoteLength.new(@next_shorter)
   end
 
+  # Returns a NoteLength with double the duration of this one. E.g., doubling a
+  # quarter note length returns a half. It is an error to attempt to double a
+  # whole note.
   def double
     raise "No supported note length longer than #{self}" if @next_longer.nil?
     NoteLength.new(@next_longer)
@@ -135,6 +146,10 @@ class NoteLength
     @sym.hash
   end
 
+  # Returns how many "steps" there are between this length and the given one.
+  # Each halving or doubling represents one step. So, for instance, there are
+  # two steps between a quarter and a sixteenth, since it requires two halvings
+  # to get between the two.
   def steps_to(other_note_length)
     return (@log2 - other_note_length.log2).abs
   end
@@ -613,11 +628,13 @@ class Track
   # handle Step probability).
   # Intended to be called iteratively, increasing i and feeding back playing
   # steps from the return value as prev_steps.
-  # TODO: determine cycle from i?
   def steps_at_slot(i, prev_steps:, cycle:)
     new_steps = []
     tied_steps = []
     ended_steps = []
+
+    # TODO: could do oxi style PRE & !PRE trigger probabilities if we inspected
+    # prev_steps and passed off some info to should_trigger?.
 
     cur_steps = @grid[i % num_slots].filter { |step| step.should_trigger?(cycle) }
     prev_steps ||= []
@@ -722,7 +739,7 @@ class Track
   def condense
     raise "Cannot condense past whole-note granularity" if @granularity == NoteLength::Whole
 
-    # Gameplan: each pair of slot in the grid will collapse into one slot in a
+    # Gameplan: each pair of slots in the grid will collapse into one slot in a
     # new grid. In each pair, find the total gate of any given Step by checking
     # if it is tied to a Step with the same note in the following slot. Divide
     # that total gate by 2 and make a new step. Repeat, condensing all the steps
