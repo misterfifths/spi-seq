@@ -1013,6 +1013,22 @@ class Track
     mutate(grid: new_grid)
   end
 
+  def with_gate(new_gate)
+    mutate_each_step { |step| step.with_gate(new_gate) }
+  end
+
+  def scale_gate(factor)
+    mutate_each_step { |step| step.with_gate(step.gate * factor) }
+  end
+
+  def with_vel(new_vel)
+    mutate_each_step { |step| step.with_vel(new_vel) }
+  end
+
+  def scale_vel(factor)
+    mutate_each_step { |step| step.with_vel(step.vel * factor) }
+  end
+
   def with_octave(new_octave)
     mutate_each_step { |step| step.with_octave(new_octave) }
   end
