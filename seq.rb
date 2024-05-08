@@ -824,10 +824,6 @@ class Track
 
   ## Grid-level mutations
 
-  # TODO:
-  # - global gate & velocity changes / scaling
-  # - right and left padding - just insert blank slots
-
   def with_rate(rate)
     mutate(timescale: @timescale * rate)
   end
@@ -945,6 +941,18 @@ class Track
 
   alias lshift left
   alias shl rotate
+
+  def left_pad(num_slots = 1)
+    mutate(grid: [[]] * num_slots + @grid)
+  end
+
+  alias lpad left_pad
+
+  def right_pad(num_slots = 1)
+    mutate(grid: @grid + [[]] * num_slots)
+  end
+
+  alias rpad right_pad
 
   # Returns a new Track with the first n slots removed.
   def drop(n)
