@@ -272,50 +272,65 @@ end
 
 
 class Prob
-  # Use a custom trigger probability predicate. The callable must respond to
-  # call and arity, and must have an arity of 2. It will be called with the
-  # step and the cycle number, and should return true to trigger the step.
+  # Use a custom trigger probability predicate. The predicate must respond to
+  # call and arity, and must have an arity between 0 and 3 inclusive. It will be
+  # called with arguments based on its arity:
+  # - Arity 1: will be called with the cycle number
+  # - Arity 2: will be called with the cycle number and the Step.
+  # - Arity 3: will be called with the cycle number, the Step, and an array of
+  #   Steps that were played in the slot immediately prior to the current one.
+  # The predicate should return true if the Step should trigger.
   def self.custom(callable)
     new(callable, "custom")
   end
 
   # Step will trigger with the given probability (0-1 inclusive).
   def self.chance(p)
-    new(->(step, cycle) { $spi.rand < p }, "#{p.round(2)}")
+    new(->{ $spi.rand < p }, "#{p.round(2)}")
   end
 
   # Step will trigger with a probablity of 1 in n.
   def self.one_in(n)
-    new(->(step, cycle) { $spi.one_in(n) }, "one in #{n}")
+    new(->{ $spi.one_in(n) }, "one in #{n}")
   end
 
   # Step is guaranteed to trigger the xth cycle out of each set of y cycles. x
   # should be <= y. For example, x_of_y(3, 4) means that the Step will trigger
   # on the third of every four cycles.
   def self.x_of_y(x, y)
-    new(->(step, cycle) { cycle % y == x - 1 }, "#{x}|#{y}")
+    new(->(cycle) { cycle % y == x - 1 }, "#{x}|#{y}")
   end
 
   # The inverse of x_of_y - the Step will trigger on every cycle except for the
   # xth out of every y cycles.
   def self.not_x_of_y(x, y)
-    new(->(step, cycle) { cycle % y != x - 1 }, "!#{x}|#{y}")
+    new(->(cycle) { cycle % y != x - 1 }, "!#{x}|#{y}")
   end
 
   # Step will trigger only on the first cycle.
   def self.first
-    new(->(step, cycle) { cycle == 0 }, "first")
+    new(->(cycle) { cycle == 0 }, "first")
   end
 
   # Step will trigger on every cycle except the first.
   def self.not_first
-    new(->(step, cycle) { cycle != 0 }, "!first")
+    new(->(cycle) { cycle != 0 }, "!first")
   end
 
   # Evaluates the probability function for the given step in the given cycle of
   # the Track. Returns true if the step should trigger.
-  def should_trigger?(step, cycle)
-    res = @callable.call(step, cycle)
+  def should_trigger?(cycle, step, prev_steps)
+    case @callable.arity
+    when 0
+      res = @callable.call
+    when 1
+      res = @callable.call(cycle)
+    when 2
+      res = @callable.call(cycle, step)
+    when 3
+      res = @callable.call(cycle, step, prev_steps)
+    end
+
     $spi.puts("prob(#{step.inspect}, cycle=#{cycle}) = #{res}")
     res
   end
@@ -332,10 +347,10 @@ class Prob
   private
 
   def initialize(callable, desc)
-    if callable.respond_to?(:call) && callable.respond_to?(:arity) && callable.arity == 2
+    if callable.respond_to?(:call) && callable.respond_to?(:arity) && callable.arity <= 3
       @callable = callable
     else
-      raise "Invalid probability predicate: must be a callable that takes 2 arguments"
+      raise "Invalid probability predicate: must be a callable that takes <= 3 arguments"
     end
 
     @desc = desc
@@ -436,9 +451,9 @@ class Step
     @gate == 1.0
   end
 
-  def should_trigger?(cycle)
+  def should_trigger?(cycle, prev_steps)
     return true if @prob.nil?
-    @prob.should_trigger?(self, cycle)
+    @prob.should_trigger?(cycle, self, prev_steps)
   end
 
   def inspect
@@ -625,7 +640,7 @@ class Track
   # prev_steps is an array of the Steps that were active in the most recently
   # played slot. prev_steps should be nil or empty when playback is beginning.
   # cycle is the number of times the Track has played in its entirety (used to
-  # handle Step probability).
+  # evaluate Step trigger probabilities).
   # Intended to be called iteratively, increasing i and feeding back playing
   # steps from the return value as prev_steps.
   def steps_at_slot(i, prev_steps:, cycle:)
@@ -636,7 +651,7 @@ class Track
     # TODO: could do oxi style PRE & !PRE trigger probabilities if we inspected
     # prev_steps and passed off some info to should_trigger?.
 
-    cur_steps = @grid[i % num_slots].filter { |step| step.should_trigger?(cycle) }
+    cur_steps = @grid[i % num_slots].filter { |step| step.should_trigger?(cycle, prev_steps) }
     prev_steps ||= []
 
     # distinguish between tied notes and newly started ones
