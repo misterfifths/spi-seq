@@ -197,8 +197,6 @@ end
 
 # Immutable!
 # TODO: legato?
-# TODO: distinguish between 100% gate and a tie? is that even useful? want the
-# full duration of the step, but want the note to retrigger on the next step?
 # TODO: microtiming?
 class Step
   attr_reader :note, :note_number, :octave, :vel, :gate, :prob
@@ -387,15 +385,8 @@ class Track
   # each element of which is either a Step object or nil to represent a rest.
   # Each Step or rest lasts for the granularity.
   def self.mono(steps, granularity: NoteLength::Quarter, timescale: 1)
-    steps = steps.map do |s|
-      if s.nil?
-        []
-      else
-        [s]
-      end
-    end
-
-    poly(steps, granularity: granularity, timescale: timescale)
+    grid = steps.map { |s| s.nil? ? [] : [s] }
+    new(grid: grid, granularity: granularity, timescale: timescale)
   end
 
   # Constructs a polyphonic track with the given grid. grid must be an array,
@@ -421,8 +412,8 @@ class Track
   # the note array in addition to copies of them with the given octave shifts.
   def self.arp(notes, direction = Arp::Up, extra_octaves: [], granularity: NoteLength::Quarter, gate: 1, vel: 127, timescale: 1)
     notes = Arp::arpeggiate(notes, direction, extra_octaves: extra_octaves)
-    steps = notes.map { |n| Step.new(n, vel: vel, gate: gate) }
-    mono(steps, granularity: granularity, timescale: timescale)
+    grid = notes.map { |n| [Step.new(n, vel: vel, gate: gate)] }
+    new(grid: grid, granularity: granularity, timescale: timescale)
   end
 
   # Constructs a mono track that plays the given notes in a Euclidean rhythm.
@@ -452,7 +443,7 @@ class Track
     hits.map! { |hit| !hit } if invert
 
     note_idx = 0
-    steps = hits.map.with_index do |hit, i|
+    grid = hits.map.with_index do |hit, i|
       if hit
         if cycle_notes
           note = notes[note_idx % notes.length]
@@ -461,13 +452,13 @@ class Track
           note = notes[i % notes.length]
         end
 
-        Step.new(note, vel: vel, gate: gate)
+        [Step.new(note, vel: vel, gate: gate)]
       else
-        nil
+        []
       end
     end
 
-    mono(steps, granularity: granularity, timescale: timescale)
+    new(grid: grid, granularity: granularity, timescale: timescale)
   end
 
 
@@ -488,6 +479,7 @@ class Track
   # handle Step probability).
   # Intended to be called iteratively, increasing i and feeding back playing
   # steps from the return value as prev_steps.
+  # TODO: determine cycle from i?
   def steps_at_slot(i, prev_steps:, cycle:)
     new_steps = []
     tied_steps = []
@@ -510,7 +502,7 @@ class Track
     # find notes from the last slot that have ended.
     prev_steps.each do |prev_step|
       # any note we were playing that is not tied has ended
-      note_continues = tied_steps.one? { |step| step.note == prev_step.note }
+      note_continues = tied_steps.one? { |tie| tie.note == prev_step.note }
       ended_steps << prev_step if !note_continues
     end
 
@@ -539,6 +531,7 @@ class Track
   #   see what the oxi does about gates here
   # - nondestructive granularity changes (x2 & /2)
   # - global gate & velocity changes / scaling
+  # - right and left padding - just insert blank slots
 
   def with_rate(rate)
     mutate(timescale: @timescale * rate)
@@ -555,6 +548,9 @@ class Track
   alias add append
   alias + append
 
+  # Create a new Track that merges the Steps in corresponding slots of from this
+  # track and other_track. The length of the resulting track is the maximum
+  # length of the two tracks.
   def merge(other_track)
     assert_compatible_track(other_track)
     new_grid_length = [num_slots, other_track.num_slots].max
@@ -569,6 +565,17 @@ class Track
 
   alias | merge
 
+  # Creates a new Track that interleaves the Steps from the slots of other_track
+  # with those of this track. cycle controls the behavior if other_track is
+  # shorter than this track. When cycle is false, blank slots (rests) will be
+  # interleaved once those of other_track are exhausted. If cycle is true,
+  # the slots of other_track will be looped as needed. For instance, consider
+  # zipping together two sequences with Steps [:a1, :b1, :c1, :d1] and
+  # [:e5, :f5].
+  # When cycle is false, the resulting Track will contain Steps
+  #    :a1 :e5 :b1 :f5 :c1 rest :d1 rest
+  # When cycle is true, the same operation will result in
+  #    :a1 :e5 :b1 :f5 :c1 :e5 :d1 :f5
   def zip(other_track, cycle: false)
     assert_compatible_track(other_track)
     other_grid = other_track.grid
@@ -595,20 +602,28 @@ class Track
   alias rev reverse
   alias bw reverse
 
+  # Returns a new Track that will play the grid forwards and then backwards,
+  # repeating the slot in the middle.
   def mirror
     mutate(grid: @grid + @grid.reverse)
   end
 
+  # Returns a new Track that will play the grid forwards and then backwards,
+  # without repeating the slot in the middle.
   def reflect
     mutate(grid: @grid + @grid.reverse.drop(1))
   end
 
   alias bnf reflect
 
+  # Returns a new Track with the slots in the grid shuffled.
   def shuffle
     mutate(grid: @grid.shuffle)
   end
 
+  # Returns a new Track with the slots in the grid rotated to the right by the
+  # given amount. The track duration is maintained; slots will be wrapped around
+  # to the beginning of the grid as needed.
   def rotate(rightward_shift = 1)
     mutate(grid: @grid.rotate(rightward_shift))
   end
@@ -624,10 +639,12 @@ class Track
   alias lshift left
   alias shl rotate
 
+  # Returns a new Track with the first n slots removed.
   def drop(n)
     mutate(grid: @grid.drop(n))
   end
 
+  # Returns a new Track consisting of only the first n slots of this track.
   def take(n)
     mutate(grid: @grid.take(n))
   end
@@ -638,23 +655,21 @@ class Track
 
   alias [] slice
 
+  # Returns a new Track consisting of n random slots from this track's grid. The
+  # relative order of the chosen slots is maintained.
   def sample(n)
     mutate(grid: @grid.sample(n))
   end
 
-  # Drops all Steps in every nth slot. The duration of the Track does not
-  # change; the dropped slots simply become rests.
+  # Returns a new Track with all Steps in every nth slot removed. The duration
+  # of the Track does not change; the emptied slots simply become rests.
   def drop_every(n)
     # # e.g., drop every 3:
     # # keep  | 0 1 - 3 4 - 6 7 - 9
     # # drop  |     2     5     8
     # # i % 3 | 0 1 2 0 1 2 0 1 2 0
     new_grid = @grid.map.with_index do |slot, i|
-      if i % n == n - 1
-        []
-      else
-        slot
-      end
+      i % n == n - 1 ? [] : slot
     end
 
     mutate(grid: new_grid)
@@ -665,6 +680,10 @@ class Track
 
   ## Step-level mutations
 
+  # Return a new Track, replacing each Step in this track with the result of the
+  # given block.
+  # TODO: support nil returns from the block
+  # TODO: flat_map so that the block can return multiple Steps
   def mutate_each_step
     new_grid = @grid.map do |slot|
       slot.map do |step|
