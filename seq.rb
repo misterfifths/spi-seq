@@ -955,7 +955,7 @@ class Track
   alias rpad right_pad
 
   # Returns a new Track with the first n slots removed.
-  def drop(n)
+  def drop(n = 1)
     mutate(grid: @grid.drop(n))
   end
 
