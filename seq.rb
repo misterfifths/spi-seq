@@ -4,33 +4,165 @@
 $spi ||= self
 
 
-# TODO: this might deserve to be a class to avoid rounding error...
-module NoteLength
-  Whole = 4.0
-  Half = 2.0
-  Quarter = 1.0
-  Eighth = 1/2.0
-  Sixteenth = 1/4.0
-  ThirtySecond = 1/8.0
+class NoteLength
+  def initialize(sym)
+    @sym = sym
 
-  def self.stringify(length)
-    case length
-    when Whole
-      "whole"
-    when Half
-      "half"
-    when Quarter
-      "quarter"
-    when Eighth
-      "eighth"
-    when Sixteenth
-      "sixteenth"
-    when ThirtySecond
-      "thirty-second"
+    case sym
+    when :whole
+      @float_val = 4.0
+      @log2 = 2
+      @desc = "whole"
+      @next_longer = nil
+      @next_shorter = :half
+    when :half
+      @float_val = 2.0
+      @log2 = 1
+      @desc = "half"
+      @next_longer = :whole
+      @next_shorter = :quarter
+    when :quarter
+      @float_val = 1.0
+      @log2 = 0
+      @desc = "quarter"
+      @next_longer = :half
+      @next_shorter = :eighth
+    when :eighth
+      @float_val = 1/2.0
+      @log2 = -1
+      @desc = "eighth"
+      @next_longer = :quarter
+      @next_shorter = :sixteenth
+    when :sixteenth
+      @float_val = 1/4.0
+      @log2 = -2
+      @desc = "sixteenth"
+      @next_longer = :eighth
+      @next_shorter = :thirty_second
+    when :thirty_second, :thirtysecond
+      @sym = :thirty_second
+      @float_val = 1/8.0
+      @log2 = -3
+      @desc = "thirty-second"
+      @next_longer = :sixteenth
+      @next_shorter = :sixty_fourth
+    when :sixty_fourth, :sixtyfourth
+      @sym = :sixty_fourth
+      @float_val = 1/16.0
+      @log2 = -4
+      @desc = "sixty-fourth"
+      @next_longer = :thirty_second
+      @next_shorter = nil
     else
-      "invalid (#{length})"
+      raise "Invalid note length symbol #{sym}"
     end
   end
+
+  Whole = new(:whole)
+  Half = new(:half)
+  Quarter = new(:quarter)
+  Eighth = new(:eighth)
+  Sixteenth = new(:sixteenth)
+  ThirtySecond = new(:thirty_second)
+  SixtyFourth = new(:sixty_fourth)
+
+  def self.from_length(f)
+    case f
+    when 4.0
+      Whole
+    when 2.0
+      Half
+    when 1.0
+      Quarter
+    when 1/2.0
+      Eighth
+    when 1/4.0
+      Sixteenth
+    when 1/8.0
+      ThirtySecond
+    when 1/16.0
+      SixtyFourth
+    else
+      raise "Invalid note length #{f}"
+    end
+  end
+
+  def self.normalize(x)
+    if x.is_a?(NoteLength)
+      x
+    elsif x.is_a?(Symbol)
+      new(x)
+    elsif x.is_a?(Numeric)
+      from_length(x)
+    else
+      raise "Invalid note length value #{x}; must be a symbol or a number"
+    end
+  end
+
+  def halve
+    raise "No supported note length shorter than #{self}" if @next_shorter.nil?
+    NoteLength.new(@next_shorter)
+  end
+
+  def double
+    raise "No supported note length longer than #{self}" if @next_longer.nil?
+    NoteLength.new(@next_longer)
+  end
+
+  def <(other)
+    @float_val < other.to_f
+  end
+
+  def <=(other)
+    @float_val <= other.to_f
+  end
+
+  def >(other)
+    @float_val > other.to_f
+  end
+
+  def >=(other)
+    @float_val >= other.to_f
+  end
+
+  def ==(other)
+    @sym == other.sym
+  end
+
+  alias eql? ==
+
+  def hash
+    @sym.hash
+  end
+
+  def steps_to(other_note_length)
+    return (@log2 - other_note_length.log2).abs
+  end
+
+  def length
+    @float_val
+  end
+
+  def to_f
+    @float_val
+  end
+
+  def to_sym
+    @sym
+  end
+
+  def to_s
+    "#{@desc}/#{@float_val}"
+  end
+
+  def inspect
+    "<NoteLength #{to_s}>"
+  end
+
+
+  protected
+
+  attr_reader :sym, :log2
 end
 
 
@@ -515,9 +647,9 @@ class Track
   ### Etc.
 
   def inspect
-    res = "Track slots=#{num_slots} granularity=#{NoteLength::stringify(granularity)}/#{granularity} timescale=#{timescale} grid:\n"
+    res = "Track slots=#{num_slots} granularity=#{granularity} timescale=#{timescale} grid:\n"
     @grid.each_with_index do |slot, i|
-      res += "slot #{i} @ t=#{i * granularity}\n"
+      res += "slot #{i} @ t=#{i * granularity.to_f}\n"
       slot.each { |step| res += "  #{step.inspect}\n" }
     end
     res
@@ -534,7 +666,7 @@ class Track
   # Track with 16th-note granularity. A Step that had a gate of 90% would become
   # two Steps in back-to-back slots, one a tie and the following with 80% gate.
   def expand
-    raise "Cannot expand past 32nd-note granularity" if @granularity == NoteLength::ThirtySecond
+    raise "Cannot expand past 64th-note granularity" if @granularity == NoteLength::SixtyFourth
 
     # Gameplan: each slot in the grid will expand to two slots. Consider each
     # slot individually. Each Step in that slot may expand to either one Step,
@@ -573,7 +705,7 @@ class Track
       new_grid.concat(new_slots)
     end
 
-    mutate(grid: new_grid, granularity: @granularity / 2.0)
+    mutate(grid: new_grid, granularity: @granularity.halve)
   end
 
   # Creates a new Track with half the granularity of the current one, halving
@@ -636,7 +768,7 @@ class Track
       new_grid << condense_slots(*slot_chunk)
     end
 
-    mutate(grid: new_grid, granularity: @granularity * 2.0)
+    mutate(grid: new_grid, granularity: @granularity.double)
   end
 
   # Calls expand or condense the appropriate number of times to return a new
@@ -647,7 +779,7 @@ class Track
     # NOTE: this is obviously very silly, but the alternative would be making
     # expand and condense way more complicated, which is not worth it.
 
-    steps = (Math.log2(@granularity) - Math.log2(new_granularity)).to_i.abs
+    steps = @granularity.steps_to(new_granularity)
     new_track = self
     steps.times do
       new_track = new_granularity < @granularity ? new_track.expand : new_track.condense
@@ -884,7 +1016,7 @@ class Track
     # expose through the attr_reader is immutable.
     # TODO: revisit this if we go mutable, obvs
     @grid = grid.map { |slot| slot.clone.freeze }.freeze
-    @granularity = granularity
+    @granularity = NoteLength.normalize(granularity)
     @timescale = timescale
   end
 
@@ -900,7 +1032,7 @@ class Track
   # TODO: do automatic granularity adjustment when possible?
   def assert_compatible_track(other_track)
     if @granularity != other_track.granularity
-      raise "Granularity mismatch: #{NoteLength::stringify(@granularity)} != #{NoteLength::stringify(other_track.granularity)}"
+      raise "Granularity mismatch: #{@granularity} != #{other_track.granularity}"
     end
 
     if @timescale != other_track.timescale
@@ -937,7 +1069,7 @@ class Player
         play_slot(i)
 
         # Sleep until it's time for the next slot
-        $spi.sleep(@track.granularity)
+        $spi.sleep(@track.granularity.to_f)
       end
     end
 
@@ -983,7 +1115,7 @@ class Player
   end
 
   def schedule_end_for_step_with_partial_gate(step)
-    $spi.time_warp(step.gate * @track.granularity) do
+    $spi.time_warp(step.gate * @track.granularity.to_f) do
       $spi.puts "killing #{step.inspect} @ t=#{$spi.vt}"
       end_step(step)
     end
@@ -1009,13 +1141,13 @@ class Player
         # using this for previewing stuff away from my real synth...
         # For now just having ties go for 100 * the length of the whole track.
         # Obviously that's ridiculous.
-        node = $spi.play(step.note, duration: @track.granularity * @track.num_slots * 100, attack: 0, decay: 0, release: 0)
+        node = $spi.play(step.note, duration: @track.granularity.to_f * @track.num_slots * 100, attack: 0, decay: 0, release: 0)
       end
     else
       if @midi
-        $spi.midi(step.note, sustain: step.gate * @track.granularity)
+        $spi.midi(step.note, sustain: step.gate * @track.granularity.to_f)
       else
-        node = $spi.play(step.note, duration: step.gate * @track.granularity, attack: 0, decay: 0, release: 0)
+        node = $spi.play(step.note, duration: step.gate * @track.granularity.to_f, attack: 0, decay: 0, release: 0)
       end
     end
 
