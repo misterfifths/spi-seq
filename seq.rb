@@ -805,6 +805,8 @@ class Track
     new_track
   end
 
+  alias regrain regranularize
+
   ## Grid-level mutations
 
   # TODO:
