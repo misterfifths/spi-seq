@@ -988,14 +988,18 @@ class Track
   ## Step-level mutations
 
   # Return a new Track, replacing each Step in this track with the result of the
-  # given block.
-  # TODO: support nil returns from the block
-  # TODO: flat_map so that the block can return multiple Steps
+  # given block. The block may return:
+  # - A Step, which will replace the step yielded to the block
+  # - nil, which will remove the step yielded to the block
+  # - An array of Steps, which will all be added to the slot to which the
+  #   yielded Step belongs.
   def mutate_each_step
     new_grid = @grid.map do |slot|
-      slot.map do |step|
+      new_slot = slot.map do |step|
         yield step
       end
+
+      new_slot.flatten.compact
     end
 
     mutate(grid: new_grid)
@@ -1037,6 +1041,20 @@ class Track
   end
 
   alias sdown semi_down
+
+  # For each Step, add additional Steps with notes that are the given number of
+  # semitones away from the original. offsets should be an array of integer
+  # semitones. It defaults to [-12, 12] - i.e., an octave up and down.
+  # The new Steps share the velocity, gate, and probability of the Step from
+  # which they were offset.
+  def harmonize(*offsets)
+    offsets = [-12, 12] if offsets.empty?
+    mutate_each_step do |step|
+      new_steps = [step]
+      offsets.each { |offset| new_steps << step.shift_tone(offset) }
+      new_steps
+    end
+  end
 
 
   private
