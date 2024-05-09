@@ -992,6 +992,13 @@ class Track
 
   alias dropout drop_every
 
+  def rand_dropout(p)
+    new_grid = @grid.map { |slot| $spi.rand < p ? [] : slot }
+    mutate(grid: new_grid)
+  end
+
+  alias rdropout rand_dropout
+
 
   ## Step-level mutations
 
@@ -1047,6 +1054,30 @@ class Track
   def down(octave_shift = 1)
     shift_octave(-octave_shift)
   end
+
+  # Return a new track that, With probability p, shifts the octave of each Step
+  # by a random value in the given range. If range is an integer,
+  # [-range, range] is used.
+  def rand_octave(range = 1, p: 0.5)
+    mutate_each_step do |step|
+      next step unless $spi.rand < p
+
+      # We've already decided to shift, so ignore random 0 values. Not using
+      # rand_i here since it's exclusive. rand is too, but we're rounding.
+      shift = 0
+      while shift == 0
+        if range.is_a?(Range)
+          shift = $spi.rand(range).round
+        else
+          shift = $spi.rand(-range..range).round
+        end
+      end
+
+      step.shift_octave(shift)
+    end
+  end
+
+  alias roct rand_octave
 
   def shift_tone(shift)
     mutate_each_step { |step| step.shift_tone(shift) }
@@ -1120,6 +1151,7 @@ end
 
 # TODO: playhead direction - just a matter of how we move the slot index in play, i think
 # TODO: probably special-case Steps with a 0 gate
+# TODO: swing?
 class Player
   attr_reader :midi, :track
 
