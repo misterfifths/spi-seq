@@ -947,7 +947,7 @@ class Track
   end
 
   alias lshift left
-  alias shl rotate
+  alias shl left
 
   def left_pad(num_slots = 1)
     mutate(grid: [[]] * num_slots + @grid)
