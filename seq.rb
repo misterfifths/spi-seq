@@ -100,7 +100,7 @@ class NoteLength
     elsif x.is_a?(Numeric)
       from_length(x)
     else
-      raise "Invalid note length value #{x}; must be a symbol or a number"
+      raise "Invalid note length value #{x}; must be a symbol, number, or NoteLength"
     end
   end
 
@@ -375,9 +375,8 @@ class Step
   # 1. nil - the Step will always trigger
   # 2. a number between 0 and 1 inclusive that represents the chance that the
   #    Step will trigger
-  # 3. a callable predicate lambda/proc that takes two arguments, step and
-  #    cycle. This will be wrapped in a Prob instance. If the predicate returns
-  #    true, the step will trigger.
+  # 3. a callable predicate lambda/proc that takes the arguments described by
+  #    Prob.custom. If the predicate returns true, the step will trigger.
   # 4. an instance of Prob. See that class for some common cases.
   def initialize(note, vel: 127, gate: 1.0, prob: nil)
     @note, @note_number, @octave = NoteUtils::normalize(note)
@@ -491,7 +490,7 @@ module Arp
     end
 
     # need to deal with note numbers internally; we'll be sorting
-    notes = notes.map { |n| NoteUtils::number(n) }
+    notes.map! { |n| NoteUtils::number(n) }
 
     case direction
     when Arp::Up
