@@ -1149,7 +1149,7 @@ end
 # TODO: probably special-case Steps with a 0 gate
 # TODO: swing?
 class Player
-  attr_reader :midi, :track
+  attr_reader :midi, :track, :cycle
 
   def initialize(track, midi: false)
     @track = track
@@ -1178,6 +1178,19 @@ class Player
     end
 
     @cycle += 1
+  end
+
+  # Sleeps for the duration of the track. Cycle count and tie tracking are not
+  # effected. All currently playing Steps are stopped.
+  # TODO: do we want to increment cycle count here? kinda depends on what this
+  # is philosophically - is it a muted play, or just a way to stall until we
+  # start playing for the first time? if it's a muted play, it should just be an
+  # argument to play.
+  def sleep
+    end_all_steps
+    $spi.with_bpm_mul(track.timescale) do
+      $spi.sleep(@track.granularity.to_f * @track.num_slots)
+    end
   end
 
 
