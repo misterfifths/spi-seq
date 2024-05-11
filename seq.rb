@@ -1275,3 +1275,60 @@ class Player
     end
   end
 end
+
+
+# Create a live_loop that plays the given track. Takes the same arguments as
+# cc_mutable_live_loop, with the exception that cc may be nil (the default), in
+# which case the live_loop is not mutable by CCs.
+# The live_loop responds to muting by calling sleep on the track for muted
+# iterations, rather than play.
+# If send_cycle_cues is true, immediately before the live_loop plays a cycle of
+# the track, it sends a cue with the name <loop_name>_cycle and a single value,
+# the number of the cycle iteration that's about to play. Cycle cues are not
+# sent while the track is muted.
+# A block may be provided, in which case it is called before each cycle is
+# played. The block may take 0 - 3 arguments, which are as follows:
+# - 1st argument: muted - whether the track is currently muted
+# - 2nd argument: the upcoming cycle number of the player
+# - 3rd argument: the normal optional live_loop argument
+# If the block returns a value, it is fed back in the next iteration as the
+# third argument.
+# Note that the internal block that plays the track will sleep, so a user-
+# provided block does not need to sleep or sync, unlike normal live_loop blocks.
+# If it does sync or sleep, it may cause delays between cycles of the track.
+def track_live_loop(loop_name, track, start_muted: false, midi: false, cc: nil, send_cycle_cues: true, midi_source: "*", **kwargs, &block)
+  raise "Block must take 0 - 3 arguments" if !block.nil? && block.arity > 3
+
+  player = Player.new(track, midi: midi)
+  cycle_cue_sym = (loop_name.to_s + "_cycle").to_sym
+
+  wrapped_block = lambda do |muted, arg|
+    res = nil
+    unless block.nil?
+      if block.arity == 3
+        res = block.call(muted, player.cycle, arg)
+      elsif block.arity == 2
+        block.call(muted, player.cycle)
+      elsif block.arity == 1
+        block.call(muted)
+      else
+        block.call
+      end
+    end
+
+    if muted
+      player.sleep
+    else
+      cue(cycle_cue_sym, player.cycle) if send_cycle_cues
+      player.play
+    end
+
+    res
+  end
+
+  if cc.nil?
+    mutable_live_loop(loop_name, start_muted: start_muted, **kwargs, &wrapped_block)
+  else
+    cc_mutable_live_loop(loop_name, start_muted: start_muted, cc: cc, midi_source: midi_source, **kwargs, &wrapped_block)
+  end
+end
