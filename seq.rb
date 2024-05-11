@@ -978,8 +978,9 @@ class Track
   alias [] slice
 
   # Returns a new Track consisting of n random slots from this track's grid. The
-  # relative order of the chosen slots is maintained.
+  # relative order of the chosen slots is not maintained.
   def sample(n)
+    # TODO: does this use spi's rng?
     mutate(grid: @grid.sample(n))
   end
 
@@ -1008,6 +1009,9 @@ class Track
 
 
   ## Step-level mutations
+
+  # TODO: apply a gate/velocity curve, a lambda given a percentage through the
+  # track.
 
   # Return a new Track, replacing each Step in this track with the result of the
   # given block. The block may return:
