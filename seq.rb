@@ -635,6 +635,10 @@ class Track
     @grid.length
   end
 
+  def beat_length
+    num_slots * granularity.to_f
+  end
+
 
   ### Playback support
 
@@ -1210,7 +1214,7 @@ class Player
   def sleep
     end_all_steps
     $spi.with_bpm_mul(track.timescale) do
-      $spi.sleep(@track.granularity.to_f * @track.num_slots)
+      $spi.sleep(@track.beat_length)
     end
   end
 
@@ -1279,7 +1283,7 @@ class Player
         # using this for previewing stuff away from my real synth...
         # For now just having ties go for 100 * the length of the whole track.
         # Obviously that's ridiculous.
-        node = $spi.play(step.note, duration: @track.granularity.to_f * @track.num_slots * 100, attack: 0, decay: 0, release: 0)
+        node = $spi.play(step.note, duration: @track.beat_length * 100, attack: 0, decay: 0, release: 0)
       end
     else
       if @midi
