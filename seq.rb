@@ -528,10 +528,14 @@ end
 # A Track is mostly a "grid" of Steps together with a granularity. The grid is a
 # 2d array, each element of which is a "slot". A slot contains some number
 # (possibly 0) of Steps. Those are the Steps that should trigger (subject to
-# their probabilities) when that slot is played. Each slot represents the Steps
-# for a timespan equal to the Track's granularity, which is some fraction of a
-# beat (e.g. 1/4 for sixteenth note granularity). Thus the length of a Track in
-# beats is the granularity multiplied by the number of slots in the grid.
+# their probabilities) when that slot is played. The order of Steps within a
+# slot is not significant. There should not be more than one Step with the same
+# note in a given slot; if there is, one with the longest gate will be used.
+# Each slot represents the Steps for a timespan equal to the Track's
+# granularity, which is some fraction of a beat (e.g. 1/4 for sixteenth note
+# granularity). An empty slot represents a rest for the same duration. Thus the
+# length of a Track in beats is the granularity multiplied by the number of
+# slots in the grid.
 # Tracks also have a timescale, which is the speed at which this track will play
 # relative to the global bpm. A timescale of 2 means that this track will play
 # at twice the global bpm, e.g., and 0.5 means half-speed.
@@ -1114,11 +1118,29 @@ class Track
     # TODO: normalize grid to make sure any given slot doesn't contain multiple
     # Steps for the same note?
 
-    # Do a kinda-deep frozen clone of grid (no need to clone the Steps, but do
-    # clone the array itself and the slot arrays). Frozen so the version we
-    # expose through the attr_reader is immutable.
+    # Do a deep frozen clone of grid, while making sure no slot has more than
+    # one Step with the same note. Freeze the whole thing recursively so the
+    # version we expose through the attr_reader is immutable.
     # TODO: revisit this if we go mutable, obvs
-    @grid = grid.map { |slot| slot.clone.freeze }.freeze
+    @grid = []
+    grid.each_with_index do |slot, i|
+      new_slot = []
+
+      steps_by_note = slot.group_by { |step| step.note }
+      steps_by_note.each do |note, steps|
+        if steps.length > 1
+          $spi.puts("warning: more than one Step with note #{note} in slot #{i}! Picking one with the longest gate!")
+          new_slot << steps.max_by { |step| step.gate }
+        else
+          new_slot << steps.first
+        end
+      end
+
+      new_slot.freeze
+      @grid << new_slot
+    end
+    @grid.freeze
+
     @granularity = NoteLength.normalize(granularity)
     @timescale = timescale
   end
