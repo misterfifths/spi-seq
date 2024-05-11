@@ -22,6 +22,94 @@ def midi_clock_live_loop(loop_name = :midi_clock, send_start: true, port: nil)
 end
 
 
+# Returns the Time State key that can be used to control muting of a mutable
+# live_loop created by that family of functions.
+def mute_key(loop_name)
+  ("__live_loop_" + loop_name.to_s + "_muted").to_sym
+end
+
+# Mutes the given live_loop, assuming it was created by one of the functions in
+# the mutable_live_loop family. Note that muting is not instantaneous; see the
+# description of mutable_live_loop for details.
+def mute_live_loop(loop_name, mute=true)
+  set(mute_key(loop_name), mute)
+end
+
+# Starts a new live_loop that can be muted by setting the Time State key given
+# by the mute_key function to true. What 'mute' means must be implemented by the
+# given block; this function merely manages the muted state and informs the
+# block of it. The arguments to the block differ from a normal live_loop. It may
+# take 1 or 2 arguments:
+# - first argument: a boolean representing whether the live_loop is muted.
+# - second argument: the normal argument for a live_loop (optional)
+# Note that muting is not instantaneous. The live_loop block is only made aware
+# of muting the next time it executes, via its first argument. This way, muting
+# will happen only between cycles of a loop, not in the middle of one.
+def mutable_live_loop(loop_name, start_muted: false, **kwargs, &block)
+  raise "Block must take 1 or 2 arguments" if block.arity == 0 || block.arity > 2
+
+  key = mute_key(loop_name)
+  $spi.set(key, start_muted)
+
+  $spi.live_loop(loop_name, **kwargs) do |arg|
+    muted = $spi.get(key)
+
+    if block.arity == 2
+      block.call(muted, arg)
+    else
+      block.call(muted)
+    end
+  end
+end
+
+# Starts a new live_loop that can be muted by a MIDI CC message with the given
+# CC number. A value of 0 for the CC will mute, and any other value will unmute.
+# What 'mute' means must be implemented by the given block; this function merely
+# manages the muted state and informs the block of it. The arguments to the
+# block are as described in mutable_live_loop.
+def cc_mutable_live_loop(loop_name, cc:, midi_source: "*", start_muted: false, **kwargs, &block)
+  cc_watcher_loop_name = ("__live_loop_" + loop_name.to_s + "_cc_mute_watcher").to_sym
+  $spi.live_loop(cc_watcher_loop_name) do
+    $spi.use_real_time
+
+    incoming_cc, val = $spi.sync("/midi:#{midi_source}/control_change")
+    if incoming_cc == cc
+      muted = val == 0
+      $spi.puts("[cc mute control] CC #{cc} = #{val} -> #{muted ? '' : 'un'}muting live loop #{loop_name}")
+      mute_live_loop(loop_name, muted)
+    end
+  end
+
+  default_cc_val = start_muted ? 0 : 127
+  $spi.puts "[cc mute control] sending default CC #{cc} value #{default_cc_val} for live loop #{loop_name}"
+  midi_cc(cc, default_cc_val)
+
+  mutable_live_loop(loop_name, start_muted: start_muted, **kwargs, &block)
+end
+
+# Starts a new live_loop that can be muted by setting the Time State key given
+# by the mute_key function to true. The live_loop is wrapped in a level effect,
+# which will have its amp set to 0 when the live_loop is muted. Thus the block
+# itself doesn't need to have any logic related to muting; whatever sound it
+# creates will simply be silenced when it is muted. The arguments to the block
+# are as described in mutable_live_loop.
+def fx_mutable_live_loop(loop_name, start_muted: false, unmuted_amp: 1, amp_slide: 0, **kwargs, &block)
+  raise "Block must take 1 or 2 arguments" if block.arity == 0 || block.arity > 2
+
+  $spi.with_fx(:level, amp: start_muted ? 0 : unmuted_amp, amp_slide: amp_slide) do |level_fx|
+    mutable_live_loop(loop_name, start_muted: start_muted, **kwargs) do |muted, arg|
+      $spi.control(level_fx, amp: muted ? 0 : unmuted_amp)
+
+      if block.arity == 2
+        block.call(muted, arg)
+      else
+        block.call(muted)
+      end
+    end
+  end
+end
+
+
 # Controls an effect based on a MIDI value (0 - 127). Arguments are the MIDI
 # value and the values of the array described in cc_fx_control_loop.
 def __midi_fx_control(val, effect_key, param, val_range, quantum)
