@@ -106,7 +106,7 @@ class NoteLength
 
   # Returns a NoteLength with half the duration of this one. E.g., halving a
   # quarter note length returns an eighth. It is an error to attempt to halve
-  # a sixty-forth note.
+  # a sixty-fourth note.
   def halve
     raise "No supported note length shorter than #{self}" if @next_shorter.nil?
     NoteLength.new(@next_shorter)
@@ -1010,11 +1010,7 @@ class Track
   #   yielded Step belongs.
   def mutate_each_step
     new_grid = @grid.map do |slot|
-      new_slot = slot.map do |step|
-        yield step
-      end
-
-      new_slot.flatten.compact
+      slot.map { |step| yield step }.flatten.compact
     end
 
     mutate(grid: new_grid)
@@ -1172,7 +1168,7 @@ class Player
 
   # Plays one cycle of the track
   def play
-    $spi.with_bpm($spi.current_bpm * track.timescale) do
+    $spi.with_bpm_mul(track.timescale) do
       @track.num_slots.times do |i|
         play_slot(i)
 
