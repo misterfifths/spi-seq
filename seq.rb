@@ -317,6 +317,34 @@ class Prob
     new(->(cycle) { cycle != 0 }, "!first")
   end
 
+  # Step will trigger if any step triggered in the previously played slot.
+  def self.pre
+    new(->(cycle, step, prev_steps) { prev_steps.length != 0 }, "pre" )
+  end
+
+  # Step will trigger if no step triggered in the previously played slot.
+  def self.not_pre
+    new(->(cycle, step, prev_steps) { prev_steps.length == 0 }, "!pre" )
+  end
+
+  # Step will trigger if a step triggered in the previously played slot with the
+  # same note as this step.
+  def self.pre_same_note
+    pred = lambda do |cycle, step, prev_steps|
+      prev_steps.any? { |prev_step| prev_step.note == step.note }
+    end
+    new(pred, "pre same note")
+  end
+
+  # Step will trigger only if none of the steps that triggered in the previously
+  # played slot had the same note as this step.
+  def self.not_pre_same_note
+    pred = lambda do |cycle, step, prev_steps|
+      prev_steps.all? { |prev_step| prev_step.note != step.note }
+    end
+    new(pred, "!pre same note")
+  end
+
   # Evaluates the probability function for the given step in the given cycle of
   # the Track. Returns true if the step should trigger.
   def should_trigger?(cycle, step, prev_steps)
@@ -654,9 +682,6 @@ class Track
     new_steps = []
     tied_steps = []
     ended_steps = []
-
-    # TODO: could do oxi style PRE & !PRE trigger probabilities if we inspected
-    # prev_steps and passed off some info to should_trigger?.
 
     prev_steps ||= []
     cur_steps = @grid[i % num_slots].filter { |step| step.should_trigger?(cycle, prev_steps) }
