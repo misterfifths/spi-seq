@@ -1358,7 +1358,7 @@ end
 # Note that the internal block that plays the track will sleep, so a user-
 # provided block does not need to sleep or sync, unlike normal live_loop blocks.
 # If it does sync or sleep, it may cause delays between cycles of the track.
-def track_live_loop(loop_name, track, start_muted: false, midi: nil, cc: nil, send_cycle_cues: true, midi_source: "*", **kwargs, &block)
+def track_live_loop(loop_name, track, start_muted: false, midi: nil, cc: nil, port: nil, channel: nil, send_cycle_cues: true, **kwargs, &block)
   raise "Block must take 0 - 3 arguments" if !block.nil? && block.arity > 3
 
   player = Player.new(track, midi: midi)
@@ -1391,6 +1391,6 @@ def track_live_loop(loop_name, track, start_muted: false, midi: nil, cc: nil, se
   if cc.nil?
     mutable_live_loop(loop_name, start_muted: start_muted, **kwargs, &wrapped_block)
   else
-    cc_mutable_live_loop(loop_name, start_muted: start_muted, cc: cc, midi_source: midi_source, **kwargs, &wrapped_block)
+    cc_mutable_live_loop(loop_name, start_muted: start_muted, cc: cc, port: port, channel: channel, **kwargs, &wrapped_block)
   end
 end
