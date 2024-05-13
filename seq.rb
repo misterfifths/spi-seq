@@ -1087,7 +1087,7 @@ class Track
     shift_octave(-octave_shift)
   end
 
-  # Return a new track that, With probability p, shifts the octave of each Step
+  # Return a new track that, with probability p, shifts the octave of each Step
   # by a random value in the given range. If range is an integer,
   # [-range, range] is used.
   def rand_octave(range = 1, p: 0.5)
@@ -1129,11 +1129,11 @@ class Track
 
   alias sdown semi_down
 
-  # For each Step, add additional Steps with notes that are the given number of
-  # semitones away from the original. offsets should be an array of integer
-  # semitones. It defaults to [-12, 12] - i.e., an octave up and down.
-  # The new Steps share the velocity, gate, and probability of the Step from
-  # which they were offset.
+  # Return a new track by, for each Step, adding additional Steps with notes
+  # that are the given number of semitones away from the original. offsets
+  # should be an array of integer semitones. It defaults to [-12, 12] - i.e.,
+  # an octave up and down. The new Steps share the velocity, gate, and
+  # probability of the Step from which they were offset.
   def harmonize(*offsets)
     offsets = [-12, 12] if offsets.empty?
     mutate_each_step do |step|
