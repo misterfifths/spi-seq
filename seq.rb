@@ -242,7 +242,7 @@ module NoteUtils
   # note numbers). The octave parameter, if given, is used to resolve the note
   # parameter. It is not used to resolve notes in the notes array; you probably
   # want to give those explicit octaves.
-  def snap(note, notes, octave: nil)
+  def self.snap(note, notes, octave: nil)
     # TODO: be more particular about rounding up or down?
     notes = notes.map { |n| number(n) }
     note = notes.number(note, octave: octave)
@@ -264,7 +264,7 @@ module NoteUtils
   # for a note without an octave (e.g. :c or :fs). scale is a symbol for one of
   # the scales known to Sonic Pi. The octave parameter, if given, is used to
   # resolve the note parameter. It has no effect on the scale.
-  def snap_to_scale(note, root, scale, octave: nil)
+  def self.snap_to_scale(note, root, scale, octave: nil)
     oct_0_root = (root.to_s + "0").to_sym
     snap(note, $spi.scale(oct_0_root, scale, num_octaves: 10), octave: octave)
   end
