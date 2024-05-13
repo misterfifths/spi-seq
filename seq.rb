@@ -744,7 +744,8 @@ class Track
       step1_prob = step.prob
       total_gate = step.gate * 2.0
       if total_gate > 1  # TODO: tolerance?
-        # If we expanded into two steps, only the second gets the probability
+        # If we expanded into two steps, only the second gets the probability.
+        # (This is just the Oxi's behavior; it only arguably makes sense.)
         step1_prob = nil
         step2 = step.with_gate(total_gate - 1)
         total_gate = 1
@@ -807,7 +808,7 @@ class Track
       end
 
       # The probability and velocity of the second step is discarded; the first
-      # step wins.
+      # step wins. (Again, just Oxi behavior.)
       step1.with_gate(total_gate)
     end
 
@@ -974,12 +975,16 @@ class Track
   alias lshift left
   alias shl left
 
+  # Returns a new Track by adding num_slots many empty slots (rests) to the
+  # beginning of the track.
   def left_pad(num_slots = 1)
     mutate(grid: [[]] * num_slots + @grid)
   end
 
   alias lpad left_pad
 
+  # Returns a new Track by adding num_slots many empty slots (rests) to the end
+  # of the track.
   def right_pad(num_slots = 1)
     mutate(grid: @grid + [[]] * num_slots)
   end
@@ -996,6 +1001,9 @@ class Track
     mutate(grid: @grid.take(n))
   end
 
+  # Returns a new Track consisting of only the selected slots of this track.
+  # Takes the same arguments as Array#slice (aka []): a single integer index, an
+  # index and a length, or a range.
   def slice(*args)
     mutate(grid: @grid.slice(*args))
   end
@@ -1025,6 +1033,8 @@ class Track
 
   alias dropout drop_every
 
+  # Return a new Track by, with probability p, removing all Steps in any given
+  # slot.
   def rand_dropout(p)
     new_grid = @grid.map { |slot| $spi.rand < p ? [] : slot }
     mutate(grid: new_grid)
