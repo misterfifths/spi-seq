@@ -658,8 +658,8 @@ class Track
     # TODO: could do oxi style PRE & !PRE trigger probabilities if we inspected
     # prev_steps and passed off some info to should_trigger?.
 
-    cur_steps = @grid[i % num_slots].filter { |step| step.should_trigger?(cycle, prev_steps) }
     prev_steps ||= []
+    cur_steps = @grid[i % num_slots].filter { |step| step.should_trigger?(cycle, prev_steps) }
 
     # distinguish between tied notes and newly started ones
     cur_steps.each do |step|
