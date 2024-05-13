@@ -62,17 +62,30 @@ def mutable_live_loop(loop_name, start_muted: false, **kwargs, &block)
   end
 end
 
+def use_cc_control_defaults(port: nil, channel: nil)
+  $spi.set(:__cc_control_defaults, { port: port, channel: channel })
+end
+
+def __resolve_cc_port_and_channel(port, channel)
+  defaults = $spi.get(:__cc_control_defaults) || {}
+  port = defaults[:port] || "*" if port.nil?
+  channel = defaults[:channel] || "*" if channel.nil?
+  [port, channel]
+end
+
 # Starts a new live_loop that can be muted by a MIDI CC message with the given
 # CC number. A value of 0 for the CC will mute, and any other value will unmute.
 # What 'mute' means must be implemented by the given block; this function merely
 # manages the muted state and informs the block of it. The arguments to the
 # block are as described in mutable_live_loop.
-def cc_mutable_live_loop(loop_name, cc:, midi_source: "*", start_muted: false, **kwargs, &block)
+def cc_mutable_live_loop(loop_name, cc:, port: nil, channel: nil, start_muted: false, **kwargs, &block)
+  port, channel = __resolve_cc_port_and_channel(port, channel)
+
   cc_watcher_loop_name = ("__live_loop_" + loop_name.to_s + "_cc_mute_watcher").to_sym
   $spi.live_loop(cc_watcher_loop_name) do
     $spi.use_real_time
 
-    incoming_cc, val = $spi.sync("/midi:#{midi_source}/control_change")
+    incoming_cc, val = $spi.sync("/midi:#{port}:#{channel}/control_change")
     if incoming_cc == cc
       muted = val == 0
       $spi.puts("[cc mute control] CC #{cc} = #{val} -> #{muted ? '' : 'un'}muting live loop #{loop_name}")
@@ -82,7 +95,7 @@ def cc_mutable_live_loop(loop_name, cc:, midi_source: "*", start_muted: false, *
 
   default_cc_val = start_muted ? 0 : 127
   $spi.puts "[cc mute control] sending default CC #{cc} value #{default_cc_val} for live loop #{loop_name}"
-  midi_cc(cc, default_cc_val)
+  midi_cc(cc, default_cc_val, port: port, channel: channel)
 
   mutable_live_loop(loop_name, start_muted: start_muted, **kwargs, &block)
 end
@@ -196,11 +209,11 @@ end
 # Received CCs that are not in the given map will be ignored by this loop.
 # TODO: clean this up with regards to port/channel - this should only receive
 # and send to one port/channel, or (if none is specified) to all.
-def cc_fx_control_loop(loop_name = :cc_fx_control, midi_source: "*",
-                       send_name_sysex: true, sysex_name_port: nil, sysex_name_channel: nil,
-                       default_cc_port: nil, default_cc_channel: nil,
-                       **cc_mappings)
+def cc_fx_control_loop(loop_name = :cc_fx_control, send_name_sysex: true,
+                       port: nil, channel: nil, **cc_mappings)
   return if cc_mappings.size == 0
+
+  port, channel = __resolve_cc_port_and_channel(port, channel)
 
   # time state keys for all effects we'll be controlling
   needed_fx = Set.new
@@ -251,7 +264,7 @@ def cc_fx_control_loop(loop_name = :cc_fx_control, midi_source: "*",
           pretty_name += "\n#{param.to_s}" if param.is_a?(Symbol)
           pretty_name.gsub!("_", " ")
           $spi.puts "[cc control] sending name '#{pretty_name}' for CC #{cc}"
-          __send_cc_name_sysex(cc, pretty_name, port: sysex_name_port, channel: sysex_name_channel)
+          __send_cc_name_sysex(cc, pretty_name, port: port, channel: channel)
         end
 
         # TODO: support a default on :global effects by doing an initial
@@ -272,20 +285,14 @@ def cc_fx_control_loop(loop_name = :cc_fx_control, midi_source: "*",
             midi_default = 0 if midi_default < 0
 
             $spi.puts "[cc control] sending default CC #{cc} value #{default} --> midi #{midi_default}"
-            midi_cc(cc, midi_default)
-
-            if !default_cc_port.nil? or !default_cc_port.nil?
-              def_cc_kwargs = default_cc_port.nil? ? {} : { port: default_cc_port }
-              def_cc_kwargs[:channel] = default_cc_channel unless default_cc_channel.nil?
-              midi_cc(cc, midi_default, **def_cc_kwargs)
-            end
+            midi_cc(cc, midi_default, port: port, channel: channel)
           end
         end
       end
     end
 
     # wait for a cc on the source
-    cc, val = $spi.sync("/midi:#{midi_source}/control_change")
+    cc, val = $spi.sync("/midi:#{port}:#{channel}/control_change")
 
     if fx_mappings.has_key?(cc)
       effect_key, param, val_range, quantum = fx_mappings[cc]
