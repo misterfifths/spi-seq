@@ -1174,15 +1174,20 @@ class Track
 end
 
 
+def use_player_defaults(midi:)
+  $spi.set(:__player_defaults, { midi: midi })
+end
+
+
 # TODO: playhead direction - just a matter of how we move the slot index in play, i think
 # TODO: probably special-case Steps with a 0 gate
 # TODO: swing?
 class Player
   attr_reader :midi, :track, :cycle
 
-  def initialize(track, midi: false)
+  def initialize(track, midi: nil)
     @track = track
-    @midi = midi
+    @midi = resolve_midi_arg(midi)
     @active_synth_nodes = Hash.new  # note symbols -> synth nodes. unused when playing midi
     @active_midi_notes = Set.new  # active midi note symbols. unused when playing built-in synths
 
@@ -1224,6 +1229,12 @@ class Player
 
 
   private
+
+  def resolve_midi_arg(midi)
+    defaults = $spi.get(:__player_defaults) || {}
+    midi = defaults[:midi] || false if midi.nil?
+    return midi
+  end
 
   def play_slot(i)
     new_steps, tied_steps, ended_steps = @track.steps_at_slot(i, prev_steps: @prev_steps, cycle: @cycle)
@@ -1325,7 +1336,7 @@ end
 # Note that the internal block that plays the track will sleep, so a user-
 # provided block does not need to sleep or sync, unlike normal live_loop blocks.
 # If it does sync or sleep, it may cause delays between cycles of the track.
-def track_live_loop(loop_name, track, start_muted: false, midi: false, cc: nil, send_cycle_cues: true, midi_source: "*", **kwargs, &block)
+def track_live_loop(loop_name, track, start_muted: false, midi: nil, cc: nil, send_cycle_cues: true, midi_source: "*", **kwargs, &block)
   raise "Block must take 0 - 3 arguments" if !block.nil? && block.arity > 3
 
   player = Player.new(track, midi: midi)
