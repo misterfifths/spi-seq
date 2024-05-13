@@ -1143,6 +1143,21 @@ class Track
     end
   end
 
+  # Return a new track in which each Step has its note snapped to the nearest
+  # note among the given array, which should consist of MIDI note numbers or
+  # symbols.
+  def snap_to_notes(notes)
+    mutate_each_step { |step| step.with_note(NoteUtils.snap(step.note, notes)) }
+  end
+
+  # Return a new track in which each Step has its note snapped to the nearest
+  # note in the given scale starting at the given root note. root should be a
+  # MIDI note number of symbol, and scale should be one of the scale names known
+  # to Sonic Pi.
+  def snap_to_scale(root, scale)
+    mutate_each_step { |step| step.with_note(NoteUtils.snap_to_scale(step.note, root, scale)) }
+  end
+
 
   private
 
