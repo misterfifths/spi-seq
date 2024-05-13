@@ -1291,7 +1291,7 @@ class Player
       end
     else
       if @midi
-        $spi.midi(step.note, sustain: step.gate * @track.granularity.to_f)
+        $spi.midi(step.note, velocity: step.vel, sustain: step.gate * @track.granularity.to_f)
       else
         node = $spi.play(step.note, duration: step.gate * @track.granularity.to_f, attack: 0, decay: 0, release: 0)
       end
