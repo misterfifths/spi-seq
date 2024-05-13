@@ -1147,13 +1147,9 @@ class Track
   private
 
   def initialize(grid:, granularity:, timescale:)
-    # TODO: normalize grid to make sure any given slot doesn't contain multiple
-    # Steps for the same note?
-
     # Do a deep frozen clone of grid, while making sure no slot has more than
     # one Step with the same note. Freeze the whole thing recursively so the
     # version we expose through the attr_reader is immutable.
-    # TODO: revisit this if we go mutable, obvs
     @grid = []
     grid.each_with_index do |slot, i|
       new_slot = []
@@ -1244,7 +1240,8 @@ class Player
   # TODO: do we want to increment cycle count here? kinda depends on what this
   # is philosophically - is it a muted play, or just a way to stall until we
   # start playing for the first time? if it's a muted play, it should just be an
-  # argument to play.
+  # argument to play. The only thing I can think of that would be screwed up is
+  # Steps with a 'first' probability.
   def sleep
     end_all_steps
     $spi.with_bpm_mul(track.timescale) do
