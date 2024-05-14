@@ -1045,9 +1045,6 @@ class Track
 
   ## Step-level mutations
 
-  # TODO: apply a gate/velocity curve, a lambda given a percentage through the
-  # track.
-
   # Return a new Track, replacing each Step in this track with the result of the
   # given block. The block may return:
   # - A Step, which will replace the step yielded to the block
@@ -1062,21 +1059,70 @@ class Track
     mutate(grid: new_grid)
   end
 
+  # Functionally the same as mutate_each_step, except the block is called with
+  # two arguments: the Step, and the percentage through the Track that the slot
+  # the Step belongs to represents. For instance, Steps in the first slot of the
+  # track will have percent 0, steps in the middle slot (in a Track with an odd
+  # number of slots) will have percent 0.5, and steps in the final slot will
+  # have percent 1.0.
+  def mutate_each_step_with_pct
+    new_grid = @grid.map.with_index do |slot, i|
+      pct = i.to_f / (num_slots - 1)
+      slot.map { |step| yield step, pct }.flatten.compact
+    end
+
+    mutate(grid: new_grid)
+  end
+
   def with_gate(new_gate)
     mutate_each_step { |step| step.with_gate(new_gate) }
   end
+
+  alias gate with_gate
 
   def scale_gate(factor)
     mutate_each_step { |step| step.with_gate(step.gate * factor) }
   end
 
+  # Returns a new track where each Step's gate is replaced with the result of
+  # curve_func. curve_func will be called with one parameter, a percentage
+  # through the track (0-1), and should return a floating point value 0-1 that
+  # will be used for all Steps in the slot at that percentage.
+  def with_gate_curve(curve_func)
+    raise "Curve function must be a callable that takes one argument" unless curve_func.respond_to?(:call) && curve_func.arity == 1
+    mutate_each_step_with_pct { |step, pct| step.with_gate(curve_func.call(pct)) }
+  end
+
+  alias gate_curve with_gate_curve
+
   def with_vel(new_vel)
     mutate_each_step { |step| step.with_vel(new_vel) }
   end
 
+  alias vel with_vel
+
   def scale_vel(factor)
     mutate_each_step { |step| step.with_vel(step.vel * factor) }
   end
+
+  # Returns a new track where each Step's velocity is replaced with the result
+  # of curve_func. curve_func will be called with one parameter, a percentage
+  # through the track (0-1), and should return a velocity to use for all Steps
+  # in the slot at that percentage. The value returned by curve_func should be
+  # either:
+  # - If zero_to_one is true, a floating point number 0 - 1 that will be scaled
+  #   to a velocity value between 0 and 127, inclusive.
+  # - If zero_to_one is false, an integer between 0 and 127, inclusive.
+  def with_vel_curve(curve_func, zero_to_one: true)
+    raise "Curve function must be a callable that takes one argument" unless curve_func.respond_to?(:call) && curve_func.arity == 1
+    mutate_each_step_with_pct do |step, pct|
+      vel = curve_func.call(pct)
+      vel *= 127 if zero_to_one
+      step.with_vel(vel)
+    end
+  end
+
+  alias vel_curve with_vel_curve
 
   def with_octave(new_octave)
     mutate_each_step { |step| step.with_octave(new_octave) }
