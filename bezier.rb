@@ -27,7 +27,12 @@ class CubicBezier
     end
   end
 
+  alias call solve
   alias [] solve
+
+  def arity
+    1
+  end
 
   def sample_curve_x(t)
     ensure_inited
