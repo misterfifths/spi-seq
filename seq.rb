@@ -407,7 +407,7 @@ class Step
   #    Prob.custom. If the predicate returns true, the step will trigger.
   # 4. an instance of Prob. See that class for some common cases.
   def initialize(note, vel: 127, gate: 1.0, prob: nil)
-    @note, @note_number, @octave = NoteUtils::normalize(note)
+    @note, @note_number, @octave = NoteUtils.normalize(note)
 
     @vel = vel.to_i
     if @vel < 0
@@ -462,16 +462,16 @@ class Step
   end
 
   def with_octave(new_octave)
-    with_note(NoteUtils::set_octave(@note, new_octave))
+    with_note(NoteUtils.set_octave(@note, new_octave))
   end
 
   def shift_octave(shift)
-    with_note(NoteUtils::shift_octave(@note, shift))
+    with_note(NoteUtils.shift_octave(@note, shift))
   end
 
   # Adjusts the note by the given number of semitones.
   def shift_tone(shift)
-    with_note(NoteUtils::shift_tone(@note, shift))
+    with_note(NoteUtils.shift_tone(@note, shift))
   end
 
   def tied?
@@ -516,12 +516,12 @@ module Arp
 
     extra_octaves.each do |octave_shift|
       orig_notes.each do |n|
-        notes << NoteUtils::shift_octave(n, octave_shift)
+        notes << NoteUtils.shift_octave(n, octave_shift)
       end
     end
 
     # need to deal with note numbers internally; we'll be sorting
-    notes.map! { |n| NoteUtils::number(n) }
+    notes.map! { |n| NoteUtils.number(n) }
 
     case direction
     when Arp::Up
@@ -550,7 +550,7 @@ module Arp
     # nothing to do for Arp::Order
     end
 
-    notes.map! { |n| NoteUtils::sym(n) }
+    notes.map! { |n| NoteUtils.sym(n) }
   end
 end
 
