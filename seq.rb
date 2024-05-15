@@ -1132,7 +1132,7 @@ class Track
   alias oct octave
 
   def shift_octave(shift)
-    mutate_each_step { |step| step.shift_octave(new_octave) }
+    mutate_each_step { |step| step.shift_octave(shift) }
   end
 
   def up(octave_shift = 1)
