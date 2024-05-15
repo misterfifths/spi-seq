@@ -505,6 +505,7 @@ module Arp
   TwoUpTwoDown = :twouptwodown
   Pinky = :pinky
   Thumb = :thumb
+  Random = :random
   Order = :order
 
   # TODO: random order
@@ -547,6 +548,8 @@ module Arp
       notes.sort!
       lowest = notes.shift
       notes = notes.zip([lowest].cycle).flatten
+    when Arp::Random
+      notes.shuffle!
     # nothing to do for Arp::Order
     end
 
