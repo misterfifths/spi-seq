@@ -507,6 +507,9 @@ module Arp
   Thumb = :thumb
   Order = :order
 
+  # TODO: random order
+  # TODO: figure out oxi's alt in/out
+
   def self.arpeggiate(notes, direction, extra_octaves: [])
     orig_notes = notes
     notes = notes.to_a.dup  # to_a because this might be a SonicPi ring
@@ -1349,7 +1352,15 @@ class Player
     # Turn off or kill ended notes
     ended_steps.each { |step| end_step(step) }
 
-    # Schedule ends for continued notes that end before the next slot
+    # Schedule ends for continued notes that end before the next slot.
+    # Note that we don't need to do this for new notes - those are either:
+    # - of some specific length (not tied), in which case we provide the length
+    #   to the sustain argument when playing the MIDI note; or
+    # - of indeterminant length (tied), in which case we start the MIDI note
+    #   with midi_note_on, and terminate it later when it either (a) ends at the
+    #   beginning of a step (the end_step call above), or (b) when it ends prior
+    #   to the end of this step (the tie ends with a note with gate < 1.0), and
+    #   we schedule a midi_note_off call at the appropriate time here.
     tied_steps.each do |step|
       schedule_end_for_step_with_partial_gate(step) unless step.tied?
     end
