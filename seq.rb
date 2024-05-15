@@ -503,13 +503,13 @@ module Arp
   Down = :down
   UpDown = :updown
   TwoUpTwoDown = :twouptwodown
+  AlternIn = :alternin
+  AlternOut = :alternout
+  AlternInOut = :alterninout
   Pinky = :pinky
   Thumb = :thumb
   Random = :random
   Order = :order
-
-  # TODO: random order
-  # TODO: figure out oxi's alt in/out
 
   def self.arpeggiate(notes, direction, extra_octaves: [])
     orig_notes = notes
@@ -538,6 +538,9 @@ module Arp
       notes += notes.reverse.drop(1)
       notes.pop
       notes = notes.zip(notes).flatten
+    when Arp::AlternIn, Arp::AlternOut, Arp::AlternInOut
+      notes.sort!
+      notes = notes.values_at(*altern_indexes(notes.length, direction))
     when Arp::Pinky
       # play the highest note after each (but don't double at end)
       notes.sort!
@@ -554,6 +557,66 @@ module Arp
     end
 
     notes.map! { |n| NoteUtils.sym(n) }
+  end
+
+
+  private
+
+  def self.altern_indexes(length, direction)
+    # in: work in toward the center from the edges, alternating low and high
+    # notes, starting each alternation with the low note.
+    # 0 1 2 3 4 5 -> 0 5 1 4 2 3
+    # 0 1 2 3 4 -> 0 4 1 3 2
+    # 0 1 2 3 -> 0 3 1 2
+    # 0 1 2 -> 0 2 1
+    # 0 1 -> 0 1
+
+    # out: work outward from the center (rounding up when even-length),
+    # alternating low and high notes, starting each alternation with the lower
+    # note.
+    # 0 1 2 3 4 5 -> 3 2 4 1 5 0
+    # 0 1 2 3 4 -> 2 1 3 0 4
+    # 0 1 2 3 -> 2 1 3 0
+    # 0 1 2 -> 1 0 2
+    # 0 1 -> 1 0
+
+    # in-out: in, then out, but not repeating the middle note
+
+    return [] if length == 0
+    return [0] if length == 1
+
+    case direction
+    when Arp::AlternIn
+      low_idx = 0
+      high_idx = length - 1
+      idxs = []
+      while low_idx <= high_idx
+        idxs << low_idx
+        break if low_idx == high_idx
+        idxs << high_idx
+        low_idx += 1
+        high_idx -= 1
+      end
+
+      return idxs
+    when Arp::AlternOut
+      center_idx = length.odd? ? (length - 1) / 2 : length / 2
+      idxs = [center_idx]
+      low_idx = center_idx - 1
+      high_idx = center_idx + 1
+      while low_idx >= 0 || high_idx < length
+        idxs << low_idx if low_idx >= 0
+        idxs << high_idx if high_idx < length
+        low_idx -= 1
+        high_idx += 1
+      end
+
+      return idxs
+    when Arp::AlternInOut
+      in_idxs = altern_indexes(length, Arp::AlternIn)
+      out_idxs = altern_indexes(length, Arp::AlternOut)
+      return in_idxs + out_idxs.drop(1)
+    end
   end
 end
 
