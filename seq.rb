@@ -893,7 +893,7 @@ class Track
       shorter_track = self
     end
 
-    new_grid = longer_track.grid.dup
+    new_grid = longer_track.mutable_grid_dup
     shorter_track.grid.each_with_index { |slot, i| new_grid[i].concat(slot) }
 
     mutate(grid: new_grid)
@@ -1212,6 +1212,15 @@ class Track
   # to Sonic Pi.
   def snap_to_scale(root, scale)
     mutate_each_step { |step| step.with_note(NoteUtils.snap_to_scale(step.note, root, scale)) }
+  end
+
+
+  protected
+
+  # Does a deep dup of the grid, returning a version where the grid itself and
+  # each slot is mutable.
+  def mutable_grid_dup
+    @grid.map { |slot| slot.dup }
   end
 
 
