@@ -802,9 +802,6 @@ class Track
 
   ### Mutators
 
-  # TODO: cycle_to_length
-  # TODO: compact - remove all rests
-
   ## Granularity manipulations
 
   # Creates a new Track with twice the granularity of the current one, doubling
@@ -1013,6 +1010,16 @@ class Track
   end
 
   alias * repeat
+
+  # Returns a new track that repeats the slots of this track for n slots.
+  def cycle_to_length(n)
+    mutate(grid: @grid.cycle.take(n))
+  end
+
+  # Returns a new track with all empty slots (rests) removed.
+  def compact
+    mutate(grid: @grid.reject { |slot| slot == [] })
+  end
 
   def reverse
     mutate(grid: @grid.reverse)
