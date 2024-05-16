@@ -1395,7 +1395,7 @@ class Player
 
   # Plays one cycle of the track
   def play
-    $spi.with_bpm_mul(track.timescale) do
+    $spi.with_bpm_mul(@track.timescale) do
       @track.num_slots.times do |i|
         play_slot(i)
 
