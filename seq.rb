@@ -511,6 +511,8 @@ module Arp
   Random = :random
   Order = :order
 
+  # TODO: extra_octaves is definitely not what octave spread does on the oxi
+
   def self.arpeggiate(notes, direction, extra_octaves: [])
     orig_notes = notes
     notes = notes.to_a.dup  # to_a because this might be a SonicPi ring
@@ -613,6 +615,7 @@ module Arp
 
       return idxs
     when Arp::AlternInOut
+      # TODO: drop the last note when it would repeat in a loop?
       in_idxs = altern_indexes(length, Arp::AlternIn)
       out_idxs = altern_indexes(length, Arp::AlternOut)
       return in_idxs + out_idxs.drop(1)
@@ -671,9 +674,10 @@ class Track
 
   ### More interesting constructors
 
-  # Constructs a mono track that arpeggiates the given notes. extra_octaves is
-  # an array of octave shifts. The arpeggiation will include all the notes from
-  # the note array in addition to copies of them with the given octave shifts.
+  # Constructs a track that arpeggiates the given notes. extra_octaves is an
+  # array of octave shifts. The arpeggiation will include all the notes from the
+  # note array in addition to copies of them with the given octave shifts.
+  # TODO: incorporate euclidean rhythm
   def self.arp(notes, direction = Arp::Up, extra_octaves: [], granularity: NoteLength::Quarter, gate: 1, vel: 127, timescale: 1)
     notes = Arp::arpeggiate(notes, direction, extra_octaves: extra_octaves)
     grid = notes.map { |n| [Step.new(n, vel: vel, gate: gate)] }
@@ -739,7 +743,14 @@ class Track
 
   ### Playback support
 
-  # Returns an array: [newly triggered Steps, continued (tied) Steps, newly ended Steps]
+  # Returns an array of arrays of Steps:
+  #   [newly triggered Steps, continued (tied) Steps, newly ended Steps]
+  # Step probabilities are evaluated, and steps that should not trigger are not
+  # returned.
+  # Note that the returned array of ended steps does not strictly contain steps
+  # that ended exactly at the beginning of this step. It also contains steps
+  # that ended between this step and the previous one - i.e. steps with gates
+  # less than 1.
   # Wraps the slot index if it exceeds the number of slots in the grid.
   # prev_steps is an array of the Steps that were active in the most recently
   # played slot. prev_steps should be nil or empty when playback is beginning.
@@ -790,6 +801,9 @@ class Track
 
 
   ### Mutators
+
+  # TODO: cycle_to_length
+  # TODO: compact - remove all rests
 
   ## Granularity manipulations
 
@@ -1349,7 +1363,9 @@ def use_player_defaults(midi:)
 end
 
 
-# TODO: playhead direction - just a matter of how we move the slot index in play, i think
+# TODO: playhead direction - mostly just a matter of how we move the slot index
+# in play, but also need to consider what "cycle" means in some of the weirder
+# cases like a drunk walk.
 # TODO: probably special-case Steps with a 0 gate
 # TODO: swing?
 class Player
@@ -1415,23 +1431,25 @@ class Player
     $spi.puts "tied steps: #{tied_steps}"
     $spi.puts "ended steps: #{ended_steps}"
 
-    # Turn off or kill ended notes
+    # Turn off or kill ended steps
     ended_steps.each { |step| end_step(step) }
 
-    # Schedule ends for continued notes that end before the next slot.
-    # Note that we don't need to do this for new notes - those are either:
-    # - of some specific length (not tied), in which case we provide the length
-    #   to the sustain argument when playing the MIDI note; or
-    # - of indeterminant length (tied), in which case we start the MIDI note
-    #   with midi_note_on, and terminate it later when it either (a) ends at the
-    #   beginning of a step (the end_step call above), or (b) when it ends prior
-    #   to the end of this step (the tie ends with a note with gate < 1.0), and
-    #   we schedule a midi_note_off call at the appropriate time here.
+    # Schedule ends for continued steps that end before the next slot.
+    # Note that we don't need to do this for new steps - those are either:
+    # - of some specific length less than the granularity (i.e., not tied), in
+    #   which case we provide the length to the sustain argument when playing
+    #   the MIDI note; or
+    # - at least as long as the granularity (i.e., tied), in which case we start
+    #   the MIDI note with midi_note_on, and terminate it later when it either
+    #   (a) ends at the beginning of a step (the end_step call above), or
+    #   (b) ends between steps (i.e., a tie ending with a step with gate < 1.0),
+    #   in which case we schedule a midi_note_off call at the appropriate time
+    #   here.
     tied_steps.each do |step|
       schedule_end_for_step_with_partial_gate(step) unless step.tied?
     end
 
-    # Start new notes
+    # Start new steps
     new_steps.each { |step| start_step(step) }
 
     # Update prev_steps for the next round
