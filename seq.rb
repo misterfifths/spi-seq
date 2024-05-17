@@ -1430,7 +1430,7 @@ class Player
   # Steps with a 'first' probability.
   def sleep
     end_all_steps
-    $spi.with_bpm_mul(track.timescale) do
+    $spi.with_bpm_mul(@track.timescale) do
       $spi.sleep(@track.beat_length)
     end
   end
