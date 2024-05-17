@@ -1578,7 +1578,7 @@ def track_live_loop(loop_name, track, start_muted: false, midi: nil, cc: nil, po
     if muted
       player.sleep
     else
-      cue(cycle_cue_sym, player.cycle) if send_cycle_cues
+      $spi.cue(cycle_cue_sym, player.cycle) if send_cycle_cues
       player.play
     end
 
