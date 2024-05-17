@@ -1395,7 +1395,7 @@ class Player
     @track = track
     @midi = resolve_midi_arg(midi)
     @debug = debug
-    @active_synth_nodes = Hash.new  # note symbols -> synth nodes. unused when playing midi
+    @active_synth_nodes = {}  # note symbols -> synth nodes. unused when playing midi
     @active_midi_notes = Set.new  # active midi note symbols. unused when playing built-in synths
 
     stop
