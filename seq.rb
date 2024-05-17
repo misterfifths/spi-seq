@@ -181,6 +181,7 @@ class NoteLength
 end
 
 
+# TODO: note class?
 module NoteUtils
   # note is a symbol for a note (e.g. :fs3) or a MIDI note number. If octave is
   # given, it overrides the octave of the note (even if it is a note number).
@@ -813,9 +814,10 @@ class Track
 
   ## Granularity manipulations
 
-  # Creates a new Track with twice the granularity of the current one, doubling
-  # the length of Steps as needed to keep the Track sounding roughly the same.
-  # For example, expanding a Track with 8th-note granularity will result in a
+  # Creates a new Track with double the granularity and number of slots. The
+  # length of each Step is doubled to keep the Track sounding roughly the same,
+  # which may entail turning a single step into multiple tied ones. For example,
+  # expanding a 5-slot Track with 8th-note granularity will result in an 10-slot
   # Track with 16th-note granularity. A Step that had a gate of 90% would become
   # two Steps in back-to-back slots, one a tie and the following with 80% gate.
   def expand
@@ -862,14 +864,13 @@ class Track
     mutate(grid: new_grid, granularity: @granularity.halve)
   end
 
-  # Creates a new Track with half the granularity of the current one, halving
-  # the length of Steps and ties as needed to keep the Track sounding roughly
-  # the same.
-  # For example, condensing a Track with 8th-note granularity will result in a
-  # Track with quarter-note granularity. Say the Track contained two Steps in
-  # back-to-back slots for the same note, the first a tie and the second with a
-  # gate of 80. That would become one Step in one slot in the new track, with a
-  # gate of 90.
+  # Creates a new Track with half the granularity and number of slots. Steps and
+  # tied steps have their lengths halved to keep the track sounding roughly the
+  # same. For example, condensing a 10-slot Track with 8th-note granularity will
+  # result in a 5-slot Track with quarter-note granularity. Say the Track
+  # contained two Steps in back-to-back slots for the same note, the first a tie
+  # and the second with a gate of 80. That sequence of Steps would become one
+  # Step in one slot in the new track, with a gate of 90.
   # Note that this operation is potentially significantly more lossy than
   # expand. Steps with short gates and those starting on off-beats may be
   # completely absent from the result.
@@ -1121,10 +1122,10 @@ class Track
   # Returns a new Track with all Steps in every nth slot removed. The duration
   # of the Track does not change; the emptied slots simply become rests.
   def drop_every(n)
-    # # e.g., drop every 3:
-    # # keep  | 0 1 - 3 4 - 6 7 - 9
-    # # drop  |     2     5     8
-    # # i % 3 | 0 1 2 0 1 2 0 1 2 0
+    # e.g., drop every 3:
+    # keep  | 0 1 - 3 4 - 6 7 - 9
+    # drop  |     2     5     8
+    # i % 3 | 0 1 2 0 1 2 0 1 2 0
     new_grid = @grid.map.with_index do |slot, i|
       i % n == n - 1 ? [] : slot
     end
