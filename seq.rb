@@ -1104,7 +1104,9 @@ class Track
   # Takes the same arguments as Array#slice (aka []): a single integer index, an
   # index and a length, or a range.
   def slice(*args)
-    mutate(grid: @grid.slice(*args))
+    s = @grid.slice(*args)
+    s = [s] if s.length == 0 || !s[0].is_a?(Array)
+    mutate(grid: s)
   end
 
   alias [] slice
