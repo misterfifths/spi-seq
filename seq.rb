@@ -648,19 +648,28 @@ class Track
 
   ### Basic constructors
 
-  # Constructs a monophonic track with the given Steps. steps must be an array,
-  # each element of which is either a Step object or nil to represent a rest.
-  # Each Step or rest lasts for the granularity.
+  # Constructs a track with the given array of Steps, each of which will be
+  # played one at a time, in the given order, for a duration equal to the
+  # granularity. steps must be an array, each element of which is either:
+  # - a Step object,
+  # - a MIDI note number or symbol, which will be converted to a Step with the
+  #   default arguments, or
+  # - nil, :r, or :rest to represent a rest.
+  # Each step or rest lasts for the granularity.
   def self.mono(steps, granularity: NoteLength::Quarter, timescale: 1)
     grid = steps.map { |s| s.nil? ? [] : [s] }
     new(grid: grid, granularity: granularity, timescale: timescale)
   end
 
-  # Constructs a polyphonic track with the given grid. grid must be an array,
-  # each element of which is itself an array of Steps, which may be empty to
-  # represent a rest. Each element of grid represents the Steps that should be
-  # active for a time period of the granularity. That is, the duration of the
-  # Track in beats is the granularity * grid.length.
+  # Constructs a track with the given grid. grid is a two-dimensional array,
+  # each element of which is a "slot". A slot is an array of the steps to play
+  # simultaneously for a duration of the granularity. A slot may be empty to
+  # represent a rest. Non-empty slots must contain some number of
+  # - Step objects,
+  # - MIDI note numbers or symbols, which will be converted to Steps with the
+  #   default arguments, or
+  # - nil, :r, or :rest to represent a rest (though this is generally
+  #   unnecessary and you should just use an empty array instead)
   def self.poly(grid, granularity: NoteLength::Quarter, timescale: 1)
     new(grid: grid, granularity: granularity, timescale: timescale)
   end
@@ -1318,24 +1327,25 @@ class Track
 
   def initialize(grid:, granularity:, timescale:)
     # Do a deep frozen clone of grid, while making sure no slot has more than
-    # one Step with the same note. Freeze the whole thing recursively so the
-    # version we expose through the attr_reader is immutable.
-    @grid = []
-    grid.each_with_index do |slot, i|
-      new_slot = []
+    # one Step with the same note, and converting nils/rest symbols into empty
+    # slots and integers/symbols into Steps. Freeze the whole thing recursively
+    # so the version we expose through the attr_reader is immutable.
+    @grid = grid.map.with_index do |slot, i|
+      steps_by_note = {}
+      slot.each do |step|
+        next if step.nil? || step == :r || step == :rest
+        step = Step.new(step) unless step.is_a?(Step)
 
-      steps_by_note = slot.group_by { |step| step.note }
-      steps_by_note.each do |note, steps|
-        if steps.length > 1
-          $spi.puts("warning: more than one Step with note #{note} in slot #{i}! Picking one with the longest gate!")
-          new_slot << steps.max_by { |step| step.gate }
+        old_step_with_same_note = steps_by_note[step.note]
+        if old_step_with_same_note.nil?
+          steps_by_note[step.note] = step
         else
-          new_slot << steps.first
+          $spi.puts("warning: more than one Step with note #{step.note} in slot #{i}! Picking one with the longest gate!")
+          steps_by_note[step.note] = step if old_step_with_same_note.gate < step.gate
         end
       end
 
-      new_slot.freeze
-      @grid << new_slot
+      steps_by_note.values.freeze
     end
     @grid.freeze
 
