@@ -1390,9 +1390,10 @@ end
 class Player
   attr_reader :midi, :track, :cycle
 
-  def initialize(track, midi: nil)
+  def initialize(track, midi: nil, debug: false)
     @track = track
     @midi = resolve_midi_arg(midi)
+    @debug = debug
     @active_synth_nodes = Hash.new  # note symbols -> synth nodes. unused when playing midi
     @active_midi_notes = Set.new  # active midi note symbols. unused when playing built-in synths
 
@@ -1445,10 +1446,12 @@ class Player
   def play_slot(i)
     new_steps, tied_steps, ended_steps = @track.steps_at_slot(i, prev_steps: @prev_steps, cycle: @cycle)
 
-    $spi.puts "@ slot=#{i} cycle=#{@cycle}"
-    $spi.puts "new steps: #{new_steps}"
-    $spi.puts "tied steps: #{tied_steps}"
-    $spi.puts "ended steps: #{ended_steps}"
+    if @debug
+      $spi.puts "@ slot=#{i} cycle=#{@cycle}"
+      $spi.puts "new steps: #{new_steps}"
+      $spi.puts "tied steps: #{tied_steps}"
+      $spi.puts "ended steps: #{ended_steps}"
+    end
 
     # Turn off or kill ended steps
     ended_steps.each { |step| end_step(step) }
@@ -1489,7 +1492,7 @@ class Player
 
   def schedule_end_for_step_with_partial_gate(step)
     $spi.time_warp(step.gate * @track.granularity.to_f) do
-      $spi.puts "killing #{step.inspect} @ t=#{$spi.vt}"
+      $spi.puts "killing #{step.inspect} @ t=#{$spi.vt}" if @debug
       end_step(step)
     end
   end
@@ -1552,10 +1555,10 @@ end
 # Note that the internal block that plays the track will sleep, so a user-
 # provided block does not need to sleep or sync, unlike normal live_loop blocks.
 # If it does sync or sleep, it may cause delays between cycles of the track.
-def track_live_loop(loop_name, track, start_muted: false, midi: nil, cc: nil, port: nil, channel: nil, send_cycle_cues: true, **kwargs, &block)
+def track_live_loop(loop_name, track, start_muted: false, midi: nil, cc: nil, port: nil, channel: nil, send_cycle_cues: true, debug: false, **kwargs, &block)
   raise "Block must take 0 - 3 arguments" if !block.nil? && block.arity > 3
 
-  player = Player.new(track, midi: midi)
+  player = Player.new(track, midi: midi, debug: debug)
   cycle_cue_sym = (loop_name.to_s + "_cycle").to_sym
 
   wrapped_block = lambda do |muted, arg|
