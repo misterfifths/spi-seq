@@ -1179,12 +1179,24 @@ class Track
   # Return a new Track, replacing each Step in this track with the result of the
   # given block. The block may return:
   # - A Step, which will replace the step yielded to the block
-  # - nil, which will remove the step yielded to the block
-  # - An array of Steps, which will all be added to the slot to which the
-  #   yielded Step belongs.
+  # - nil, :r, or :rest, which will remove the step yielded to the block
+  # - An array of Steps, which will all be added in place of the yielded step to
+  #   the corresponding slot of the yielded step.
   def mutate_each_step
     new_grid = @grid.map do |slot|
-      slot.map { |step| yield step }.flatten.compact
+      new_slot = []
+      slot.each do |step|
+        new_step = yield step
+        if NoteUtils.rest?(new_step)
+          next
+        elsif new_step.is_a?(Step)
+          new_slot << new_step
+        else
+          new_slot.concat(new_step)
+        end
+      end
+
+      new_slot
     end
 
     mutate(grid: new_grid)
