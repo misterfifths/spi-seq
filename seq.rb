@@ -210,10 +210,28 @@ module NoteUtils
     normalize(note, octave: octave)[0]
   end
 
+  # Returns the symbol for the note's pitch class (e.g. :c for Cs in all
+  # octaves). note may be a symbol or MIDI note number.
+  def self.pitch_class(note)
+    match = /^([a-g][sbf]?)\d*$/.match(sym(note))
+    raise "Invalid note symbol #{note}" if match.nil?  # should never happen
+    match[1].to_sym
+  end
+
   # Returns the MIDI note number for the given note (a symbol or MIDI note
   # number). Uses the same octave rules as normalize.
   def self.number(note, octave: nil)
     normalize(note, octave: octave)[1]
+  end
+
+  # Returns true if the given note has an explicit octave. Always returns true
+  # for MIDI note numbers. Returns true for note symbols or strings that end in
+  # a number, e.g. :cs4.
+  def self.has_octave?(note)
+    return true if note.is_a?(Numeric)
+    match = /^[a-g][sbf]?(\d*)$/.match(note.to_s)
+    raise "Invalid note symbol #{note}" if match.nil?
+    return !match[1].empty?
   end
 
   # Returns the octave number for the given note (a symbol or MIDI note number).
