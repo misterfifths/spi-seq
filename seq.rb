@@ -187,11 +187,16 @@ module NoteUtils
   # given, it overrides the octave of the note (even if it is a note number).
   # If octave is not given and the note is a symbol without an octave (e.g. :c),
   # the result will be in octave 4.
+  # Sharps and flats are normalized into sharps. The returned symbol is in lower
+  # case and is guaranteed to have an explicit octave number.
   # Returns an array [note symbol, note number, octave number]
   def self.normalize(note, octave: nil)
-    if !octave.nil? && note.is_a?(Numeric)
-      # If we're overriding the octave of a numeric note, convert it to a symbol
-      # first so that note_info actually respects the octave.
+    # Always go to a number first, so that sharps and flats collapse.
+    note = $spi.note(note)
+
+    if !octave.nil?
+      # If we're overriding the octave, convert back to a symbol so that
+      # note_info actually respects the octave.
       note = sym(note)
     end
 
