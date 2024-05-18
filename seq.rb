@@ -782,7 +782,10 @@ class Track
 
   ### Playback support
 
-  # Returns an array of arrays of Steps:
+  # Returns an array of arrays of Steps representing the state of playback at
+  # step i in the given cycle, assuming that the steps in prev_steps were the
+  # Steps played in the most recently evaluated slot. The array has the
+  # following elements:
   #   [newly triggered Steps, continued (tied) Steps, newly ended Steps]
   # Step probabilities are evaluated, and steps that should not trigger are not
   # returned.
@@ -795,8 +798,8 @@ class Track
   # played slot. prev_steps should be nil or empty when playback is beginning.
   # cycle is the number of times the Track has played in its entirety (used to
   # evaluate Step trigger probabilities).
-  # Intended to be called iteratively, increasing i and feeding back playing
-  # steps from the return value as prev_steps.
+  # Intended to be called iteratively, incrementing i and the cycle, and feeding
+  # back playing and tied steps from the return value as prev_steps.
   def steps_at_slot(i, prev_steps:, cycle:)
     new_steps = []
     tied_steps = []
@@ -1540,13 +1543,14 @@ class Player
     # Schedule ends for continued steps that end before the next slot.
     # Note that we don't need to do this for new steps - those are either:
     # - of some specific length less than the granularity (i.e., not tied), in
-    #   which case we provide the length to the sustain argument when playing
-    #   the MIDI note; or
-    # - at least as long as the granularity (i.e., tied), in which case we start
-    #   the MIDI note with midi_note_on, and terminate it later when it either
-    #   (a) ends at the beginning of a step (the end_step call above), or
-    #   (b) ends between steps (i.e., a tie ending with a step with gate < 1.0),
-    #   in which case we schedule a midi_note_off call at the appropriate time
+    #   which case we provide the length to the sustain or duration argument
+    #   when playing the note; or
+    # - tied, and so of indeterminant length since it may continue in the next
+    #   played slot. In this case we start the note with an indefinite time
+    #   (midi_note_on, e.g.), and terminate it (midi_note_off or kill) later
+    #   when it either (a) ends at the beginning of a step (the end_step call
+    #   above), or (b) ends between steps (i.e., a tie ending with a step with
+    #   gate < 1.0), in which case we schedule its end at the appropriate time
     #   here.
     tied_steps.each do |step|
       schedule_end_for_step_with_partial_gate(step) unless step.tied?
@@ -1583,13 +1587,15 @@ class Player
       @active_midi_notes.each { |n| $spi.midi_note_off(n, **@midi_spi_kwargs) }
       @active_midi_notes.clear
     else
-      @active_synth_nodes.each { |note, node| $spi.kill(node) }
+      @active_synth_nodes.each { |_, node| $spi.kill(node) }
       @active_synth_nodes.clear
     end
   end
 
   def start_step(step)
     if step.tied?
+      # Step has indeterminate duration; it may be continued in the next played
+      # slot. Start it and we'll kill it later when it ends in play_slot.
       if @midi
         $spi.midi_note_on(step.note, velocity: step.vel, **@midi_spi_kwargs)
       else
@@ -1601,9 +1607,14 @@ class Player
         node = $spi.play(step.note, duration: @track.beat_length * 100, attack: 0, decay: 0, release: 0)
       end
     else
+      # Step has a known duration, so we can specify it now and don't have to
+      # kill it later.
       if @midi
         $spi.midi(step.note, velocity: step.vel, sustain: step.gate * @track.granularity.to_f, **@midi_spi_kwargs)
       else
+        # TODO: there's no real reason to keep track of these synth nodes,
+        # right? They'll get cleaned up in play_slot, but also spuriously
+        # killed. Probably not an issue?
         node = $spi.play(step.note, duration: step.gate * @track.granularity.to_f, attack: 0, decay: 0, release: 0)
       end
     end
