@@ -11,7 +11,7 @@ def midi_clock_live_loop(loop_name = :midi_clock, send_start: true, port: nil)
       # kill any residual notes. this doesn't seem to work for the microfreak :-(
       # $spi.midi_all_notes_off
       # $spi.midi_stop
-      $spi.midi_start if send_start
+      $spi.midi_start(**beat_kwargs) if send_start
     end
 
     $spi.midi_clock_beat(**beat_kwargs)
