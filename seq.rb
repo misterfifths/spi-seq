@@ -388,7 +388,7 @@ class Prob
       res = @callable.call(cycle, step, prev_steps)
     end
 
-    $spi.puts("prob(#{step.inspect}, cycle=#{cycle}) = #{res}")
+    # $spi.puts("prob(#{step.inspect}, cycle=#{cycle}) = #{res}")
     res
   end
 
