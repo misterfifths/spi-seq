@@ -1365,20 +1365,24 @@ class Track
   # changed to repl, in the same octave as the original step. For instance,
   # sub_note(:c, :e) on a Track with steps [:c4, :d2, :c3] would result in a
   # track with steps [:e4, :d2, :e3].
+  # repl may be nil, :r, or :rest to remove Steps that match orig.
   def sub_note(orig, repl)
     has_octave = NoteUtils.has_octave?(orig)
+    repl_is_rest = NoteUtils.rest?(repl)
     if has_octave
       orig = NoteUtils.sym(orig)
     else
-      raise "Replacement notes cannot have an octave if the origial note doesn't" if NoteUtils.has_octave?(repl)
+      if !repl_is_rest && NoteUtils.has_octave?(repl)
+        raise "Replacement notes cannot have an octave if the origial note doesn't"
+      end
       orig = NoteUtils.pitch_class(orig)
     end
 
     mutate_each_step do |step|
       if has_octave && step.note == orig
-        step.with_note(repl)
+        repl_is_rest ? nil : step.with_note(repl)
       elsif !has_octave && NoteUtils.pitch_class(step.note) == orig
-        step.with_note(NoteUtils.sym(repl, octave: step.octave))
+        repl_is_rest ? nil : step.with_note(NoteUtils.sym(repl, octave: step.octave))
       else
         step
       end
