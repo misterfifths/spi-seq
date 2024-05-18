@@ -1389,11 +1389,18 @@ end
 # TODO: probably special-case Steps with a 0 gate
 # TODO: swing?
 class Player
-  attr_reader :midi, :track, :cycle
+  attr_reader :midi, :track, :cycle, :channel, :port
 
-  def initialize(track, midi: nil, debug: false)
+  def initialize(track, midi: nil, channel: nil, port: nil, debug: false)
     @track = track
+
     @midi = resolve_midi_arg(midi)
+    @channel = channel
+    @port = port
+    @midi_spi_kwargs = {}
+    @midi_spi_kwargs[:channel] = channel unless channel.nil?
+    @midi_spi_kwargs[:port] = port unless port.nil?
+
     @debug = debug
     @active_synth_nodes = {}  # note symbols -> synth nodes. unused when playing midi
     @active_midi_notes = Set.new  # active midi note symbols. unused when playing built-in synths
@@ -1484,7 +1491,7 @@ class Player
     # ended the step if it didn't have a full gate, in which case it will not
     # be in active_midi_notes or active_synth_nodes. Do nothing in that case.
     if @midi
-      $spi.midi_note_off(step.note) unless @active_midi_notes.delete(step.note).nil?
+      $spi.midi_note_off(step.note, **@midi_spi_kwargs) unless @active_midi_notes.delete(step.note).nil?
     else
       node = @active_synth_nodes.delete(step.note)
       $spi.kill(node) if !node.nil?
@@ -1500,7 +1507,7 @@ class Player
 
   def end_all_steps
     if @midi
-      @active_midi_notes.each { |n| $spi.midi_note_off(n) }
+      @active_midi_notes.each { |n| $spi.midi_note_off(n, **@midi_spi_kwargs) }
       @active_midi_notes.clear
     else
       @active_synth_nodes.each { |note, node| $spi.kill(node) }
@@ -1511,7 +1518,7 @@ class Player
   def start_step(step)
     if step.tied?
       if @midi
-        $spi.midi_note_on(step.note, velocity: step.vel)
+        $spi.midi_note_on(step.note, velocity: step.vel, **@midi_spi_kwargs)
       else
         # TODO: there's no good way to just have a synth note go forever and
         # eventually gracefully kick it into release. Luckily I'm really only
@@ -1522,7 +1529,7 @@ class Player
       end
     else
       if @midi
-        $spi.midi(step.note, velocity: step.vel, sustain: step.gate * @track.granularity.to_f)
+        $spi.midi(step.note, velocity: step.vel, sustain: step.gate * @track.granularity.to_f, **@midi_spi_kwargs)
       else
         node = $spi.play(step.note, duration: step.gate * @track.granularity.to_f, attack: 0, decay: 0, release: 0)
       end
@@ -1556,10 +1563,10 @@ end
 # Note that the internal block that plays the track will sleep, so a user-
 # provided block does not need to sleep or sync, unlike normal live_loop blocks.
 # If it does sync or sleep, it may cause delays between cycles of the track.
-def track_live_loop(loop_name, track, start_muted: false, midi: nil, cc: nil, port: nil, channel: nil, send_cycle_cues: true, debug: false, **kwargs, &block)
+def track_live_loop(loop_name, track, start_muted: false, midi: nil, player_port: nil, player_channel: nil, cc: nil, cc_port: nil, cc_channel: nil, send_cycle_cues: true, debug: false, **kwargs, &block)
   raise "Block must take 0 - 3 arguments" if !block.nil? && block.arity > 3
 
-  player = Player.new(track, midi: midi, debug: debug)
+  player = Player.new(track, midi: midi, debug: debug, port: player_port, channel: player_channel)
   cycle_cue_sym = (loop_name.to_s + "_cycle").to_sym
 
   wrapped_block = lambda do |muted, arg|
@@ -1589,6 +1596,6 @@ def track_live_loop(loop_name, track, start_muted: false, midi: nil, cc: nil, po
   if cc.nil?
     mutable_live_loop(loop_name, start_muted: start_muted, **kwargs, &wrapped_block)
   else
-    cc_mutable_live_loop(loop_name, start_muted: start_muted, cc: cc, port: port, channel: channel, **kwargs, &wrapped_block)
+    cc_mutable_live_loop(loop_name, start_muted: start_muted, cc: cc, port: cc_port, channel: cc_channel, **kwargs, &wrapped_block)
   end
 end
