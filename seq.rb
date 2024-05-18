@@ -1339,6 +1339,34 @@ class Track
     mutate_each_step { |step| step.with_note(NoteUtils.snap_to_scale(step.note, root, scale)) }
   end
 
+  # Returns a new track where each Step with note orig is replaced with a Step
+  # that has note repl but is otherwise identical. If orig has an explicit
+  # octave (or is a MIDI note number), only Steps with that exact note are
+  # effected. If orig does not have an explicit octave, repl must not either. In
+  # that case, all Steps with the same pitch class as orig have their notes
+  # changed to repl, in the same octave as the original step. For instance,
+  # sub_note(:c, :e) on a Track with steps [:c4, :d2, :c3] would result in a
+  # track with steps [:e4, :d2, :e3].
+  def sub_note(orig, repl)
+    has_octave = NoteUtils.has_octave?(orig)
+    if has_octave
+      orig = NoteUtils.sym(orig)
+    else
+      raise "Replacement notes cannot have an octave if the origial note doesn't" if NoteUtils.has_octave?(repl)
+      orig = NoteUtils.pitch_class(orig)
+    end
+
+    mutate_each_step do |step|
+      if has_octave && step.note == orig
+        step.with_note(repl)
+      elsif !has_octave && NoteUtils.pitch_class(step.note) == orig
+        step.with_note(NoteUtils.sym(repl, octave: step.octave))
+      else
+        step
+      end
+    end
+  end
+
 
   protected
 
