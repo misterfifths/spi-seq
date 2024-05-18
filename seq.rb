@@ -689,7 +689,7 @@ class Track
   # note array in addition to copies of them with the given octave shifts.
   # TODO: incorporate euclidean rhythm
   def self.arp(notes, direction = Arp::Up, extra_octaves: [], granularity: NoteLength::Quarter, gate: 1, vel: 127, timescale: 1)
-    notes = Arp::arpeggiate(notes, direction, extra_octaves: extra_octaves)
+    notes = Arp.arpeggiate(notes, direction, extra_octaves: extra_octaves)
     grid = notes.map { |n| [Step.new(n, vel: vel, gate: gate)] }
     new(grid: grid, granularity: granularity, timescale: timescale)
   end
