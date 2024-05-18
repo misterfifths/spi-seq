@@ -672,23 +672,24 @@ class Track
 
   ### Basic constructors
 
-  # Constructs a track with the given array of Steps, each of which will be
-  # played one at a time, in the given order, for a duration equal to the
-  # granularity. steps must be an array, each element of which is either:
+  # Constructs a track with the given array, each element of which represents
+  # a step or a rest. The elements will be played one at a time, in the given
+  # order, each for a duration equal to the granularity. The elements of steps
+  # must each be either:
   # - a Step object,
   # - a MIDI note number or symbol, which will be converted to a Step with the
   #   default arguments, or
   # - nil, :r, or :rest to represent a rest.
-  # Each step or rest lasts for the granularity.
   def self.mono(steps, granularity: NoteLength::Quarter, timescale: 1)
     grid = steps.map { |s| s.nil? ? [] : [s] }
     new(grid: grid, granularity: granularity, timescale: timescale)
   end
 
   # Constructs a track with the given grid. grid is a two-dimensional array,
-  # each element of which is a "slot". A slot is an array of the steps to play
-  # simultaneously for a duration of the granularity. A slot may be empty to
-  # represent a rest. Non-empty slots must contain some number of
+  # each element of which is a "slot". A slot is an array, each element of which
+  # represents the steps to play simultaneously for a duration of the
+  # granularity. A slot may be empty to represent a rest. Non-empty slots must
+  # contain some number of
   # - Step objects,
   # - MIDI note numbers or symbols, which will be converted to Steps with the
   #   default arguments, or
@@ -698,9 +699,9 @@ class Track
     new(grid: grid, granularity: granularity, timescale: timescale)
   end
 
-  # Constructs an empty sequence that lasts for the given number of steps.
-  def self.rest(num_steps, granularity: NoteLength::Quarter, timescale: 1)
-    grid = [[]] * num_steps
+  # Constructs an empty track that rests for the given number of slots.
+  def self.rest(num_slots, granularity: NoteLength::Quarter, timescale: 1)
+    grid = [[]] * num_slots
     new(grid: grid, granularity: granularity, timescale: 1)
   end
 
