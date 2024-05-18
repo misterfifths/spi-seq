@@ -948,7 +948,7 @@ class Track
   ## Grid-level mutations
 
   def with_rate(rate)
-    mutate(timescale: @timescale * rate)
+    mutate(timescale: rate)
   end
 
   alias rate with_rate
