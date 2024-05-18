@@ -292,6 +292,11 @@ module NoteUtils
     oct_0_root = (root.to_s + "0").to_sym
     snap(note, $spi.scale(oct_0_root, scale, num_octaves: 10), octave: octave)
   end
+
+  # Returns true if the given note represents a rest.
+  def self.rest?(note)
+    note.nil? || note == :r || note == :rest
+  end
 end
 
 
@@ -1388,7 +1393,7 @@ class Track
     @grid = grid.map.with_index do |slot, i|
       steps_by_note = {}
       slot.each do |step|
-        next if step.nil? || step == :r || step == :rest
+        next if NoteUtils.rest?(step)
         step = Step.new(step) unless step.is_a?(Step)
 
         old_step_with_same_note = steps_by_note[step.note]
