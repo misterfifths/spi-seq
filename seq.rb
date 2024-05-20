@@ -1314,6 +1314,7 @@ class Track
   end
 
   alias tone shift_tone
+  alias transpose shift_tone
 
   def semi_up(tone_shift = 1)
     shift_tone(tone_shift)
