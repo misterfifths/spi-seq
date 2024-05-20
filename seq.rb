@@ -1186,23 +1186,7 @@ class Track
   # - An array of Steps, which will all be added in place of the yielded step to
   #   the corresponding slot of the yielded step.
   def mutate_each_step
-    new_grid = @grid.map do |slot|
-      new_slot = []
-      slot.each do |step|
-        new_step = yield step
-        if NoteUtils.rest?(new_step)
-          next
-        elsif new_step.is_a?(Step)
-          new_slot << new_step
-        else
-          new_slot.concat(new_step)
-        end
-      end
-
-      new_slot
-    end
-
-    mutate(grid: new_grid)
+    mutate_each_step_with_pct { |step, _| yield step }
   end
 
   # Functionally the same as mutate_each_step, except the block is called with
@@ -1214,7 +1198,19 @@ class Track
   def mutate_each_step_with_pct
     new_grid = @grid.map.with_index do |slot, i|
       pct = i.to_f / (num_slots - 1)
-      slot.map { |step| yield step, pct }.flatten.compact
+      new_slot = []
+      slot.each do |step|
+        new_step = yield step, pct
+        if NoteUtils.rest?(new_step)
+          next
+        elsif new_step.is_a?(Step)
+          new_slot << new_step
+        else
+          new_slot.concat(new_step)
+        end
+      end
+
+      new_slot
     end
 
     mutate(grid: new_grid)
