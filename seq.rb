@@ -1034,7 +1034,7 @@ class Track
   #    :a1 :e5 :b1 :f5 :c1 rest :d1 rest
   # When cycle is true, the same operation will result in
   #    :a1 :e5 :b1 :f5 :c1 :e5 :d1 :f5
-  def zip(other_track, cycle: false)
+  def zip(other_track, cycle: true)
     assert_compatible_track(other_track)
     other_grid = other_track.grid
     other_grid = other_grid.cycle if cycle
