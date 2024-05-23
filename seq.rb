@@ -776,7 +776,7 @@ class Track
   end
 
   def beat_length
-    num_slots * granularity.to_f
+    num_slots * @granularity.to_f
   end
 
 
