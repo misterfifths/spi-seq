@@ -3,21 +3,25 @@ $spi ||= self
 
 # Start a live_loop named loop_name that sends MIDI clock beats for the global
 # BPM. Sends a MIDI start message on the first iteration if send_start is true.
-def midi_clock_live_loop(loop_name = :midi_clock, send_start: true, port: nil)
-  beat_kwargs = port.nil? ? {} : { port: port }
-
-  $spi.live_loop loop_name, init: true do |first_run|
-    if first_run
-      # kill any residual notes. this doesn't seem to work for the microfreak :-(
-      # $spi.midi_all_notes_off
-      # $spi.midi_stop
-      $spi.midi_start(**beat_kwargs) if send_start
-    end
-
-    $spi.midi_clock_beat(**beat_kwargs)
+# Note that the channel argument is only relevant if send_start or send_start is
+# true; clock messages are not per-channel.
+def midi_clock_live_loop(loop_name = :midi_clock, send_start: true, send_stop: true, port: nil, channel: nil)
+  $spi.live_loop loop_name do
+    $spi.midi_clock_beat(port: port)
     $spi.sleep 1
+  end
 
-    false
+  if send_start || send_stop
+    # This is kind of silly, but seems to be a good way to make sure we start
+    # MIDI devices at the same time that the cue for the live_loop above is
+    # triggered, which is probably what other live_loops are synced to.
+    # TODO: Could probably just this after the sleep above...
+    start_loop_name = ("__" + loop_name.to_s + "_midi_start").to_sym
+    $spi.live_loop start_loop_name, sync: loop_name do
+        $spi.midi_stop(port: port, channel: channel) if send_stop
+        $spi.midi_start(port: port, channel: channel) if send_start
+        $spi.stop
+    end
   end
 end
 
