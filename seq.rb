@@ -541,6 +541,8 @@ module Arp
   Order = :order
 
   # TODO: extra_octaves is definitely not what octave spread does on the oxi
+  # spread n - for the n lowest notes, add a note an octave up, wrapping around
+  # as needed. the oxi tops out at 7 note polyphony
 
   def self.arpeggiate(notes, direction, extra_octaves: [])
     orig_notes = notes
@@ -1051,6 +1053,59 @@ class Track
     mutate(grid: new_grid)
   end
 
+  # Creates a new Track that interleaves the slots of other_track with those of
+  # this track. Unlike zip, this function does not alternate between 1 slot of
+  # each track. Instead, group_size many slots of this track appear
+  # consecutively, followed by other_group_size slots of other_track, then
+  # group_size many slots of this track, and so on. cycle controls the behavior
+  # when the other track has fewer groups than this one. It behaves as described
+  # in zip. pad_short_groups controls the behavior when a group size does not
+  # evenly divide the number of slots in its corresponding track. If it is true,
+  # rests are added to the final chunk of slots so that it has the group size.
+  # For instance, consider gzipping together a track with slots with the steps
+  #     :a1 :b1 :c1 :d1
+  # and one with slots with steps
+  #     :e2 :f2
+  # If group_size is 3 and other_group_size is 1, and pad_short_groups is false,
+  # the result will be
+  #     :a1 :b1 :c1 :e2 :d1 :f2
+  # But if pad_short_groups is true, the second group of slots from the first
+  # track will be padded with two rests so that it has a length equal to its
+  # group size. The result then would be
+  #    :a1 :b1 :c1 :e2 :d1 rest rest :f2
+  # Note that pad_short_groups applies to both groups from this track and
+  # other_track.
+  def grouped_zip(other_track, group_size, other_group_size, cycle: true, pad_short_groups: false)
+    assert_compatible_track(other_track)
+
+    a_chunks = @grid.each_slice(group_size).to_a
+    b_chunks = other_track.grid.each_slice(other_group_size).to_a
+
+    if pad_short_groups
+      if a_chunks.last.length < group_size
+        a_chunks[-1] += [[]] * (group_size - a_chunks.last.length)
+      end
+
+      if b_chunks.last.length < other_group_size
+        b_chunks[-1] += [[]] * (other_group_size - b_chunks.last.length)
+      end
+    end
+
+    if cycle
+      b_chunks = b_chunks.cycle
+    else
+      # In the case of a length mismatch, fill in with groups of
+      # other_group_size many empty slots.
+      repeating_empty_chunks = [[[]] * other_group_size].cycle
+      b_chunks = b_chunks.chain(repeating_empty_chunks)
+    end
+    new_grid = a_chunks.zip(b_chunks).flatten(2)
+
+    mutate(grid: new_grid)
+  end
+
+  alias gzip grouped_zip
+
   def repeat(n)
     mutate(grid: @grid * n)
   end
@@ -1234,6 +1289,7 @@ class Track
   # curve_func. curve_func will be called with one parameter, a percentage
   # through the track (0-1), and should return a floating point value 0-1 that
   # will be used for all Steps in the slot at that percentage.
+  # TODO: add a library of useful curve functions for this
   def with_gate_curve(curve_func)
     raise "Curve function must be a callable that takes one argument" unless curve_func.respond_to?(:call) && curve_func.arity == 1
     mutate_each_step_with_pct { |step, pct| step.with_gate(curve_func.call(pct)) }
