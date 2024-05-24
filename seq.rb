@@ -1023,26 +1023,30 @@ class Track
 
   alias | merge
 
-  # Creates a new Track that interleaves the Steps from the slots of other_track
-  # with those of this track. cycle controls the behavior if other_track is
-  # shorter than this track. When cycle is false, blank slots (rests) will be
-  # interleaved once those of other_track are exhausted. If cycle is true,
-  # the slots of other_track will be looped as needed. For instance, consider
-  # zipping together two sequences with Steps [:a1, :b1, :c1, :d1] and
-  # [:e5, :f5].
-  # When cycle is false, the resulting Track will contain Steps
+  # Creates a new Track that interleaves the slots of other_track with those of
+  # this track. cycle controls the behavior if other_track is shorter than this
+  # track. When cycle is false, blank slots (rests) will be interleaved once
+  # those of other_track are exhausted. If cycle is true, the slots of
+  # other_track will be looped as needed. For instance, consider zipping
+  # together two sequences with Steps [:a1, :b1, :c1, :d1] and [:e5, :f5].
+  # When cycle is false, the resulting Track will contain slots with the
+  # following steps:
   #    :a1 :e5 :b1 :f5 :c1 rest :d1 rest
-  # When cycle is true, the same operation will result in
+  # When cycle is true, the same operation will result in slots
   #    :a1 :e5 :b1 :f5 :c1 :e5 :d1 :f5
   def zip(other_track, cycle: true)
     assert_compatible_track(other_track)
-    other_grid = other_track.grid
-    other_grid = other_grid.cycle if cycle
-    new_grid = @grid.zip(other_grid).flatten(1)
 
-    # convert any nils that might have happened from a length mismatch into
-    # rests.
-    new_grid.map! { |slot| slot.nil? ? [] : slot } unless cycle
+    other_grid = other_track.grid
+    if cycle
+      other_grid = other_grid.cycle
+    else
+      # In the case of a length mismatch, fill in with empty slots.
+      repeating_rests = [[]].cycle
+      other_grid = other_grid.chain(repeating_rests)
+    end
+
+    new_grid = @grid.zip(other_grid).flatten(1)
 
     mutate(grid: new_grid)
   end
