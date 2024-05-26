@@ -720,7 +720,7 @@ class Track
   # - a MIDI note number or symbol, which will be converted to a Step with the
   #   default arguments, or
   # - nil, :r, or :rest to represent a rest.
-  def self.mono(steps, granularity: NoteLength::Quarter, timescale: 1)
+  def self.mono(steps, granularity: NoteLength::Eighth, timescale: 1)
     grid = steps.map { |s| s.nil? ? [] : [s] }
     new(grid: grid, granularity: granularity, timescale: timescale)
   end
@@ -735,12 +735,12 @@ class Track
   #   default arguments, or
   # - nil, :r, or :rest to represent a rest (though this is generally
   #   unnecessary and you should just use an empty array instead)
-  def self.poly(grid, granularity: NoteLength::Quarter, timescale: 1)
+  def self.poly(grid, granularity: NoteLength::Eighth, timescale: 1)
     new(grid: grid, granularity: granularity, timescale: timescale)
   end
 
   # Constructs an empty track that rests for the given number of slots.
-  def self.rest(num_slots, granularity: NoteLength::Quarter, timescale: 1)
+  def self.rest(num_slots, granularity: NoteLength::Eighth, timescale: 1)
     grid = [[]] * num_slots
     new(grid: grid, granularity: granularity, timescale: 1)
   end
@@ -752,7 +752,7 @@ class Track
   # array of octave shifts. The arpeggiation will include all the notes from the
   # note array in addition to copies of them with the given octave shifts.
   # TODO: incorporate euclidean rhythm
-  def self.arp(notes, direction = Arp::Up, extra_octaves: [], granularity: NoteLength::Quarter, gate: 1, vel: 127, timescale: 1)
+  def self.arp(notes, direction = Arp::Up, extra_octaves: [], granularity: NoteLength::Eighth, gate: 1, vel: 127, timescale: 1)
     notes = Arp.arpeggiate(notes, direction, extra_octaves: extra_octaves)
     grid = notes.map { |n| [Step.new(n, vel: vel, gate: gate)] }
     new(grid: grid, granularity: granularity, timescale: timescale)
@@ -760,7 +760,7 @@ class Track
 
   # Constructs a track that arpeggiates the given degrees of the tonic note in
   # the given scale. Other arguments are as specified in arp.
-  def self.arp_degrees(tonic, degrees, direction = Arp::Order, scale: :major, extra_octaves: [], granularity: NoteLength::Quarter, gate: 1, vel: 127, timescale: 1)
+  def self.arp_degrees(tonic, degrees, direction = Arp::Order, scale: :major, extra_octaves: [], granularity: NoteLength::Eighth, gate: 1, vel: 127, timescale: 1)
     notes = Arp.arp_degrees(tonic, degrees, direction, scale: scale, extra_octaves: extra_octaves)
     grid = notes.map { |n| [Step.new(n, vel: vel, gate: gate)] }
     new(grid: grid, granularity: granularity, timescale: timescale)
@@ -783,7 +783,7 @@ class Track
   #   :c3, rest, :c3, :d3
   # The third note is :c3 because the hit index, 2, corresponds :c3 in the notes
   # array (modulo the length of the array).
-  def self.euclid(notes, pulses, slots, invert: false, rotate: 0, cycle_notes: true, granularity: NoteLength::Quarter, gate: 1, vel: 127, timescale: 1)
+  def self.euclid(notes, pulses, slots, invert: false, rotate: 0, cycle_notes: true, granularity: NoteLength::Eighth, gate: 1, vel: 127, timescale: 1)
     if notes.is_a?(Numeric) || notes.is_a?(Symbol) || notes.is_a?(String)
       notes = [notes]
     end
