@@ -538,6 +538,21 @@ module Arp
   Random = :random
   Order = :order
 
+  # See https://www.reddit.com/r/musictheory/comments/1clent8/names_for_common_arpeggio_patterns
+  module DegreePatterns
+    OneThreeFive = [1, 3, 5]
+    OneThreeFiveThree = [1, 3, 5, 3]
+    Alberti = [1, 5, 3, 5]
+    AlbertiFirstInv = [3, 8, 5, 8]
+    AlbertiSecondInv = [5, 10, 8, 10]
+    AlbertiSeventh = [1, 7, 3, 7]
+    OpenPosition = [1, 5, 10]
+    OneOctave = [1, 3, 5, 8]
+    OneOctaveFirstInv = [3, 5, 8, 10]
+    OneOctaveSecondInv = [5, 8, 10, 12]
+    TwoOctaveBroken = [1, 5, 3, 8, 5, 10, 8, 12, 10, 15]
+  end
+
   # TODO: extra_octaves is definitely not what octave spread does on the oxi
   # spread n - for the n lowest notes, add a note an octave up, wrapping around
   # as needed. the oxi tops out at 7 note polyphony
@@ -588,6 +603,12 @@ module Arp
     end
 
     notes.map! { |n| NoteUtils.sym(n) }
+  end
+
+  # Arpeggiate the given degrees of the tonic note in the given scale.
+  def self.arp_degrees(tonic, degrees, direction = Arp::Order, scale: :major, extra_octaves: [])
+    notes = degrees.map { |d| $spi.degree(d, tonic, scale) }
+    arpeggiate(notes, direction, extra_octaves: extra_octaves)
   end
 
 
@@ -720,6 +741,14 @@ class Track
   # TODO: incorporate euclidean rhythm
   def self.arp(notes, direction = Arp::Up, extra_octaves: [], granularity: NoteLength::Quarter, gate: 1, vel: 127, timescale: 1)
     notes = Arp.arpeggiate(notes, direction, extra_octaves: extra_octaves)
+    grid = notes.map { |n| [Step.new(n, vel: vel, gate: gate)] }
+    new(grid: grid, granularity: granularity, timescale: timescale)
+  end
+
+  # Constructs a track that arpeggiates the given degrees of the tonic note in
+  # the given scale. Other arguments are as specified in arp.
+  def self.arp_degrees(tonic, degrees, direction = Arp::Order, scale: :major, extra_octaves: [], granularity: NoteLength::Quarter, gate: 1, vel: 127, timescale: 1)
+    notes = Arp.arp_degrees(tonic, degrees, direction, scale: scale, extra_octaves: extra_octaves)
     grid = notes.map { |n| [Step.new(n, vel: vel, gate: gate)] }
     new(grid: grid, granularity: granularity, timescale: timescale)
   end
