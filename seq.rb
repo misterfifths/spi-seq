@@ -194,11 +194,9 @@ module NoteUtils
     # Always go to a number first, so that sharps and flats collapse.
     note = $spi.note(note)
 
-    if !octave.nil?
-      # If we're overriding the octave, convert back to a symbol so that
-      # note_info actually respects the octave.
-      note = sym(note)
-    end
+    # If we're overriding the octave, convert back to a symbol so that note_info
+    # actually respects the octave.
+    note = sym(note) if !octave.nil?
 
     info = $spi.note_info(note, octave: octave)
     [info.midi_string.downcase.to_sym, info.midi_note, info.octave]
