@@ -183,6 +183,8 @@ end
 
 # TODO: note class?
 module NoteUtils
+  NOTE_REGEX = /^(?<pitch_class>[a-g][sbf]?)(?<octave>\d*)$/i
+
   # note is a symbol for a note (e.g. :fs3) or a MIDI note number. If octave is
   # given, it overrides the octave of the note (even if it is a note number).
   # If octave is not given and the note is a symbol without an octave (e.g. :c),
@@ -211,9 +213,9 @@ module NoteUtils
   # Returns the symbol for the note's pitch class (e.g. :c for Cs in all
   # octaves). note may be a symbol or MIDI note number.
   def self.pitch_class(note)
-    match = /^([a-g][sbf]?)\d*$/.match(sym(note).to_s)
+    match = NOTE_REGEX.match(sym(note).to_s)
     raise "Invalid note symbol #{note}" if match.nil?  # should never happen
-    match[1].to_sym
+    match[:pitch_class].to_sym  # we normalized before the match, so this will be lowercase
   end
 
   # Returns the MIDI note number for the given note (a symbol or MIDI note
@@ -227,9 +229,9 @@ module NoteUtils
   # a number, e.g. :cs4.
   def self.has_octave?(note)
     return true if note.is_a?(Numeric)
-    match = /^[a-g][sbf]?(\d*)$/i.match(note.to_s)
+    match = NOTE_REGEX.match(note.to_s)
     raise "Invalid note symbol #{note}" if match.nil?
-    return !match[1].empty?
+    !match[:octave].empty?
   end
 
   # Returns the octave number for the given note (a symbol or MIDI note number).
