@@ -211,7 +211,7 @@ module NoteUtils
   # Returns the symbol for the note's pitch class (e.g. :c for Cs in all
   # octaves). note may be a symbol or MIDI note number.
   def self.pitch_class(note)
-    match = /^([a-g][sbf]?)\d*$/.match(sym(note))
+    match = /^([a-g][sbf]?)\d*$/.match(sym(note).to_s)
     raise "Invalid note symbol #{note}" if match.nil?  # should never happen
     match[1].to_sym
   end
@@ -227,7 +227,7 @@ module NoteUtils
   # a number, e.g. :cs4.
   def self.has_octave?(note)
     return true if note.is_a?(Numeric)
-    match = /^[a-g][sbf]?(\d*)$/.match(note.to_s)
+    match = /^[a-g][sbf]?(\d*)$/i.match(note.to_s)
     raise "Invalid note symbol #{note}" if match.nil?
     return !match[1].empty?
   end
