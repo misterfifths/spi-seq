@@ -679,7 +679,8 @@ class Track
 
   # Constructs a track with the given array, each element of which represents
   # a step or a rest. The elements will be played one at a time, in the given
-  # order, each for a duration equal to the granularity. The elements of steps
+  # order, each for a duration equal to the granularity (in other words, each
+  # element of steps defines a slot with a single step). The elements of steps
   # must each be either:
   # - a Step object,
   # - a MIDI note number or symbol, which will be converted to a Step with the
