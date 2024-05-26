@@ -422,7 +422,9 @@ class Step
   attr_reader :note, :note_number, :octave, :vel, :gate, :prob
 
   # note can be a string, symbol, integer MIDI note. It is always normalized
-  # to a lower-case symbol of the Sonic Pi note name.
+  # to a lower-case symbol of the Sonic Pi note name, and flats are converted to
+  # sharps. If you need to compare against a Step's note, make sure you use such
+  # a normalized symbol, or use the has_note? method.
   # vel is the MIDI velocity for the note, 0 - 127. It is only used when the
   # note is played via MIDI, obviously.
   # gate is the percentage of the duration of the step for which the note will
@@ -505,6 +507,15 @@ class Step
 
   def tied?
     @gate == 1.0
+  end
+
+  # Returns whether this Step has the given note, which may be a MIDI note
+  # number, a string, or a symbol. You can compare directly against the note
+  # attribute if you use a normalized note symbol (lowercase, with sharps
+  # converted to flats). Otherwise, this function makes sure to do the
+  # normalization for you.
+  def has_note?(n)
+    @note == NoteUtils.sym(n)
   end
 
   def should_trigger?(cycle, prev_steps)
