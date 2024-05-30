@@ -131,6 +131,33 @@ def fx_mutable_live_loop(loop_name, start_muted: false, unmuted_amp: 1, amp_slid
 end
 
 
+def __midi_val_to_range(midi_val, range, quantum: nil)
+  return range.min if midi_val <= 0
+  return range.max if midi_val >= 127
+
+  val = range.min + (range.max - range.min) * (midi_val / 127.0)
+  val = $spi.quantise(val, quantum) unless quantum.nil?
+
+  val = range.max if val > range.max
+  val = range.min if val < range.min
+
+  val
+end
+
+def __ranged_val_to_midi(val, range)
+  return 0 if val <= range.min
+  return 127 if val >= range.max
+
+  midi_val = (val - range.min).to_f / (range.max - range.min)
+  midi_val = (midi_val * 127).round
+
+  midi_val = 0 if midi_val < 0
+  midi_val = 127 if midi_val > 127
+
+  midi_val
+end
+
+
 # Controls an effect based on a MIDI value (0 - 127). Arguments are the MIDI
 # value and the values of the array described in cc_fx_control_loop.
 def __midi_fx_control(val, effect_key, param, val_range, quantum)
@@ -147,12 +174,7 @@ def __midi_fx_control(val, effect_key, param, val_range, quantum)
 
   val_range = 0..1 if val_range.nil?
   quantum = 0.01 if quantum.nil?
-
-  val = val_range.min + (val_range.max - val_range.min) * (val / 127.0)
-  val = $spi.quantise(val, quantum)
-  # quantise might round past the edges of the range
-  val = val_range.max if val > val_range.max
-  val = val_range.min if val < val_range.min
+  val = __midi_val_to_range(val, val_range, quantum: quantum)
 
   args = { param => val }
 
@@ -185,33 +207,36 @@ end
 # This type of CC mapping automatically translates incoming CC events into
 # `control` calls for effects in the type state.
 # The latter three values in each array are optional. Range defaults to 0..1 and
-# quantum defaults to 0.1.
+# quantum defaults to 0.01.
 # When the given CC number is received, its MIDI value will be converted into
 # the given range and quantized to quantum. The result will then be set with
 # `control` for the given parameter on the given fx as retrieved from the
 # Time State by its key.
 # The special Time State key `:global` may be used to refer to the parameters
 # of the global mixer. Those will be set with `set_mixer_control!`.
-# If the `default` hash key is given, a CC message for the given value (which
-# will be scaled to a MIDI value based on the value range) is sent the first
-# time the loop executes. This can be useful to synchronize external MIDI
-# controllers with the starting value for the parameter.
 #
 # MAPPING TYPE 2: MANUAL CALLBACK
-# [ name symbol, callback:, default: ]
+# [ name symbol, value range, quantum, callback:, default: ]
 # Type type of CC mapping calls the given callback with the value of the CC
 # whenever one is received. `callback` must be a Proc or something that responds
-# to `call`. It will be invoked with one argument, the value of the CC. If
-# `default` is provided, it acts identically to type 1 mappings, except that it
-# is not subject to a value range or quantum; it should be a verbatim MIDI
-# value (0 - 127).
+# to `call`. It will be invoked with one argument, the value of the CC. The
+# value range, quantum are optional and default behave as in type 1 mappings,
+# except that the default value range for a callback mapping is 0..127 and the
+# quantum is 1 (i.e., the callback will receive raw CC values by default).
+# If you provide a different range, the callback will be invoked with a value
+# mapped into that range, rather than the raw CC value.
 # The first element of the array in this case is solely used for formulating
 # the name used in the sysex message; it can be whatever you wish.
 #
+# To synchronize external MIDI controllers, for each mapping, an initial CC
+# message is sent representing the default value. This is constructed from the
+# `default` argument, or the minimum of the value's range if no default is set.
+# The default will be scaled to a MIDI value between 0 and 127, based on the
+# given range for the value.
+#
 # If send_name_sysex is true, a special MIDI sysex message with the name of the
-# control and its CC number will be sent on sysex_name_port the first time the
-# loop executes. If sysex_name_port is nil, the message will be sent on all
-# ports.
+# control and its CC number will be sent on the given port the first time the
+# loop executes.
 # The loop will initially sleep until all needed fx keys exist in the Time
 # State.
 # Received CCs that are not in the given map will be ignored by this loop.
@@ -226,50 +251,59 @@ def cc_fx_control_loop(loop_name = :cc_fx_control, send_name_sysex: true,
   # time state keys for all effects we'll be controlling
   needed_fx = Set.new
 
-  # all effect control mappings.
-  # CC number => [fx time state key, parameter sym, value range, quantum]
-  # any trailing hash is stripped from the values
-  fx_mappings = Hash.new
-
-  # all callback mappings.
-  # CC number => callable
-  callback_mappings = Hash.new
-
-  # defaults & the name sysexes are handled in the first go-round of the
-  # live_loop by iterating over the raw cc_mappings hash.
-
-  # collate the mappings and gather needed effects keys
+  # massage the arguments into a consistent structure and gather needed fx keys
+  # CC number => { :type = :fx|:callback, :key, :range, :quantum, :default,
+  #                :param (only for fx), :callback (only for callback) }
+  mappings = {}
   cc_mappings.each do |cc, mapping|
-    if mapping[-1].is_a?(Hash) and mapping[-1].has_key?(:callback)
-      callback_mappings[cc] = mapping[-1][:callback]
+    if mapping[-1].is_a?(Hash)
+      mapping = mapping.dup
+      mapping_hash = mapping.pop
     else
-      needed_fx << mapping[0]
-      cloned_mapping = mapping.clone
-      cloned_mapping.pop if mapping[-1].is_a?(Hash)
-      fx_mappings[cc] = cloned_mapping
+      mapping_hash = {}
+    end
+
+    default = mapping_hash[:default]
+
+    if mapping_hash.has_key?(:callback)
+      key, range, quantum = mapping
+      quantum = 1 if quantum.nil?
+      range = 0..127 if range.nil?
+      default = range.min if default.nil?
+      callback = mapping_hash[:callback]
+
+      mappings[cc] = { type: :callback, key: key, range: range, quantum: quantum, default: default, callback: callback }
+    else
+      key, param, range, quantum = mapping
+      quantum = 0.01 if quantum.nil?
+      range = 0..1 if range.nil?
+      default = range.min if default.nil?
+
+      mappings[cc] = { type: :fx, key: key, range: range, quantum: quantum, default: default, param: param }
+
+      needed_fx << key
     end
   end
 
+  # this special key doesn't actually refer to an effect
   needed_fx.delete(:global)
 
 
-  $spi.live_loop loop_name, init: false do |got_fx|
+  # fire up the live loop that will actually service incoming CCs
+  $spi.live_loop loop_name, init: true do |first_run|
     $spi.use_real_time
 
-    unless got_fx
-      # first run? hang out until all the effect keys exist
+    if first_run
+      # hang out until all the effect keys exist
       $spi.puts "[cc control] waiting on fx from the time state: #{needed_fx.to_a}"
       $spi.sleep(1) until needed_fx.none? { |key| $spi.get(key).nil? }
       $spi.puts "[cc control] got all fx!"
 
       # send out the sysex name messages & defaults for all mappings
-      cc_mappings.each do |cc, mapping|
-        effect_key, param, val_range = mapping
-
-        # Send out the name of this control as a sysex
+      mappings.each do |cc, mapping|
         if send_name_sysex
-          pretty_name = effect_key.to_s.delete_suffix("_fx")
-          pretty_name += "\n#{param.to_s}" if param.is_a?(Symbol)
+          pretty_name = mapping[:key].to_s.delete_suffix("_fx")
+          pretty_name += "\n#{mapping[:param].to_s}" if mapping[:type] == :fx
           pretty_name.gsub!("_", " ")
           $spi.puts "[cc control] sending name '#{pretty_name}' for CC #{cc}"
           __send_cc_name_sysex(cc, pretty_name, port: port, channel: channel)
@@ -277,40 +311,32 @@ def cc_fx_control_loop(loop_name = :cc_fx_control, send_name_sysex: true,
 
         # TODO: support a default on :global effects by doing an initial
         # set_mixer_control?
-        next if effect_key == :global
+        next if mapping[:key] == :global
 
         # Compute the MIDI equivalent of the default, if one was given, and send
         # it out as a CC.
         # TODO: also set the default on the effect itself?
-        if mapping[-1].is_a?(Hash)
-          default = mapping[-1][:default]
-          unless default.nil?
-            val_range = 0..1 if val_range.nil? || !val_range.is_a?(Range)
-
-            midi_default = (default - val_range.min) / (val_range.max - val_range.min).to_f * 127.0
-            midi_default = midi_default.round
-            midi_default = 127 if midi_default > 127
-            midi_default = 0 if midi_default < 0
-
-            $spi.puts "[cc control] sending default CC #{cc} value #{default} --> midi #{midi_default}"
-            midi_cc(cc, midi_default, port: port, channel: channel)
-          end
-        end
+        midi_default = __ranged_val_to_midi(mapping[:default], mapping[:range])
+        $spi.puts "[cc control] sending default CC #{cc} value #{mapping[:default]} --> midi #{midi_default}"
+        midi_cc(cc, midi_default, port: port, channel: channel)
       end
     end
 
     # wait for a cc on the source
-    cc, val = $spi.sync("/midi:#{port}:#{channel}/control_change")
+    cc_number, cc_val = $spi.sync("/midi:#{port}:#{channel}/control_change")
 
-    if fx_mappings.has_key?(cc)
-      effect_key, param, val_range, quantum = fx_mappings[cc]
-      __midi_fx_control(val, effect_key, param, val_range, quantum)
-    elsif callback_mappings.has_key?(cc)
-      lambda = callback_mappings[cc]
-      lambda.call(val)
+    mapping = mappings[cc_number]
+    unless mapping.nil?
+      if mapping[:type] == :fx
+        __midi_fx_control(cc_val, mapping[:key], mapping[:param], mapping[:range], mapping[:quantum])
+      else
+        mapped_val = __midi_val_to_range(cc_val, mapping[:range], quantum: mapping[:quantum])
+        $spi.puts "#{mapping[:key]}: val=#{cc_val} --> callback #{mapped_val.round(2)}"
+        mapping[:callback].call(mapped_val)
+      end
     end
 
-    true
+    false
   end
 end
 
