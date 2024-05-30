@@ -337,7 +337,7 @@ end
 
 # Control the given parameter of the given effect with polyphonic aftertouch.
 # Arguments are as described in cc_fx_control_loop.
-def aftertouch_fx_control_loop(effect_key, param, val_range=0..1, quantum=0.1, midi_source: "*")
+def aftertouch_fx_control_loop(effect_key, param, val_range=0..1, quantum=0.01, midi_source: "*")
   pressed_notes = []  # we're using this like a Set, but order is important
 
   $spi.live_loop :_aftertouch_fx_control, init: false do |got_fx|
