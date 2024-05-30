@@ -172,13 +172,10 @@ def __midi_fx_control(val, effect_key, param, val_range, quantum)
 
   return if effect.nil?
 
-  val_range = 0..1 if val_range.nil?
-  quantum = 0.01 if quantum.nil?
-  val = __midi_val_to_range(val, val_range, quantum: quantum)
+  param_val = __midi_val_to_range(val, val_range, quantum: quantum)
+  args = { param => param_val }
 
-  args = { param => val }
-
-  $spi.puts "#{effect_key}: val=#{val} --> #{args}"
+  $spi.puts "#{effect_key}: val=#{val} --> #{param}=#{param_val.round(2)}"
   if effect == :global
     $spi.set_mixer_control!(**args)
   else
@@ -281,12 +278,9 @@ def cc_fx_control_loop(loop_name = :cc_fx_control, send_name_sysex: true,
 
       mappings[cc] = { type: :fx, key: key, range: range, quantum: quantum, default: default, param: param }
 
-      needed_fx << key
+      needed_fx << key unless key == :global
     end
   end
-
-  # this special key doesn't actually refer to an effect
-  needed_fx.delete(:global)
 
 
   # fire up the live loop that will actually service incoming CCs
