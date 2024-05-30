@@ -22,9 +22,9 @@ def midi_clock_live_loop(loop_name = :midi_clock, send_start: true, send_stop: t
     # TODO: Could probably just this after the sleep above...
     start_loop_name = ("__" + loop_name.to_s + "_midi_start").to_sym
     $spi.live_loop start_loop_name, sync: loop_name do
-        $spi.midi_stop(**midi_kwargs) if send_stop
-        $spi.midi_start(**midi_kwargs) if send_start
-        $spi.stop
+      $spi.midi_stop(**midi_kwargs) if send_stop
+      $spi.midi_start(**midi_kwargs) if send_start
+      $spi.stop
     end
   end
 end
