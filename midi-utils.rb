@@ -40,7 +40,7 @@ end
 # the mutable_live_loop family. Note that muting is not instantaneous; see the
 # description of mutable_live_loop for details.
 def mute_live_loop(loop_name, mute=true)
-  set(mute_key(loop_name), mute)
+  $spi.set(mute_key(loop_name), mute)
 end
 
 # Starts a new live_loop that can be muted by setting the Time State key given
