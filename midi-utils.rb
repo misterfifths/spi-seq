@@ -103,7 +103,7 @@ def cc_mutable_live_loop(loop_name, cc:, port: nil, channel: nil, start_muted: f
 
   default_cc_val = start_muted ? 0 : 127
   $spi.puts "[cc mute control] sending default CC #{cc} value #{default_cc_val} for live loop #{loop_name}"
-  midi_cc(cc, default_cc_val, port: port, channel: channel)
+  $spi.midi_cc(cc, default_cc_val, port: port, channel: channel)
 
   mutable_live_loop(loop_name, start_muted: start_muted, **kwargs, &block)
 end
@@ -312,7 +312,7 @@ def cc_fx_control_loop(loop_name = :cc_fx_control, send_name_sysex: true,
         # TODO: also set the default on the effect itself?
         midi_default = __ranged_val_to_midi(mapping[:default], mapping[:range])
         $spi.puts "[cc control] sending default CC #{cc} value #{mapping[:default]} --> midi #{midi_default}"
-        midi_cc(cc, midi_default, port: port, channel: channel)
+        $spi.midi_cc(cc, midi_default, port: port, channel: channel)
       end
     end
 
