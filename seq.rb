@@ -1207,18 +1207,18 @@ class Track
   alias lshift left
   alias shl left
 
-  # Returns a new Track by adding num_slots many empty slots (rests) to the
+  # Returns a new Track by adding num_rests many empty slots (rests) to the
   # beginning of the track.
-  def left_pad(num_slots = 1)
-    mutate(grid: [[]] * num_slots + @grid)
+  def left_pad(num_rests = 1)
+    mutate(grid: [[]] * num_rests + @grid)
   end
 
   alias lpad left_pad
 
-  # Returns a new Track by adding num_slots many empty slots (rests) to the end
+  # Returns a new Track by adding num_rests many empty slots (rests) to the end
   # of the track.
-  def right_pad(num_slots = 1)
-    mutate(grid: @grid + [[]] * num_slots)
+  def right_pad(num_rests = 1)
+    mutate(grid: @grid + [[]] * num_rests)
   end
 
   alias rpad right_pad
