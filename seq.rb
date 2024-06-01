@@ -183,21 +183,26 @@ end
 
 # TODO: note class?
 module NoteUtils
-  NOTE_REGEX = /^(?<pitch_class>[a-g][sbf]?)(?<octave>\d*)$/i
+  # See https://github.com/sonic-pi-net/sonic-pi/blob/714d33316620d46d6815e554f17c5a76e4967471/app/server/ruby/lib/sonicpi/note.rb#L65
+  NOTE_REGEX = /^:?(?<pitch_class>[a-g][sbf]?)(?<octave>-?\d*)$/i
 
   # note is a symbol for a note (e.g. :fs3) or a MIDI note number. If octave is
   # given, it overrides the octave of the note (even if it is a note number).
   # If octave is not given and the note is a symbol without an octave (e.g. :c),
   # the result will be in octave 4.
-  # Sharps and flats are normalized into sharps. The returned symbol is in lower
-  # case and is guaranteed to have an explicit octave number.
+  # Sharps and flats are standardized (C and F sharp, the rest flat with a 'b'
+  # suffix). The returned symbol is in lower case and is guaranteed to have an
+  # explicit octave number.
   # Returns an array [note symbol, note number, octave number]
   def self.normalize(note, octave: nil)
-    # Always go to a number first, so that sharps and flats collapse.
+    # note_info leaves pitch classes in symbols alone, so we always need to go
+    # to a number first so that sharps and flats are normalized.
     note = $spi.note(note)
 
     # If we're overriding the octave, convert back to a symbol so that note_info
-    # actually respects the octave.
+    # actually respects the octave. This is recursive, but since we don't care
+    # what octave we get here (we'll be overriding it in a second), we don't
+    # need to give an octave to sym, so it won't loop.
     note = sym(note) if !octave.nil?
 
     info = $spi.note_info(note, octave: octave)
@@ -422,9 +427,9 @@ class Step
   attr_reader :note, :note_number, :octave, :vel, :gate, :prob
 
   # note can be a string, symbol, integer MIDI note. It is always normalized
-  # to a lower-case symbol of the Sonic Pi note name, and flats are converted to
-  # sharps. If you need to compare against a Step's note, make sure you use such
-  # a normalized symbol, or use the has_note? method.
+  # to a lower-case symbol of the Sonic Pi note name, and sharps and flats are
+  # standardized. If you need to compare against a Step's note, make sure you
+  # use such a normalized symbol, or use the has_note? method.
   # vel is the MIDI velocity for the note, 0 - 127. It is only used when the
   # note is played via MIDI, obviously.
   # gate is the percentage of the duration of the step for which the note will
@@ -511,8 +516,9 @@ class Step
 
   # Returns whether this Step has the given note, which may be a MIDI note
   # number, a string, or a symbol. You can compare directly against the note
-  # attribute if you use a normalized note symbol (lowercase, with sharps
-  # converted to flats). Otherwise, this function makes sure to do the
+  # attribute if you use a normalized note symbol as returned from NoteUtils.sym
+  # (lowercase, with sharps and flats standardized - C and F sharp and others
+  # flat with suffix 'b'). Otherwise, this function makes sure to do the
   # normalization for you.
   def has_note?(n)
     @note == NoteUtils.sym(n)
