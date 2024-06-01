@@ -75,6 +75,9 @@ def use_cc_control_defaults(port: nil, channel: nil)
 end
 
 def __resolve_cc_port_and_channel(port, channel)
+  # TODO: it would be good to fall back to defaults here, but it's a little
+  # tricky - we do need actual port and channel strings so we can construct
+  # the name of the control_change event we want to sync to.
   defaults = $spi.get(:__cc_control_defaults) || {}
   port = defaults[:port] || "*" if port.nil?
   channel = defaults[:channel] || "*" if channel.nil?
@@ -86,6 +89,8 @@ end
 # What 'mute' means must be implemented by the given block; this function merely
 # manages the muted state and informs the block of it. The arguments to the
 # block are as described in mutable_live_loop.
+# Note that unlike usual MIDI port/channel arguments, these must be single
+# strings that refer to either a single port/channel, or '*' as a wildcard.
 def cc_mutable_live_loop(loop_name, cc:, port: nil, channel: nil, start_muted: false, **kwargs, &block)
   port, channel = __resolve_cc_port_and_channel(port, channel)
 
@@ -93,10 +98,12 @@ def cc_mutable_live_loop(loop_name, cc:, port: nil, channel: nil, start_muted: f
   $spi.live_loop(cc_watcher_loop_name) do
     $spi.use_real_time
 
-    incoming_cc, val = $spi.sync("/midi:#{port}:#{channel}/control_change")
+    # TODO: could support arrays of ports/channels by constructing {x,y,z}-style
+    # strings for the path here.
+    incoming_cc, cc_val = $spi.sync("/midi:#{port}:#{channel}/control_change")
     if incoming_cc == cc
-      muted = val == 0
-      $spi.puts("[cc mute control] CC #{cc} = #{val} -> #{muted ? '' : 'un'}muting live loop #{loop_name}")
+      muted = cc_val == 0
+      $spi.puts("[cc mute control] CC #{cc} = #{cc_val} -> #{muted ? '' : 'un'}muting live loop #{loop_name}")
       mute_live_loop(loop_name, muted)
     end
   end
@@ -160,7 +167,7 @@ end
 
 # Controls an effect based on a MIDI value (0 - 127). Arguments are the MIDI
 # value and the values of the array described in cc_fx_control_loop.
-def __midi_fx_control(val, effect_key, param, val_range, quantum)
+def __midi_fx_control(midi_val, effect_key, param, param_val_range, quantum)
   return if effect_key.nil?
 
   effect = nil
@@ -172,10 +179,10 @@ def __midi_fx_control(val, effect_key, param, val_range, quantum)
 
   return if effect.nil?
 
-  param_val = __midi_val_to_range(val, val_range, quantum: quantum)
+  param_val = __midi_val_to_range(midi_val, param_val_range, quantum: quantum)
   args = { param => param_val }
 
-  $spi.puts "#{effect_key}: val=#{val} --> #{param}=#{param_val.round(2)}"
+  $spi.puts "#{effect_key}: val=#{midi_val} --> #{param}=#{param_val.round(2)}"
   if effect == :global
     $spi.set_mixer_control!(**args)
   else
@@ -224,6 +231,9 @@ end
 # mapped into that range, rather than the raw CC value.
 # The first element of the array in this case is solely used for formulating
 # the name used in the sysex message; it can be whatever you wish.
+#
+# Note that unlike usual MIDI port/channel arguments, these must be single
+# strings that refer to either a single port/channel, or '*' as a wildcard.
 #
 # To synchronize external MIDI controllers, for each mapping, an initial CC
 # message is sent representing the default value. This is constructed from the
@@ -317,6 +327,8 @@ def cc_fx_control_loop(loop_name = :cc_fx_control, send_name_sysex: true,
     end
 
     # wait for a cc on the source
+    # TODO: could support arrays of ports/channels by constructing {x,y,z}-style
+    # strings for the path here.
     cc_number, cc_val = $spi.sync("/midi:#{port}:#{channel}/control_change")
 
     mapping = mappings[cc_number]
@@ -337,6 +349,7 @@ end
 
 # Control the given parameter of the given effect with polyphonic aftertouch.
 # Arguments are as described in cc_fx_control_loop.
+# TODO: convert to port/channel
 def aftertouch_fx_control_loop(effect_key, param, val_range=0..1, quantum=0.01, midi_source: "*")
   pressed_notes = []  # we're using this like a Set, but order is important
 
@@ -349,6 +362,8 @@ def aftertouch_fx_control_loop(effect_key, param, val_range=0..1, quantum=0.01, 
       $spi.puts "[aftertouch control] got fx"
     end
 
+    # TODO: could support arrays of ports/channels by constructing {x,y,z}-style
+    # strings for the path here.
     event_glob = "/midi:#{midi_source}/{note_on,note_off,aftertouch}"
     note, vel = $spi.sync(event_glob)
 
