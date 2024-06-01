@@ -283,7 +283,7 @@ module NoteUtils
     sym(winner)
   end
 
-  # Returns a normalized symbol for the given note, snaped to the nearest note
+  # Returns a normalized symbol for the given note, snapped to the nearest note
   # in the given scale. root is the root note for the scale and must be a symbol
   # for a note without an octave (e.g. :c or :fs). scale is a symbol for one of
   # the scales known to Sonic Pi. The octave parameter, if given, is used to
@@ -1260,6 +1260,8 @@ class Track
   # relative order of the chosen slots is not maintained.
   def sample(n)
     # TODO: does this use spi's rng?
+    # TODO: more useful if it does maintain order? could sample an array of
+    # indexes instead, sort the result, and use those to choose slots.
     mutate(grid: @grid.sample(n))
   end
 
