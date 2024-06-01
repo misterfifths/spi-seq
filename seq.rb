@@ -1223,6 +1223,18 @@ class Track
 
   alias rpad right_pad
 
+  # Returns a new Track by adding num_rests many empty slots (rests) after each
+  # existing slot.
+  def space(num_rests)
+    new_grid = []
+    @grid.each do |slot|
+      new_grid << slot
+      new_grid.concat([[]] * num_rests)
+    end
+
+    mutate(grid: new_grid)
+  end
+
   # Returns a new Track with the first n slots removed.
   def drop(n = 1)
     mutate(grid: @grid.drop(n))
