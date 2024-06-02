@@ -335,6 +335,18 @@ class Prob
     new(->(cycle) { cycle % y == x - 1 }, "#{x}|#{y}")
   end
 
+  # Step will trigger every other cycle, beginning with the first. Equivalent to
+  # x_of_y(1, 2);
+  def self.every_other
+    x_of_y(1, 2)
+  end
+
+  # Step will trigger on the first cycle out of each set of n cycles. Equivalent
+  # to x_of_y(1, n).
+  def self.every(n)
+    x_of_y(1, n)
+  end
+
   # The inverse of x_of_y - the Step will trigger on every cycle except for the
   # xth out of every y cycles.
   def self.not_x_of_y(x, y)
@@ -1457,7 +1469,11 @@ class Track
   # it should be a note (number, string, or symbol) or an array of notes, and
   # only steps with those notes will be harmonized.
   def harmonize(*offsets, only: nil)
-    only = [only] unless only.nil? || only.is_a?(Array)
+    unless only.nil?
+      only = [only] unless only.is_a?(Array)
+      only = only.map { |n| NoteUtils.sym(n) }
+    end
+
     offsets = [-12, 12] if offsets.empty?
     mutate_each_step do |step|
       new_steps = [step]
