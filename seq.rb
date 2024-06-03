@@ -762,7 +762,7 @@ class Track
   # Constructs an empty track that rests for the given number of slots.
   def self.rest(num_slots, granularity: NoteLength::Eighth, timescale: 1)
     grid = [[]] * num_slots
-    new(grid: grid, granularity: granularity, timescale: 1)
+    new(grid: grid, granularity: granularity, timescale: timescale)
   end
 
 
