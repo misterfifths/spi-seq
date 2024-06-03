@@ -294,8 +294,10 @@ module NoteUtils
   # the scales known to Sonic Pi. The octave parameter, if given, is used to
   # resolve the note parameter. It has no effect on the scale.
   def self.snap_to_scale(note, root, scale, octave: nil)
-    oct_0_root = (root.to_s + "0").to_sym
-    snap(note, $spi.scale(oct_0_root, scale, num_octaves: 10), octave: octave)
+    # Note 0 is c-1, and 127 is g9, so if we do 11 octaves from -1, we'll cover
+    # the whole MIDI range.
+    oct_0_root = root.to_s + "-1"
+    snap(note, $spi.scale(oct_0_root, scale, num_octaves: 11), octave: octave)
   end
 
   # Returns true if the given note represents a rest.
