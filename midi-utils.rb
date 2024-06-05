@@ -53,6 +53,8 @@ end
 # Note that muting is not instantaneous. The live_loop block is only made aware
 # of muting the next time it executes, via its first argument. This way, muting
 # will happen only between cycles of a loop, not in the middle of one.
+# Any additional named arguments (e.g. sync: or init:) to this function are
+# passed verbatim to the internal live_loop.
 def mutable_live_loop(loop_name, start_muted: false, **kwargs, &block)
   raise "Block must take 1 or 2 arguments" if block.arity == 0 || block.arity > 2
 
@@ -91,6 +93,8 @@ end
 # block are as described in mutable_live_loop.
 # Note that unlike usual MIDI port/channel arguments, these must be single
 # strings that refer to either a single port/channel, or '*' as a wildcard.
+# Any additional named arguments (e.g. sync: or init:) to this function are
+# passed verbatim to the internal live_loop.
 def cc_mutable_live_loop(loop_name, cc:, port: nil, channel: nil, start_muted: false, **kwargs, &block)
   port, channel = __resolve_cc_port_and_channel(port, channel)
 
@@ -121,6 +125,8 @@ end
 # itself doesn't need to have any logic related to muting; whatever sound it
 # creates will simply be silenced when it is muted. The arguments to the block
 # are as described in mutable_live_loop.
+# Any additional named arguments (e.g. sync: or init:) to this function are
+# passed verbatim to the internal live_loop.
 def fx_mutable_live_loop(loop_name, start_muted: false, unmuted_amp: 1, amp_slide: 0, **kwargs, &block)
   raise "Block must take 1 or 2 arguments" if block.arity == 0 || block.arity > 2
 

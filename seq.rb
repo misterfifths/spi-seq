@@ -864,6 +864,13 @@ class Track
   # Intended to be called iteratively, incrementing i and the cycle, and feeding
   # back playing and tied steps from the return value as prev_steps.
   def steps_at_slot(i, prev_steps:, cycle:)
+    # To support changing the playhead direction and swapping between Tracks,
+    # it is important that this code does not assume anything about the order
+    # in which slots were or will be played. It must base its logic solely on
+    # the contents of slot i and prev_steps. The next steps may not come from
+    # slot i+1, and the previous ones may not have come from slot i-1. In fact
+    # they may not even be from this Track, if the track is swapped in the
+    # Player calling this function.
     new_steps = []
     tied_steps = []
     ended_steps = []
@@ -1659,6 +1666,17 @@ class Player
     end
   end
 
+  # Swap out the Track this player plays for new_track. Resets the cycle count
+  # to 0 if reset_cycle is true.
+  # This is intended to be called between calls to play or sleep. The new track
+  # will then play from slot 0 on the next call to play or sleep.
+  # The set of currently playing steps is not reset; the transition to the new
+  # track will seamlessly continue tied notes.
+  def swap_track(new_track, reset_cycle: false)
+    @track = new_track
+    @cycle = 0 if reset_cycle
+  end
+
 
   private
 
@@ -1669,6 +1687,13 @@ class Player
   end
 
   def play_slot(i)
+    # To support changing the playhead direction and swapping between Tracks,
+    # as with Track.steps_at_slot, it is important that this code does not
+    # assume anything about the order in which slots were or will be played. It
+    # must base its logic entirely off the result of steps_at_slot(i) and the
+    # most recently played steps in @prev_steps. The next steps may not come
+    # from slot i+1, and the previous ones may not have come from slot i-1. In
+    # fact they may not even be from this Track, if the track is swapped.
     new_steps, tied_steps, ended_steps = @track.steps_at_slot(i, prev_steps: @prev_steps, cycle: @cycle)
 
     if @debug
@@ -1769,25 +1794,35 @@ class Player
 end
 
 
-# Create a live_loop that plays the given track. Takes the same arguments as
+# Create a live_loop that plays the given track. Takes largely same arguments as
 # cc_mutable_live_loop, with the exception that cc may be nil (the default), in
-# which case the live_loop is not mutable by CCs.
-# The live_loop responds to muting by calling sleep on the track for muted
-# iterations, rather than play.
+# which case the live_loop is not mutable by CCs. Also the port and channel
+# arguments are split into player_port, player_channel and cc_port, cc_channel.
+# The player_* ones are used for the internal Player instance, and the cc_* ones
+# are passed to cc_mutable_live_loop.
+# The live_loop responds to muting by calling sleep on the player for muted
+# iterations, rather than play. Note that muting takes effect after cycles of
+# playback, not immediately.
 # If send_cycle_cues is true, immediately before the live_loop plays a cycle of
 # the track, it sends a cue with the name <loop_name>_cycle and a single value,
 # the number of the cycle iteration that's about to play. Cycle cues are not
 # sent while the track is muted.
 # A block may be provided, in which case it is called before each cycle is
 # played. The block may take 0 - 3 arguments, which are as follows:
-# - 1st argument: muted - whether the track is currently muted
-# - 2nd argument: the upcoming cycle number of the player
+# - 1st argument: the cycle number that the player is about to play
+# - 2nd argument: muted - whether the track is currently muted
 # - 3rd argument: the normal optional live_loop argument
 # If the block returns a value, it is fed back in the next iteration as the
 # third argument.
+# If the block returns a Track instance, the internal Player instance used by
+# the live loop will swap to that track. The swap takes effect immediately; the
+# current iteration of the live_loop will play the new track. The cycle count on
+# the player will not be reset to 0.
 # Note that the internal block that plays the track will sleep, so a user-
 # provided block does not need to sleep or sync, unlike normal live_loop blocks.
 # If it does sync or sleep, it may cause delays between cycles of the track.
+# Any additional named arguments (e.g. sync: or init:) to this function are
+# passed verbatim to the internal live_loop.
 def track_live_loop(loop_name, track, start_muted: false, midi: nil, player_port: nil, player_channel: nil, cc: nil, cc_port: nil, cc_channel: nil, send_cycle_cues: true, debug: false, **kwargs, &block)
   raise "Block must take 0 - 3 arguments" if !block.nil? && block.arity > 3
 
@@ -1798,14 +1833,19 @@ def track_live_loop(loop_name, track, start_muted: false, midi: nil, player_port
     res = nil
     unless block.nil?
       if block.arity == 3
-        res = block.call(muted, player.cycle, arg)
+        res = block.call(player.cycle, muted, arg)
       elsif block.arity == 2
-        block.call(muted, player.cycle)
+        res = block.call(player.cycle, muted)
       elsif block.arity == 1
-        block.call(muted)
+        res = block.call(player.cycle)
       else
-        block.call
+        res = block.call
       end
+    end
+
+    if res.is_a?(Track)
+      $spi.puts("#{loop_name.to_s} player: swapping track on cycle #{player.cycle}")
+      player.swap_track(res)
     end
 
     if muted
