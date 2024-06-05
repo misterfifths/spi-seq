@@ -171,7 +171,7 @@ class NoteLength
   end
 
   def inspect
-    "<NoteLength #{to_s}>"
+    "<NoteLength #{self}>"
   end
 
 
@@ -367,18 +367,18 @@ class Prob
 
   # Step will trigger if any step triggered in the previously played slot.
   def self.pre
-    new(->(cycle, step, prev_steps) { prev_steps.length != 0 }, "pre" )
+    new(->(_, _, prev_steps) { prev_steps.length != 0 }, "pre" )
   end
 
   # Step will trigger if no step triggered in the previously played slot.
   def self.not_pre
-    new(->(cycle, step, prev_steps) { prev_steps.length == 0 }, "!pre" )
+    new(->(_, _, prev_steps) { prev_steps.length == 0 }, "!pre" )
   end
 
   # Step will trigger if a step triggered in the previously played slot with the
   # same note as this step.
   def self.pre_same_note
-    pred = lambda do |cycle, step, prev_steps|
+    pred = lambda do |_, step, prev_steps|
       prev_steps.any? { |prev_step| prev_step.note == step.note }
     end
     new(pred, "pre same note")
@@ -387,7 +387,7 @@ class Prob
   # Step will trigger only if none of the steps that triggered in the previously
   # played slot had the same note as this step.
   def self.not_pre_same_note
-    pred = lambda do |cycle, step, prev_steps|
+    pred = lambda do |_, step, prev_steps|
       prev_steps.all? { |prev_step| prev_step.note != step.note }
     end
     new(pred, "!pre same note")
@@ -416,7 +416,7 @@ class Prob
   end
 
   def inspect
-    "<Prob #{to_s}>"
+    "<Prob #{self}>"
   end
 
 
@@ -645,8 +645,6 @@ module Arp
   end
 
 
-  private
-
   def self.altern_indexes(length, direction)
     # in: work in toward the center from the edges, alternating low and high
     # notes, starting each alternation with the low note.
@@ -704,6 +702,8 @@ module Arp
       return in_idxs + out_idxs.drop(1)
     end
   end
+
+  private_class_method :altern_indexes
 end
 
 
@@ -1844,7 +1844,7 @@ def track_live_loop(loop_name, track, start_muted: false, midi: nil, player_port
     end
 
     if res.is_a?(Track)
-      $spi.puts("#{loop_name.to_s} player: swapping track on cycle #{player.cycle}")
+      $spi.puts("#{loop_name} player: swapping track on cycle #{player.cycle}")
       player.swap_track(res)
     end
 

@@ -1,0 +1,23 @@
+AllCops:
+  NewCops: enable
+
+Style:
+  Enabled: false
+
+Layout:
+  Enabled: false
+
+Metrics:
+  Enabled: false
+
+Naming:
+  Enabled: false
+
+Security/Eval:
+  Enabled: false
+
+Lint/NestedMethodDefinition:
+  Enabled: false
+
+Lint/AmbiguousOperatorPrecedence:
+  Enabled: false

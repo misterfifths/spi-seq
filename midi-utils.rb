@@ -313,7 +313,7 @@ def cc_fx_control_loop(loop_name = :cc_fx_control, send_name_sysex: true,
       mappings.each do |cc, mapping|
         if send_name_sysex
           pretty_name = mapping[:key].to_s.delete_suffix("_fx")
-          pretty_name += "\n#{mapping[:param].to_s}" if mapping[:type] == :fx
+          pretty_name += "\n#{mapping[:param]}" if mapping[:type] == :fx
           pretty_name.gsub!("_", " ")
           $spi.puts "[cc control] sending name '#{pretty_name}' for CC #{cc}"
           __send_cc_name_sysex(cc, pretty_name, port: port, channel: channel)
