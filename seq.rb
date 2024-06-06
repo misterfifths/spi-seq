@@ -1866,7 +1866,7 @@ def track_live_loop(loop_name, track, start_muted: false, midi: nil, player_port
     end
 
     if res.is_a?(Track)
-      $spi.puts("#{loop_name} player: swapping track on cycle #{player.cycle}")
+      $spi.puts("#{loop_name} player: swapping track on cycle #{player.cycle}") if @debug
       player.swap_track(res)
     end
 
