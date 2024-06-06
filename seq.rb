@@ -1832,7 +1832,7 @@ end
 # A block may be provided, in which case it is called before each cycle is
 # played. The block may take 0 - 3 arguments, which are as follows:
 # - 1st argument: the cycle number that the player is about to play
-# - 2nd argument: muted - whether the track is currently muted
+# - 2nd argument: the track that's currently playing
 # - 3rd argument: the normal optional live_loop argument
 # If the block returns a value, it is fed back in the next iteration as the
 # third argument.
@@ -1855,9 +1855,9 @@ def track_live_loop(loop_name, track, start_muted: false, midi: nil, player_port
     res = nil
     unless block.nil?
       if block.arity == 3
-        res = block.call(player.cycle, muted, arg)
+        res = block.call(player.cycle, player.track, arg)
       elsif block.arity == 2
-        res = block.call(player.cycle, muted)
+        res = block.call(player.cycle, player.track)
       elsif block.arity == 1
         res = block.call(player.cycle)
       else
