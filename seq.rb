@@ -586,14 +586,23 @@ module Arp
     TwoOctaveBroken = [1, 5, 3, 8, 5, 10, 8, 12, 10, 15]
   end
 
-  # TODO: extra_octaves is definitely not what octave spread does on the oxi
-  # spread n - for the n lowest notes, add a note an octave up, wrapping around
-  # as needed. the oxi tops out at 7 note polyphony
-
-  def self.arpeggiate(notes, direction, extra_octaves: [])
+  # Returns an array of note symbols by arpeggiating the given array of notes.
+  # direction should be one of the constants in the Arp module.
+  # If spread is n > 0, the result will have a note added an octave above each
+  # of the the n lowest notes. If the spread creates duplicate notes (e.g.
+  # spread=1 with [:e3, :e4], which would result in two :e4s), the duplicates
+  # will not be added to the result. If an arp with a spread > 0 is played in
+  # Arp::Order direction, the notes from the spread will appear at the end, in
+  # order from lowest to highest.
+  # If extra_octaves is specified, the result will contain copies of the notes
+  # in the notes array shifted by each offset in extra_octaves. extra_octaves
+  # applies before any spread. Notes it adds will appear at the end of the
+  # result, before notes from the spread.
+  def self.arpeggiate(notes, direction, spread: 0, extra_octaves: [])
     orig_notes = notes
     notes = notes.to_a.dup  # to_a because this might be a SonicPi ring
 
+    # TODO: where should this apply in relation to spread?
     extra_octaves.each do |octave_shift|
       orig_notes.each do |n|
         notes << NoteUtils.shift_octave(n, octave_shift)
@@ -602,6 +611,19 @@ module Arp
 
     # need to deal with note numbers internally; we'll be sorting
     notes.map! { |n| NoteUtils.number(n) }
+
+    if spread > 0 && notes.length > 0
+      # take the spread lowest notes and add a note an octave up. do not
+      # duplicate notes, and do not effect the sorting of the original array.
+      # notes added from spread go at the end, in case we're playing in order.
+      sorted_notes = notes.sort
+      # TODO: should the spread take into account notes added from itself?
+      spread = [spread, sorted_notes.length].min
+      spread.times do |i|
+        new_note = NoteUtils.number(NoteUtils.shift_octave(sorted_notes[i], 1))
+        notes << new_note unless notes.include?(new_note)
+      end
+    end
 
     case direction
     when Arp::Up
@@ -639,9 +661,9 @@ module Arp
   end
 
   # Arpeggiate the given degrees of the tonic note in the given scale.
-  def self.arp_degrees(tonic, degrees, direction = Arp::Order, scale: :major, extra_octaves: [])
+  def self.arp_degrees(tonic, degrees, direction = Arp::Order, scale: :major, spread: 0, extra_octaves: [])
     notes = degrees.map { |d| $spi.degree(d, tonic, scale) }
-    arpeggiate(notes, direction, extra_octaves: extra_octaves)
+    arpeggiate(notes, direction, spread: spread, extra_octaves: extra_octaves)
   end
 
 
@@ -772,16 +794,16 @@ class Track
   # array of octave shifts. The arpeggiation will include all the notes from the
   # note array in addition to copies of them with the given octave shifts.
   # TODO: incorporate euclidean rhythm
-  def self.arp(notes, direction = Arp::Up, extra_octaves: [], granularity: NoteLength::Eighth, gate: 1, vel: 127, timescale: 1)
-    notes = Arp.arpeggiate(notes, direction, extra_octaves: extra_octaves)
+  def self.arp(notes, direction = Arp::Up, spread: 0, extra_octaves: [], granularity: NoteLength::Eighth, gate: 1, vel: 127, timescale: 1)
+    notes = Arp.arpeggiate(notes, direction, spread: spread, extra_octaves: extra_octaves)
     grid = notes.map { |n| [Step.new(n, vel: vel, gate: gate)] }
     new(grid: grid, granularity: granularity, timescale: timescale)
   end
 
   # Constructs a track that arpeggiates the given degrees of the tonic note in
   # the given scale. Other arguments are as specified in arp.
-  def self.arp_degrees(tonic, degrees, direction = Arp::Order, scale: :major, extra_octaves: [], granularity: NoteLength::Eighth, gate: 1, vel: 127, timescale: 1)
-    notes = Arp.arp_degrees(tonic, degrees, direction, scale: scale, extra_octaves: extra_octaves)
+  def self.arp_degrees(tonic, degrees, direction = Arp::Order, scale: :major, spread: 0, extra_octaves: [], granularity: NoteLength::Eighth, gate: 1, vel: 127, timescale: 1)
+    notes = Arp.arp_degrees(tonic, degrees, direction, scale: scale, spread: spread, extra_octaves: extra_octaves)
     grid = notes.map { |n| [Step.new(n, vel: vel, gate: gate)] }
     new(grid: grid, granularity: granularity, timescale: timescale)
   end
