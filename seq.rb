@@ -1651,6 +1651,11 @@ class Player
     @midi_spi_kwargs[:port] = port unless port.nil?
 
     @debug = debug
+
+    # These track the current synth nodes or MIDI notes that are playing. Note
+    # that steps with a gate < 1 that do not continue a tie are not added to
+    # these, since they have a definite length that we can specify when starting
+    # them; they'll terminate themselves.
     @active_synth_nodes = {}  # note symbols -> synth nodes. unused when playing midi
     @active_midi_notes = Set.new  # active midi note symbols. unused when playing built-in synths
 
@@ -1789,31 +1794,29 @@ class Player
       # slot. Start it and we'll kill it later when it ends in play_slot.
       if @midi
         $spi.midi_note_on(step.note, velocity: step.vel, **@midi_spi_kwargs)
+        @active_midi_notes << step.note
       else
         # TODO: there's no good way to just have a synth note go forever and
         # eventually gracefully kick it into release. Luckily I'm really only
         # using this for previewing stuff away from my real synth...
         # For now just having ties go for 100 * the length of the whole track.
         # Obviously that's ridiculous.
-        node = $spi.play(step.note, duration: @track.beat_length * 100, attack: 0, decay: 0, release: 0)
+        node = $spi.play(step.note, sustain: @track.beat_length * 100)
+        @active_synth_nodes[step.note] = node
       end
     else
       # Step has a known duration, so we can specify it now and don't have to
       # kill it later.
+      # There's no reason for us to keep track of these steps in
+      # @active_midi_notes or @active_synth_nodes. They have an explicit
+      # duration, so we won't need to kill them later in normal playback. And
+      # stop/end_all_steps will only be called between cycles, so we don't need
+      # to hold on to them for that either.
       if @midi
         $spi.midi(step.note, velocity: step.vel, sustain: step.gate * @track.granularity.to_f, **@midi_spi_kwargs)
       else
-        # TODO: there's no real reason to keep track of these synth nodes,
-        # right? They'll get cleaned up in play_slot, but also spuriously
-        # killed. Probably not an issue?
-        node = $spi.play(step.note, duration: step.gate * @track.granularity.to_f, attack: 0, decay: 0, release: 0)
+        $spi.play(step.note, sustain: step.gate * @track.granularity.to_f)
       end
-    end
-
-    if @midi
-      @active_midi_notes << step.note
-    else
-      @active_synth_nodes[step.note] = node
     end
   end
 end
