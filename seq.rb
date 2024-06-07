@@ -1274,7 +1274,7 @@ class Track
 
   # Returns a new Track by adding num_rests many empty slots (rests) after each
   # existing slot.
-  def space(num_rests)
+  def space(num_rests = 1)
     new_grid = []
     @grid.each do |slot|
       new_grid << slot
