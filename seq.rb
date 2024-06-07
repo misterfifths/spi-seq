@@ -1315,8 +1315,11 @@ class Track
   end
 
   # Returns a new Track with all Steps in every nth slot removed. The duration
-  # of the Track does not change; the emptied slots simply become rests.
+  # of the Track does not change; the emptied slots simply become rests. Does
+  # nothing if n is zero.
   def drop_every(n)
+    return self if n == 0
+
     # e.g., drop every 3:
     # keep  | 0 1 - 3 4 - 6 7 - 9
     # drop  |     2     5     8
