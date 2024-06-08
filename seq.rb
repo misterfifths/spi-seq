@@ -503,6 +503,10 @@ class Step
     mutate(vel: new_vel)
   end
 
+  def with_velf(new_velf)
+    mutate(vel: (new_velf * 127.0).round)  # this is clamped to 0-127 in the ctor
+  end
+
   def with_gate(new_gate)
     mutate(gate: new_gate)
   end
@@ -522,6 +526,10 @@ class Step
   # Adjusts the note by the given number of semitones.
   def shift_tone(shift)
     with_note(NoteUtils.shift_tone(@note, shift))
+  end
+
+  def velf
+    @vel / 127.0
   end
 
   def tied?
@@ -1410,6 +1418,12 @@ class Track
 
   alias vel with_vel
 
+  def with_velf(new_velf)
+    mutate_each_step { |step| step.with_velf(new_velf) }
+  end
+
+  alias velf with_velf
+
   def scale_vel(factor)
     mutate_each_step { |step| step.with_vel(step.vel * factor) }
   end
@@ -1422,7 +1436,8 @@ class Track
   # - If zero_to_one is true, a floating point number 0 - 1 that will be scaled
   #   to a velocity value between 0 and 127, inclusive.
   # - If zero_to_one is false, an integer between 0 and 127, inclusive.
-  def with_vel_curve(curve_func, zero_to_one: true)
+  # with_velf_curve is an alias where zero_to_one is true.
+  def with_vel_curve(curve_func, zero_to_one: false)
     raise "Curve function must be a callable that takes one argument" unless curve_func.respond_to?(:call) && curve_func.arity == 1
     mutate_each_step_with_pct do |step, pct|
       vel = curve_func.call(pct)
@@ -1432,6 +1447,12 @@ class Track
   end
 
   alias vel_curve with_vel_curve
+
+  def with_velf_curve(curve_func)
+    with_vel_curve(curve_func, zero_to_one: true)
+  end
+
+  alias velf_curve with_velf_curve
 
   def with_octave(new_octave)
     mutate_each_step { |step| step.with_octave(new_octave) }
