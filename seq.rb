@@ -876,7 +876,7 @@ class Track
   ### Playback support
 
   # Returns an array of arrays of Steps representing the state of playback at
-  # step i in the given cycle, assuming that the steps in prev_steps were the
+  # slot i in the given cycle, assuming that the steps in prev_steps were the
   # Steps played in the most recently evaluated slot. The array has the
   # following elements:
   #   [newly triggered Steps, continued (tied) Steps, newly ended Steps]
@@ -1710,6 +1710,7 @@ class Player
   # start playing for the first time? if it's a muted play, it should just be an
   # argument to play. The only thing I can think of that would be screwed up is
   # Steps with a 'first' probability.
+  # TODO: should this reset @prev_steps? feels like yes
   def sleep
     end_all_steps
     $spi.with_bpm_mul(@track.timescale) do
