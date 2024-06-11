@@ -1873,8 +1873,10 @@ end
 # If it does sync or sleep, it may cause delays between cycles of the track.
 # Any additional named arguments (e.g. sync: or init:) to this function are
 # passed verbatim to the internal live_loop.
-def track_live_loop(loop_name, track, start_muted: false, midi: nil, player_port: nil, player_channel: nil, cc: nil, cc_port: nil, cc_channel: nil, send_cycle_cues: true, debug: false, **kwargs, &block)
+def track_live_loop(loop_name, track = nil, start_muted: false, midi: nil, player_port: nil, player_channel: nil, cc: nil, cc_port: nil, cc_channel: nil, send_cycle_cues: true, debug: false, **kwargs, &block)
   raise "Block must take 0 - 3 arguments" if !block.nil? && block.arity > 3
+
+  track ||= Track.rest
 
   player = Player.new(track, midi: midi, debug: debug, port: player_port, channel: player_channel)
   cycle_cue_sym = (loop_name.to_s + "_cycle").to_sym
