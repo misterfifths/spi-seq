@@ -1061,6 +1061,8 @@ class Track
   # Calls expand or condense the appropriate number of times to return a new
   # Track with the given granularity.
   def regranularize(new_granularity)
+    new_granularity = NoteLength.normalize(new_granularity)
+
     return self if @granularity == new_granularity
 
     # NOTE: this is obviously very silly, but the alternative would be making
