@@ -12,22 +12,15 @@ def midi_clock_live_loop(loop_name = :midi_clock, send_start: true, send_stop: t
   start_stop_kwargs[:port] = start_port unless start_port.nil?
   start_stop_kwargs[:channel] = start_channel unless start_channel.nil?
 
-  $spi.live_loop loop_name do
+  $spi.live_loop loop_name, init: false do |inited|
+    $spi.midi_stop(**start_stop_kwargs) if !inited && send_stop
+
     $spi.midi_clock_beat(**beat_kwargs)
     $spi.sleep 1
-  end
 
-  if send_start || send_stop
-    # This is kind of silly, but seems to be a good way to make sure we start
-    # MIDI devices at the same time that the cue for the live_loop above is
-    # triggered, which is probably what other live_loops are synced to.
-    # TODO: Could probably just this after the sleep above...
-    start_loop_name = ("__" + loop_name.to_s + "_midi_start").to_sym
-    $spi.live_loop start_loop_name, sync: loop_name do
-      $spi.midi_stop(**start_stop_kwargs) if send_stop
-      $spi.midi_start(**start_stop_kwargs) if send_start
-      $spi.stop
-    end
+    $spi.midi_start(**start_stop_kwargs) if !inited && send_start
+
+    true
   end
 end
 
