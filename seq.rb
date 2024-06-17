@@ -274,7 +274,7 @@ module NoteUtils
   def self.snap(note, notes, octave: nil)
     # TODO: be more particular about rounding up or down?
     notes = notes.map { |n| number(n) }
-    note = notes.number(note, octave: octave)
+    note = number(note, octave: octave)
     winner = nil
     smallest_diff = 256
     notes.each do |n|
