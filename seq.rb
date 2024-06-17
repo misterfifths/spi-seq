@@ -1588,6 +1588,8 @@ class Track
     end
   end
 
+  alias sub sub_note
+
 
   protected
 
