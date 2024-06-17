@@ -248,8 +248,6 @@ end
 # The loop will initially sleep until all needed fx keys exist in the Time
 # State.
 # Received CCs that are not in the given map will be ignored by this loop.
-# TODO: clean this up with regards to port/channel - this should only receive
-# and send to one port/channel, or (if none is specified) to all.
 def cc_fx_control_loop(loop_name = :cc_fx_control, send_name_sysex: true,
                        port: nil, channel: nil, **cc_mappings)
   return if cc_mappings.size == 0
