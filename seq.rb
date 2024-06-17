@@ -1862,10 +1862,11 @@ end
 # the number of the cycle iteration that's about to play. Cycle cues are not
 # sent while the track is muted.
 # A block may be provided, in which case it is called before each cycle is
-# played. The block may take 0 - 3 arguments, which are as follows:
+# played. The block may take 0 - 4 arguments, which are as follows:
 # - 1st argument: the cycle number that the player is about to play
 # - 2nd argument: the track that's currently playing
-# - 3rd argument: the normal optional live_loop argument
+# - 3rd argument: whether the track is muted
+# - 4th argument: the normal optional live_loop argument
 # If the block returns a value, it is fed back in the next iteration as the
 # third argument.
 # If the block returns a Track instance, the internal Player instance used by
@@ -1878,7 +1879,7 @@ end
 # Any additional named arguments (e.g. sync: or init:) to this function are
 # passed verbatim to the internal live_loop.
 def track_live_loop(loop_name, track = nil, start_muted: false, midi: nil, player_port: nil, player_channel: nil, cc: nil, cc_port: nil, cc_channel: nil, send_cycle_cues: true, debug: false, **kwargs, &block)
-  raise "Block must take 0 - 3 arguments" if !block.nil? && block.arity > 3
+  raise "Block must take 0 - 4 arguments" if !block.nil? && block.arity > 4
 
   track ||= Track.rest
 
@@ -1888,8 +1889,10 @@ def track_live_loop(loop_name, track = nil, start_muted: false, midi: nil, playe
   wrapped_block = lambda do |muted, arg|
     res = nil
     unless block.nil?
-      if block.arity == 3
-        res = block.call(player.cycle, player.track, arg)
+      if block.arity == 4
+        res = block.call(player.cycle, player.track, muted, arg)
+      elsif block.arity == 3
+        res = block.call(player.cycle, player.track, muted)
       elsif block.arity == 2
         res = block.call(player.cycle, player.track)
       elsif block.arity == 1
