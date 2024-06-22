@@ -1264,6 +1264,29 @@ class Track
 
   alias gzip grouped_zip
 
+  # Returns a new track that plays each successive overlapped set of n slots.
+  # E.g. when called with n=3 on a track with slots :a :b :c :d :e, the
+  # resulting track will have slots :a :b :c :b :c :d :c :d :e.
+  def each_cons(n)
+    mutate(grid: @grid.each_cons(n).to_a.flatten(1))
+  end
+
+  # Returns a new track that plays every permutation of n slots. The order of
+  # the permutations is indeterminate. If n is nil, permutes all slots.
+  def permutation(n = nil)
+    mutate(grid: @grid.permutation(n).to_a.flatten(1))
+  end
+
+  alias permutations permutation
+
+  # Returns a new track that plays every combination of n slots. The order of
+  # the combinations is indeterminate.
+  def combination(n)
+    mutate(grid: @grid.combination(n).to_a.flatten(1))
+  end
+
+  alias combinations combination
+
   def repeat(n)
     mutate(grid: @grid * n)
   end
