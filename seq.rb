@@ -300,9 +300,35 @@ module NoteUtils
     snap(note, $spi.scale(oct_0_root, scale, num_octaves: 11), octave: octave)
   end
 
-  # Returns true if the given note represents a rest.
-  def self.rest?(note)
-    note.nil? || note == :r || note == :rest
+  # Returns true if the given value represents a rest. nil, :r, and :rest are
+  # considered rests.
+  def self.rest?(val)
+    val.nil? || val == :r || val == :rest
+  end
+
+  # Returns true if the two values refer to the same note, or are both rests.
+  def self.equal_notes?(a, b)
+    (rest?(a) && rest?(b)) || (sym(a) == sym(b))
+  end
+
+  # Returns true if the two values match one another. Two values match if:
+  # - Both are a rest. E.g. :r matches :rest and nil.
+  # - Both have an explicit octave (or are a MIDI number) and refer to the same
+  #   note. E.g. :cs2 matches :cs2 and :db2. 67 matches :g4.
+  # - Either (or both) is missing an octave, and the two have the same pitch
+  #   class. E.g. :c2 and :c4 match :c. :cs matches :cs3, :db2, and :db.
+  def self.match?(a, b)
+    return true if rest?(a) && rest?(b)
+
+    a_has_octave = has_octave?(a)
+    b_has_octave = has_octave?(b)
+    if (a_has_octave && b_has_octave) || (!a_has_octave && !b_has_octave)
+      # If they both have an octave, or both don't, compare symbols directly. If
+      # both don't have an octave, this will collapse them to the same default.
+      return sym(a) == sym(b)
+    end
+
+    pitch_class(a) == pitch_class(b)
   end
 end
 
@@ -544,6 +570,12 @@ class Step
   # normalization for you.
   def has_note?(n)
     @note == NoteUtils.sym(n)
+  end
+
+  # Returns whether this Step's note matches the given note. See
+  # NoteUtils.match? for the definition of "match".
+  def matches_note?(n)
+    NoteUtils.match?(@note, n)
   end
 
   def should_trigger?(cycle, prev_steps)
