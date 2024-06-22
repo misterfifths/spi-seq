@@ -1175,6 +1175,14 @@ class Track
 
   alias | merge
 
+  def grouped_merge(n)
+    new_grid = @grid.each_slice(n).map { |slots| slots.flatten }
+    mutate(grid: new_grid)
+  end
+
+  alias gmerge grouped_merge
+  alias group grouped_merge
+
   # Creates a new Track that interleaves the slots of other_track with those of
   # this track. cycle controls the behavior if other_track is shorter than this
   # track. When cycle is false, blank slots (rests) will be interleaved once
