@@ -203,7 +203,7 @@ module NoteUtils
     # actually respects the octave. This is recursive, but since we don't care
     # what octave we get here (we'll be overriding it in a second), we don't
     # need to give an octave to sym, so it won't loop.
-    note = sym(note) if !octave.nil?
+    note = sym(note) unless octave.nil?
 
     info = $spi.note_info(note, octave: octave)
     [info.midi_string.downcase.to_sym, info.midi_note, info.octave]
@@ -1572,7 +1572,7 @@ class Track
       orig = NoteUtils.sym(orig)
     else
       if !repl_is_rest && NoteUtils.has_octave?(repl)
-        raise "Replacement notes cannot have an octave if the origial note doesn't"
+        raise "Replacement notes cannot have an octave if the original note doesn't"
       end
       orig = NoteUtils.pitch_class(orig)
     end
