@@ -904,6 +904,24 @@ class Track
     num_slots * @granularity.to_f
   end
 
+  # Returns whether the track consists entirely of rests (i.e., empty slots).
+  def empty?
+    @grid.all? { |slot| slot.length == 0 }
+  end
+
+  alias all_rests? empty?
+  alias rest? empty?
+
+  # Returns whether the track is monophonic (i.e., all slots have <=1 Step).
+  def mono?
+    @grid.all? { |slot| slot.length <= 1 }
+  end
+
+  # Returns whether the track is polyphonic (i.e., any slot has >1 Step).
+  def poly?
+    @grid.any? { |slot| slot.length > 1 }
+  end
+
 
   ### Playback support
 
