@@ -1440,6 +1440,16 @@ class Track
 
   alias rdropout rand_dropout
 
+  # Returns a new Track with the steps in slot idx replaced with the given
+  # steps.
+  def replace_slot(idx, new_steps)
+    new_grid = @grid.dup
+    new_grid[idx] = new_steps
+    mutate(grid: new_grid)
+  end
+
+  alias set_slot replace_slot
+
 
   ## Step-level mutations
 
