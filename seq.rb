@@ -1380,6 +1380,13 @@ class Track
     mutate(grid: @grid.drop(n))
   end
 
+  # Returns a new Track with the final n slots removed.
+  def drop_last(n = 1)
+    new_grid = @grid.dup
+    new_grid.pop(n)
+    mutate(grid: new_grid)
+  end
+
   # Returns a new Track consisting of only the first n slots of this track.
   def take(n)
     mutate(grid: @grid.take(n))
