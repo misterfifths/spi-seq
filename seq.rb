@@ -186,45 +186,55 @@ module NoteUtils
   # See https://github.com/sonic-pi-net/sonic-pi/blob/714d33316620d46d6815e554f17c5a76e4967471/app/server/ruby/lib/sonicpi/note.rb#L65
   NOTE_REGEX = /^:?(?<pitch_class>[a-g][sbf]?)(?<octave>-?\d*)$/i
 
-  # note is a symbol for a note (e.g. :fs3) or a MIDI note number. If octave is
-  # given, it overrides the octave of the note (even if it is a note number).
-  # If octave is not given and the note is a symbol without an octave (e.g. :c),
-  # the result will be in octave 4.
-  # Sharps and flats are standardized (C and F sharp, the rest flat with a 'b'
-  # suffix). The returned symbol is in lower case and is guaranteed to have an
-  # explicit octave number.
-  # Returns an array [note symbol, note number, octave number]
+  # note is a symbol or string for a note (e.g. :fs3), or a MIDI note number. If
+  # octave is given, it overrides the octave of the note (even if it is a note
+  # number). If octave is not given and the note is a symbol or string without
+  # an octave (e.g. :c), the result will be in octave 4. Sharps and flats are
+  # standardized into sharps.
+  # Returns an array [note symbol, note number, octave number]. The returned
+  # symbol is in lower case and is guaranteed to have an explicit octave number.
   def self.normalize(note, octave: nil)
     # note_info leaves pitch classes in symbols alone, so we always need to go
-    # to a number first so that sharps and flats are normalized.
+    # to a number first so that sharps and flats are normalized. Note that this
+    # step is the one that enforces the default octave of 4 on symbols without
+    # an explicit octave. We will replace the octave if needed in the note_info
+    # call below.
     note = $spi.note(note)
 
-    # If we're overriding the octave, convert back to a symbol so that note_info
-    # actually respects the octave. This is recursive, but since we don't care
-    # what octave we get here (we'll be overriding it in a second), we don't
-    # need to give an octave to sym, so it won't loop.
-    note = sym(note) unless octave.nil?
+    # note_info ignores its octave argument when the note is a number, so if we
+    # want to override the octave we need to go back to a symbol/string first.
+    # We could just call sym, but that would recurse and do some needless work,
+    # so we use note_info directly here since we don't care about the details of
+    # the name we get back, so long as it represents the note.
+    if !octave.nil?
+      info = $spi.note_info(note)
+      note = info.midi_string
+    end
 
     info = $spi.note_info(note, octave: octave)
-    [info.midi_string.downcase.to_sym, info.midi_note, info.octave]
+
+    # Make sure flats are converted to sharps.
+    pc = pitch_class_from_sym(info.midi_string.downcase.to_sym)
+    note_sym = sharpify(pc, info.octave)
+
+    [note_sym, info.midi_note, info.octave]
   end
 
-  # Returns a normalized symbol for the given note (a symbol or MIDI note
-  # number). Uses the same octave rules as normalize.
+  # Returns a normalized symbol for the given note (a symbol, string, or MIDI
+  # note number). Uses the same octave rules as normalize.
   def self.sym(note, octave: nil)
     normalize(note, octave: octave)[0]
   end
 
   # Returns the symbol for the note's pitch class (e.g. :c for Cs in all
-  # octaves). note may be a symbol or MIDI note number.
+  # octaves). note may be a symbol, string, or MIDI note number. The returned
+  # symbol will be in lowercase.
   def self.pitch_class(note)
-    match = NOTE_REGEX.match(sym(note).to_s)
-    raise "Invalid note symbol #{note}" if match.nil?  # should never happen
-    match[:pitch_class].to_sym  # we normalized before the match, so this will be lowercase
+    pitch_class_from_sym(sym(note))
   end
 
-  # Returns the MIDI note number for the given note (a symbol or MIDI note
-  # number). Uses the same octave rules as normalize.
+  # Returns the MIDI note number for the given note (a symbol, string, or MIDI
+  # note number). Uses the same octave rules as normalize.
   def self.number(note, octave: nil)
     normalize(note, octave: octave)[1]
   end
@@ -239,14 +249,14 @@ module NoteUtils
     !match[:octave].empty?
   end
 
-  # Returns the octave number for the given note (a symbol or MIDI note number).
-  # Uses the same octave rules as normalize.
+  # Returns the octave number for the given note (a symbol, string, or MIDI note
+  # number). Uses the same octave rules as normalize.
   def self.octave(note, octave: nil)
     normalize(note, octave: octave)[2]
   end
 
-  # Returns a normalized symbol for the given note (a symbol or MIDI note
-  # number), changing its octave to the given value. This is effectively an
+  # Returns a normalized symbol for the given note (a symbol, string, or MIDI
+  # note number), changing its octave to the given value. This is effectively an
   # alias for sym.
   def self.set_octave(note, octave)
     sym(note, octave: octave)
@@ -267,10 +277,10 @@ module NoteUtils
   end
 
   # Returns a normalized symbol for the given note, snapped to the closest value
-  # in notes. notes must be an array of note representations (symbols or MIDI
-  # note numbers). The octave parameter, if given, is used to resolve the note
-  # parameter. It is not used to resolve notes in the notes array; you probably
-  # want to give those explicit octaves.
+  # in notes. notes must be an array of note representations (symbols, strings,
+  # or MIDI note numbers). The octave parameter, if given, is used to resolve
+  # the note parameter. It is not used to resolve notes in the notes array; you
+  # probably want to give those explicit octaves.
   def self.snap(note, notes, octave: nil)
     # TODO: be more particular about rounding up or down?
     notes = notes.map { |n| number(n) }
@@ -290,9 +300,9 @@ module NoteUtils
 
   # Returns a normalized symbol for the given note, snapped to the nearest note
   # in the given scale. root is the root note for the scale and must be a symbol
-  # for a note without an octave (e.g. :c or :fs). scale is a symbol for one of
-  # the scales known to Sonic Pi. The octave parameter, if given, is used to
-  # resolve the note parameter. It has no effect on the scale.
+  # or string for a note without an octave (e.g. :c or :fs). scale is a symbol
+  # for one of the scales known to Sonic Pi. The octave parameter, if given, is
+  # used to resolve the note parameter. It has no effect on the scale.
   def self.snap_to_scale(note, root, scale, octave: nil)
     # Note 0 is c-1, and 127 is g9, so if we do 11 octaves from -1, we'll cover
     # the whole MIDI range.
@@ -330,6 +340,35 @@ module NoteUtils
 
     pitch_class(a) == pitch_class(b)
   end
+
+  # Returns a symbol for the pitch class of an already normalized note symbol.
+  # Broken out from pitch_class to avoid recursion in normalize.
+  def self.pitch_class_from_sym(note_sym)
+    match = NOTE_REGEX.match(note_sym.to_s)
+    raise "Invalid note symbol #{note}" if match.nil?  # should never happen
+    match[:pitch_class].to_sym  # we normalized before the match, so this will be lowercase
+  end
+
+  private_class_method :pitch_class_from_sym
+
+  # note_info converts some notes to sharps and others to flats. This converts
+  # everything to a sharp. pitch_class should be a lower- case normalized pitch
+  # class symbol (e.g. :eb).
+  def self.sharpify(pitch_class, octave)
+    # Not trying to be exhaustive here; these are just the notes for which
+    # note_info returns flats.
+    if pitch_class == :eb
+      pitch_class = :ds
+    elsif pitch_class == :ab
+      pitch_class = :gs
+    elsif pitch_class == :bb
+      pitch_class = :as
+    end
+
+    (pitch_class.to_s + octave.to_s).to_sym
+  end
+
+  private_class_method :sharpify
 end
 
 
@@ -468,8 +507,8 @@ class Step
 
   # note can be a string, symbol, integer MIDI note. It is always normalized
   # to a lower-case symbol of the Sonic Pi note name, and sharps and flats are
-  # standardized. If you need to compare against a Step's note, make sure you
-  # use such a normalized symbol, or use the has_note? method.
+  # standardized into sharps. If you need to compare against a Step's note, make
+  # sure you use such a normalized symbol, or use the has_note? method.
   # vel is the MIDI velocity for the note, 0 - 127. It is only used when the
   # note is played via MIDI, obviously.
   # gate is the percentage of the duration of the step for which the note will
@@ -565,9 +604,8 @@ class Step
   # Returns whether this Step has the given note, which may be a MIDI note
   # number, a string, or a symbol. You can compare directly against the note
   # attribute if you use a normalized note symbol as returned from NoteUtils.sym
-  # (lowercase, with sharps and flats standardized - C and F sharp and others
-  # flat with suffix 'b'). Otherwise, this function makes sure to do the
-  # normalization for you.
+  # (lowercase, with sharps and flats standardized into sharps). Otherwise, this
+  # function makes sure to do the normalization for you.
   def has_note?(n)
     @note == NoteUtils.sym(n)
   end
