@@ -1456,6 +1456,68 @@ class Track
 
   alias set_slot replace_slot
 
+  # Returns two tracks by extracting Steps for which the block returns true.
+  # The block must take 1 to 3 arguments:
+  # 1. the Step
+  # 2. the slot to which the Step belongs
+  # 3. the index of the slot to which the Step belongs.
+  # If the block returns true, the step will be placed in the second of the two
+  # returned tracks. If it returns false, the step will be placed in the first.
+  # The returned tracks will have the same length; if the process results in all
+  # steps in a slot winding up in only one of the tracks, the slot in the other
+  # track will be empty (i.e., a rest).
+  # As an example, consider a Track with slots [:c2, :d2, :e2, :f2]. If the
+  # block returns true for odd indices, the returned tracks will have slots
+  # [:c2, rest, :e2, rest] and [rest, :d2, rest, :f2].
+  def extract(&block)
+    raise "Block must take 1-3 arguments" if block.arity == 0 || block.arity > 3
+
+    grid1 = []
+    grid2 = []
+
+    @grid.each_with_index do |slot, i|
+      slot1 = []
+      slot2 = []
+
+      slot.each do |step|
+        if block.arity == 1
+          should_extract = block.call(step)
+        elsif block.arity == 2
+          should_extract = block.call(step, slot)
+        else
+          should_extract = block.call(step, slot, i)
+        end
+
+        if should_extract
+          slot2 << step
+        else
+          slot1 << step
+        end
+      end
+
+      grid1 << slot1
+      grid2 << slot2
+    end
+
+    [mutate(grid: grid1), mutate(grid: grid2)]
+  end
+
+  # Returns two tracks by extracting the steps in every nth slot. The first
+  # returned track will have steps in all the slots that are not every nth, and
+  # the second will have steps in every nth slot.
+  def extract_every(n)
+    extract { |_, _, i| i % n == n - 1 }
+  end
+
+  # Returns two tracks by extracting steps that match the given note. The first
+  # track contains the non-matching steps, and the second contains the matching
+  # ones. See NoteUtils.match? for matching rules.
+  def extract_note(note)
+    extract { |step| step.matches_note?(note) }
+  end
+
+  alias extract_notes extract_note
+
 
   ## Step-level mutations
 
