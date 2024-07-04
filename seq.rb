@@ -1175,6 +1175,12 @@ class Track
 
   alias | merge
 
+  # Creates a new Track by merging each group of n consecutive slots into one
+  # slot each. If n does not evenly divide the number of slots in the original
+  # track, the final slot will merge the remaining slots. For example, consider
+  # a track with slots [:c3, :d3, :e3, :f3, :g3]. Calling grouped_merge(2) on
+  # that track would result in a new track with three slots:
+  # [[:c3, :d3], [:e3, :f3], [:g3]].
   def grouped_merge(n)
     new_grid = @grid.each_slice(n).map { |slots| slots.flatten }
     mutate(grid: new_grid)
