@@ -1186,7 +1186,6 @@ class Track
     Track.new(**mutations)
   end
 
-  # TODO: do automatic granularity adjustment when possible?
   def assert_compatible_track(other_track)
     if @granularity != other_track.granularity
       raise "Granularity mismatch: #{@granularity} != #{other_track.granularity}"
