@@ -803,7 +803,7 @@ class Track
   #   default arguments, or
   # - nil, :r, or :rest to represent a rest.
   def self.mono(steps, granularity: NoteLength::Eighth, timescale: 1)
-    grid = steps.map { |s| s.nil? ? [] : [s] }
+    grid = steps.map { |s| [s] }
     new(grid: grid, granularity: granularity, timescale: timescale)
   end
 
