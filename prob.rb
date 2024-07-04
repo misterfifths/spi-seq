@@ -1,0 +1,127 @@
+$spi ||= self
+
+class Prob
+  # Use a custom trigger probability predicate. The predicate must respond to
+  # call and arity, and must have an arity between 0 and 3 inclusive. It will be
+  # called with arguments based on its arity:
+  # - Arity 1: will be called with the cycle number
+  # - Arity 2: will be called with the cycle number and the Step.
+  # - Arity 3: will be called with the cycle number, the Step, and an array of
+  #   Steps that were played in the slot immediately prior to the current one.
+  # The predicate should return true if the Step should trigger.
+  def self.custom(callable)
+    new(callable, "custom")
+  end
+
+  # Step will trigger with the given probability (0-1 inclusive).
+  def self.chance(p)
+    new(->{ $spi.rand < p }, "#{p.round(2)}")
+  end
+
+  # Step will trigger with a probablity of 1 in n.
+  def self.one_in(n)
+    new(->{ $spi.one_in(n) }, "one in #{n}")
+  end
+
+  # Step is guaranteed to trigger the xth cycle out of each set of y cycles. x
+  # should be <= y. For example, x_of_y(3, 4) means that the Step will trigger
+  # on the third of every four cycles.
+  def self.x_of_y(x, y)
+    new(->(cycle) { cycle % y == x - 1 }, "#{x}|#{y}")
+  end
+
+  # Step will trigger every other cycle, beginning with the first. Equivalent to
+  # x_of_y(1, 2);
+  def self.every_other
+    x_of_y(1, 2)
+  end
+
+  # Step will trigger on the first cycle out of each set of n cycles. Equivalent
+  # to x_of_y(1, n).
+  def self.every(n)
+    x_of_y(1, n)
+  end
+
+  # The inverse of x_of_y - the Step will trigger on every cycle except for the
+  # xth out of every y cycles.
+  def self.not_x_of_y(x, y)
+    new(->(cycle) { cycle % y != x - 1 }, "!#{x}|#{y}")
+  end
+
+  # Step will trigger only on the first cycle.
+  def self.first
+    new(->(cycle) { cycle == 0 }, "first")
+  end
+
+  # Step will trigger on every cycle except the first.
+  def self.not_first
+    new(->(cycle) { cycle != 0 }, "!first")
+  end
+
+  # Step will trigger if any step triggered in the previously played slot.
+  def self.pre
+    new(->(_, _, prev_steps) { prev_steps.length != 0 }, "pre" )
+  end
+
+  # Step will trigger if no step triggered in the previously played slot.
+  def self.not_pre
+    new(->(_, _, prev_steps) { prev_steps.length == 0 }, "!pre" )
+  end
+
+  # Step will trigger if a step triggered in the previously played slot with the
+  # same note as this step.
+  def self.pre_same_note
+    pred = lambda do |_, step, prev_steps|
+      prev_steps.any? { |prev_step| prev_step.note == step.note }
+    end
+    new(pred, "pre same note")
+  end
+
+  # Step will trigger only if none of the steps that triggered in the previously
+  # played slot had the same note as this step.
+  def self.not_pre_same_note
+    pred = lambda do |_, step, prev_steps|
+      prev_steps.all? { |prev_step| prev_step.note != step.note }
+    end
+    new(pred, "!pre same note")
+  end
+
+  # Evaluates the probability function for the given step in the given cycle of
+  # the Track. Returns true if the step should trigger.
+  def should_trigger?(cycle, step, prev_steps)
+    case @callable.arity
+    when 0
+      res = @callable.call
+    when 1
+      res = @callable.call(cycle)
+    when 2
+      res = @callable.call(cycle, step)
+    when 3
+      res = @callable.call(cycle, step, prev_steps)
+    end
+
+    # $spi.puts("prob(#{step.inspect}, cycle=#{cycle}) = #{res}")
+    res
+  end
+
+  def to_s
+    @desc
+  end
+
+  def inspect
+    "<Prob #{self}>"
+  end
+
+
+  private
+
+  def initialize(callable, desc)
+    if callable.respond_to?(:call) && callable.respond_to?(:arity) && callable.arity <= 3
+      @callable = callable
+    else
+      raise "Invalid probability predicate: must be a callable that takes <= 3 arguments"
+    end
+
+    @desc = desc
+  end
+end
