@@ -913,7 +913,14 @@ class Track
   # have percent 1.0.
   def mutate_each_step_with_pct
     new_grid = @grid.map.with_index do |slot, i|
-      pct = i.to_f / (num_slots - 1)
+      if i == 0
+        pct = 0.0
+      elsif i == @grid.length - 1
+        pct = 1.0
+      else
+        pct = i.to_f / (num_slots - 1)
+      end
+
       new_slot = []
       slot.each do |step|
         new_step = yield step, pct
