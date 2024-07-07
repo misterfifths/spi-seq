@@ -225,7 +225,8 @@ class Track
   # Constructs a mono track that plays the given notes in a Euclidean rhythm.
   # The length of the rhythm is slots, and the number of hits to play over those
   # slots is pulses. notes should be an array of note numbers or symbols, or a
-  # single note number or symbol.
+  # single note number or symbol. Unless full_cycle is true (see below), the
+  # returned track will have length `slots`.
   # The cycle_notes parameter controls how the notes array is used when placing
   # notes in the track. If it is true, each time there is a hit in the rhythm,
   # the next note from the notes array is used (wrapping around if needed). For
@@ -239,7 +240,18 @@ class Track
   #   :c3, rest, :c3, :d3
   # The third note is :c3 because the hit index, 2, corresponds :c3 in the notes
   # array (modulo the length of the array).
-  def self.euclid(notes, pulses, slots, invert: false, rotate: 0, cycle_notes: true, granularity: NoteLength::Eighth, gate: 1, vel: 127, timescale: 1)
+  # If full_cycle is true, the returned track will repeat the Euclidean pattern
+  # (while cycling through the notes) however many times is needed to ensure
+  # that all the notes are played and that the track loops cleanly. full_cycle
+  # implies cycle_notes. For instance, spreading [:a1, :b1, :c1, :d1] over 3
+  # pulses and 4 slots with full_cycle true will result in a track with the
+  # following steps (the pipes are only to visually discriminate between groups
+  # of the Euclidean pattern):
+  #   :a1 rest :b1 :c1 | :d1 rest :a1 :b1 | :c1 rest :d1 :a1 | :b1 rest :c1 :d1
+  # Note that each group repeats the same pattern of hits (hit rest hit hit),
+  # but the notes cycle across repetitions, so that every given note is played
+  # and the overall track is a perfect loop.
+  def self.euclid(notes, pulses, slots, invert: false, rotate: 0, cycle_notes: true, full_cycle: false, granularity: NoteLength::Eighth, gate: 1, vel: 127, timescale: 1)
     if notes.is_a?(Numeric) || notes.is_a?(Symbol) || notes.is_a?(String)
       notes = [notes]
     end
@@ -248,8 +260,19 @@ class Track
     hits.rotate!(rotate) if rotate != 0
     hits.map! { |hit| !hit } if invert
 
+    # If we're doing a full cycle of notes, we may need multiple copies of the
+    # Euclidean pattern to complete a perfect loop. If we're spreading n notes
+    # over p hits, we need exactly lcm(p, n) hits. And since the pattern
+    # contains exactly p hits itself, we need lcm(p, n) / p copies of it.
+    if full_cycle
+      cycle_notes = true
+      needed_groups = pulses.lcm(notes.length) / pulses
+    else
+      needed_groups = 1
+    end
+
     note_idx = 0
-    grid = hits.map.with_index do |hit, i|
+    grid = hits.cycle(needed_groups).map.with_index do |hit, i|
       if hit
         if cycle_notes
           note = notes[note_idx % notes.length]
