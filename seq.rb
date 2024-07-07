@@ -526,6 +526,14 @@ class Track
 
   alias regrain regranularize
 
+  # Returns a new track with the given granularity. Does not effect the timing
+  # of any Steps; to change granularity while attempting to keep the track
+  # sounding roughly the same, use condense, expand, or regranularize.
+  def with_granularity(granularity)
+    mutate(granularity: granularity)
+  end
+
+
   ## Grid-level mutations
 
   def with_rate(rate)
@@ -533,13 +541,6 @@ class Track
   end
 
   alias rate with_rate
-
-  # Returns a new track with the given granularity. Does not effect the timing
-  # of any Steps; to change granularity while attempting to keep the track
-  # sounding roughly the same, use condense, expand, or regranularize.
-  def with_granularity(granularity)
-    mutate(granularity: granularity)
-  end
 
   def append(other_track)
     assert_compatible_track(other_track)
