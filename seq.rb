@@ -536,6 +536,32 @@ class Track
 
   ## Grid-level mutations
 
+  # Return a new Track, replacing each slot in this track with the result of the
+  # given block. The block may return:
+  # - A slot (an array of Steps), which will replace the slot yielded to the
+  #   block
+  # - nil, :r, or :rest, which will replace the slot yielded to the block with
+  #   an empty slot (i.e. a rest)
+  # - An array of slots, which will all be added in place of the yielded slot
+  def mutate_each_slot
+    new_grid = []
+    @grid.each do |slot|
+      new_slot = yield slot
+      if NoteUtils.rest?(new_slot)
+        new_grid << []
+      elsif new_slot.length == 0 || !new_slot[0].is_a?(Array)
+        # A 1-d array
+        new_grid << new_slot
+      else
+        # An array of arrays
+        new_grid.concat(new_slot)
+      end
+    end
+    mutate(grid: new_grid)
+  end
+
+  alias mutate_slots mutate_each_slot
+
   def with_rate(rate)
     mutate(timescale: rate)
   end
