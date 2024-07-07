@@ -723,7 +723,10 @@ class Track
 
   alias * repeat
 
-  # Returns a new track that repeats the slots of this track for n slots.
+  # Returns a new track that repeats the slots of this track for n slots. Note
+  # that if n does not evenly divide the length of this track, the final
+  # repetition in the result will be truncated so that the overall track has n
+  # slots.
   def cycle_to_length(n)
     mutate(grid: @grid.cycle.take(n))
   end
