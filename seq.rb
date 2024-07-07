@@ -955,6 +955,8 @@ class Track
     mutate_each_step_with_pct { |step, _| yield step }
   end
 
+  alias mutate_steps mutate_each_step
+
   # Functionally the same as mutate_each_step, except the block is called with
   # two arguments: the Step, and the percentage through the Track that the slot
   # the Step belongs to represents. For instance, Steps in the first slot of the
@@ -988,6 +990,8 @@ class Track
 
     mutate(grid: new_grid)
   end
+
+  alias mutate_steps_with_pct mutate_each_step_with_pct
 
   def with_gate(new_gate)
     mutate_each_step { |step| step.with_gate(new_gate) }
