@@ -976,24 +976,22 @@ class Track
   ## Step-level mutations
 
   # Return a new Track, replacing each Step in this track with the result of the
-  # given block. The block may return:
+  # given block. The block must take 1-3 arguments:
+  # - the Step
+  # - the index of the slot to which the Step belongs
+  # - the percentage through the Track that the slot the Step belongs to
+  #   represents. For instance, Steps in the first slot of the track will have
+  #   percent 0, steps in the middle slot (in a Track with an odd number of
+  #   slots) will have percent 0.5, and steps in the final slot will have
+  #   percent 1.0.
+  # The block may return:
   # - A Step, which will replace the step yielded to the block
   # - nil, :r, or :rest, which will remove the step yielded to the block
   # - An array of Steps, which will all be added in place of the yielded step to
   #   the corresponding slot of the yielded step.
-  def mutate_each_step
-    mutate_each_step_with_pct { |step, _| yield step }
-  end
+  def mutate_each_step(&block)
+    raise "Block must take 1-3 arguments" if block.arity == 0 || block.arity > 3
 
-  alias mutate_steps mutate_each_step
-
-  # Functionally the same as mutate_each_step, except the block is called with
-  # two arguments: the Step, and the percentage through the Track that the slot
-  # the Step belongs to represents. For instance, Steps in the first slot of the
-  # track will have percent 0, steps in the middle slot (in a Track with an odd
-  # number of slots) will have percent 0.5, and steps in the final slot will
-  # have percent 1.0.
-  def mutate_each_step_with_pct
     new_grid = @grid.map.with_index do |slot, i|
       if i == 0
         pct = 0.0
@@ -1005,7 +1003,15 @@ class Track
 
       new_slot = []
       slot.each do |step|
-        new_step = yield step, pct
+        new_step = case block.arity
+        when 1
+          block.call(step)
+        when 2
+          block.call(step, i)
+        when 3
+          block.call(step, i, pct)
+        end
+
         if NoteUtils.rest?(new_step)
           next
         elsif new_step.is_a?(Step)
@@ -1021,7 +1027,7 @@ class Track
     mutate(grid: new_grid)
   end
 
-  alias mutate_steps_with_pct mutate_each_step_with_pct
+  alias mutate_steps mutate_each_step
 
   def with_gate(new_gate)
     mutate_each_step { |step| step.with_gate(new_gate) }
@@ -1037,10 +1043,9 @@ class Track
   # curve_func. curve_func will be called with one parameter, a percentage
   # through the track (0-1), and should return a floating point value 0-1 that
   # will be used for all Steps in the slot at that percentage.
-  # TODO: add a library of useful curve functions for this
   def with_gate_curve(curve_func)
     raise "Curve function must be a callable that takes one argument" unless curve_func.respond_to?(:call) && curve_func.arity == 1
-    mutate_each_step_with_pct { |step, pct| step.with_gate(curve_func.call(pct)) }
+    mutate_each_step { |step, _, pct| step.with_gate(curve_func.call(pct)) }
   end
 
   alias gate_curve with_gate_curve
@@ -1072,7 +1077,7 @@ class Track
   # with_velf_curve is an alias where zero_to_one is true.
   def with_vel_curve(curve_func, zero_to_one: false)
     raise "Curve function must be a callable that takes one argument" unless curve_func.respond_to?(:call) && curve_func.arity == 1
-    mutate_each_step_with_pct do |step, pct|
+    mutate_each_step do |step, _, pct|
       vel = curve_func.call(pct)
       vel *= 127 if zero_to_one
       step.with_vel(vel)
