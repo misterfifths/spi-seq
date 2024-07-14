@@ -1040,12 +1040,25 @@ class Track
   end
 
   # Returns a new track where each Step's gate is replaced with the result of
-  # curve_func. curve_func will be called with one parameter, a percentage
-  # through the track (0-1), and should return a floating point value 0-1 that
-  # will be used for all Steps in the slot at that percentage.
+  # curve_func. curve_func must take 1-2 arguments:
+  # - the percentage through the track (0.0-1.0) where the slot falls in the
+  #   Track
+  # - the index of the slot in the Track
+  # curve_func should return a floating point value 0-1 that will be used for
+  # all Steps in the slot at that percentage/index.
   def with_gate_curve(curve_func)
-    raise "Curve function must be a callable that takes one argument" unless curve_func.respond_to?(:call) && curve_func.arity == 1
-    mutate_each_step { |step, _, pct| step.with_gate(curve_func.call(pct)) }
+    raise "Curve function must be a callable that takes 1-2 arguments" if !curve_func.respond_to?(:call) || curve_func.arity == 0 || curve_func.arity > 2
+    # TODO: implement this with mutate_each_slot instead?
+    mutate_each_step do |step, slot_idx, pct|
+      gate = case curve_func.arity
+      when 1
+        curve_func.call(pct)
+      when 2
+        curve_func.call(pct, slot_idx)
+      end
+
+      step.with_gate(gate)
+    end
   end
 
   alias gate_curve with_gate_curve
@@ -1067,19 +1080,28 @@ class Track
   end
 
   # Returns a new track where each Step's velocity is replaced with the result
-  # of curve_func. curve_func will be called with one parameter, a percentage
-  # through the track (0-1), and should return a velocity to use for all Steps
-  # in the slot at that percentage. The value returned by curve_func should be
-  # either:
+  # of curve_func. curve_func must take 1-2 arguments:
+  # - the percentage through the track (0.0-1.0) where the slot falls in the
+  #   Track
+  # - the index of the slot in the Track
+  # curve_func should return a velocity to use for all Steps in the slot at that
+  # percentage/index. The value returned by curve_func should be either:
   # - If zero_to_one is true, a floating point number 0 - 1 that will be scaled
   #   to a velocity value between 0 and 127, inclusive.
   # - If zero_to_one is false, an integer between 0 and 127, inclusive.
   # with_velf_curve is an alias where zero_to_one is true.
   def with_vel_curve(curve_func, zero_to_one: false)
-    raise "Curve function must be a callable that takes one argument" unless curve_func.respond_to?(:call) && curve_func.arity == 1
-    mutate_each_step do |step, _, pct|
-      vel = curve_func.call(pct)
-      vel *= 127 if zero_to_one
+    raise "Curve function must be a callable that takes 1-2 arguments" if !curve_func.respond_to?(:call) || curve_func.arity == 0 || curve_func.arity > 2
+    # TODO: implement this with mutate_each_slot instead?
+    mutate_each_step do |step, slot_idx, pct|
+      vel = case curve_func.arity
+      when 1
+        curve_func.call(pct)
+      when 2
+        curve_func.call(pct, slot_idx)
+      end
+
+      vel *= 127 if zero_to_one  # with_vel will round & clamp this
       step.with_vel(vel)
     end
   end
