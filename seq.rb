@@ -538,16 +538,42 @@ class Track
   ## Grid-level mutations
 
   # Return a new Track, replacing each slot in this track with the result of the
-  # given block. The block may return:
+  # given block. The block must take 1-3 arguments:
+  # - The slot
+  # - The index of the slot in the Track
+  # - The percent through the Track that the slot represents. For instance, the
+  #   first slot of the track will have percent 0, the middle slot (in a Track
+  #   with an odd number of slots) will have percent 0.5, and the final slot
+  #   will have percent 1.0.
+  # The block may return:
   # - A slot (an array of Steps), which will replace the slot yielded to the
   #   block
   # - nil, :r, or :rest, which will replace the slot yielded to the block with
-  #   an empty slot (i.e. a rest)
+  #   an empty slot (i.e. a rest). Note that this is the same as returning an
+  #   empty array.
   # - An array of slots, which will all be added in place of the yielded slot
-  def mutate_each_slot
+  def mutate_each_slot(&block)
+    raise "Block must take 1-3 arguments" if block.arity == 0 || block.arity > 3
+
     new_grid = []
-    @grid.each do |slot|
-      new_slot = yield slot
+    @grid.each_with_index do |slot, i|
+      if i == 0
+        pct = 0.0
+      elsif i == @grid.length - 1
+        pct = 1.0
+      else
+        pct = i.to_f / (num_slots - 1)
+      end
+
+      new_slot = case block.arity
+      when 1
+        block.call(slot)
+      when 2
+        block.call(slot, i)
+      when 3
+        block.call(slot, i, pct)
+      end
+
       if NoteUtils.rest?(new_slot)
         new_grid << []
       elsif new_slot.length == 0 || !new_slot[0].is_a?(Array)
