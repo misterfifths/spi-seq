@@ -1159,20 +1159,20 @@ class Track
   # should be an array of integer semitones. It defaults to [-12, 12] - i.e.,
   # an octave up and down. The new Steps share the velocity, gate, and
   # probability of the Step from which they were offset. If only is provided,
-  # it should be a note (number, string, or symbol) or an array of notes, and
-  # only steps with those notes will be harmonized.
+  # it should be a note (number, string, or symbol) or an array of same. Only
+  # steps with notes that match one in only will be harmonized, as determined by
+  # NoteUtils.match?.
   def harmonize(*offsets, only: nil)
-    unless only.nil?
-      only = [only] unless only.is_a?(Array)
-      only = only.map { |n| NoteUtils.sym(n) }
-    end
+    only = [only] unless only.nil? || only.is_a?(Array)
 
     offsets = [-12, 12] if offsets.empty?
     mutate_each_step do |step|
       new_steps = [step]
-      if only.nil? || only.include?(step.note)
+
+      if only.nil? || only.any? { |n| step.matches_note?(n) }
         offsets.each { |offset| new_steps << step.shift_tone(offset) }
       end
+
       new_steps
     end
   end
