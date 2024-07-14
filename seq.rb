@@ -525,6 +525,7 @@ class Track
   end
 
   alias regrain regranularize
+  alias grain regranularize
 
   # Returns a new track with the given granularity. Does not effect the timing
   # of any Steps; to change granularity while attempting to keep the track
