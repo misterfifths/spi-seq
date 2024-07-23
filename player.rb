@@ -178,7 +178,7 @@ class Player
         # using this for previewing stuff away from my real synth...
         # For now just having ties go for 100 * the length of the whole track.
         # Obviously that's ridiculous.
-        node = $spi.play(step.note, sustain: @track.beat_length * 100)
+        node = $spi.play(step.note, amp: step.velf, sustain: @track.beat_length * 100)
         @active_synth_nodes[step.note] = node
       end
     else
@@ -192,7 +192,7 @@ class Player
       if @midi
         $spi.midi(step.note, velocity: step.vel, sustain: step.gate * @track.granularity.to_f, **@midi_spi_kwargs)
       else
-        $spi.play(step.note, sustain: step.gate * @track.granularity.to_f)
+        $spi.play(step.note, amp: step.velf, sustain: step.gate * @track.granularity.to_f)
       end
     end
   end
