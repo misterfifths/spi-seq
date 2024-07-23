@@ -98,7 +98,10 @@ module Arp
       notes = notes.zip([lowest].cycle).flatten
     when Arp::Random
       notes.shuffle!
-    # nothing to do for Arp::Order
+    when Arp::Order
+      # nothing to do
+    else
+      raise "Unknown arpeggiator direction #{direction}"
     end
 
     notes.map! { |n| NoteUtils.sym(n) }
