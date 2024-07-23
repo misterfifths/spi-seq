@@ -934,12 +934,13 @@ class Track
       slot2 = []
 
       slot.each do |step|
-        if block.arity == 1
-          should_extract = block.call(step)
-        elsif block.arity == 2
-          should_extract = block.call(step, slot)
-        else
-          should_extract = block.call(step, slot, i)
+        should_extract = case block.arity
+        when 1
+          block.call(step)
+        when 2
+          block.call(step, slot)
+        when 3
+          block.call(step, slot, i)
         end
 
         if should_extract
