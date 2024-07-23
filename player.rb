@@ -240,16 +240,17 @@ def track_live_loop(loop_name, track = nil, start_muted: false, midi: nil, playe
   wrapped_block = lambda do |muted, arg|
     res = nil
     unless block.nil?
-      if block.arity == 4
-        res = block.call(player.cycle, player.track, muted, arg)
-      elsif block.arity == 3
-        res = block.call(player.cycle, player.track, muted)
-      elsif block.arity == 2
-        res = block.call(player.cycle, player.track)
-      elsif block.arity == 1
-        res = block.call(player.cycle)
+      res = case block.arity
+      when 4
+        block.call(player.cycle, player.track, muted, arg)
+      when 3
+        block.call(player.cycle, player.track, muted)
+      when 2
+        block.call(player.cycle, player.track)
+      when 1
+        block.call(player.cycle)
       else
-        res = block.call
+        block.call
       end
     end
 
