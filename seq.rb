@@ -835,6 +835,18 @@ class Track
     mutate(grid: new_grid)
   end
 
+  # Adds num_rests many empty slots (rests) between each group of group_size
+  # slots.
+  def space_every(group_size, num_rests = 1)
+    new_grid = []
+    @grid.each_slice(group_size) do |chunk|
+      new_grid += chunk
+      new_grid += [[]] * num_rests
+    end
+
+    mutate(grid: new_grid)
+  end
+
   # Returns a new Track with the first n slots removed.
   def drop(n = 1)
     mutate(grid: @grid.drop(n))
