@@ -141,7 +141,10 @@ class Player
     # ended the step if it didn't have a full gate, in which case it will not
     # be in active_midi_notes or active_synth_nodes. Do nothing in that case.
     if @midi
-      $spi.midi_note_off(step.note, **@midi_spi_kwargs) unless @active_midi_notes.delete(step.note).nil?
+      # Note that @active_midi_notes is a Set, and Set.delete acts differently
+      # than Array.delete. We want delete? to remove and return nil if nothing
+      # was removed.
+      $spi.midi_note_off(step.note, **@midi_spi_kwargs) unless @active_midi_notes.delete?(step.note).nil?
     else
       node = @active_synth_nodes.delete(step.note)
       $spi.kill(node) if !node.nil?
