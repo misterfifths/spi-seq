@@ -1498,3 +1498,7 @@ class Track
     Track.new(x, granularity: @granularity, timescale: @timescale)
   end
 end
+
+def T(*args, **kwargs)
+  Track.new(*args, **kwargs)
+end
