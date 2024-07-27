@@ -657,7 +657,10 @@ class Track
 
   alias rate with_rate
 
+  # Returns a new track with other_track appended to this one. If other_track
+  # is not a Track, it is converted to a compatible one using the initializer.
   def append(other_track)
+    other_track = compatibly_trackify(other_track)
     assert_compatible_track(other_track)
     mutate(grid: @grid + other_track.grid)
   end
@@ -668,8 +671,10 @@ class Track
 
   # Create a new Track that merges the Steps in corresponding slots of from this
   # track and other_track. The length of the resulting track is the maximum
-  # length of the two tracks.
+  # length of the two tracks. If other_track is not a Track, it is converted to
+  # a compatible one using the initializer.
   def merge(other_track)
+    other_track = compatibly_trackify(other_track)
     assert_compatible_track(other_track)
 
     if num_slots > other_track.num_slots
@@ -703,17 +708,20 @@ class Track
   alias group grouped_merge
 
   # Creates a new Track that interleaves the slots of other_track with those of
-  # this track. cycle controls the behavior if other_track is shorter than this
-  # track. When cycle is false, blank slots (rests) will be interleaved once
-  # those of other_track are exhausted. If cycle is true, the slots of
-  # other_track will be looped as needed. For instance, consider zipping
-  # together two sequences with Steps [:a1, :b1, :c1, :d1] and [:e5, :f5].
+  # this track. If other_track is not a Track, it is converted to a compatible
+  # one using the initializer.
+  # cycle controls the behavior if other_track is shorter than this track. When
+  # cycle is false, blank slots (rests) will be interleaved once those of
+  # other_track are exhausted. If cycle is true, the slots of other_track will
+  # be looped as needed. For instance, consider zipping together two sequences
+  # with Steps [:a1, :b1, :c1, :d1] and [:e5, :f5].
   # When cycle is false, the resulting Track will contain slots with the
   # following steps:
   #    :a1 :e5 :b1 :f5 :c1 rest :d1 rest
   # When cycle is true, the same operation will result in slots
   #    :a1 :e5 :b1 :f5 :c1 :e5 :d1 :f5
   def zip(other_track, cycle: true)
+    other_track = compatibly_trackify(other_track)
     assert_compatible_track(other_track)
 
     other_grid = other_track.grid
@@ -731,14 +739,16 @@ class Track
   end
 
   # Creates a new Track that interleaves the slots of other_track with those of
-  # this track. Unlike zip, this function does not alternate between 1 slot of
-  # each track. Instead, group_size many slots of this track appear
-  # consecutively, followed by other_group_size slots of other_track, then
-  # group_size many slots of this track, and so on. cycle controls the behavior
-  # when the other track has fewer groups than this one. It behaves as described
-  # in zip. pad_short_groups controls the behavior when a group size does not
-  # evenly divide the number of slots in its corresponding track. If it is true,
-  # rests are added to the final chunk of slots so that it has the group size.
+  # this track. If other_track is not a Track, it is converted to a compatible
+  # one using the initializer.
+  # Unlike zip, this function does not alternate between 1 slot of each track.
+  # Instead, group_size many slots of this track appear consecutively, followed
+  # by other_group_size slots of other_track, then group_size many slots of this
+  # track, and so on. cycle controls the behavior when the other track has fewer
+  # groups than this one. It behaves as described in zip. pad_short_groups
+  # controls the behavior when a group size does not evenly divide the number of
+  # slots in its corresponding track. If it is true, rests are added to the
+  # final chunk of slots so that it has the group size.
   # For instance, consider gzipping together a track with slots with the steps
   #     :a1 :b1 :c1 :d1
   # and one with slots with steps
@@ -753,6 +763,7 @@ class Track
   # Note that pad_short_groups applies to both groups from this track and
   # other_track.
   def grouped_zip(other_track, group_size, other_group_size, cycle: true, pad_short_groups: false)
+    other_track = compatibly_trackify(other_track)
     assert_compatible_track(other_track)
 
     a_chunks = @grid.each_slice(group_size).to_a
@@ -1475,4 +1486,14 @@ class Track
   end
 
   private_class_method :gridify
+
+  # Attempts to convert its argument into a Track. If it is already a Track,
+  # it is returned as-is. Otherwise, constructs a new Track which will inherit
+  # the granularity and timescale from self.
+  def compatibly_trackify(x)
+    return x if x.is_a?(Track)
+
+    # We can just pass this off to the initializer and let it call gridify.
+    Track.new(x, granularity: @granularity, timescale: @timescale)
+  end
 end
