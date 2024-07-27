@@ -179,6 +179,47 @@ class Track
 
   ### Basic constructors
 
+  # Constructs a track with the given "gridish" definition. gridish will be
+  # converted into a proper grid, an array of "slots". A slot is itself an
+  # array of Steps, which all play simultaneously for a duration of the
+  # granularity. A slot may be empty to represent a rest.
+  # gridish is converted to a grid in the following way:
+  # - A single MIDI note (symbol, string, or number) becomes grid with one slot
+  #   containing a single Step created with that note and the default arguments
+  #   to Step.new.
+  # - A single Step becomes a grid with one slot containing just that Step.
+  # - A single rest (see NoteUtils.rest?) becomes a grid with one empty slot.
+  # - Each element of an array-like value is converted to a slot. Conversion
+  #   rules for each child element:
+  #   1. Rests become empty slots.
+  #   2. Single steps become slots containing just that step.
+  #   3. Single MIDI notes become slots containing a single step created with
+  #      that note and the default arguments to Step.new.
+  #   4. Each element of an array-like child is converted into an array of
+  #      Steps using rules analogous to the above, except that rests are
+  #      ignored.
+  # If, after all the above conversions, there is more than one Step with the
+  # same note in the same slot, a warning is printed, and only the Step with the
+  # longest gate is chosen.
+  # The result of that logic is that gridish should basically do what you'd
+  # expect. For example:
+  # - Pass a single note to get a one-slot track with just that note.
+  # - Pass a 1-d array of notes or Steps to get a mono track where each element
+  #   becomes its own slot.
+  # - Pass a 2-d array of notes or Steps to get a poly track where each subarray
+  #   represents the contents of a slot.
+  # - Pass an array with some mixure of solitary notes and arrays to easily
+  #   express a track with some slots that contain multiple Steps and some that
+  #   only contain one. E.g. if gridish is [:a1, [:b2, :c3], :d4], the result
+  #   will be a Track with three slots, :a1 in the first, :b2 + :c3 in the
+  #   second, and :d4 in the third.
+  def initialize(gridish, granularity: NoteLength::Eighth, timescale: 1)
+    # TODO: You can't call private class methods from instance methods? Ugh.
+    @grid = Track.send(:gridify, gridish)
+    @granularity = NoteLength.normalize(granularity)
+    @timescale = timescale
+  end
+
   # Constructs a track with the given array, each element of which represents
   # a step or a rest. The elements will be played one at a time, in the given
   # order, each for a duration equal to the granularity (in other words, each
@@ -188,9 +229,14 @@ class Track
   # - a MIDI note number or symbol, which will be converted to a Step with the
   #   default arguments, or
   # - nil, :r, or :rest to represent a rest.
+  # NOTE: This method is deprecated. Use the Track initializer instead.
   def self.mono(steps, granularity: NoteLength::Eighth, timescale: 1)
-    grid = steps.map { |s| [s] }
-    new(grid: grid, granularity: granularity, timescale: timescale)
+    # Handing off directly to the initializer will do the right thing as long
+    # as each element is as described above, but will actually make a poly track
+    # if any element is an array. It doesn't seem worth trying to prevent that
+    # case; the method is deprecated anyway in favor of Track.new which
+    # documents that behavior.
+    new(steps, granularity: granularity, timescale: timescale)
   end
 
   # Constructs a track with the given grid. grid is a two-dimensional array,
@@ -203,14 +249,18 @@ class Track
   #   default arguments, or
   # - nil, :r, or :rest to represent a rest (though this is generally
   #   unnecessary and you should just use an empty array instead)
+  # NOTE: This method is deprecated. Use the Track initializer instead.
   def self.poly(grid, granularity: NoteLength::Eighth, timescale: 1)
-    new(grid: grid, granularity: granularity, timescale: timescale)
+    # Calling the initializer directly has a similar issue to that of `mono`:
+    # it will do the right thing with a 2d array but will also accept non-array
+    # elements. Likewise doesn't seem worth checking.
+    new(grid, granularity: granularity, timescale: timescale)
   end
 
   # Constructs an empty track that rests for the given number of slots.
   def self.rest(num_slots = 1, granularity: NoteLength::Eighth, timescale: 1)
     grid = [[]] * num_slots
-    new(grid: grid, granularity: granularity, timescale: timescale)
+    new(grid, granularity: granularity, timescale: timescale)
   end
 
 
@@ -223,7 +273,7 @@ class Track
   def self.arp(notes, direction = Arp::Up, spread: 0, extra_octaves: [], granularity: NoteLength::Eighth, gate: 1, vel: 127, timescale: 1)
     notes = Arp.arpeggiate(notes, direction, spread: spread, extra_octaves: extra_octaves)
     grid = notes.map { |n| [Step.new(n, vel: vel, gate: gate)] }
-    new(grid: grid, granularity: granularity, timescale: timescale)
+    new(grid, granularity: granularity, timescale: timescale)
   end
 
   # Constructs a track that arpeggiates the given degrees of the tonic note in
@@ -231,7 +281,7 @@ class Track
   def self.arp_degrees(tonic, degrees, direction = Arp::Order, scale: :major, spread: 0, extra_octaves: [], granularity: NoteLength::Eighth, gate: 1, vel: 127, timescale: 1)
     notes = Arp.arp_degrees(tonic, degrees, direction, scale: scale, spread: spread, extra_octaves: extra_octaves)
     grid = notes.map { |n| [Step.new(n, vel: vel, gate: gate)] }
-    new(grid: grid, granularity: granularity, timescale: timescale)
+    new(grid, granularity: granularity, timescale: timescale)
   end
 
   # Constructs a mono track that plays the given notes in a Euclidean rhythm.
@@ -299,7 +349,7 @@ class Track
       end
     end
 
-    new(grid: grid, granularity: granularity, timescale: timescale)
+    new(grid, granularity: granularity, timescale: timescale)
   end
 
 
@@ -1285,41 +1335,14 @@ class Track
 
   private
 
-  def initialize(grid:, granularity:, timescale:)
-    # Do a deep frozen clone of grid, while making sure no slot has more than
-    # one Step with the same note, and converting nils/rest symbols into empty
-    # slots and integers/symbols into Steps. Freeze the whole thing recursively
-    # so the version we expose through the attr_reader is immutable.
-    @grid = grid.map.with_index do |slot, i|
-      steps_by_note = {}
-      slot.each do |step|
-        next if NoteUtils.rest?(step)
-        step = Step.new(step) unless step.is_a?(Step)
-
-        old_step_with_same_note = steps_by_note[step.note]
-        if old_step_with_same_note.nil?
-          steps_by_note[step.note] = step
-        else
-          $spi.puts("warning: more than one Step with note #{step.note} in slot #{i}! Picking one with the longest gate!")
-          steps_by_note[step.note] = step if old_step_with_same_note.gate < step.gate
-        end
-      end
-
-      steps_by_note.values.freeze
-    end
-    @grid.freeze
-
-    @granularity = NoteLength.normalize(granularity)
-    @timescale = timescale
-  end
-
   def mutate(mutations)
     mutations = mutations.dup
-    [:grid, :granularity, :timescale].each do |ivar|
+    grid = mutations.delete(:grid) || @grid
+    [:granularity, :timescale].each do |ivar|
       mutations[ivar] = send(ivar) unless mutations.has_key?(ivar)
     end
 
-    Track.new(**mutations)
+    Track.new(grid, **mutations)
   end
 
   def strict_track_merging?
@@ -1338,4 +1361,118 @@ class Track
       raise "Timescale mismatch: #{@timescale} != #{other_track.timescale}"
     end
   end
+
+
+  ### Track construction helpers
+
+  # Attempts to convert its argument to a Step. Conversion rules are:
+  # - Steps are passed through verbatim.
+  # - Notes (symbols, strings and numbers) are converted to Steps using that
+  #   note and the default values for the other arguments of Step's initializer.
+  # - It is an error to pass a rest (as defined by NoteUtils.rest?) to this
+  #   function.
+  def self.stepify(x)
+    raise "A rest cannot be converted to a Step" if NoteUtils.rest?(x)
+
+    case x
+    when Step
+      x
+    when Symbol, String, Numeric
+      Step.new(x)
+    else
+      raise "Not a valid value for a Step: #{x.inspect}"
+    end
+  end
+
+  private_class_method :stepify
+
+  # Given a slot (an array of Steps), returns a new slot with at most one Step
+  # with each note. If multiple Steps in the input have the same note, one with
+  # the longest gate is chosen.
+  def self.dedupe_slot(slot)
+    steps_by_note = {}
+    yelled = false
+    slot.each do |step|
+      old_step_with_same_note = steps_by_note[step.note]
+      if old_step_with_same_note.nil?
+        steps_by_note[step.note] = step
+      else
+        if !yelled
+          $spi.puts("warning: more than one Step with note #{step.note} in the same slot! Picking one with the longest gate!")
+          yelled = true
+        end
+        steps_by_note[step.note] = step if old_step_with_same_note.gate < step.gate
+      end
+    end
+
+    steps_by_note.values.freeze
+  end
+
+  private_class_method :dedupe_slot
+
+  # Attempts to convert its argument to a grid slot (i.e. an array of Steps).
+  # The returned array will be frozen. Conversion rules:
+  # - Rests (see NoteUtils.rest?) become an empty slot ([]).
+  # - Single notes (symbols, strings, or numbers) become a slot with a single
+  #   Step that is the result of calling `stepify` on the argument.
+  # - Single Steps become a slot containing just that step.
+  # - Array-like arguments are converted as follows:
+  #   1. All rests are removed.
+  #   2. All remaining elements are passed through `stepify`.
+  #   3. If more than one of the resulting Steps has the same note, a warning is
+  #      printed, and only the Step with the longest gate is chosen.
+  def self.slotify(x)
+    return [].freeze if NoteUtils.rest?(x)
+
+    case x
+    when Step
+      [x].freeze
+    when Symbol, String, Numeric
+      [stepify(x)].freeze
+    # NOTE: 'Enumerable' resolves to SonicPi::RuntimeMethods::Enumerable in this
+    # context, which Array does *not* have as a superclass. So we need to use
+    # ::Enumerable to get the built-in class.
+    # SPVector is the parent class of RingVector, from e.g. `ring` and `chord`,
+    # and potentially other list types in SP. It unfortunately does not derive
+    # from (either) Enumerable, so we check for it manually and make sure to use
+    # `to_a` before calling Enumerable methods on it.
+    when ::Enumerable, SonicPi::Core::SPVector
+      raw_slot = x.to_a.reject { |s| NoteUtils.rest?(s) }.map { |s| stepify(s) }
+      dedupe_slot(raw_slot).freeze
+    else
+      raise "Not a valid value for a slot: #{x.inspect}"
+    end
+  end
+
+  private_class_method :slotify
+
+  # Attempts to convert its argument to a grid (a 2d array of Steps). The
+  # returned array and all of its elements will be frozen. Conversion rules:
+  # - A single rest (see NoteUtils.rest?) becomes a grid with one rest ([[]]).
+  # - A single note (symbol, string, or number) becomes a grid with one slot
+  #   that is the result of calling `slotify` on the argument.
+  # - A single Step becomes a grid with one slot containing that step.
+  # - Array-like arguments are converted by passing each element through
+  #   `slotify`.
+  def self.gridify(x)
+    return [[].freeze].freeze if NoteUtils.rest?(x)
+
+    case x
+    when Step
+      [[x].freeze].freeze
+    when Symbol, String, Numeric
+      [slotify(x)].freeze
+    # See note in slotify about these class selections.
+    when ::Enumerable, SonicPi::Core::SPVector
+      # NOTE: this will convert non-array child elements into individual slots.
+      # E.g. gridify([:a1, :b1]) will turn into [[:a1], [:b1]]. I think that's
+      # desirable - it's a sort of 'smart' conversion, preferring mono-like
+      # behavior unless notes are explicitly grouped into their own array.
+      x.to_a.map { |s| slotify(s) }.freeze
+    else
+      raise "Not a valid value for a grid: #{x.inspect}"
+    end
+  end
+
+  private_class_method :gridify
 end
