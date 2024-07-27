@@ -143,6 +143,18 @@ def S(*args, **kwargs)
 end
 
 
+# Set global Track behaviors.
+# strict_track_merging: If true, Tracks with mismatched granularities or
+# timescales cannot interact with one another. That is, they cannot be merged,
+# joined, zipped, or otherwise commingle. If false, generally speaking, the
+# track on which a method is being called is the one that will determine the
+# granularity and timescale of the result. E.g., in t1.zip(t2), the result will
+# have the properties of t1. Default: false.
+def use_track_defaults(strict_track_merging:)
+  $spi.set(:__track_defaults, { strict_track_merging: strict_track_merging })
+end
+
+
 # A Track is mostly a "grid" of Steps together with a granularity. The grid is a
 # 2d array, each element of which is a "slot". A slot contains some number
 # (possibly 0) of Steps. Those are the Steps that should trigger (subject to
@@ -1310,7 +1322,14 @@ class Track
     Track.new(**mutations)
   end
 
+  def strict_track_merging?
+    defaults = $spi.get(:__track_defaults) || {}
+    defaults[:strict_track_merging] || false
+  end
+
   def assert_compatible_track(other_track)
+    return unless strict_track_merging?
+
     if @granularity != other_track.granularity
       raise "Granularity mismatch: #{@granularity} != #{other_track.granularity}"
     end
