@@ -201,8 +201,8 @@ class Track
   # If, after all the above conversions, there is more than one Step with the
   # same note in the same slot, a warning is printed, and only the Step with the
   # longest gate is chosen.
-  # The result of that logic is that gridish should basically do what you'd
-  # expect. For example:
+  # The resulting grid must have at least one slot.
+  # In the end, gridish should do what you expect. For example:
   # - Pass a single note to get a one-slot track with just that note.
   # - Pass a 1-d array of notes or Steps to get a mono track where each element
   #   becomes its own slot.
@@ -216,6 +216,7 @@ class Track
   def initialize(gridish, granularity: NoteLength::Eighth, timescale: 1)
     # TODO: You can't call private class methods from instance methods? Ugh.
     @grid = Track.send(:gridify, gridish)
+    raise "A Track's grid must have at least one slot" if @grid.empty?
     @granularity = NoteLength.normalize(granularity)
     @timescale = timescale
   end
