@@ -169,8 +169,6 @@ end
 # Tracks also have a timescale, which is the speed at which this track will play
 # relative to the global bpm. A timescale of 2 means that this track will play
 # at twice the global bpm, e.g., and 0.5 means half-speed.
-# TODO: make mutable? seems tricky. plus would probably need to make a Grid
-# class (or at least a bunch of Track methods) to make manipulation ergonomic.
 # TODO: does timescale belong here? really only effects the Player, so it could
 # live there, but this feels like a convenient place for it (& to mutate it)
 class Track
