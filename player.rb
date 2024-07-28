@@ -3,6 +3,10 @@ $spi ||= self
 # Depends on piano-roll2 and midi-utils
 
 
+# Set global default Player behaviors.
+# midi: Specifies the default value for the midi parameter of Player's
+# initializer, used when that parameter is not explicitly passed. May be
+# overridden on a per-Player basis by specifying the parameter.
 def use_player_defaults(midi:)
   $spi.set(:__player_defaults, { midi: midi })
 end
