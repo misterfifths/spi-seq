@@ -221,12 +221,14 @@ end
 # sent while the track is muted.
 # A block may be provided, in which case it is called before each cycle is
 # played. The block may take 0 - 4 arguments, which are as follows:
-# - 1st argument: the cycle number that the player is about to play
-# - 2nd argument: the track that's currently playing
-# - 3rd argument: whether the track is muted
-# - 4th argument: the normal optional live_loop argument
+# 1. the cycle number that the player is about to play
+# 2. the track that's currently playing
+# 3. whether the track is muted
+# 4. whether the track was muted in the previous loop. This argument is true on
+#    cycle 0.
+# 5. the normal optional live_loop argument
 # If the block returns a value, it is fed back in the next iteration as the
-# fourth argument.
+# fifth argument.
 # If the block returns a Track instance, the internal Player instance used by
 # the live loop will swap to that track. The swap takes effect immediately; the
 # current iteration of the live_loop will play the new track. The cycle count on
@@ -236,8 +238,8 @@ end
 # If it does sync or sleep, it may cause delays between cycles of the track.
 # Any additional named arguments (e.g. sync: or init:) to this function are
 # passed verbatim to the internal live_loop.
-def track_live_loop(loop_name, track = nil, start_muted: false, midi: nil, player_port: nil, player_channel: nil, cc: nil, cc_port: nil, cc_channel: nil, send_cycle_cues: true, debug: false, **kwargs, &block)
-  raise "Block must take 0 - 4 arguments" if !block.nil? && block.arity > 4
+def track_live_loop(loop_name, track = nil, init: nil, start_muted: false, midi: nil, player_port: nil, player_channel: nil, cc: nil, cc_port: nil, cc_channel: nil, send_cycle_cues: true, debug: false, **kwargs, &block)
+  raise "Block must take 0 - 5 arguments" if !block.nil? && block.arity > 5
 
   track ||= Track.rest
 
@@ -245,11 +247,19 @@ def track_live_loop(loop_name, track = nil, start_muted: false, midi: nil, playe
   cycle_cue_sym = (loop_name.to_s + "_cycle").to_sym
 
   wrapped_block = lambda do |muted, arg|
+    # We're smuggling the previous state of the muted flag through the return
+    # value of wrapped_block, along with the actual return value of the user's
+    # block.
+    was_muted = arg[:was_muted]
+    arg = arg[:block_res]
+
     res = nil
     unless block.nil?
       res = case block.arity
+      when 5
+        block.call(player.cycle, player.track, muted, was_muted, arg)
       when 4
-        block.call(player.cycle, player.track, muted, arg)
+        block.call(player.cycle, player.track, muted, was_muted)
       when 3
         block.call(player.cycle, player.track, muted)
       when 2
@@ -273,12 +283,14 @@ def track_live_loop(loop_name, track = nil, start_muted: false, midi: nil, playe
       player.play
     end
 
-    res
+    { was_muted: muted, block_res: res }
   end
 
+  init_arg = { was_muted: true, block_res: init }
+
   if cc.nil?
-    mutable_live_loop(loop_name, start_muted: start_muted, **kwargs, &wrapped_block)
+    mutable_live_loop(loop_name, start_muted: start_muted, init: init_arg, **kwargs, &wrapped_block)
   else
-    cc_mutable_live_loop(loop_name, start_muted: start_muted, cc: cc, port: cc_port, channel: cc_channel, **kwargs, &wrapped_block)
+    cc_mutable_live_loop(loop_name, start_muted: start_muted, init: init_arg, cc: cc, port: cc_port, channel: cc_channel, **kwargs, &wrapped_block)
   end
 end
