@@ -1201,6 +1201,44 @@ class Track
 
   alias velf_curve with_velf_curve
 
+  # Returns a new track that fades in linearly, via velocity. min is the
+  # starting velocity and max is the final velocity. start specifies at what
+  # percentage through the track to begin the fade; all steps before start will
+  # have a velocity of min, and ones thereafter will linearly increase to max.
+  def fade_in_linear(min = 0.0, max = 1.0, start: 0.0)
+    with_velf_curve(Curves.fade_in_linear(min, max, start))
+  end
+
+  alias fade_in_lin fade_in_linear
+  alias fade_in fade_in_linear
+  alias in_lin fade_in_linear
+
+  # Same as fade_in_linear, but quadratically increases velocity.
+  def fade_in_quad(min = 0.0, max = 1.0, start: 0.0)
+    with_velf_curve(Curves.fade_in_quad(min, max, start))
+  end
+
+  alias in_quad fade_in_quad
+
+  # Returns a new track that fades out linearly, via velocity. max is the
+  # starting velocity and min is the final velocity. start specifies at what
+  # percentage through the track to begin the fade; all steps before start will
+  # have a velocity of max, and ones thereafter will linearly decrease to min.
+  def fade_out_linear(max = 1.0, min = 0.0, start: 0.0)
+    with_velf_curve(Curves.fade_out_linear(max, min, start))
+  end
+
+  alias fade_out_lin fade_out_linear
+  alias fade_out fade_out_linear
+  alias out_lin fade_out_linear
+
+  # Same as fade_in_quad, but quadratically decreases velocity.
+  def fade_out_quad(max = 1.0, min = 0.0, start: 0.0)
+    with_velf_curve(Curves.fade_out_quad(max, min, start))
+  end
+
+  alias out_quad fade_out_quad
+
   def with_octave(new_octave)
     mutate_each_step { |step| step.with_octave(new_octave) }
   end
