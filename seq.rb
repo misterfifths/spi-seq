@@ -57,8 +57,7 @@ class Step
     end
   end
 
-  def mutate(mutations)
-    mutations = mutations.dup
+  def mutate(**mutations)
     note = mutations.delete(:note) || @note
     [:vel, :gate, :prob].each do |ivar|
       mutations[ivar] = send(ivar) unless mutations.has_key?(ivar)
@@ -1383,8 +1382,7 @@ class Track
 
   private
 
-  def mutate(mutations)
-    mutations = mutations.dup
+  def mutate(**mutations)
     grid = mutations.delete(:grid) || @grid
     [:granularity, :timescale].each do |ivar|
       mutations[ivar] = send(ivar) unless mutations.has_key?(ivar)
