@@ -1529,7 +1529,7 @@ class Track
     return x if x.is_a?(Track)
 
     # We can just pass this off to the initializer and let it call gridify.
-    Track.new(x, granularity: @granularity, timescale: @timescale)
+    mutate(grid: x)
   end
 end
 
