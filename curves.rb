@@ -119,7 +119,7 @@ module Curves
       return min_value if x >= 1
 
       # This is the same quadratic as fade_in_quad, just flipped and moved up
-      # so its minimum is at (ramp_down_start, max_value).
+      # so its maximum is at (ramp_down_start, max_value).
       c = Math.sqrt(max_value - min_value) / (1.0 - ramp_down_start)
       max_value - (c * (x - ramp_down_start)) ** 2
     end
