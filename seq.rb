@@ -211,8 +211,7 @@ class Track
   #   will be a Track with three slots, :a1 in the first, :b2 + :c3 in the
   #   second, and :d4 in the third.
   def initialize(gridish, granularity: NoteLength::Eighth, timescale: 1)
-    # TODO: You can't call private class methods from instance methods? Ugh.
-    @grid = Track.send(:gridify, gridish)
+    @grid = Track.gridify(gridish)
     raise "A Track's grid must have at least one slot" if @grid.empty?
     @granularity = NoteLength.normalize(granularity)
     @timescale = timescale
@@ -642,8 +641,7 @@ class Track
         block.call(slot, i, pct)
       end
 
-      # TODO: can't call private class methods from an instance method?
-      new_grid += Track.send(:slotify, new_slot)
+      new_grid += Track.slotify(new_slot)
     end
     mutate(grid: new_grid)
   end
@@ -996,8 +994,7 @@ class Track
   # Returns a new Track with the steps in slot idx replaced with the given
   # steps.
   def replace_slot(idx, new_steps)
-    # TODO: no way to call private class methods from an instance method?
-    new_steps = Track.send(:slotify, new_steps)
+    new_steps = Track.slotify(new_steps)
     new_grid = @grid.dup
     new_grid[idx] = new_steps
     mutate(grid: new_grid)
@@ -1006,8 +1003,7 @@ class Track
   alias set_slot replace_slot
 
   def append_slot(idx, new_steps)
-    # TODO: no way to call private class methods from an instance method?
-    new_slot = @grid[idx] + Track.send(:slotify, new_steps)
+    new_slot = @grid[idx] + Track.slotify(new_steps)
     new_grid = @grid.dup
     new_grid[idx] = new_slot
     mutate(grid: new_grid)
@@ -1116,8 +1112,7 @@ class Track
           block.call(step, i, pct)
         end
 
-        # TODO: can't call private class methods from an instance method?
-        new_slot += Track.send(:slotify, new_step)
+        new_slot += Track.slotify(new_step)
       end
 
       new_slot
@@ -1427,45 +1422,10 @@ class Track
   alias sub sub_note
 
 
-  protected
-
-  # Does a deep dup of the grid, returning a version where the grid itself and
-  # each slot is mutable.
-  def mutable_grid_dup
-    @grid.map { |slot| slot.dup }
-  end
-
-
-  private
-
-  def mutate(**mutations)
-    grid = mutations.delete(:grid) || @grid
-    [:granularity, :timescale].each do |ivar|
-      mutations[ivar] = send(ivar) unless mutations.has_key?(ivar)
-    end
-
-    Track.new(grid, **mutations)
-  end
-
-  def strict_track_merging?
-    defaults = $spi.get(:__track_defaults) || {}
-    defaults[:strict_track_merging] || false
-  end
-
-  def assert_compatible_track(other_track)
-    return unless strict_track_merging?
-
-    if @granularity != other_track.granularity
-      raise "Granularity mismatch: #{@granularity} != #{other_track.granularity}"
-    end
-
-    if @timescale != other_track.timescale
-      raise "Timescale mismatch: #{@timescale} != #{other_track.timescale}"
-    end
-  end
-
-
   ### Track construction helpers
+  # TODO: philosophically I want these to be private class methods, but you
+  # can't call private class methods from instance methods :(. Figure out a way
+  # to deal with that, or maybe just give up and make them instance methods.
 
   # Attempts to convert its argument to a Step. Conversion rules are:
   # - Steps are passed through verbatim.
@@ -1485,8 +1445,6 @@ class Track
       raise "Not a valid value for a Step: #{x.inspect}"
     end
   end
-
-  private_class_method :stepify
 
   # Given a slot (an array of Steps), returns a new slot with at most one Step
   # with each note. If multiple Steps in the input have the same note, one with
@@ -1546,8 +1504,6 @@ class Track
     end
   end
 
-  private_class_method :slotify
-
   # Attempts to convert its argument to a grid (a 2d array of Steps). The
   # returned array and all of its elements will be frozen. Conversion rules:
   # - A single rest (see NoteUtils.rest?) becomes a grid with one rest ([[]]).
@@ -1576,7 +1532,43 @@ class Track
     end
   end
 
-  private_class_method :gridify
+
+  protected
+
+  # Does a deep dup of the grid, returning a version where the grid itself and
+  # each slot is mutable.
+  def mutable_grid_dup
+    @grid.map { |slot| slot.dup }
+  end
+
+
+  private
+
+  def mutate(**mutations)
+    grid = mutations.delete(:grid) || @grid
+    [:granularity, :timescale].each do |ivar|
+      mutations[ivar] = send(ivar) unless mutations.has_key?(ivar)
+    end
+
+    Track.new(grid, **mutations)
+  end
+
+  def strict_track_merging?
+    defaults = $spi.get(:__track_defaults) || {}
+    defaults[:strict_track_merging] || false
+  end
+
+  def assert_compatible_track(other_track)
+    return unless strict_track_merging?
+
+    if @granularity != other_track.granularity
+      raise "Granularity mismatch: #{@granularity} != #{other_track.granularity}"
+    end
+
+    if @timescale != other_track.timescale
+      raise "Timescale mismatch: #{@timescale} != #{other_track.timescale}"
+    end
+  end
 
   # Attempts to convert its argument into a Track. If it is already a Track,
   # it is returned as-is. Otherwise, constructs a new Track which will inherit
