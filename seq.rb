@@ -802,9 +802,18 @@ class Track
 
   # Returns a new track that plays each successive overlapped set of n slots.
   # E.g. when called with n=3 on a track with slots :a :b :c :d :e, the
-  # resulting track will have slots :a :b :c :b :c :d :c :d :e.
-  def each_cons(n)
-    mutate(grid: @grid.each_cons(n).to_a.flatten(1))
+  # resulting track will have slots :a :b :c :b :c :d :c :d :e. If flatten is
+  # false, each overlapped set of slots will be grouped into a slot. For
+  # example, with n=3 and flatten=false, a track with slots :a :b :c :d will
+  # result in a track with three slots: [[:a, :b], [:b, :c], [:c, :d]].
+  def each_cons(n, flatten: true)
+    new_grid = @grid.each_cons(n).to_a
+    if flatten
+      new_grid = new_grid.flatten(1)
+    else
+      new_grid.map!(&:flatten)
+    end
+    mutate(grid: new_grid)
   end
 
   # Returns a new track that plays every permutation of n slots. The order of
