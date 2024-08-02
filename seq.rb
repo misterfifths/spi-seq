@@ -642,15 +642,8 @@ class Track
         block.call(slot, i, pct)
       end
 
-      if NoteUtils.rest?(new_slot)
-        new_grid << []
-      elsif new_slot.length == 0 || !new_slot[0].is_a?(Array)
-        # A 1-d array
-        new_grid << new_slot
-      else
-        # An array of arrays
-        new_grid.concat(new_slot)
-      end
+      # TODO: can't call private class methods from an instance method?
+      new_grid += Track.send(:slotify, new_slot)
     end
     mutate(grid: new_grid)
   end
@@ -1123,13 +1116,8 @@ class Track
           block.call(step, i, pct)
         end
 
-        if NoteUtils.rest?(new_step)
-          next
-        elsif new_step.is_a?(Step)
-          new_slot << new_step
-        else
-          new_slot.concat(new_step)
-        end
+        # TODO: can't call private class methods from an instance method?
+        new_slot += Track.send(:slotify, new_step)
       end
 
       new_slot
