@@ -994,6 +994,8 @@ class Track
   # Returns a new Track with the steps in slot idx replaced with the given
   # steps.
   def replace_slot(idx, new_steps)
+    # TODO: no way to call private class methods from an instance method?
+    new_steps = Track.send(:slotify, new_steps)
     new_grid = @grid.dup
     new_grid[idx] = new_steps
     mutate(grid: new_grid)
