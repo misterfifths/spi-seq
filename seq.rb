@@ -1254,6 +1254,47 @@ class Track
 
   alias out_quad fade_out_quad
 
+  private def taper_slots(taper_final_slot: true, taper_single: false)
+    mutate_each_step do |step, slot_idx|
+      next step if !step.tied? || slot_idx == 0
+
+      prev_slot = @grid[(slot_idx - 1) % num_slots]
+      next_slot = @grid[(slot_idx + 1) % num_slots]
+
+      continuing = prev_slot.any? { |s| s.note == step.note && s.tied? }
+      continues = next_slot.any? { |s| s.note == step.note && s.tied? }
+
+      if (taper_single || continuing) && ((taper_final_slot && slot_idx == num_slots - 1) || !continues)
+        yield step
+      else
+        step
+      end
+    end
+  end
+
+  # Sets the gate on the final step of runs of tied steps with the same note.
+  # The final step must have a gate of 1 for this method to adjust its gate.
+  # If taper_final_slot is true, steps in the final slot of the track will have
+  # their gate adjusted even if their note would continue when the track loops
+  # to slot 0. If taper_single is true, steps that are not continuations of a
+  # tie also have their gate adjusted.
+  def taper_gate(trailing_gate = 0.75, taper_final_slot: true, taper_single: false)
+    taper_slots { |s| s.with_gate(trailing_gate) }
+  end
+
+  # Sets the velocity on the final step of runs of tied steps, in the same
+  # manner as taper_gate. If zero_to_one is true, the velocity is a percentage
+  # between 0 and 1, rather than a MIDI value from 0 - 127. taper_velf is an
+  # alias with zero_to_one set to true.
+  def taper_vel(trailing_vel = 64, taper_final_slot: true, taper_single: false, zero_to_one: false)
+    trailing_vel *= 127 if zero_to_one
+    taper_slots { |s| s.with_vel(trailing_vel) }
+  end
+
+  def taper_velf(trailing_vel = 0.5, taper_final_slot: true, taper_single: false)
+    taper_vel(trailing_vel, taper_final_slot: taper_final_slot, taper_single: taper_single, zero_to_one: true)
+  end
+
   def with_octave(new_octave)
     mutate_each_step { |step| step.with_octave(new_octave) }
   end
