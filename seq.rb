@@ -1003,6 +1003,14 @@ class Track
 
   alias set_slot replace_slot
 
+  def append_slot(idx, new_steps)
+    # TODO: no way to call private class methods from an instance method?
+    new_slot = @grid[idx] + Track.send(:slotify, new_steps)
+    new_grid = @grid.dup
+    new_grid[idx] = new_slot
+    mutate(grid: new_grid)
+  end
+
   # Returns two tracks by extracting Steps for which the block returns true.
   # The block must take 1 to 3 arguments:
   # 1. the Step
