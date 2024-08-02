@@ -49,6 +49,7 @@ module Curves
   # max_value for those after.
   def self.fade_in_linear(min_value = 0.0, max_value = 1.0, ramp_up_start = 0.0)
     min_value = min_value.to_f
+    max_value = max_value.to_f
     ramp_up_start = ramp_up_start.to_f
 
     return lambda do |x|
@@ -72,6 +73,7 @@ module Curves
   # ramp_down_start, and then linearly decreasing values between max_value and
   # min_value for those after.
   def self.fade_out_linear(max_value = 1.0, min_value = 0.0, ramp_down_start = 0.0)
+    max_value = max_value.to_f
     min_value = min_value.to_f
     ramp_down_start = ramp_down_start.to_f
 
@@ -93,6 +95,7 @@ module Curves
   # Same as fade_in_linear, but quadratically increases values.
   def self.fade_in_quad(min_value = 0.0, max_value = 1.0, ramp_up_start = 0.0)
     min_value = min_value.to_f
+    max_value = max_value.to_f
     ramp_up_start = ramp_up_start.to_f
 
     return lambda do |x|
@@ -111,6 +114,7 @@ module Curves
 
   # Same as fade_out_linear, but quadratically decreases values.
   def self.fade_out_quad(max_value = 1.0, min_value = 0.0, ramp_down_start = 0.0)
+    max_value = max_value.to_f
     min_value = min_value.to_f
     ramp_down_start = ramp_down_start.to_f
 
