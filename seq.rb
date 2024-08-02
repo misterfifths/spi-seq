@@ -1465,7 +1465,7 @@ class Track
       end
     end
 
-    steps_by_note.values.freeze
+    steps_by_note.values
   end
 
   private_class_method :dedupe_slot
