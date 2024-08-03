@@ -1441,14 +1441,15 @@ class Track
   #   note and the default values for the other arguments of Step's initializer.
   # - It is an error to pass a rest (as defined by NoteUtils.rest?) to this
   #   function.
-  def self.stepify(x)
+  # def_gate and def_vel will be used for any Steps that need to be constructed.
+  def self.stepify(x, def_gate: 1.0, def_vel: 127)
     raise "A rest cannot be converted to a Step" if NoteUtils.rest?(x)
 
     case x
     when Step
       x
     when Symbol, String, Numeric
-      Step.new(x)
+      Step.new(x, gate: def_gate, vel: def_vel)
     else
       raise "Not a valid value for a Step: #{x.inspect}"
     end
@@ -1489,14 +1490,15 @@ class Track
   #   2. All remaining elements are passed through `stepify`.
   #   3. If more than one of the resulting Steps has the same note, a warning is
   #      printed, and only the Step with the longest gate is chosen.
-  def self.slotify(x)
+  # def_gate and def_vel will be used for any Steps that need to be constructed.
+  def self.slotify(x, def_gate: 1.0, def_vel: 127)
     return [].freeze if NoteUtils.rest?(x)
 
     case x
     when Step
       [x].freeze
     when Symbol, String, Numeric
-      [stepify(x)].freeze
+      [stepify(x, def_gate: def_gate, def_vel: def_vel)].freeze
     # NOTE: 'Enumerable' resolves to SonicPi::RuntimeMethods::Enumerable in this
     # context, which Array does *not* have as a superclass. So we need to use
     # ::Enumerable to get the built-in class.
@@ -1505,7 +1507,7 @@ class Track
     # from (either) Enumerable, so we check for it manually and make sure to use
     # `to_a` before calling Enumerable methods on it.
     when ::Enumerable, SonicPi::Core::SPVector
-      raw_slot = x.to_a.reject { |s| NoteUtils.rest?(s) }.map { |s| stepify(s) }
+      raw_slot = x.to_a.reject { |s| NoteUtils.rest?(s) }.map { |s| stepify(s, def_gate: def_gate, def_vel: def_vel) }
       dedupe_slot(raw_slot).freeze
     else
       raise "Not a valid value for a slot: #{x.inspect}"
@@ -1520,21 +1522,22 @@ class Track
   # - A single Step becomes a grid with one slot containing that step.
   # - Array-like arguments are converted by passing each element through
   #   `slotify`.
-  def self.gridify(x)
+  # def_gate and def_vel will be used for any Steps that need to be constructed.
+  def self.gridify(x, def_gate: 1.0, def_vel: 127)
     return [[].freeze].freeze if NoteUtils.rest?(x)
 
     case x
     when Step
       [[x].freeze].freeze
     when Symbol, String, Numeric
-      [slotify(x)].freeze
+      [slotify(x, def_gate: def_gate, def_vel: def_vel)].freeze
     # See note in slotify about these class selections.
     when ::Enumerable, SonicPi::Core::SPVector
       # NOTE: this will convert non-array child elements into individual slots.
       # E.g. gridify([:a1, :b1]) will turn into [[:a1], [:b1]]. I think that's
       # desirable - it's a sort of 'smart' conversion, preferring mono-like
       # behavior unless notes are explicitly grouped into their own array.
-      x.to_a.map { |s| slotify(s) }.freeze
+      x.to_a.map { |s| slotify(s, def_gate: def_gate, def_vel: def_vel) }.freeze
     else
       raise "Not a valid value for a grid: #{x.inspect}"
     end
