@@ -122,6 +122,9 @@ class Step
     NoteUtils.match?(@note, n)
   end
 
+  # Returns whether this step should play in the given cycle of playback, with
+  # the given set of notes played in the previous slot. This evaluates the
+  # step's probability predicate.
   def should_trigger?(cycle, prev_steps)
     return true if @prob.nil?
     @prob.should_trigger?(cycle, self, prev_steps)
@@ -214,6 +217,8 @@ class Track
     @grid = Track.gridify(gridish)
     raise "A Track's grid must have at least one slot" if @grid.empty?
     @granularity = NoteLength.normalize(granularity)
+
+    raise "Timescale must be a number greater than 0" unless timescale.is_a?(Numeric) && timescale > 0
     @timescale = timescale
   end
 
