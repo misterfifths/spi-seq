@@ -271,18 +271,18 @@ class Track
   # Constructs a track that arpeggiates the given notes. extra_octaves is an
   # array of octave shifts. The arpeggiation will include all the notes from the
   # note array in addition to copies of them with the given octave shifts.
-  # If pulses and slots are given, the arpeggiated notes are spread in a
+  # If pulses and length are given, the arpeggiated notes are spread in a
   # Euclidean rhythm. The track will repeat the Euclidean pattern (while cycling
   # through the arpeggiated notes) however many times is needed to ensure that
   # all the notes are played and that the track loops cleanly.
-  def self.arp(notes, direction = Arp::Up, spread: 0, extra_octaves: [], pulses: nil, slots: nil, granularity: NoteLength::Eighth, gate: 1, vel: 127, timescale: 1)
+  def self.arp(notes, direction = Arp::Up, spread: 0, extra_octaves: [], pulses: nil, length: nil, granularity: NoteLength::Eighth, gate: 1, vel: 127, timescale: 1)
     notes = Arp.arpeggiate(notes, direction, spread: spread, extra_octaves: extra_octaves)
     if pulses.nil?
       grid = notes.map { |n| [Step.new(n, vel: vel, gate: gate)] }
       new(grid, granularity: granularity, timescale: timescale)
     else
-      raise "pulses and slots must both be nil or both be integers" if slots.nil?
-      euclid(notes, pulses, slots, full_cycle: true, granularity: granularity, gate: gate, vel: vel, timescale: timescale)
+      raise "pulses and length must both be nil or both be integers" if length.nil?
+      euclid(notes, pulses, length, full_cycle: true, granularity: granularity, gate: gate, vel: vel, timescale: timescale)
     end
   end
 
