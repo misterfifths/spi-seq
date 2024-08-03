@@ -1276,7 +1276,7 @@ class Track
   # to slot 0. If taper_single is true, steps that are not continuations of a
   # tie also have their gate adjusted.
   def taper_gate(trailing_gate = 0.75, taper_final_slot: true, taper_single: false)
-    taper_slots { |s| s.with_gate(trailing_gate) }
+    taper_slots(taper_final_slot: taper_final_slot, taper_single: taper_single) { |s| s.with_gate(trailing_gate) }
   end
 
   # Sets the velocity on the final step of runs of tied steps, in the same
@@ -1285,7 +1285,7 @@ class Track
   # alias with zero_to_one set to true.
   def taper_vel(trailing_vel = 64, taper_final_slot: true, taper_single: false, zero_to_one: false)
     trailing_vel *= 127 if zero_to_one
-    taper_slots { |s| s.with_vel(trailing_vel) }
+    taper_slots(taper_final_slot: taper_final_slot, taper_single: taper_single) { |s| s.with_vel(trailing_vel) }
   end
 
   def taper_velf(trailing_vel = 0.5, taper_final_slot: true, taper_single: false)
