@@ -1251,6 +1251,9 @@ class Track
 
   alias out_quad fade_out_quad
 
+  # Returns a new track where the final steps in runs of tied steps with the
+  # same note are replaced with the result of the block. Helper for taper_vel
+  # and taper_gate.
   private def taper_slots(taper_final_slot: true, taper_single: false)
     mutate_each_step do |step, slot_idx|
       next step if !step.tied? || slot_idx == 0
