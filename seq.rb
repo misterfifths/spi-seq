@@ -1511,6 +1511,9 @@ class Track
     # and potentially other list types in SP. It unfortunately does not derive
     # from (either) Enumerable, so we check for it manually and make sure to use
     # `to_a` before calling Enumerable methods on it.
+    # Also note that in-place mutation methods (`reject!`, `map!`, e.g.) seem
+    # to be broken on Chord objects, and should be avoided. See Arp.arpeggiate
+    # for some notes.
     when ::Enumerable, SonicPi::Core::SPVector
       raw_slot = x.to_a.reject { |s| NoteUtils.rest?(s) }.map { |s| stepify(s, def_gate: def_gate, def_vel: def_vel) }
       dedupe_slot(raw_slot).freeze

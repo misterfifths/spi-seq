@@ -44,7 +44,14 @@ module Arp
   # result, before notes from the spread.
   def self.arpeggiate(notes, direction, spread: 0, extra_octaves: [])
     orig_notes = notes
-    notes = notes.to_a.dup  # to_a because this might be a SonicPi ring
+    # NOTE: notes might be a Sonic Pi ring, which doesn't have everything from
+    # Enumerable, so we need to call `to_a` on it. But it gets weirder - the
+    # objects returned by `chord` are really tricky. It returns a ring wrapping
+    # a SonicPi::Chord. Calling to_a on that ring just unwraps and returns the
+    # Chord object. Chords are technically subclasses of Array, but they're
+    # kind of broken - in-place mutations like `map!` and `sort!` don't modify
+    # them! So we explicitly call to_a twice here.
+    notes = notes.to_a.to_a.dup
 
     # TODO: where should this apply in relation to spread?
     extra_octaves.each do |octave_shift|
