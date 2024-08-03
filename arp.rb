@@ -61,7 +61,7 @@ module Arp
       # duplicate notes, and do not effect the sorting of the original array.
       # notes added from spread go at the end, in case we're playing in order.
       sorted_notes = notes.sort
-      # TODO: should the spread take into account notes added from itself?
+      # TODO: spread should take into account notes added from itself
       spread = [spread, sorted_notes.length].min
       spread.times do |i|
         new_note = NoteUtils.number(NoteUtils.shift_octave(sorted_notes[i], 1))
