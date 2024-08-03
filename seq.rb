@@ -288,10 +288,15 @@ class Track
 
   # Constructs a track that arpeggiates the given degrees of the tonic note in
   # the given scale. Other arguments are as specified in arp.
-  def self.arp_degrees(tonic, degrees, direction = Arp::Order, scale: :major, spread: 0, extra_octaves: [], granularity: NoteLength::Eighth, gate: 1, vel: 127, timescale: 1)
+  def self.arp_degrees(tonic, degrees, direction = Arp::Order, scale: :major, spread: 0, extra_octaves: [], pulses: nil, length: nil, granularity: NoteLength::Eighth, gate: 1, vel: 127, timescale: 1)
     notes = Arp.arp_degrees(tonic, degrees, direction, scale: scale, spread: spread, extra_octaves: extra_octaves)
-    grid = notes.map { |n| [Step.new(n, vel: vel, gate: gate)] }
-    new(grid, granularity: granularity, timescale: timescale)
+    if pulses.nil?
+      grid = notes.map { |n| [Step.new(n, vel: vel, gate: gate)] }
+      new(grid, granularity: granularity, timescale: timescale)
+    else
+      raise "pulses and length must both be nil or both be integers" if length.nil?
+      euclid(notes, pulses, length, full_cycle: true, granularity: granularity, gate: gate, vel: vel, timescale: timescale)
+    end
   end
 
   # Constructs a track that plays the slots of gridish in a Euclidean rhythm.
