@@ -174,3 +174,7 @@ module Arp
 
   private_class_method :altern_indexes
 end
+
+def arp(*args, **kwargs)
+  Arp.arpeggiate(*args, **kwargs)
+end
