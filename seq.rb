@@ -75,7 +75,7 @@ class Step
   end
 
   def with_velf(new_velf)
-    mutate(vel: (new_velf * 127.0).round)  # this is clamped to 0-127 in the ctor
+    mutate(vel: new_velf * 127)  # this is clamped to 0-127 in the ctor
   end
 
   def with_gate(new_gate)
@@ -370,7 +370,7 @@ class Track
 
   # Returns whether the track consists entirely of rests (i.e., empty slots).
   def empty?
-    @grid.all? { |slot| slot.length == 0 }
+    @grid.all? { |slot| slot.empty? }
   end
 
   alias all_rests? empty?
@@ -839,7 +839,7 @@ class Track
 
   # Returns a new track with all empty slots (rests) removed.
   def compact
-    mutate(grid: @grid.reject { |slot| slot == [] })
+    mutate(grid: @grid.reject { |slot| slot.empty? })
   end
 
   def reverse
@@ -948,7 +948,7 @@ class Track
   # index and a length, or a range.
   def slice(*args)
     s = @grid.slice(*args)
-    s = [s] if s.length == 0 || !s[0].is_a?(Array)
+    s = [s] if s.empty? || !s[0].is_a?(Array)
     mutate(grid: s)
   end
 
