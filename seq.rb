@@ -976,15 +976,21 @@ class Track
   # Returns a new Track with all Steps in every nth slot removed. The duration
   # of the Track does not change; the emptied slots simply become rests. Does
   # nothing if n is zero.
-  def drop_every(n)
+  def drop_every(n, skip_empty: false)
     return self if n == 0
 
     # e.g., drop every 3:
     # keep  | 0 1 - 3 4 - 6 7 - 9
     # drop  |     2     5     8
     # i % 3 | 0 1 2 0 1 2 0 1 2 0
-    new_grid = @grid.map.with_index do |slot, i|
-      i % n == n - 1 ? [] : slot
+    i = 0
+    new_grid = @grid.map do |slot|
+      if skip_empty && slot.empty?
+        []
+      else
+        i += 1
+        (i - 1) % n == n - 1 ? [] : slot
+      end
     end
 
     mutate(grid: new_grid)
