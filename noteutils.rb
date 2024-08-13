@@ -116,16 +116,43 @@ module NoteUtils
     sym(winner)
   end
 
+  # Given a tonic and a scale name, returns an array with two elements:
+  # - the full set of integer MIDI notes (0-127) that belong to the scale
+  # - the index in the array where the tonic can be found
+  def self.full_scale_and_tonic_idx(tonic, name)
+    @__full_scales_cache ||= {}
+
+    key = [tonic, name]
+    val = @__full_scales_cache[key]
+
+    if val.nil?
+      # Note 0 is c-1, and 127 is g9, so if we do 11 octaves from -1, we'll
+      # cover the whole MIDI range.
+      low_tonic = (pitch_class(tonic).to_s + "-1").to_sym
+      full_scale = $spi.scale(low_tonic, name, num_octaves: 11).to_a.reject { |n| n < 0 || n > 127 }
+      tonic_index = full_scale.index(number(tonic))
+      val = [full_scale, tonic_index]
+      @__full_scales_cache[key] = val
+    end
+
+    val
+  end
+
+  private_class_method :full_scale_and_tonic_idx
+
+  # Returns the full set of integer MIDI notes (0-127) that belong to the given
+  # scale with the given tonic.
+  def self.full_scale(tonic, scale_name)
+    return full_scale_and_tonic_idx(tonic, scale_name)[0]
+  end
+
   # Returns a normalized symbol for the given note, snapped to the nearest note
   # in the given scale. root is the root note for the scale and must be a symbol
   # or string for a note without an octave (e.g. :c or :fs). scale is a symbol
   # for one of the scales known to Sonic Pi. The octave parameter, if given, is
   # used to resolve the note parameter. It has no effect on the scale.
   def self.snap_to_scale(note, root, scale, octave: nil)
-    # Note 0 is c-1, and 127 is g9, so if we do 11 octaves from -1, we'll cover
-    # the whole MIDI range.
-    oct_0_root = root.to_s + "-1"
-    snap(note, $spi.scale(oct_0_root, scale, num_octaves: 11), octave: octave)
+    snap(note, full_scale(root, scale), octave: octave)
   end
 
   # Returns true if the given value represents a rest. nil, :r, and :rest are
