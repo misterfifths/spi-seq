@@ -155,6 +155,57 @@ module NoteUtils
     snap(note, full_scale(root, scale), octave: octave)
   end
 
+  # Returns a sort of degree number for the given note in the given scale with
+  # the given tonic. The result is an integer, which may be positive or
+  # negative, representing how many degrees the note is away from the tonic.
+  # Returns nil if the note is not in the scale.
+  def self.degree_number(note, scale_tonic, scale_name)
+    sc, tonic_index = full_scale_and_tonic_idx(scale_tonic, scale_name)
+    note_index = sc.index(number(note))
+    return nil if note_index.nil?
+    note_index - tonic_index
+  end
+
+  private_class_method :degree_number
+
+  # Returns the symbol for a note that is num many degrees away from the tonic
+  # in the given scale. num may be positive or negative.
+  def self.my_degree(num, scale_tonic, scale_name)
+    sc, tonic_idx = full_scale_and_tonic_idx(scale_tonic, scale_name)
+    sym(sc[tonic_idx + num])
+  end
+
+  private_class_method :my_degree
+
+  # Returns an array of note symbols that represent a 4-part harmony for the
+  # give note in the given scale and tonic. position must be 0, 1, or 2, and
+  # determines which of the three possible harmonies is returned. The returned
+  # array will be sorted from low to high, and the given note itself will be
+  # the final element of the array. If note is not in the scale, returns a
+  # single-element array containing just note.
+  # This is based on an article by Neil Bickford (https://www.gathering4gardner.org/g4g14gift/G4G14-NeilBickford-AlgorithmsForMusicalHarmonization.pdf)
+  # which in turn references a paper by Donald Knuth.
+  def self.harmonize(note, scale_tonic, scale_name, position: 0)
+    n = degree_number(note, scale_tonic, scale_name)
+    return [sym(note)] if n.nil?
+
+    degrees = case position
+    when 0
+      [n - 11, n - 4, n - 2, n]
+    when 1
+      [n - 7, n - 5, n - 3, n]
+    when 2
+      [n - 9, n - 5, n - 2, n]
+    else
+      raise "position must be between 0-2 inclusive"
+    end
+
+    # Avoid tritones
+    degrees[0] -= 2 if degrees[0] % 7 == 6
+
+    degrees.map { |d| my_degree(d, scale_tonic, scale_name) }
+  end
+
   # Returns true if the given value represents a rest. nil, :r, and :rest are
   # considered rests.
   def self.rest?(val)
