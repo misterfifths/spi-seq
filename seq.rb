@@ -1362,27 +1362,118 @@ class Track
 
   alias sdown semi_down
 
-  # Return a new track by, for each Step, adding additional Steps with notes
-  # that are the given number of semitones away from the original. offsets
-  # should be an array of integer semitones. It defaults to [-12, 12] - i.e.,
-  # an octave up and down. The new Steps share the velocity, gate, and
-  # probability of the Step from which they were offset. If only is provided,
-  # it should be a note (number, string, or symbol) or an array of same. Only
-  # steps with notes that match one in only will be harmonized, as determined by
-  # NoteUtils.match?.
-  def harmonize(*offsets, only: nil)
-    only = [only] unless only.nil? || only.is_a?(Array)
+  # For each slot, yields to its block a two-element array of:
+  # - the step in the slot being harmonized, or nil if the slot is empty
+  # - an array of notes that harmonize with the note in the step, as given by
+  #   NoteUtils.harmonize. The note from the step itself is not included.
+  #   If the note is not in the given scale, or if the slot is empty, this array
+  #   is empty.
+  private def iter_harmonized_slots(tonic, scale_name, position:, voices: nil)
+    # This is an artificial but pretty sensible limitation.
+    raise 'Only a mono track can be harmonized' unless mono?
 
-    offsets = [-12, 12] if offsets.empty?
-    mutate_each_step do |step|
-      new_steps = [step]
+    raise "position must be 0, 1, 2, or :rand" unless position == :rand || (position >= 0 && position < 3)
+    if voices.is_a?(Numeric)
+      raise "If voices is an integer, it must be 1, 2, or 3" unless [1, 2, 3].contain?(voices)
+    elsif voices.is_a?(Array)
+      raise "If voices is an array, all of its elements must be 1, 2, or 3" unless voices.all? { |v| [1, 2, 3].contain?(v) }
+    elsif !voices.nil?
+      raise "voices must be an integer or an array"
+    end
 
-      if only.nil? || only.any? { |n| step.matches_note?(n) }
-        offsets.each { |offset| new_steps << step.shift_tone(offset) }
+    random_pos = position == :rand
+    position = $spi.rand_i(3) if random_pos
+
+    # Massage the voice argument indices if needed
+    if voices.is_a?(Array)
+      voices = voices.map { |i| 3 - i }
+    end
+
+    @grid.each do |slot|
+      if slot.empty?
+        # Note that this early exit means position does not get incremented/
+        # randomized for rests.
+        yield [nil, []]
+        next
       end
 
-      new_steps
+      s = slot[0]
+
+      notes = NoteUtils.harmonize(s.note, tonic, scale_name, position: position)
+      notes.pop  # Remove the step note itself (which may leave the array empty)
+
+      if voices.is_a?(Numeric)
+        # Take the final voices-many notes (they're lowest->highest)
+        notes = notes.pop(voices)
+      elsif voices.is_a?(Array)
+        notes = notes.values_at(*voices)
+      end
+
+      yield [s, notes]
+
+      if random_pos
+        position = case position
+        when 0
+          $spi.choose([1, 2])
+        when 1
+          $spi.choose([0, 2])
+        when 2
+          $spi.choose([0, 1])
+        end
+      else
+        position = (position + 1) % 3
+      end
     end
+  end
+
+  # Return a new track where each slot has new steps added to it for notes that
+  # harmonize with the existing step in that slot. Can only be called on mono
+  # tracks. Arguments are as described in NoteUtils.harmonize.
+  # position is the starting position to use when harmonizing. It may be 0, 1,
+  # 2, or :rand. If it is an integer, the position will increment for each step.
+  # If it is :rand, random, non-repeating positions will be used.
+  # voices represents which voices of the harmony to include in the results. If
+  # it is an integer, it represents the number of voices to include (from high
+  # to low). If it is an array, it represents individual voices to include
+  # (from high to low; bass is 3 and soprano is 1).
+  # The gate and vel arguments are used when creating new steps for the added
+  # notes.
+  # If a note in the track is not in the given scale, no additional notes will
+  # be added in that slot.
+  def harmonize(tonic, scale_name, position: 0, voices: nil, gate: 1, vel: 127)
+    new_grid = []
+    iter_harmonized_slots(tonic, scale_name, position: position, voices: voices) do |step, notes|
+      if step.nil?
+        new_grid << []
+      else
+        new_slot = notes.map { |n| Step.new(n, gate: gate, vel: vel) }
+        new_slot.unshift(step)
+        new_grid << new_slot
+      end
+    end
+
+    mutate(grid: new_grid)
+  end
+
+  # Returns an array of three new Tracks, each representing a voice harmonized
+  # with the note in the corresponding slot in this track. Can only be called
+  # on mono tracks. The tracks are returned from lowest (bass) to highest
+  # (soprano). Arguments are as described in harmonize.
+  # If a note in the track is not in the given scale, there will be a rest in
+  # the corresponding slots in the returned tracks.
+  def split_harmonize(tonic, scale_name, position: 0, gate: 1, vel: 127)
+    new_grids = [[], [], []]
+    iter_harmonized_slots(tonic, scale_name, position: position) do |step, notes|
+      if step.nil? || notes.empty?
+        new_grids.each { |g| g << [] }
+      else
+        notes.each_with_index do |n, i|
+          new_grids[i] << [Step.new(n, gate: gate, vel:vel)]
+        end
+      end
+    end
+
+    new_grids.map { |g| mutate(grid: g) }
   end
 
   # Return a new track in which each Step has its note snapped to the nearest
