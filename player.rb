@@ -7,8 +7,17 @@ $spi ||= self
 # midi: Specifies the default value for the midi parameter of Player's
 # initializer, used when that parameter is not explicitly passed. May be
 # overridden on a per-Player basis by specifying the parameter.
-def use_player_defaults(midi:)
-  $spi.set(:__player_defaults, { midi: midi })
+# sync: Specifies the default value for the sync parameter of track_live_loops.
+# May be overridden by specifying the parameter manually in the call to
+# track_live_loop. Passing nil as the sync parameter to this function unsets the
+# default.
+def use_player_defaults(midi: nil, sync: :__dummy_sync_sentinel)
+  # `set` hashes become SPMaps, apparently, so we need to call to_h on this.
+  defaults = $spi.get(:__player_defaults).to_h
+  defaults[:midi] = midi unless midi.nil?
+  defaults.delete(:sync) if sync.nil?
+  defaults[:sync] = sync unless sync == :__dummy_sync_sentinel
+  $spi.set(:__player_defaults, defaults)
 end
 
 
@@ -254,8 +263,10 @@ end
 # Note that the internal block that plays the track will sleep, so a user-
 # provided block does not need to sleep or sync, unlike normal live_loop blocks.
 # If it does sync or sleep, it may cause delays between cycles of the track.
-# Any additional named arguments (e.g. sync: or init:) to this function are
-# passed verbatim to the internal live_loop.
+# Any additional named arguments (e.g. delay: or seed:) to this function are
+# passed verbatim to the internal live_loop. If a sync parameter is not
+# specified, the default from use_player_defaults is used, if there is one. You
+# can explicitly use no sync by providing a nil value for the sync parameter.
 def track_live_loop(loop_name, track = nil, init: nil, start_muted: false, midi: nil, player_port: nil, player_channel: nil, cc: nil, cc_port: nil, cc_channel: nil, send_cycle_cues: true, debug: false, **kwargs, &block)
   raise "Block must take 0 - 5 arguments" if !block.nil? && block.arity > 5
 
@@ -263,6 +274,13 @@ def track_live_loop(loop_name, track = nil, init: nil, start_muted: false, midi:
 
   player = Player.new(track, midi: midi, debug: debug, port: player_port, channel: player_channel)
   cycle_cue_sym = (loop_name.to_s + "_cycle").to_sym
+
+  # Use the default sync unless we were passed one explicitly.
+  unless kwargs.member?(:sync)
+    defaults = $spi.get(:__player_defaults) || {}
+    sync = defaults[:sync]
+    kwargs[:sync] = sync unless sync.nil?
+  end
 
   wrapped_block = lambda do |muted, arg|
     # We're smuggling the previous state of the muted flag through the return
