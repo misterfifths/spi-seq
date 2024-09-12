@@ -642,14 +642,8 @@ class Track
         pct = i.to_f / (num_slots - 1)
       end
 
-      new_slot = case block.arity
-      when 1
-        block.call(slot)
-      when 2
-        block.call(slot, i)
-      when 3
-        block.call(slot, i, pct)
-      end
+      args = [slot, i, pct].take(block.arity)
+      new_slot = block.call(*args)
 
       new_grid += Track.slotify(new_slot)
     end
@@ -1049,14 +1043,8 @@ class Track
       slot2 = []
 
       slot.each do |step|
-        should_extract = case block.arity
-        when 1
-          block.call(step)
-        when 2
-          block.call(step, slot)
-        when 3
-          block.call(step, slot, i)
-        end
+        args = [step, slot, i].take(block.arity)
+        should_extract = block.call(*args)
 
         if should_extract
           slot2 << step
@@ -1119,14 +1107,8 @@ class Track
 
       new_slot = []
       slot.each do |step|
-        new_step = case block.arity
-        when 1
-          block.call(step)
-        when 2
-          block.call(step, i)
-        when 3
-          block.call(step, i, pct)
-        end
+        args = [step, i, pct].take(block.arity)
+        new_step = block.call(*args)
 
         new_slot += Track.slotify(new_step)
       end
@@ -1160,12 +1142,8 @@ class Track
     raise "Curve function must be a callable that takes 1-2 arguments" if !curve_func.respond_to?(:call) || curve_func.arity == 0 || curve_func.arity > 2
     # TODO: implement this with mutate_each_slot instead?
     mutate_each_step do |step, slot_idx, pct|
-      gate = case curve_func.arity
-      when 1
-        curve_func.call(pct)
-      when 2
-        curve_func.call(pct, slot_idx)
-      end
+      args = [pct, slot_idx].take(curve_func.arity)
+      gate = curve_func.call(*args)
 
       step.with_gate(gate)
     end
@@ -1204,12 +1182,8 @@ class Track
     raise "Curve function must be a callable that takes 1-2 arguments" if !curve_func.respond_to?(:call) || curve_func.arity == 0 || curve_func.arity > 2
     # TODO: implement this with mutate_each_slot instead?
     mutate_each_step do |step, slot_idx, pct|
-      vel = case curve_func.arity
-      when 1
-        curve_func.call(pct)
-      when 2
-        curve_func.call(pct, slot_idx)
-      end
+      args = [pct, slot_idx].take(curve_func.arity)
+      vel = curve_func.call(*args)
 
       vel *= 127 if zero_to_one  # with_vel will round & clamp this
       step.with_vel(vel)
