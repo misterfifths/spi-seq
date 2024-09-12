@@ -255,20 +255,8 @@ def track_live_loop(loop_name, track = nil, init: nil, start_muted: false, midi:
 
     res = nil
     unless block.nil?
-      res = case block.arity
-      when 5
-        block.call(player.cycle, player.track, muted, was_muted, arg)
-      when 4
-        block.call(player.cycle, player.track, muted, was_muted)
-      when 3
-        block.call(player.cycle, player.track, muted)
-      when 2
-        block.call(player.cycle, player.track)
-      when 1
-        block.call(player.cycle)
-      else
-        block.call
-      end
+      args = [player.cycle, player.track, muted, was_muted, arg].take(block.arity)
+      res = block.call(*args)
     end
 
     if res.is_a?(Track)
