@@ -241,6 +241,9 @@ end
 # The live_loop responds to muting by calling sleep on the player for muted
 # iterations, rather than play. Note that muting takes effect after cycles of
 # playback, not immediately.
+# If fade_in is true, the track fades in linearly (see Track.fade_in) whenever
+# it transitions from muted to unmuted. fade_in may also have the value :quad,
+# in which case the track is faded in with fade_in_quad.
 # If send_cycle_cues is true, immediately before the live_loop plays a cycle of
 # the track, it sends a cue with the name <loop_name>_cycle and a single value,
 # the number of the cycle iteration that's about to play. Cycle cues are not
@@ -267,7 +270,11 @@ end
 # passed verbatim to the internal live_loop. If a sync parameter is not
 # specified, the default from use_player_defaults is used, if there is one. You
 # can explicitly use no sync by providing a nil value for the sync parameter.
-def track_live_loop(loop_name, track = nil, init: nil, start_muted: false, midi: nil, player_port: nil, player_channel: nil, cc: nil, cc_port: nil, cc_channel: nil, send_cycle_cues: true, debug: false, **kwargs, &block)
+def track_live_loop(loop_name, track = nil, start_muted: false, fade_in: false,
+                    midi: nil, player_port: nil, player_channel: nil,
+                    cc: nil, cc_port: nil, cc_channel: nil,
+                    send_cycle_cues: true, debug: false,
+                    init: nil, **kwargs, &block)
   raise "Block must take 0 - 5 arguments" if !block.nil? && block.arity > 5
 
   track ||= Track.rest
@@ -283,11 +290,16 @@ def track_live_loop(loop_name, track = nil, init: nil, start_muted: false, midi:
   end
 
   wrapped_block = lambda do |muted, arg|
-    # We're smuggling the previous state of the muted flag through the return
-    # value of wrapped_block, along with the actual return value of the user's
-    # block.
+    # We're smuggling some state between loops via our return value, along with
+    # the actual return value of the user's block.
     was_muted = arg[:was_muted]
+    unfaded_track = arg[:unfaded_track]
     arg = arg[:block_res]
+
+    # If we just finished a fade-in, swap back to the normal version so we don't
+    # tell the user's block about it.
+    player.swap_track(unfaded_track) unless unfaded_track.nil?
+    unfaded_track = nil
 
     res = nil
     unless block.nil?
@@ -304,6 +316,19 @@ def track_live_loop(loop_name, track = nil, init: nil, start_muted: false, midi:
       player.swap_track(res)
     end
 
+    # Now that we have the final thing we're going to play, swap it out for the
+    # faded-in version if we need to.
+    if !muted && was_muted && fade_in
+      $spi.puts("#{loop_named} player: fading in track") if @debug
+      unfaded_track = player.track
+      if fade_in == :quad
+        faded_track = player.track.fade_in_quad
+      else
+        faded_track = player.track.fade_in
+      end
+      player.swap_track(faded_track)
+    end
+
     if muted
       player.sleep
     else
@@ -311,7 +336,7 @@ def track_live_loop(loop_name, track = nil, init: nil, start_muted: false, midi:
       player.play
     end
 
-    { was_muted: muted, block_res: res }
+    { unfaded_track: unfaded_track, was_muted: muted, block_res: res }
   end
 
   init_arg = { was_muted: true, block_res: init }
