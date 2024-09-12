@@ -206,6 +206,23 @@ class Player
 end
 
 
+# Given a proc and a hash of keyword arguments, returns a new hash containing
+# only the members of the hash that are valid keyword arguments for the proc.
+# If the proc takes a double-star **kwargs argument, the hash is not filtered.
+def __filter_kwargs_for_proc(proc, kwargs)
+  params = proc.parameters
+  return {} if params.empty?
+
+  # If there's a **kwargs param, just pass everything.
+  return kwargs if params.last[0] == :keyrest
+
+  # We want the key names from parameters that look like [:key, :keyname] or
+  # [:keyreq, :keyname].
+  key_args = params.filter { |p| [:key, :keyreq].member?(p[0]) }.map { |p| p[1] }
+  kwargs.filter { |k, _| key_args.member?(k) }
+end
+
+
 # Create a live_loop that plays the given track. Takes largely same arguments as
 # cc_mutable_live_loop, with the exception that cc may be nil (the default), in
 # which case the live_loop is not mutable by CCs. Also the port and channel
@@ -220,13 +237,14 @@ end
 # the number of the cycle iteration that's about to play. Cycle cues are not
 # sent while the track is muted.
 # A block may be provided, in which case it is called before each cycle is
-# played. The block may take 0 - 4 arguments, which are as follows:
-# 1. the cycle number that the player is about to play
-# 2. the track that's currently playing
-# 3. whether the track is muted
+# played. The block may take 0 - 4 arguments, which are as follows. The block
+# may also accept keyword arguments by the names given below.
+# 1. the cycle number that the player is about to play (keyword: cycle)
+# 2. the track that's currently playing (keyword: track)
+# 3. whether the track is muted (keyword: muted)
 # 4. whether the track was muted in the previous loop. This argument is true on
-#    cycle 0.
-# 5. the normal optional live_loop argument
+#    cycle 0. (keyword: was_muted)
+# 5. the normal optional live_loop argument (keyword: arg)
 # If the block returns a value, it is fed back in the next iteration as the
 # fifth argument.
 # If the block returns a Track instance, the internal Player instance used by
@@ -256,7 +274,11 @@ def track_live_loop(loop_name, track = nil, init: nil, start_muted: false, midi:
     res = nil
     unless block.nil?
       args = [player.cycle, player.track, muted, was_muted, arg].take(block.arity)
-      res = block.call(*args)
+
+      block_kwargs = { cycle: player.cycle, track: player.track, muted: muted, was_muted: was_muted, arg: arg }
+      block_kwargs = __filter_kwargs_for_proc(block, block_kwargs)
+
+      res = block.call(*args, **block_kwargs)
     end
 
     if res.is_a?(Track)
