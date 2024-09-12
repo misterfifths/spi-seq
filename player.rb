@@ -244,6 +244,11 @@ end
 # If fade_in is true, the track fades in linearly (see Track.fade_in) whenever
 # it transitions from muted to unmuted. fade_in may also have the value :quad,
 # in which case the track is faded in with fade_in_quad.
+# If fade_out is true, the track fades out linearly (see Track.fade_out) when
+# it transitions from unmuted to muted. NOTE: This happens *after* the track
+# transitions to muted. That is, tracks that are set to fade out will actually
+# play for one additional cycle after they become muted, during which they will
+# fade out. Like fade_in, fade_out may also have the value :quad.
 # If send_cycle_cues is true, immediately before the live_loop plays a cycle of
 # the track, it sends a cue with the name <loop_name>_cycle and a single value,
 # the number of the cycle iteration that's about to play. Cycle cues are not
@@ -270,7 +275,8 @@ end
 # passed verbatim to the internal live_loop. If a sync parameter is not
 # specified, the default from use_player_defaults is used, if there is one. You
 # can explicitly use no sync by providing a nil value for the sync parameter.
-def track_live_loop(loop_name, track = nil, start_muted: false, fade_in: false,
+def track_live_loop(loop_name, track = nil, start_muted: false,
+                    fade_in: false, fade_out: false,
                     midi: nil, player_port: nil, player_channel: nil,
                     cc: nil, cc_port: nil, cc_channel: nil,
                     send_cycle_cues: true, debug: false,
@@ -296,7 +302,7 @@ def track_live_loop(loop_name, track = nil, start_muted: false, fade_in: false,
     unfaded_track = arg[:unfaded_track]
     arg = arg[:block_res]
 
-    # If we just finished a fade-in, swap back to the normal version so we don't
+    # If we just finished a fade, swap back to the normal version so we don't
     # tell the user's block about it.
     player.swap_track(unfaded_track) unless unfaded_track.nil?
     unfaded_track = nil
@@ -316,8 +322,10 @@ def track_live_loop(loop_name, track = nil, start_muted: false, fade_in: false,
       player.swap_track(res)
     end
 
+    fading_out = false
+
     # Now that we have the final thing we're going to play, swap it out for the
-    # faded-in version if we need to.
+    # faded version if we need to.
     if !muted && was_muted && fade_in
       $spi.puts("#{loop_named} player: fading in track") if @debug
       unfaded_track = player.track
@@ -327,9 +335,19 @@ def track_live_loop(loop_name, track = nil, start_muted: false, fade_in: false,
         faded_track = player.track.fade_in
       end
       player.swap_track(faded_track)
+    elsif muted && !was_muted && fade_out
+      fading_out = true
+      $spi.puts("#{loop_named} player: fading out track") if @debug
+      unfaded_track = player.track
+      if fade_out == :quad
+        faded_track = player.track.fade_out_quad
+      else
+        faded_track = player.track.fade_out
+      end
+      player.swap_track(faded_track)
     end
 
-    if muted
+    if muted && !fading_out
       player.sleep
     else
       $spi.cue(cycle_cue_sym, player.cycle) if send_cycle_cues
