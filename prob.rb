@@ -89,19 +89,8 @@ class Prob
   # Evaluates the probability function for the given step in the given cycle of
   # the Track. Returns true if the step should trigger.
   def should_trigger?(cycle, step, prev_steps)
-    case @callable.arity
-    when 0
-      res = @callable.call
-    when 1
-      res = @callable.call(cycle)
-    when 2
-      res = @callable.call(cycle, step)
-    when 3
-      res = @callable.call(cycle, step, prev_steps)
-    end
-
-    # $spi.puts("prob(#{step.inspect}, cycle=#{cycle}) = #{res}")
-    res
+    args = [cycle, step, prev_steps].take(@callable.arity)
+    @callable.call(*args)
   end
 
   def to_s
