@@ -125,9 +125,9 @@ class Step
   # Returns whether this step should play in the given cycle of playback, with
   # the given set of notes played in the previous slot. This evaluates the
   # step's probability predicate.
-  def should_trigger?(cycle, prev_steps)
+  def should_trigger?(cycle, fill, prev_steps)
     return true if @prob.nil?
-    @prob.should_trigger?(cycle, self, prev_steps)
+    @prob.should_trigger?(cycle, fill, self, prev_steps)
   end
 
   def inspect
@@ -415,9 +415,10 @@ class Track
   # played slot. prev_steps should be nil or empty when playback is beginning.
   # cycle is the number of times the Track has played in its entirety (used to
   # evaluate Step trigger probabilities).
+  # If fill is true, steps with the 'fill' probability will be triggered.
   # Intended to be called iteratively, incrementing i and the cycle, and feeding
   # back playing and tied steps from the return value as prev_steps.
-  def steps_at_slot(i, prev_steps:, cycle:)
+  def steps_at_slot(i, prev_steps:, cycle:, fill:)
     # To support changing the playhead direction and swapping between Tracks,
     # it is important that this code does not assume anything about the order
     # in which slots were or will be played. It must base its logic solely on
@@ -430,7 +431,7 @@ class Track
     ended_steps = []
 
     prev_steps ||= []
-    cur_steps = @grid[i % num_slots].filter { |step| step.should_trigger?(cycle, prev_steps) }
+    cur_steps = @grid[i % num_slots].filter { |step| step.should_trigger?(cycle, fill, prev_steps) }
 
     # distinguish between tied notes and newly started ones
     cur_steps.each do |step|

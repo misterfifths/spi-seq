@@ -26,8 +26,12 @@ end
 # cases like a drunk walk.
 # TODO: probably special-case Steps with a 0 gate
 # TODO: swing?
+# The fill attribute controls whether steps with the 'fill' probability are
+# played. It may be changed at any point, and will take effect when the next
+# slot is played.
 class Player
   attr_reader :midi, :track, :cycle, :channel, :port
+  attr_accessor :fill
 
   def initialize(track, midi: nil, channel: nil, port: nil, debug: false)
     @track = track
@@ -40,6 +44,8 @@ class Player
     @midi_spi_kwargs[:port] = port unless port.nil?
 
     @debug = debug
+
+    @fill = false
 
     # These track the current synth nodes or MIDI notes that are playing. Note
     # that steps with a gate < 1 that do not continue a tie are not added to
@@ -114,7 +120,7 @@ class Player
     # most recently played steps in @prev_steps. The next steps may not come
     # from slot i+1, and the previous ones may not have come from slot i-1. In
     # fact they may not even be from this Track, if the track is swapped.
-    new_steps, tied_steps, ended_steps = @track.steps_at_slot(i, prev_steps: @prev_steps, cycle: @cycle)
+    new_steps, tied_steps, ended_steps = @track.steps_at_slot(i, prev_steps: @prev_steps, cycle: @cycle, fill: @fill)
 
     if @debug
       $spi.puts "@ slot=#{i} cycle=#{@cycle}"
@@ -249,6 +255,10 @@ end
 # transitions to muted. That is, tracks that are set to fade out will actually
 # play for one additional cycle after they become muted, during which they will
 # fade out. Like fade_in, fade_out may also have the value :quad.
+# If fill_cc is provided, a CC message with that number will control whether the
+# player is in fill mode. A value of 127 turns on fill, and any other value
+# turns it off. Unlike muting, fill takes effect immediately, not at the start
+# of a new cycle.
 # If send_cycle_cues is true, immediately before the live_loop plays a cycle of
 # the track, it sends a cue with the name <loop_name>_cycle and a single value,
 # the number of the cycle iteration that's about to play. Cycle cues are not
@@ -278,7 +288,7 @@ end
 def track_live_loop(loop_name, track = nil, start_muted: false,
                     fade_in: false, fade_out: false,
                     midi: nil, player_port: nil, player_channel: nil,
-                    cc: nil, cc_port: nil, cc_channel: nil,
+                    cc: nil, fill_cc: nil, cc_port: nil, cc_channel: nil,
                     send_cycle_cues: true, debug: false,
                     init: nil, **kwargs, &block)
   raise "Block must take 0 - 5 arguments" if !block.nil? && block.arity > 5
@@ -287,6 +297,26 @@ def track_live_loop(loop_name, track = nil, start_muted: false,
 
   player = Player.new(track, midi: midi, debug: debug, port: player_port, channel: player_channel)
   cycle_cue_sym = (loop_name.to_s + "_cycle").to_sym
+
+  if fill_cc
+    _cc_port, _cc_channel = __resolve_cc_port_and_channel(cc_port, cc_channel)
+    cc_watcher_loop_name = ("__live_loop_" + loop_name.to_s + "_cc_fill_watcher").to_sym
+
+    $spi.live_loop(cc_watcher_loop_name) do
+      $spi.use_real_time
+
+      # TODO: could support arrays of ports/channels by constructing {x,y,z}-style
+      # strings for the path here.
+      incoming_cc, cc_val = $spi.sync("/midi:#{_cc_port}:#{_cc_channel}/control_change")
+      if incoming_cc == fill_cc
+        player.fill = cc_val == 127
+        $spi.puts("[cc fill control] CC #{cc} = #{cc_val} -> #{player.fill ? '' : 'un'}setting fill for live loop #{loop_name}")
+      end
+    end
+
+    $spi.puts "[cc fill control] sending default CC #{fill_cc} value 0 for live loop #{loop_name}"
+    $spi.midi_cc(cc, 0, port: _cc_port, channel: _cc_channel)
+  end
 
   # Use the default sync unless we were passed one explicitly.
   unless kwargs.member?(:sync)

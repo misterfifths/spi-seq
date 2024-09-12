@@ -4,10 +4,11 @@ class Prob
   # Use a custom trigger probability predicate. The predicate must respond to
   # call and arity, and must have an arity between 0 and 3 inclusive. It will be
   # called with arguments based on its arity:
-  # - Arity 1: will be called with the cycle number
-  # - Arity 2: will be called with the cycle number and the Step.
-  # - Arity 3: will be called with the cycle number, the Step, and an array of
-  #   Steps that were played in the slot immediately prior to the current one.
+  # 1. cycle number
+  # 2. a boolean indicating whether fill mode is active
+  # 3. the Step
+  # 4. an array of Steps that were played in the slot immediately prior to the
+  #    current one
   # The predicate should return true if the Step should trigger.
   def self.custom(callable)
     new(callable, "custom")
@@ -60,18 +61,18 @@ class Prob
 
   # Step will trigger if any step triggered in the previously played slot.
   def self.pre
-    new(->(_, _, prev_steps) { prev_steps.length != 0 }, "pre" )
+    new(->(_, _, _, prev_steps) { prev_steps.length != 0 }, "pre" )
   end
 
   # Step will trigger if no step triggered in the previously played slot.
   def self.not_pre
-    new(->(_, _, prev_steps) { prev_steps.length == 0 }, "!pre" )
+    new(->(_, _, _, prev_steps) { prev_steps.length == 0 }, "!pre" )
   end
 
   # Step will trigger if a step triggered in the previously played slot with the
   # same note as this step.
   def self.pre_same_note
-    pred = lambda do |_, step, prev_steps|
+    pred = lambda do |_, _, step, prev_steps|
       prev_steps.any? { |prev_step| prev_step.note == step.note }
     end
     new(pred, "pre same note")
@@ -80,16 +81,20 @@ class Prob
   # Step will trigger only if none of the steps that triggered in the previously
   # played slot had the same note as this step.
   def self.not_pre_same_note
-    pred = lambda do |_, step, prev_steps|
+    pred = lambda do |_, _, step, prev_steps|
       prev_steps.all? { |prev_step| prev_step.note != step.note }
     end
     new(pred, "!pre same note")
   end
 
+  def self.fill
+    new(->(_, fill) { fill }, "fill")
+  end
+
   # Evaluates the probability function for the given step in the given cycle of
   # the Track. Returns true if the step should trigger.
-  def should_trigger?(cycle, step, prev_steps)
-    args = [cycle, step, prev_steps].take(@callable.arity)
+  def should_trigger?(cycle, fill, step, prev_steps)
+    args = [cycle, fill, step, prev_steps].take(@callable.arity)
     @callable.call(*args)
   end
 
