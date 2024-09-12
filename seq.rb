@@ -1237,6 +1237,22 @@ class Track
 
   alias out_quad fade_out_quad
 
+  # Returns a new track where every step has the 'fill' probability. Or, if the
+  # argument is false, a new track where all steps with the 'fill' probability
+  # have their probability cleared (steps with other probabilities are
+  # unchanged).
+  def fill(fill = true)
+    mutate_each_step do |step|
+      if fill
+        step.with_prob(Prob.fill)
+      elsif step.prob == Prob.fill
+        step.with_prob(nil)
+      else
+        step
+      end
+    end
+  end
+
   # Returns a new track where the final steps in runs of tied steps with the
   # same note are replaced with the result of the block. Helper for taper_vel
   # and taper_gate.
