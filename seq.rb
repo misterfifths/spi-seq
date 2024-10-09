@@ -1139,8 +1139,18 @@ class Track
   # - the index of the slot in the Track
   # curve_func should return a floating point value 0-1 that will be used for
   # all Steps in the slot at that percentage/index.
-  def with_gate_curve(curve_func)
+  # If min or max is provided, the curve function will be scaled via
+  # Curves.scale so that it falls in the given range. If only one of min or max
+  # is provided, the other defaults to the respective endpoint of the range 0-1.
+  def with_gate_curve(curve_func, min: nil, max: nil)
     raise "Curve function must be a callable that takes 1-2 arguments" if !curve_func.respond_to?(:call) || curve_func.arity == 0 || curve_func.arity > 2
+
+    if !min.nil? || !max.nil?
+      min = 0 if min.nil?
+      max = 1 if max.nil?
+      curve_func = Curves.scale(curve_func, min, max)
+    end
+
     # TODO: implement this with mutate_each_slot instead?
     mutate_each_step do |step, slot_idx, pct|
       args = [pct, slot_idx].take(curve_func.arity)
@@ -1179,8 +1189,24 @@ class Track
   #   to a velocity value between 0 and 127, inclusive.
   # - If zero_to_one is false, an integer between 0 and 127, inclusive.
   # with_velf_curve is an alias where zero_to_one is true.
-  def with_vel_curve(curve_func, zero_to_one: false)
+  # If min or max is provided, the curve function will be scaled via
+  # Curves.scale so that it falls in the given range. If only one of min or max
+  # is provided, the other defaults to the respective endpoint of the range of
+  # the curve function (0-127 if zero_to_one is false, otherwise 0-1).
+  def with_vel_curve(curve_func, zero_to_one: false, min: nil, max: nil)
     raise "Curve function must be a callable that takes 1-2 arguments" if !curve_func.respond_to?(:call) || curve_func.arity == 0 || curve_func.arity > 2
+
+    if !min.nil? || !max.nil?
+      min = 0 if min.nil?
+      if zero_to_one
+        max = 1 if max.nil?
+      else
+        max = 127 if max.nil?
+      end
+
+      curve_func = Curves.scale(curve_func, min, max)
+    end
+
     # TODO: implement this with mutate_each_slot instead?
     mutate_each_step do |step, slot_idx, pct|
       args = [pct, slot_idx].take(curve_func.arity)
@@ -1193,8 +1219,8 @@ class Track
 
   alias vel_curve with_vel_curve
 
-  def with_velf_curve(curve_func)
-    with_vel_curve(curve_func, zero_to_one: true)
+  def with_velf_curve(curve_func, min: nil, max: nil)
+    with_vel_curve(curve_func, zero_to_one: true, min: min, max: max)
   end
 
   alias velf_curve with_velf_curve
