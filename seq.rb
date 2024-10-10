@@ -138,6 +138,20 @@ class Step
     end
     "<Step #{@note}/#{@note_number} vel=#{@vel} gate=#{@gate}#{prob_desc}>"
   end
+
+  def repr
+    ctor_args = {}
+    ctor_args[:vel] = "#{@vel}" unless @vel == 127
+    ctor_args[:gate] = "#{@gate}" unless @gate == 1.0
+    ctor_args[:prob] = "#{@prob.repr}" unless @prob.nil?  # prob.repr may throw
+
+    if ctor_args.empty?
+      ":#{@note}"
+    else
+      kwargs = ctor_args.map { |k, v| "#{k}: #{v}" }.join(", ")
+      "S(:#{@note}, #{kwargs})"
+    end
+  end
 end
 
 def S(*args, **kwargs)
@@ -464,6 +478,45 @@ class Track
       slot.each { |step| res += "  #{step.inspect}\n" }
     end
     res
+  end
+
+  def repr(group: 8)
+    slot_line_indent = "    "  # to align with 'T([  '
+
+    slot_reprs = @grid.map do |slot|
+      if slot.empty?
+        ":r"
+      elsif slot.length == 1
+        slot[0].repr
+      else
+        "[" + slot.map { |step| step.repr }.join(", ") + "]"
+      end
+    end
+
+    if group.nil?
+      grouped_slot_reprs = [slot_reprs]
+    else
+      grouped_slot_reprs = slot_reprs.each_slice(group).to_a
+    end
+
+    slot_repr_lines = grouped_slot_reprs.length
+    total_slot_repr = grouped_slot_reprs.map { |chunk| chunk.join(", ") }.join("\n#{slot_line_indent}")
+
+    ctor_args = {}
+    ctor_args[:granularity] = @granularity.repr unless @granularity == NoteLength::Eighth
+    ctor_args[:timescale] = @timescale unless @timescale == 1
+
+    if ctor_args.empty?
+      kwargs = ""
+    else
+      kwargs = ", " + ctor_args.map { |k, v| "#{k}: #{v}" }.join(", ")
+    end
+
+    if slot_repr_lines > 1
+      "T([\n#{slot_line_indent}#{total_slot_repr}\n]#{kwargs})"
+    else
+      "T([#{total_slot_repr}]#{kwargs})"
+    end
   end
 
 

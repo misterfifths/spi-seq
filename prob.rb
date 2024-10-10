@@ -11,24 +11,24 @@ class Prob
   #    current one
   # The predicate should return true if the Step should trigger.
   def self.custom(callable)
-    new(callable, "custom")
+    new(callable, "custom", nil)
   end
 
   # Step will trigger with the given probability (0-1 inclusive).
   def self.chance(p)
-    new(->{ $spi.rand < p }, "#{p.round(2)}")
+    new(->{ $spi.rand < p }, "#{p.round(2)}", "chance(#{p})")
   end
 
   # Step will trigger with a probablity of 1 in n.
   def self.one_in(n)
-    new(->{ $spi.one_in(n) }, "one in #{n}")
+    new(->{ $spi.one_in(n) }, "one in #{n}", "one_in(#{n})")
   end
 
   # Step is guaranteed to trigger the xth cycle out of each set of y cycles. x
   # should be <= y. For example, x_of_y(3, 4) means that the Step will trigger
   # on the third of every four cycles.
   def self.x_of_y(x, y)
-    new(->(cycle) { cycle % y == x - 1 }, "#{x}|#{y}")
+    new(->(cycle) { cycle % y == x - 1 }, "#{x}|#{y}", "x_of_y(#{x}, #{y})")
   end
 
   # Step will trigger every other cycle, beginning with the first. Equivalent to
@@ -46,27 +46,27 @@ class Prob
   # The inverse of x_of_y - the Step will trigger on every cycle except for the
   # xth out of every y cycles.
   def self.not_x_of_y(x, y)
-    new(->(cycle) { cycle % y != x - 1 }, "!#{x}|#{y}")
+    new(->(cycle) { cycle % y != x - 1 }, "!#{x}|#{y}", "not_x_of_y(#{x}, #{y})")
   end
 
   # Step will trigger only on the first cycle.
   def self.first
-    new(->(cycle) { cycle == 0 }, "first")
+    new(->(cycle) { cycle == 0 }, "first", "first")
   end
 
   # Step will trigger on every cycle except the first.
   def self.not_first
-    new(->(cycle) { cycle != 0 }, "!first")
+    new(->(cycle) { cycle != 0 }, "!first", "not_first")
   end
 
   # Step will trigger if any step triggered in the previously played slot.
   def self.pre
-    new(->(_, _, _, prev_steps) { prev_steps.length != 0 }, "pre" )
+    new(->(_, _, _, prev_steps) { prev_steps.length != 0 }, "pre", "pre")
   end
 
   # Step will trigger if no step triggered in the previously played slot.
   def self.not_pre
-    new(->(_, _, _, prev_steps) { prev_steps.length == 0 }, "!pre" )
+    new(->(_, _, _, prev_steps) { prev_steps.length == 0 }, "!pre", "not_pre")
   end
 
   # Step will trigger if a step triggered in the previously played slot with the
@@ -75,7 +75,7 @@ class Prob
     pred = lambda do |_, _, step, prev_steps|
       prev_steps.any? { |prev_step| prev_step.note == step.note }
     end
-    new(pred, "pre same note")
+    new(pred, "pre same note", "pre_same_note")
   end
 
   # Step will trigger only if none of the steps that triggered in the previously
@@ -84,11 +84,11 @@ class Prob
     pred = lambda do |_, _, step, prev_steps|
       prev_steps.all? { |prev_step| prev_step.note != step.note }
     end
-    new(pred, "!pre same note")
+    new(pred, "!pre same note", "not_pre_same_note")
   end
 
   def self.fill
-    new(->(_, fill) { fill }, "fill")
+    new(->(_, fill) { fill }, "fill", "fill")
   end
 
   # Evaluates the probability function for the given step in the given cycle of
@@ -106,10 +106,15 @@ class Prob
     "<Prob #{self}>"
   end
 
+  def repr
+    raise "cannot get code representation of probability #{self}" if @repr.nil?
+    "Prob.#{@repr}"
+  end
+
 
   private
 
-  def initialize(callable, desc)
+  def initialize(callable, desc, repr)
     if callable.respond_to?(:call) && callable.respond_to?(:arity) && callable.arity <= 3
       @callable = callable
     else
@@ -117,5 +122,6 @@ class Prob
     end
 
     @desc = desc
+    @repr = repr
   end
 end

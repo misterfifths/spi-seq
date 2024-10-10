@@ -170,6 +170,10 @@ class NoteLength
     "<NoteLength #{self}>"
   end
 
+  def repr
+    ":#{@sym}"
+  end
+
 
   protected
 
