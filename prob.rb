@@ -91,6 +91,10 @@ class Prob
     new(->(_, fill) { fill }, "fill", "fill")
   end
 
+  def self.not_fill
+    new(->(_, fill) { !fill }, "!fill", "not_fill")
+  end
+
   # Evaluates the probability function for the given step in the given cycle of
   # the Track. Returns true if the step should trigger.
   def should_trigger?(cycle, fill, step, prev_steps)
