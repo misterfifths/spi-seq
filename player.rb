@@ -348,7 +348,7 @@ def track_live_loop(loop_name, track = nil, start_muted: false,
     end
 
     if res.is_a?(Track)
-      $spi.puts("#{loop_name} player: swapping track on cycle #{player.cycle}") if @debug
+      $spi.puts("#{loop_name} player: swapping track on cycle #{player.cycle}") if debug
       player.swap_track(res)
     end
 
@@ -357,7 +357,7 @@ def track_live_loop(loop_name, track = nil, start_muted: false,
     # Now that we have the final thing we're going to play, swap it out for the
     # faded version if we need to.
     if !muted && was_muted && fade_in
-      $spi.puts("#{loop_named} player: fading in track") if @debug
+      $spi.puts("#{loop_named} player: fading in track") if debug
       unfaded_track = player.track
       if fade_in == :quad
         faded_track = player.track.fade_in_quad
@@ -367,7 +367,7 @@ def track_live_loop(loop_name, track = nil, start_muted: false,
       player.swap_track(faded_track)
     elsif muted && !was_muted && fade_out
       fading_out = true
-      $spi.puts("#{loop_named} player: fading out track") if @debug
+      $spi.puts("#{loop_named} player: fading out track") if debug
       unfaded_track = player.track
       if fade_out == :quad
         faded_track = player.track.fade_out_quad
