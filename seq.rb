@@ -699,7 +699,7 @@ class Track
       args = [slot, i, pct].take(block.arity)
       new_slot = block.call(*args)
 
-      new_grid += Track.slotify(new_slot)
+      new_grid << Track.slotify(new_slot)
     end
     mutate(grid: new_grid)
   end
