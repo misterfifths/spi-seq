@@ -288,15 +288,16 @@ class Track
   # If pulses and length are given, the arpeggiated notes are spread in a
   # Euclidean rhythm. The track will repeat the Euclidean pattern (while cycling
   # through the arpeggiated notes) however many times is needed to ensure that
-  # all the notes are played and that the track loops cleanly.
-  def self.arp(notes, direction = Arp::Up, spread: 0, extra_octaves: [], pulses: nil, length: nil, granularity: NoteLength::Eighth, gate: 1, vel: 127, timescale: 1)
+  # all the notes are played and that the track loops cleanly, unless full_cycle
+  # is false. The rotate parameter controls rotation of the Euclidean pattern.
+  def self.arp(notes, direction = Arp::Up, spread: 0, extra_octaves: [], pulses: nil, length: nil, rotate: 0, full_cycle: true, granularity: NoteLength::Eighth, gate: 1, vel: 127, timescale: 1)
     notes = Arp.arpeggiate(notes, direction, spread: spread, extra_octaves: extra_octaves)
     if pulses.nil?
       grid = notes.map { |n| [Step.new(n, vel: vel, gate: gate)] }
       new(grid, granularity: granularity, timescale: timescale)
     else
       raise "pulses and length must both be nil or both be integers" if length.nil?
-      euclid(notes, pulses, length, full_cycle: true, granularity: granularity, gate: gate, vel: vel, timescale: timescale)
+      euclid(notes, pulses, length, rotate: rotate, full_cycle: full_cycle, granularity: granularity, gate: gate, vel: vel, timescale: timescale)
     end
   end
 
