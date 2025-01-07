@@ -5,20 +5,22 @@ $spi ||= self
 # BPM. Sends a MIDI start message on the first iteration if send_start is true.
 # Note that the channel argument is only relevant if send_start or send_start is
 # true; clock messages are not per-channel.
-def midi_clock_live_loop(loop_name = :midi_clock, send_start: true, send_stop: true, port: nil, start_port: nil, start_channel: nil)
+def midi_clock_live_loop(loop_name = :midi_clock, send_start: true, send_stop: true, port: nil, start_port: nil, start_channel: nil, auto_cue: false)
   beat_kwargs = port.nil? ? {} : { port: port }
 
   start_stop_kwargs = {}
   start_stop_kwargs[:port] = start_port unless start_port.nil?
   start_stop_kwargs[:channel] = start_channel unless start_channel.nil?
 
-  $spi.live_loop loop_name, init: false do |inited|
+  $spi.live_loop loop_name, auto_cue: auto_cue, init: false do |inited|
     $spi.midi_stop(**start_stop_kwargs) if !inited && send_stop
 
     $spi.midi_clock_beat(**beat_kwargs)
     $spi.sleep 1
 
     $spi.midi_start(**start_stop_kwargs) if !inited && send_start
+
+    $spi.cue(loop_name) unless inited || auto_cue
 
     true
   end
