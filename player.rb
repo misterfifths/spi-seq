@@ -395,3 +395,5 @@ def track_live_loop(loop_name, track = nil, start_muted: false,
     cc_mutable_live_loop(loop_name, start_muted: start_muted, init: init_arg, cc: cc, port: cc_port, channel: cc_channel, **kwargs, &wrapped_block)
   end
 end
+
+alias tll track_live_loop
