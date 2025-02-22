@@ -742,6 +742,15 @@ class Track
   alias mutate_slot_steps mutate_steps_in_slot
   alias mutate_slot mutate_steps_in_slot
 
+  # Return a new track, replacing the Steps in the nth non-empty slot with the
+  # result of the given block. This is equivalent to a call to
+  # mutate_steps_in_slot with the index of the nth non-empty slot; see that
+  # method for details.
+  def mutate_filled_slot(n, &block)
+    idx = indexes_of_filled_slots[n]
+    mutate_steps_in_slot(idx, &block)
+  end
+
   def with_rate(rate)
     mutate(timescale: rate)
   end
