@@ -1,5 +1,3 @@
-$spi ||= self
-
 module NoteUtils
   # See https://github.com/sonic-pi-net/sonic-pi/blob/714d33316620d46d6815e554f17c5a76e4967471/app/server/ruby/lib/sonicpi/note.rb#L65
   NOTE_REGEX = /^:?(?<pitch_class>[a-g][sbf]?)(?<octave>-?\d*)$/i
@@ -17,7 +15,7 @@ module NoteUtils
     # step is the one that enforces the default octave of 4 on symbols without
     # an explicit octave. We will replace the octave if needed in the note_info
     # call below.
-    note = $spi.note(note)
+    note = ExtApi.note(note)
 
     # note_info ignores its octave argument when the note is a number, so if we
     # want to override the octave we need to go back to a symbol/string first.
@@ -25,11 +23,11 @@ module NoteUtils
     # so we use note_info directly here since we don't care about the details of
     # the name we get back, so long as it represents the note.
     if !octave.nil?
-      info = $spi.note_info(note)
+      info = ExtApi.note_info(note)
       note = info.midi_string
     end
 
-    info = $spi.note_info(note, octave: octave)
+    info = ExtApi.note_info(note, octave: octave)
 
     # Make sure flats are converted to sharps.
     pc = pitch_class_from_sym(info.midi_string.downcase.to_sym)
@@ -129,7 +127,7 @@ module NoteUtils
       # Note 0 is c-1, and 127 is g9, so if we do 11 octaves from -1, we'll
       # cover the whole MIDI range.
       low_tonic = (pitch_class(tonic).to_s + "-1").to_sym
-      full_scale = $spi.scale(low_tonic, name, num_octaves: 11).to_a.reject { |n| n < 0 || n > 127 }
+      full_scale = ExtApi.scale(low_tonic, name, num_octaves: 11).to_a.reject { |n| n < 0 || n > 127 }
       tonic_index = full_scale.index(number(tonic))
       val = [full_scale, tonic_index]
       @__full_scales_cache[key] = val

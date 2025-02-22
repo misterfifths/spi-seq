@@ -1,5 +1,3 @@
-$spi ||= self
-
 # Depends on piano-roll2 and midi-utils
 
 
@@ -13,11 +11,11 @@ $spi ||= self
 # default.
 def use_player_defaults(midi: nil, sync: :__dummy_sync_sentinel)
   # `set` hashes become SPMaps, apparently, so we need to call to_h on this.
-  defaults = $spi.get(:__player_defaults).to_h
+  defaults = ExtApi.get(:__player_defaults).to_h
   defaults[:midi] = midi unless midi.nil?
   defaults.delete(:sync) if sync.nil?
   defaults[:sync] = sync unless sync == :__dummy_sync_sentinel
-  $spi.set(:__player_defaults, defaults)
+  ExtApi.set(:__player_defaults, defaults)
 end
 
 
@@ -65,12 +63,12 @@ class Player
 
   # Plays one cycle of the track
   def play
-    $spi.with_bpm_mul(@track.timescale) do
+    ExtApi.with_bpm_mul(@track.timescale) do
       @track.num_slots.times do |i|
         play_slot(i)
 
         # Sleep until it's time for the next slot
-        $spi.sleep(@track.granularity.to_f)
+        ExtApi.sleep(@track.granularity.to_f)
       end
     end
 
@@ -87,8 +85,8 @@ class Player
   # TODO: should this reset @prev_steps? feels like yes
   def sleep
     end_all_steps
-    $spi.with_bpm_mul(@track.timescale) do
-      $spi.sleep(@track.beat_length)
+    ExtApi.with_bpm_mul(@track.timescale) do
+      ExtApi.sleep(@track.beat_length)
     end
   end
 
@@ -107,7 +105,7 @@ class Player
   private
 
   def resolve_midi_arg(midi)
-    defaults = $spi.get(:__player_defaults) || {}
+    defaults = ExtApi.get(:__player_defaults) || {}
     midi = defaults[:midi] || false if midi.nil?
     return midi
   end
@@ -123,10 +121,10 @@ class Player
     new_steps, tied_steps, ended_steps = @track.steps_at_slot(i, prev_steps: @prev_steps, cycle: @cycle, fill: @fill)
 
     if @debug
-      $spi.puts "@ slot=#{i} cycle=#{@cycle}"
-      $spi.puts "new steps: #{new_steps}"
-      $spi.puts "tied steps: #{tied_steps}"
-      $spi.puts "ended steps: #{ended_steps}"
+      ExtApi.puts "@ slot=#{i} cycle=#{@cycle}"
+      ExtApi.puts "new steps: #{new_steps}"
+      ExtApi.puts "tied steps: #{tied_steps}"
+      ExtApi.puts "ended steps: #{ended_steps}"
     end
 
     # Turn off or kill ended steps
@@ -163,26 +161,26 @@ class Player
       # Note that @active_midi_notes is a Set, and Set.delete acts differently
       # than Array.delete. We want delete? to remove and return nil if nothing
       # was removed.
-      $spi.midi_note_off(step.note, **@midi_spi_kwargs) unless @active_midi_notes.delete?(step.note).nil?
+      ExtApi.midi_note_off(step.note, **@midi_spi_kwargs) unless @active_midi_notes.delete?(step.note).nil?
     else
       node = @active_synth_nodes.delete(step.note)
-      $spi.kill(node) if !node.nil?
+      ExtApi.kill(node) if !node.nil?
     end
   end
 
   def schedule_end_for_step_with_partial_gate(step)
-    $spi.time_warp(step.gate * @track.granularity.to_f) do
-      $spi.puts "killing #{step.inspect} @ t=#{$spi.vt}" if @debug
+    ExtApi.time_warp(step.gate * @track.granularity.to_f) do
+      ExtApi.puts "killing #{step.inspect} @ t=#{ExtApi.vt}" if @debug
       end_step(step)
     end
   end
 
   def end_all_steps
     if @midi
-      @active_midi_notes.each { |n| $spi.midi_note_off(n, **@midi_spi_kwargs) }
+      @active_midi_notes.each { |n| ExtApi.midi_note_off(n, **@midi_spi_kwargs) }
       @active_midi_notes.clear
     else
-      @active_synth_nodes.each { |_, node| $spi.kill(node) }
+      @active_synth_nodes.each { |_, node| ExtApi.kill(node) }
       @active_synth_nodes.clear
     end
   end
@@ -192,7 +190,7 @@ class Player
       # Step has indeterminate duration; it may be continued in the next played
       # slot. Start it and we'll kill it later when it ends in play_slot.
       if @midi
-        $spi.midi_note_on(step.note, velocity: step.vel, **@midi_spi_kwargs)
+        ExtApi.midi_note_on(step.note, velocity: step.vel, **@midi_spi_kwargs)
         @active_midi_notes << step.note
       else
         # TODO: there's no good way to just have a synth note go forever and
@@ -200,7 +198,7 @@ class Player
         # using this for previewing stuff away from my real synth...
         # For now just having ties go for 100 * the length of the whole track.
         # Obviously that's ridiculous.
-        node = $spi.play(step.note, amp: step.velf, sustain: @track.beat_length * 100)
+        node = ExtApi.play(step.note, amp: step.velf, sustain: @track.beat_length * 100)
         @active_synth_nodes[step.note] = node
       end
     else
@@ -212,9 +210,9 @@ class Player
       # stop/end_all_steps will only be called between cycles, so we don't need
       # to hold on to them for that either.
       if @midi
-        $spi.midi(step.note, velocity: step.vel, sustain: step.gate * @track.granularity.to_f, **@midi_spi_kwargs)
+        ExtApi.midi(step.note, velocity: step.vel, sustain: step.gate * @track.granularity.to_f, **@midi_spi_kwargs)
       else
-        $spi.play(step.note, amp: step.velf, sustain: step.gate * @track.granularity.to_f)
+        ExtApi.play(step.note, amp: step.velf, sustain: step.gate * @track.granularity.to_f)
       end
     end
   end
@@ -302,25 +300,25 @@ def track_live_loop(loop_name, track = nil, start_muted: false,
     _cc_port, _cc_channel = __resolve_cc_port_and_channel(cc_port, cc_channel)
     cc_watcher_loop_name = ("__live_loop_" + loop_name.to_s + "_cc_fill_watcher").to_sym
 
-    $spi.live_loop(cc_watcher_loop_name) do
-      $spi.use_real_time
+    ExtApi.live_loop(cc_watcher_loop_name) do
+      ExtApi.use_real_time
 
       # TODO: could support arrays of ports/channels by constructing {x,y,z}-style
       # strings for the path here.
-      incoming_cc, cc_val = $spi.sync("/midi:#{_cc_port}:#{_cc_channel}/control_change")
+      incoming_cc, cc_val = ExtApi.sync("/midi:#{_cc_port}:#{_cc_channel}/control_change")
       if incoming_cc == fill_cc
         player.fill = cc_val == 127
-        $spi.puts("[cc fill control] CC #{cc} = #{cc_val} -> #{player.fill ? '' : 'un'}setting fill for live loop #{loop_name}")
+        ExtApi.puts("[cc fill control] CC #{cc} = #{cc_val} -> #{player.fill ? '' : 'un'}setting fill for live loop #{loop_name}")
       end
     end
 
-    $spi.puts "[cc fill control] sending default CC #{fill_cc} value 0 for live loop #{loop_name}"
-    $spi.midi_cc(cc, 0, port: _cc_port, channel: _cc_channel)
+    ExtApi.puts "[cc fill control] sending default CC #{fill_cc} value 0 for live loop #{loop_name}"
+    ExtApi.midi_cc(cc, 0, port: _cc_port, channel: _cc_channel)
   end
 
   # Use the default sync unless we were passed one explicitly.
   unless kwargs.member?(:sync)
-    defaults = $spi.get(:__player_defaults) || {}
+    defaults = ExtApi.get(:__player_defaults) || {}
     sync = defaults[:sync]
     kwargs[:sync] = sync unless sync.nil?
   end
@@ -348,7 +346,7 @@ def track_live_loop(loop_name, track = nil, start_muted: false,
     end
 
     if res.is_a?(Track)
-      $spi.puts("#{loop_name} player: swapping track on cycle #{player.cycle}") if debug
+      ExtApi.puts("#{loop_name} player: swapping track on cycle #{player.cycle}") if debug
       player.swap_track(res)
     end
 
@@ -357,7 +355,7 @@ def track_live_loop(loop_name, track = nil, start_muted: false,
     # Now that we have the final thing we're going to play, swap it out for the
     # faded version if we need to.
     if !muted && was_muted && fade_in
-      $spi.puts("#{loop_named} player: fading in track") if debug
+      ExtApi.puts("#{loop_named} player: fading in track") if debug
       unfaded_track = player.track
       if fade_in == :quad
         faded_track = player.track.fade_in_quad
@@ -367,7 +365,7 @@ def track_live_loop(loop_name, track = nil, start_muted: false,
       player.swap_track(faded_track)
     elsif muted && !was_muted && fade_out
       fading_out = true
-      $spi.puts("#{loop_named} player: fading out track") if debug
+      ExtApi.puts("#{loop_named} player: fading out track") if debug
       unfaded_track = player.track
       if fade_out == :quad
         faded_track = player.track.fade_out_quad
@@ -380,7 +378,7 @@ def track_live_loop(loop_name, track = nil, start_muted: false,
     if muted && !fading_out
       player.sleep
     else
-      $spi.cue(cycle_cue_sym, player.cycle) if send_cycle_cues
+      ExtApi.cue(cycle_cue_sym, player.cycle) if send_cycle_cues
       player.play
     end
 

@@ -1,5 +1,3 @@
-$spi ||= self
-
 class Prob
   # Use a custom trigger probability predicate. The predicate must respond to
   # call and arity, and must have an arity between 0 and 3 inclusive. It will be
@@ -16,12 +14,12 @@ class Prob
 
   # Step will trigger with the given probability (0-1 inclusive).
   def self.chance(p)
-    new(->{ $spi.rand < p }, "#{p.round(2)}", "chance(#{p})")
+    new(->{ ExtApi.rand < p }, "#{p.round(2)}", "chance(#{p})")
   end
 
   # Step will trigger with a probablity of 1 in n.
   def self.one_in(n)
-    new(->{ $spi.one_in(n) }, "one in #{n}", "one_in(#{n})")
+    new(->{ ExtApi.one_in(n) }, "one in #{n}", "one_in(#{n})")
   end
 
   # Step is guaranteed to trigger the xth cycle out of each set of y cycles. x

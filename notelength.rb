@@ -1,5 +1,3 @@
-$spi ||= self
-
 class NoteLength
   def initialize(sym)
     @sym = sym

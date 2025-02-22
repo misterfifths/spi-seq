@@ -1,5 +1,3 @@
-$spi ||= self
-
 # Depends on NoteUtils
 
 module Arp
@@ -116,7 +114,7 @@ module Arp
 
   # Arpeggiate the given degrees of the tonic note in the given scale.
   def self.arp_degrees(tonic, degrees, direction = Arp::Order, scale: :major, spread: 0, extra_octaves: [])
-    notes = degrees.map { |d| $spi.degree(d, tonic, scale) }
+    notes = degrees.map { |d| ExtApi.degree(d, tonic, scale) }
     arpeggiate(notes, direction, spread: spread, extra_octaves: extra_octaves)
   end
 

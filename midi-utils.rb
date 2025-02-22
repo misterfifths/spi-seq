@@ -1,6 +1,3 @@
-$spi ||= self
-
-
 # Start a live_loop named loop_name that sends MIDI clock beats for the global
 # BPM. Sends a MIDI start message on the first iteration if send_start is true.
 # Note that the channel argument is only relevant if send_start or send_start is
@@ -12,15 +9,15 @@ def midi_clock_live_loop(loop_name = :midi_clock, send_start: true, send_stop: t
   start_stop_kwargs[:port] = start_port unless start_port.nil?
   start_stop_kwargs[:channel] = start_channel unless start_channel.nil?
 
-  $spi.live_loop loop_name, auto_cue: auto_cue, init: false do |inited|
-    $spi.midi_stop(**start_stop_kwargs) if !inited && send_stop
+  ExtApi.live_loop loop_name, auto_cue: auto_cue, init: false do |inited|
+    ExtApi.midi_stop(**start_stop_kwargs) if !inited && send_stop
 
-    $spi.midi_clock_beat(**beat_kwargs)
-    $spi.sleep 1
+    ExtApi.midi_clock_beat(**beat_kwargs)
+    ExtApi.sleep 1
 
-    $spi.midi_start(**start_stop_kwargs) if !inited && send_start
+    ExtApi.midi_start(**start_stop_kwargs) if !inited && send_start
 
-    $spi.cue(loop_name) unless inited || auto_cue
+    ExtApi.cue(loop_name) unless inited || auto_cue
 
     true
   end
@@ -37,7 +34,7 @@ end
 # the mutable_live_loop family. Note that muting is not instantaneous; see the
 # description of mutable_live_loop for details.
 def mute_live_loop(loop_name, mute=true)
-  $spi.set(mute_key(loop_name), mute)
+  ExtApi.set(mute_key(loop_name), mute)
 end
 
 # Starts a new live_loop that can be muted by setting the Time State key given
@@ -56,10 +53,10 @@ def mutable_live_loop(loop_name, start_muted: false, **kwargs, &block)
   raise "Block must take 1 or 2 arguments" if block.arity == 0 || block.arity > 2
 
   key = mute_key(loop_name)
-  $spi.set(key, start_muted)
+  ExtApi.set(key, start_muted)
 
-  $spi.live_loop(loop_name, **kwargs) do |arg|
-    muted = $spi.get(key)
+  ExtApi.live_loop(loop_name, **kwargs) do |arg|
+    muted = ExtApi.get(key)
 
     if block.arity == 2
       block.call(muted, arg)
@@ -70,14 +67,14 @@ def mutable_live_loop(loop_name, start_muted: false, **kwargs, &block)
 end
 
 def use_cc_control_defaults(port: nil, channel: nil)
-  $spi.set(:__cc_control_defaults, { port: port, channel: channel })
+  ExtApi.set(:__cc_control_defaults, { port: port, channel: channel })
 end
 
 def __resolve_cc_port_and_channel(port, channel)
   # TODO: it would be good to fall back to defaults here, but it's a little
   # tricky - we do need actual port and channel strings so we can construct
   # the name of the control_change event we want to sync to.
-  defaults = $spi.get(:__cc_control_defaults) || {}
+  defaults = ExtApi.get(:__cc_control_defaults) || {}
   port = defaults[:port] || "*" if port.nil?
   channel = defaults[:channel] || "*" if channel.nil?
   [port, channel]
@@ -96,22 +93,22 @@ def cc_mutable_live_loop(loop_name, cc:, port: nil, channel: nil, start_muted: f
   port, channel = __resolve_cc_port_and_channel(port, channel)
 
   cc_watcher_loop_name = ("__live_loop_" + loop_name.to_s + "_cc_mute_watcher").to_sym
-  $spi.live_loop(cc_watcher_loop_name) do
-    $spi.use_real_time
+  ExtApi.live_loop(cc_watcher_loop_name) do
+    ExtApi.use_real_time
 
     # TODO: could support arrays of ports/channels by constructing {x,y,z}-style
     # strings for the path here.
-    incoming_cc, cc_val = $spi.sync("/midi:#{port}:#{channel}/control_change")
+    incoming_cc, cc_val = ExtApi.sync("/midi:#{port}:#{channel}/control_change")
     if incoming_cc == cc
       muted = cc_val == 0
-      $spi.puts("[cc mute control] CC #{cc} = #{cc_val} -> #{muted ? '' : 'un'}muting live loop #{loop_name}")
+      ExtApi.puts("[cc mute control] CC #{cc} = #{cc_val} -> #{muted ? '' : 'un'}muting live loop #{loop_name}")
       mute_live_loop(loop_name, muted)
     end
   end
 
   default_cc_val = start_muted ? 0 : 127
-  $spi.puts "[cc mute control] sending default CC #{cc} value #{default_cc_val} for live loop #{loop_name}"
-  $spi.midi_cc(cc, default_cc_val, port: port, channel: channel)
+  ExtApi.puts "[cc mute control] sending default CC #{cc} value #{default_cc_val} for live loop #{loop_name}"
+  ExtApi.midi_cc(cc, default_cc_val, port: port, channel: channel)
 
   mutable_live_loop(loop_name, start_muted: start_muted, **kwargs, &block)
 end
@@ -127,9 +124,9 @@ end
 def fx_mutable_live_loop(loop_name, start_muted: false, unmuted_amp: 1, amp_slide: 0, **kwargs, &block)
   raise "Block must take 1 or 2 arguments" if block.arity == 0 || block.arity > 2
 
-  $spi.with_fx(:level, amp: start_muted ? 0 : unmuted_amp, amp_slide: amp_slide) do |level_fx|
+  ExtApi.with_fx(:level, amp: start_muted ? 0 : unmuted_amp, amp_slide: amp_slide) do |level_fx|
     mutable_live_loop(loop_name, start_muted: start_muted, **kwargs) do |muted, arg|
-      $spi.control(level_fx, amp: muted ? 0 : unmuted_amp)
+      ExtApi.control(level_fx, amp: muted ? 0 : unmuted_amp)
 
       if block.arity == 2
         block.call(muted, arg)
@@ -146,7 +143,7 @@ def __midi_val_to_range(midi_val, range, quantum: nil)
   return range.max if midi_val >= 127
 
   val = range.min + (range.max - range.min) * (midi_val / 127.0)
-  val = $spi.quantise(val, quantum) unless quantum.nil?
+  val = ExtApi.quantise(val, quantum) unless quantum.nil?
 
   val = range.max if val > range.max
   val = range.min if val < range.min
@@ -177,7 +174,7 @@ def __midi_fx_control(midi_val, effect_key, param, param_val_range, quantum)
   if effect_key == :global
     effect = :global
   else
-    effect = $spi.get(effect_key)
+    effect = ExtApi.get(effect_key)
   end
 
   return if effect.nil?
@@ -185,11 +182,11 @@ def __midi_fx_control(midi_val, effect_key, param, param_val_range, quantum)
   param_val = __midi_val_to_range(midi_val, param_val_range, quantum: quantum)
   args = { param => param_val }
 
-  $spi.puts "#{effect_key}: val=#{midi_val} --> #{param}=#{param_val.round(2)}"
+  ExtApi.puts "#{effect_key}: val=#{midi_val} --> #{param}=#{param_val.round(2)}"
   if effect == :global
-    $spi.set_mixer_control!(**args)
+    ExtApi.set_mixer_control!(**args)
   else
-    $spi.control(effect, **args)
+    ExtApi.control(effect, **args)
   end
 end
 
@@ -201,7 +198,7 @@ def __send_cc_name_sysex(cc, name, port: nil, channel: nil)
 
   kwargs = port.nil? ? {} : { port: port }
   kwargs[:channel] = channel unless channel.nil?
-  $spi.midi_sysex(*bytes, **kwargs)
+  ExtApi.midi_sysex(*bytes, **kwargs)
 end
 
 
@@ -295,14 +292,14 @@ def cc_fx_control_loop(loop_name = :cc_fx_control, send_name_sysex: true,
 
 
   # fire up the live loop that will actually service incoming CCs
-  $spi.live_loop loop_name, init: true do |first_run|
-    $spi.use_real_time
+  ExtApi.live_loop loop_name, init: true do |first_run|
+    ExtApi.use_real_time
 
     if first_run
       # hang out until all the effect keys exist
-      $spi.puts "[cc control] waiting on fx from the time state: #{needed_fx.to_a}"
-      $spi.sleep(1) until needed_fx.none? { |key| $spi.get(key).nil? }
-      $spi.puts "[cc control] got all fx!"
+      ExtApi.puts "[cc control] waiting on fx from the time state: #{needed_fx.to_a}"
+      ExtApi.sleep(1) until needed_fx.none? { |key| ExtApi.get(key).nil? }
+      ExtApi.puts "[cc control] got all fx!"
 
       # send out the sysex name messages & defaults for all mappings
       mappings.each do |cc, mapping|
@@ -310,7 +307,7 @@ def cc_fx_control_loop(loop_name = :cc_fx_control, send_name_sysex: true,
           pretty_name = mapping[:key].to_s.delete_suffix("_fx")
           pretty_name += "\n#{mapping[:param]}" if mapping[:type] == :fx
           pretty_name.gsub!("_", " ")
-          $spi.puts "[cc control] sending name '#{pretty_name}' for CC #{cc}"
+          ExtApi.puts "[cc control] sending name '#{pretty_name}' for CC #{cc}"
           __send_cc_name_sysex(cc, pretty_name, port: port, channel: channel)
         end
 
@@ -322,15 +319,15 @@ def cc_fx_control_loop(loop_name = :cc_fx_control, send_name_sysex: true,
         # it out as a CC.
         # TODO: also set the default on the effect itself?
         midi_default = __ranged_val_to_midi(mapping[:default], mapping[:range])
-        $spi.puts "[cc control] sending default CC #{cc} value #{mapping[:default]} --> midi #{midi_default}"
-        $spi.midi_cc(cc, midi_default, port: port, channel: channel)
+        ExtApi.puts "[cc control] sending default CC #{cc} value #{mapping[:default]} --> midi #{midi_default}"
+        ExtApi.midi_cc(cc, midi_default, port: port, channel: channel)
       end
     end
 
     # wait for a cc on the source
     # TODO: could support arrays of ports/channels by constructing {x,y,z}-style
     # strings for the path here.
-    cc_number, cc_val = $spi.sync("/midi:#{port}:#{channel}/control_change")
+    cc_number, cc_val = ExtApi.sync("/midi:#{port}:#{channel}/control_change")
 
     mapping = mappings[cc_number]
     unless mapping.nil?
@@ -338,7 +335,7 @@ def cc_fx_control_loop(loop_name = :cc_fx_control, send_name_sysex: true,
         __midi_fx_control(cc_val, mapping[:key], mapping[:param], mapping[:range], mapping[:quantum])
       else
         mapped_val = __midi_val_to_range(cc_val, mapping[:range], quantum: mapping[:quantum])
-        $spi.puts "#{mapping[:key]}: val=#{cc_val} --> callback #{mapped_val.round(2)}"
+        ExtApi.puts "#{mapping[:key]}: val=#{cc_val} --> callback #{mapped_val.round(2)}"
         mapping[:callback].call(mapped_val)
       end
     end
@@ -354,22 +351,22 @@ end
 def aftertouch_fx_control_loop(effect_key, param, val_range=0..1, quantum=0.01, midi_source: "*")
   pressed_notes = []  # we're using this like a Set, but order is important
 
-  $spi.live_loop :_aftertouch_fx_control, init: false do |got_fx|
-    $spi.use_real_time
+  ExtApi.live_loop :_aftertouch_fx_control, init: false do |got_fx|
+    ExtApi.use_real_time
 
     unless got_fx
-      $spi.puts "[aftertouch control] waiting on fx from the time state: #{effect_key}"
-      $spi.sleep(1) while $spi.get(effect_key).nil?
-      $spi.puts "[aftertouch control] got fx"
+      ExtApi.puts "[aftertouch control] waiting on fx from the time state: #{effect_key}"
+      ExtApi.sleep(1) while ExtApi.get(effect_key).nil?
+      ExtApi.puts "[aftertouch control] got fx"
     end
 
     # TODO: could support arrays of ports/channels by constructing {x,y,z}-style
     # strings for the path here.
     event_glob = "/midi:#{midi_source}/{note_on,note_off,aftertouch}"
-    note, vel = $spi.sync(event_glob)
+    note, vel = ExtApi.sync(event_glob)
 
     # get_event is undocumented. it gives the name of the event we just `sync`ed to
-    event = $spi.get_event(event_glob).split_path[-1]
+    event = ExtApi.get_event(event_glob).split_path[-1]
 
     case event
     when "note_on"

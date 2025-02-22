@@ -1,8 +1,3 @@
-# I don't understand how to get a sane set of SonicPi functions in external
-# scripts, so this is intended to be eval'd so we get access to the context that
-# the sketch is running inside. Namely:
-$spi ||= self
-
 # Depends on NoteUtils, NoteLength, Prob, and Arp
 
 
@@ -181,7 +176,7 @@ end
 # granularity and timescale of the result. E.g., in t1.zip(t2), the result will
 # have the properties of t1. Default: false.
 def use_track_defaults(strict_track_merging:)
-  $spi.set(:__track_defaults, { strict_track_merging: strict_track_merging })
+  ExtApi.set(:__track_defaults, { strict_track_merging: strict_track_merging })
 end
 
 
@@ -360,7 +355,7 @@ class Track
   # but the slots cycle across repetitions, so that every given slot is played
   # and the overall track is a perfect loop.
   def self.euclid(gridish, pulses, length, invert: false, rotate: 0, cycle: true, full_cycle: false, granularity: NoteLength::Eighth, gate: 1, vel: 127, timescale: 1)
-    hits = $spi.spread(pulses, length).to_a
+    hits = ExtApi.spread(pulses, length).to_a
     hits.rotate!(rotate) if rotate != 0
     hits.map! { |hit| !hit } if invert
 
@@ -1094,7 +1089,7 @@ class Track
   # Return a new Track by, with probability p, removing all Steps in any given
   # slot.
   def rand_dropout(p)
-    new_grid = @grid.map { |slot| $spi.rand < p ? [] : slot }
+    new_grid = @grid.map { |slot| ExtApi.rand < p ? [] : slot }
     mutate(grid: new_grid)
   end
 
@@ -1445,16 +1440,16 @@ class Track
   # [-range, range] is used.
   def rand_octave(range = 1, p: 0.5)
     mutate_each_step do |step|
-      next step unless $spi.rand < p
+      next step unless ExtApi.rand < p
 
       # We've already decided to shift, so ignore random 0 values. Not using
       # rand_i here since it's exclusive. rand is too, but we're rounding.
       shift = 0
       while shift == 0
         if range.is_a?(Range)
-          shift = $spi.rand(range).round
+          shift = ExtApi.rand(range).round
         else
-          shift = $spi.rand(-range..range).round
+          shift = ExtApi.rand(-range..range).round
         end
       end
 
@@ -1503,7 +1498,7 @@ class Track
     end
 
     random_pos = position == :rand
-    position = $spi.rand_i(3) if random_pos
+    position = ExtApi.rand_i(3) if random_pos
 
     # Massage the voice argument indices if needed
     if voices.is_a?(Array)
@@ -1535,11 +1530,11 @@ class Track
       if random_pos
         position = case position
         when 0
-          $spi.choose([1, 2])
+          ExtApi.choose([1, 2])
         when 1
-          $spi.choose([0, 2])
+          ExtApi.choose([0, 2])
         when 2
-          $spi.choose([0, 1])
+          ExtApi.choose([0, 1])
         end
       else
         position = (position + 1) % 3
@@ -1669,9 +1664,9 @@ class Track
     tone_shifts = [0] if tone_shifts == 0 || tone_shifts.nil?
 
     mutate_each_step do |step|
-      tone_shift = ($spi.rand < p) ? $spi.choose(tone_shifts) : 0
-      gate_shift = ($spi.rand < p) ? $spi.rand(gate_delta) : 0
-      velf_shift = ($spi.rand < p) ? $spi.rand(velf_delta) : 0
+      tone_shift = (ExtApi.rand < p) ? ExtApi.choose(tone_shifts) : 0
+      gate_shift = (ExtApi.rand < p) ? ExtApi.rand(gate_delta) : 0
+      velf_shift = (ExtApi.rand < p) ? ExtApi.rand(velf_delta) : 0
 
       if tone_shift != 0
         step = step.shift_tone(tone_shift)
@@ -1758,7 +1753,7 @@ class Track
         steps_by_note[step.note] = step
       else
         if !yelled
-          $spi.puts("warning: more than one Step with note #{step.note} in the same slot! Picking one with the longest gate!")
+          ExtApi.puts("warning: more than one Step with note #{step.note} in the same slot! Picking one with the longest gate!")
           yelled = true
         end
         steps_by_note[step.note] = step if old_step_with_same_note.gate < step.gate
@@ -1859,7 +1854,7 @@ class Track
   end
 
   def strict_track_merging?
-    defaults = $spi.get(:__track_defaults) || {}
+    defaults = ExtApi.get(:__track_defaults) || {}
     defaults[:strict_track_merging] || false
   end
 
