@@ -248,43 +248,6 @@ class Track
     @timescale = timescale
   end
 
-  # Constructs a track with the given array, each element of which represents
-  # a step or a rest. The elements will be played one at a time, in the given
-  # order, each for a duration equal to the granularity (in other words, each
-  # element of steps defines a slot with a single step). The elements of steps
-  # must each be either:
-  # - a Step object,
-  # - a MIDI note number or symbol, which will be converted to a Step with the
-  #   default arguments, or
-  # - nil, :r, or :rest to represent a rest.
-  # NOTE: This method is deprecated. Use the Track initializer instead.
-  def self.mono(steps, granularity: NoteLength::Eighth, timescale: 1)
-    # Handing off directly to the initializer will do the right thing as long
-    # as each element is as described above, but will actually make a poly track
-    # if any element is an array. It doesn't seem worth trying to prevent that
-    # case; the method is deprecated anyway in favor of Track.new which
-    # documents that behavior.
-    new(steps, granularity: granularity, timescale: timescale)
-  end
-
-  # Constructs a track with the given grid. grid is a two-dimensional array,
-  # each element of which is a "slot". A slot is an array, each element of which
-  # represents the steps to play simultaneously for a duration of the
-  # granularity. A slot may be empty to represent a rest. Non-empty slots must
-  # contain some number of
-  # - Step objects,
-  # - MIDI note numbers or symbols, which will be converted to Steps with the
-  #   default arguments, or
-  # - nil, :r, or :rest to represent a rest (though this is generally
-  #   unnecessary and you should just use an empty array instead)
-  # NOTE: This method is deprecated. Use the Track initializer instead.
-  def self.poly(grid, granularity: NoteLength::Eighth, timescale: 1)
-    # Calling the initializer directly has a similar issue to that of `mono`:
-    # it will do the right thing with a 2d array but will also accept non-array
-    # elements. Likewise doesn't seem worth checking.
-    new(grid, granularity: granularity, timescale: timescale)
-  end
-
   # Constructs an empty track that rests for the given number of slots.
   def self.rest(num_slots = 1, granularity: NoteLength::Eighth, timescale: 1)
     grid = [[]] * num_slots
