@@ -1616,6 +1616,63 @@ class Track
 
   alias sub sub_note
 
+  # Returns a new track, applying controlled random mutations to each Step. The
+  # probability that any given mutation will apply to a Step is given by the p
+  # parameter. Any given step may have 0 or more independent mutations applied
+  # to it.
+  # Possible changes:
+  # - A transposition. The tone_shifts array (which may be nil) provides the
+  #   possible semitone offsets that may be applied to a Step; a random value
+  #   from it will be chosen if a transposition is to be applied. The
+  #   octave_limit range describes the valid octaves in which a transposition
+  #   can result. If the transposition moves a note outside of octave_limit,
+  #   the note's octave is clamped to the closest extreme of octave_limit.
+  # - A gate shift. The gate_delta float provides the maximum shift to apply to
+  #   a Step; a random value between 0 and gate_delta will be chosen if a gate
+  #   shift is to be applied. The gate_limit range restricts the resulting gate
+  #   value in the same way octave_limit restricts transpositions.
+  # - A velocity shift, controlled by velf_delta and velf_limit in the same way
+  #   as a gate shift.
+  def evolve(tone_shifts: [-12, 12], octave_limit: 1..6, gate_delta: 0.5, gate_limit: 0.1..1, velf_delta: 0, velf_limit: 0.1..1, p: 0.25)
+    gate_delta = -gate_delta..gate_delta unless gate_delta.is_a?(Range)
+    velf_delta = -velf_delta..velf_delta unless velf_delta.is_a?(Range)
+    tone_shifts = [0] if tone_shifts == 0 || tone_shifts.nil?
+
+    mutate_each_step do |step|
+      tone_shift = ($spi.rand < p) ? $spi.choose(tone_shifts) : 0
+      gate_shift = ($spi.rand < p) ? $spi.rand(gate_delta) : 0
+      velf_shift = ($spi.rand < p) ? $spi.rand(velf_delta) : 0
+
+      if tone_shift != 0
+        step = step.shift_tone(tone_shift)
+
+        new_octave = NoteUtils.octave(step.note)
+        new_octave = octave_limit.min if new_octave < octave_limit.min
+        new_octave = octave_limit.max if new_octave > octave_limit.max
+
+        step = step.with_octave(new_octave)
+      end
+
+      if gate_shift != 0
+        new_gate = step.gate + gate_shift
+        new_gate = gate_limit.min if new_gate < gate_limit.min
+        new_gate = gate_limit.max if new_gate > gate_limit.max
+
+        step = step.with_gate(new_gate)
+      end
+
+      if velf_shift != 0
+        new_velf = step.velf + velf_shift
+        new_velf = velf_limit.min if new_velf < velf_limit.min
+        new_velf = velf_limit.max if new_velf > velf_limit.max
+
+        step = step.with_velf(new_velf)
+      end
+
+      step
+    end
+  end
+
 
   ### Track construction helpers
   # TODO: philosophically I want these to be private class methods, but you
