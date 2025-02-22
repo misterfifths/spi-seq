@@ -99,6 +99,8 @@ class Step
     with_note(NoteUtils.shift_tone(@note, shift))
   end
 
+  alias transpose shift_tone
+
   def velf
     @vel / 127.0
   end
