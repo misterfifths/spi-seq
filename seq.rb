@@ -1695,6 +1695,23 @@ class Track
   end
 
 
+  ### Getters
+
+  # Returns the indexes of all non-empty slots in the grid.
+  def indexes_of_filled_slots
+    idxs = []
+    @grid.each_with_index { |slot, i| idxs << i unless slot.empty? }
+    idxs
+  end
+
+  # Returns the nth non-empty slot in the grid.
+  def nth_filled_slot(n)
+    @grid[indexes_of_filled_slots[n]]
+  end
+
+  alias filled_slot nth_filled_slot
+
+
   ### Track construction helpers
   # TODO: philosophically I want these to be private class methods, but you
   # can't call private class methods from instance methods :(. Figure out a way
