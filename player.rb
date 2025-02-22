@@ -1,5 +1,5 @@
-# Depends on piano-roll2 and midi-utils
-
+require_relative "seq.rb"
+require_relative "midi-utils.rb"
 
 # Set global default Player behaviors.
 # midi: Specifies the default value for the midi parameter of Player's

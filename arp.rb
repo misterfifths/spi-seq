@@ -1,4 +1,4 @@
-# Depends on NoteUtils
+require_relative "noteutils.rb"
 
 module Arp
   Up = :up
