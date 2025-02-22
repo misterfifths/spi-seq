@@ -74,12 +74,24 @@ class Step
     mutate(vel: new_vel)
   end
 
+  def shift_vel(shift)
+    with_vel(@vel + shift)
+  end
+
   def with_velf(new_velf)
     mutate(vel: new_velf * 127)  # this is clamped to 0-127 in the ctor
   end
 
+  def shift_velf(shift)
+    with_velf(velf + shift)
+  end
+
   def with_gate(new_gate)
     mutate(gate: new_gate)
+  end
+
+  def shift_gate(shift)
+    with_gate(@gate + shift)
   end
 
   def with_prob(new_prob)
