@@ -43,7 +43,7 @@ $__SPI_FORWARDS = [
   :time_warp,
   :use_real_time, :with_bpm_mul,
   :get, :set,
-  :cue, :sync, :get_event
+  :cue, :sync
 ]
 
 
