@@ -936,7 +936,7 @@ class Track
   # given amount. The track duration is maintained; slots will be wrapped around
   # to the beginning of the grid as needed.
   def rotate(rightward_shift = 1)
-    mutate(grid: @grid.rotate(rightward_shift))
+    mutate(grid: @grid.rotate(-rightward_shift))
   end
 
   alias right rotate
