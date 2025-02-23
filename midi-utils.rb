@@ -345,3 +345,21 @@ def cc_fx_control_loop(loop_name = :cc_fx_control, send_name_sysex: true,
     false
   end
 end
+
+
+# Some synths do not respond well to MIDI all note off or sound off messages.
+# This function sends a MIDI stop, all notes off, sound off, and individual note
+# offs for every MIDI note on the given port/channel. Messages are sent in real
+# time.
+def midi_uber_stop(port: nil, channel: nil)
+  midi_kwargs = {}
+  midi_kwargs[:port] = port unless port.nil?
+  midi_kwargs[:channel] = channel unless channel.nil?
+
+  ExtApi.with_real_time do
+    ExtApi.midi_stop(**midi_kwargs)
+    ExtApi.midi_all_notes_off(**midi_kwargs)
+    ExtApi.midi_sound_off(**midi_kwargs)
+    0.upto(127) { |n| ExtApi.midi_note_off(n, **midi_kwargs) }
+  end
+end
