@@ -1,10 +1,12 @@
 # The goal here is to keep track of direct calls into SonicPi's library, with
 # the long-term plan of allowing (at least some of) the code to run outside of
 # that environment.
-# For now, everything in the ExtApi module is just a passthrough to SonicPi. In
-# the medium term, it would make sense to provide higher-level wrappers around
-# some of this (especially the things with crummy interfaces - looking at you,
-# `note` and `note_info`), and to group it into submodules.
+# For now, there are direct calls to ExtApi scattered around the code. A medium-
+# term goal is to move things out of ExtApi into their own higher-level modules
+# which can individually call into Sonic Pi, or provide some other
+# implementation. See the example of NoteUtils, which requires this module for
+# the globals it sets, then uses $__SPI directly to provide an implementation of
+# note normalization.
 
 begin
   # FIXME: This is an abject sin, but I can't figure out a good way to reliably
@@ -25,7 +27,6 @@ $__SPI_FORWARDS = [
   :quantise, :spread,
 
   # Music theory
-  :note, :note_info,
   :scale, :degree,
 
   # Internal synth playback & effects

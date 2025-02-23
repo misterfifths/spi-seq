@@ -27,7 +27,10 @@ class Step
   #    Prob.custom. If the predicate returns true, the step will trigger.
   # 4. an instance of Prob. See that class for some common cases.
   def initialize(note, vel: 127, gate: 1.0, prob: nil)
-    @note, @note_number, @octave = NoteUtils.normalize(note)
+    note_info = NoteUtils.normalize(note)
+    @note = note_info.sym
+    @note_number = note_info.number
+    @octave = note_info.octave
 
     @vel = vel.to_i
     if @vel < 0

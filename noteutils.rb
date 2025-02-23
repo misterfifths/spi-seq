@@ -1,60 +1,74 @@
 require_relative "extapi.rb"
 
-module NoteUtils
+# Represents information about a note.
+# - sym: A normalized symbol for the note. It will be in lower-case, with all
+#   incidentals standardized to sharps. It will always include an octave number.
+# - pitch_class: A symbol for the pitch class of the note, normalized in the
+#   same manner as `sym`.
+# - number: The MIDI note number that represents the note.
+# - octave: The octave for the note.
+class NormalizedNoteInfo
   # See https://github.com/sonic-pi-net/sonic-pi/blob/714d33316620d46d6815e554f17c5a76e4967471/app/server/ruby/lib/sonicpi/note.rb#L65
   NOTE_REGEX = /^:?(?<pitch_class>[a-g][sbf]?)(?<octave>-?\d*)$/i
 
-  # note is a symbol or string for a note (e.g. :fs3), or a MIDI note number. If
-  # octave is given, it overrides the octave of the note (even if it is a note
-  # number). If octave is not given and the note is a symbol or string without
-  # an octave (e.g. :c), the result will be in octave 4. Sharps and flats are
-  # standardized into sharps.
-  # Returns an array [note symbol, note number, octave number]. The returned
-  # symbol is in lower case and is guaranteed to have an explicit octave number.
-  def self.normalize(note, octave: nil)
-    # note_info leaves pitch classes in symbols alone, so we always need to go
-    # to a number first so that sharps and flats are normalized. Note that this
-    # step is the one that enforces the default octave of 4 on symbols without
-    # an explicit octave. We will replace the octave if needed in the note_info
-    # call below.
-    note = ExtApi.note(note)
+  attr_reader :sym, :pitch_class, :number, :octave
 
-    # note_info ignores its octave argument when the note is a number, so if we
-    # want to override the octave we need to go back to a symbol/string first.
-    # We could just call sym, but that would recurse and do some needless work,
-    # so we use note_info directly here since we don't care about the details of
-    # the name we get back, so long as it represents the note.
-    if !octave.nil?
-      info = ExtApi.note_info(note)
+  # Returns a NormalizedNoteInfo instance for the given note (optionally) in the
+  # given octave. note is a symbol or string for a note (e.g. :fs3), or a MIDI
+  # note number. If octave is given, it overrides the octave of the note (even
+  # if it is a note number). If octave is not given and the note is a symbol or
+  # string without an octave (e.g. :c), the result will be in octave 4.
+  def self.normalize(note, octave: nil)
+    @@cache ||= {}
+    cache_key = [note, octave]
+    instance = @@cache[cache_key]
+    return instance unless instance.nil?
+
+    instance = new(note, octave: octave)
+    @@cache[cache_key] = instance
+    return instance
+  end
+
+  private def initialize(note, octave: nil)
+    raise "Unimplemented outside of Sonic Pi" unless $__IN_SPI
+
+    # note_info leaves pitch classes in symbols alone, so we always need to
+    # go to a number first so that sharps and flats are normalized. Note that
+    # this step is the one that enforces the default octave of 4 on symbols
+    # without an explicit octave. We will replace the octave if needed in the
+    # note_info call below.
+    note = $__SPI.note(note)
+
+    # note_info ignores its octave argument when the note is a number, so if
+    # we want to override the octave we need to go back to a symbol/string
+    # first. To do that we can just call note_info directly. The octave will
+    # probably be wrong, but we don't care about that since we'll correct it
+    # immediately afterward.
+    unless octave.nil?
+      info = $__SPI.note_info(note)
       note = info.midi_string
     end
 
-    info = ExtApi.note_info(note, octave: octave)
+    info = $__SPI.note_info(note, octave: octave)
+    @number = info.midi_note
+    @octave = info.octave
+
+    # Pull out the pitch class.
+    match = NOTE_REGEX.match(info.midi_string.downcase.to_s)
+    @pitch_class = match[:pitch_class].to_sym
 
     # Make sure flats are converted to sharps.
-    pc = pitch_class_from_sym(info.midi_string.downcase.to_sym)
-    note_sym = sharpify(pc, info.octave)
+    # Not trying to be exhaustive here; these are just the notes for which
+    # note_info returns flats.
+    if @pitch_class == :eb
+      @pitch_class = :ds
+    elsif @pitch_class == :ab
+      @pitch_class = :gs
+    elsif @pitch_class == :bb
+      @pitch_class = :as
+    end
 
-    [note_sym, info.midi_note, info.octave]
-  end
-
-  # Returns a normalized symbol for the given note (a symbol, string, or MIDI
-  # note number). Uses the same octave rules as normalize.
-  def self.sym(note, octave: nil)
-    normalize(note, octave: octave)[0]
-  end
-
-  # Returns the symbol for the note's pitch class (e.g. :c for Cs in all
-  # octaves). note may be a symbol, string, or MIDI note number. The returned
-  # symbol will be in lowercase.
-  def self.pitch_class(note)
-    pitch_class_from_sym(sym(note))
-  end
-
-  # Returns the MIDI note number for the given note (a symbol, string, or MIDI
-  # note number). Uses the same octave rules as normalize.
-  def self.number(note, octave: nil)
-    normalize(note, octave: octave)[1]
+    @sym = (@pitch_class.to_s + info.octave.to_s).to_sym
   end
 
   # Returns true if the given note has an explicit octave. Always returns true
@@ -62,15 +76,47 @@ module NoteUtils
   # a number, e.g. :cs4.
   def self.has_octave?(note)
     return true if note.is_a?(Numeric)
+
     match = NOTE_REGEX.match(note.to_s)
     raise "Invalid note symbol #{note}" if match.nil?
-    !match[:octave].empty?
+    return !match[:octave].empty?
+  end
+end
+
+module NoteUtils
+  # Wrapper around NormalizedNoteInfo.normalize; see there for details.
+  def self.normalize(note, octave: nil)
+    NormalizedNoteInfo.normalize(note, octave: octave)
+  end
+
+  # Returns a normalized symbol for the given note (a symbol, string, or MIDI
+  # note number). Uses the same octave rules as normalize.
+  def self.sym(note, octave: nil)
+    normalize(note, octave: octave).sym
+  end
+
+  # Returns the symbol for the note's pitch class (e.g. :c for Cs in all
+  # octaves). note may be a symbol, string, or MIDI note number. The returned
+  # symbol will be in lowercase.
+  def self.pitch_class(note)
+    normalize(note).pitch_class
+  end
+
+  # Returns the MIDI note number for the given note (a symbol, string, or MIDI
+  # note number). Uses the same octave rules as normalize.
+  def self.number(note, octave: nil)
+    normalize(note, octave: octave).number
+  end
+
+  # Wrapper around NormalizedNoteInfo.has_octave?; see there for details.
+  def self.has_octave?(note)
+    NormalizedNoteInfo.has_octave?(note)
   end
 
   # Returns the octave number for the given note (a symbol, string, or MIDI note
   # number). Uses the same octave rules as normalize.
   def self.octave(note, octave: nil)
-    normalize(note, octave: octave)[2]
+    normalize(note, octave: octave).octave
   end
 
   # Returns a normalized symbol for the given note (a symbol, string, or MIDI
@@ -225,6 +271,7 @@ module NoteUtils
   #   class. E.g. :c2 and :c4 match :c. :cs matches :cs3, :db2, and :db.
   def self.match?(a, b)
     return true if rest?(a) && rest?(b)
+    return false if rest?(a) || rest?(b)
 
     a_has_octave = has_octave?(a)
     b_has_octave = has_octave?(b)
@@ -236,33 +283,4 @@ module NoteUtils
 
     pitch_class(a) == pitch_class(b)
   end
-
-  # Returns a symbol for the pitch class of an already normalized note symbol.
-  # Broken out from pitch_class to avoid recursion in normalize.
-  def self.pitch_class_from_sym(note_sym)
-    match = NOTE_REGEX.match(note_sym.to_s)
-    raise "Invalid note symbol #{note}" if match.nil?  # should never happen
-    match[:pitch_class].to_sym  # we normalized before the match, so this will be lowercase
-  end
-
-  private_class_method :pitch_class_from_sym
-
-  # note_info converts some notes to sharps and others to flats. This converts
-  # everything to a sharp. pitch_class should be a lower- case normalized pitch
-  # class symbol (e.g. :eb).
-  def self.sharpify(pitch_class, octave)
-    # Not trying to be exhaustive here; these are just the notes for which
-    # note_info returns flats.
-    if pitch_class == :eb
-      pitch_class = :ds
-    elsif pitch_class == :ab
-      pitch_class = :gs
-    elsif pitch_class == :bb
-      pitch_class = :as
-    end
-
-    (pitch_class.to_s + octave.to_s).to_sym
-  end
-
-  private_class_method :sharpify
 end
