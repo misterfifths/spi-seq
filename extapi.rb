@@ -38,7 +38,7 @@ $__SPI_FORWARDS = [
   :midi_clock_beat,
 
   # Timestate and live loops
-  :live_loop, :sleep,
+  :live_loop, :in_thread, :sleep,
   :vt,
   :time_warp,
   :use_real_time, :with_bpm_mul,
