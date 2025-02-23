@@ -239,9 +239,9 @@ end
 # Create a live_loop that plays the given track. Takes largely same arguments as
 # cc_mutable_live_loop, with the exception that cc may be nil (the default), in
 # which case the live_loop is not mutable by CCs. Also the port and channel
-# arguments are split into player_port, player_channel and cc_port, cc_channel.
-# The player_* ones are used for the internal Player instance, and the cc_* ones
-# are passed to cc_mutable_live_loop.
+# arguments are split into port, channel and cc_port, cc_channel. The unprefixed
+# ones are used for the internal Player instance, and the cc_* ones are passed
+# to cc_mutable_live_loop.
 # The live_loop responds to muting by calling sleep on the player for muted
 # iterations, rather than play. Note that muting takes effect after cycles of
 # playback, not immediately.
@@ -285,7 +285,7 @@ end
 # can explicitly use no sync by providing a nil value for the sync parameter.
 def track_live_loop(loop_name, track = nil, start_muted: false,
                     fade_in: false, fade_out: false,
-                    midi: nil, player_port: nil, player_channel: nil,
+                    midi: nil, port: nil, channel: nil,
                     cc: nil, fill_cc: nil, cc_port: nil, cc_channel: nil,
                     send_cycle_cues: true, debug: false,
                     init: nil, **kwargs, &block)
@@ -293,7 +293,7 @@ def track_live_loop(loop_name, track = nil, start_muted: false,
 
   track ||= Track.rest
 
-  player = Player.new(track, midi: midi, debug: debug, port: player_port, channel: player_channel)
+  player = Player.new(track, midi: midi, debug: debug, port: port, channel: channel)
   cycle_cue_sym = (loop_name.to_s + "_cycle").to_sym
 
   if fill_cc
