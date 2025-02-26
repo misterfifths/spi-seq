@@ -28,7 +28,7 @@ module Arp
     TwoOctaveBroken = [1, 5, 3, 8, 5, 10, 8, 12, 10, 15]
   end
 
-  # Returns an array of note symbols by arpeggiating the given array of notes.
+  # Returns an array of MIDINotes by arpeggiating the given array of notes.
   # direction should be one of the constants in the Arp module.
   # If spread is n > 0, the result will have a note added an octave above each
   # of the the n lowest notes. If the spread creates duplicate notes (e.g.
@@ -49,17 +49,14 @@ module Arp
     # Chord object. Chords are technically subclasses of Array, but they're
     # kind of broken - in-place mutations like `map!` and `sort!` don't modify
     # them! So we explicitly call to_a twice here.
-    notes = notes.to_a.to_a.dup
+    notes = notes.to_a.to_a.dup.map! { |n| MIDINote.new(n) }
 
     # TODO: where should this apply in relation to spread?
     extra_octaves.each do |octave_shift|
       orig_notes.each do |n|
-        notes << NoteUtils.shift_octave(n, octave_shift)
+        notes << n.up(octave_shift)
       end
     end
-
-    # need to deal with note numbers internally; we'll be sorting
-    notes.map! { |n| NoteUtils.number(n) }
 
     if spread > 0 && notes.length > 0
       # take the spread lowest notes and add a note an octave up. do not
@@ -69,7 +66,7 @@ module Arp
       # TODO: spread should take into account notes added from itself
       spread = [spread, sorted_notes.length].min
       spread.times do |i|
-        new_note = NoteUtils.number(NoteUtils.shift_octave(sorted_notes[i], 1))
+        new_note = sorted_notes[i].up
         notes << new_note unless notes.include?(new_note)
       end
     end
@@ -109,7 +106,7 @@ module Arp
       raise "Unknown arpeggiator direction #{direction}"
     end
 
-    notes.map! { |n| NoteUtils.sym(n) }
+    notes
   end
 
   # Arpeggiate the given degrees of the tonic note in the given scale.

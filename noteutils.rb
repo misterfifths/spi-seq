@@ -3,58 +3,65 @@ require_relative "extapi.rb"
 # Represents information about a note.
 # - sym: A normalized symbol for the note. It will be in lower-case, with all
 #   incidentals standardized to sharps. It will always include an octave number.
-# - pitch_class: A symbol for the pitch class of the note, normalized in the
-#   same manner as `sym`.
-# - number: The MIDI note number that represents the note.
+# - pitch_class: A symbol for the pitch class of the note (e.g. :c for C notes
+#   in any octave), normalized in the same manner as `sym`.
+# - number: The MIDI note number for the note. Note that this may not be an
+#   integer (e.g. if there's a cent tuning in effect). In that case, `sym` and
+#   `pitch_class` will correspond to the floor of `number`. If you need an
+#   integer MIDI note value, use the to_i method.
 # - octave: The octave for the note.
-class NormalizedNoteInfo
+#
+# Note that since this class derives from Numeric, you can directly pass
+# instances of it to Sonic Pi methods like `play` and `midi`. You can also
+# perform arithmetic on them, and compare instances directly to other numbers,
+# symbols, or strings. For example,
+#    MIDINote.new(61) == 61 == :cs4 == "db4"
+#    MIDINote.new(:c4) + 12 == :c5 == 72
+class MIDINote < Numeric
   # See https://github.com/sonic-pi-net/sonic-pi/blob/714d33316620d46d6815e554f17c5a76e4967471/app/server/ruby/lib/sonicpi/note.rb#L65
   NOTE_REGEX = /^:?(?<pitch_class>[a-g][sbf]?)(?<octave>-?\d*)$/i
 
   attr_reader :sym, :pitch_class, :number, :octave
 
-  # Returns a NormalizedNoteInfo instance for the given note (optionally) in the
-  # given octave. note is a symbol or string for a note (e.g. :fs3), or a MIDI
-  # note number. If octave is given, it overrides the octave of the note (even
-  # if it is a note number). If octave is not given and the note is a symbol or
-  # string without an octave (e.g. :c), the result will be in octave 4.
-  def self.normalize(note, octave: nil)
-    @@cache ||= {}
-    cache_key = [note, octave]
-    instance = @@cache[cache_key]
+  # Creates a new MIDINote instance from the given value, which must be either a
+  # MIDI note number, a string, a symbol, or a MIDINote instance (in which case
+  # the argument is returned as-is).
+  def self.new(note)
+    return note if note.is_a?(MIDINote)
+    raise "Cannot convert a rest to a MIDINote" if rest?(note)
+
+    @@__note_cache ||= {}
+    instance = @@__note_cache[note]
     return instance unless instance.nil?
 
-    instance = new(note, octave: octave)
-    @@cache[cache_key] = instance
+    instance = super(note)
+    @@__note_cache[note] = instance
+    @@__note_cache[instance.number] = instance
+    @@__note_cache[instance.to_f] = instance
+    # Note that it is not correct to cache with instance.to_i or instance.sym as
+    # keys. The note number may be a float, so either of those would collapse it
+    # with its integer counterpart. If the note number *is* an integer, it will
+    # get cached with that key via instance.number (and/or the note arg itself).
     return instance
   end
 
-  private def initialize(note, octave: nil)
+  def initialize(note)
     raise "Unimplemented outside of Sonic Pi" unless $__IN_SPI
 
     # note_info leaves pitch classes in symbols alone, so we always need to
     # go to a number first so that sharps and flats are normalized. Note that
-    # this step is the one that enforces the default octave of 4 on symbols
-    # without an explicit octave. We will replace the octave if needed in the
-    # note_info call below.
-    note = $__SPI.note(note)
-
-    # note_info ignores its octave argument when the note is a number, so if
-    # we want to override the octave we need to go back to a symbol/string
-    # first. To do that we can just call note_info directly. The octave will
-    # probably be wrong, but we don't care about that since we'll correct it
-    # immediately afterward.
-    unless octave.nil?
-      info = $__SPI.note_info(note)
-      note = info.midi_string
-    end
-
-    info = $__SPI.note_info(note, octave: octave)
-    @number = info.midi_note
+    # calling `note` is what enforces the default octave of 4 on symbols
+    # without an explicit octave.
+    # There's also something tricky here with regards to non-integer notes.
+    # The midi_note attr on the return of `note_info` is always an integer, but
+    # we may have been handed a float (e.g. if there's a cent tuning). `note`
+    # will keep floats intact, so that's what we should use for @number.
+    @number = $__SPI.note(note)
+    info = $__SPI.note_info(@number)
     @octave = info.octave
 
     # Pull out the pitch class.
-    match = NOTE_REGEX.match(info.midi_string.downcase.to_s)
+    match = NOTE_REGEX.match(info.midi_string.downcase)
     @pitch_class = match[:pitch_class].to_sym
 
     # Make sure flats are converted to sharps.
@@ -68,157 +75,126 @@ class NormalizedNoteInfo
       @pitch_class = :as
     end
 
-    @sym = (@pitch_class.to_s + info.octave.to_s).to_sym
+    @sym = (@pitch_class.to_s + @octave.to_s).to_sym
   end
 
-  # Returns true if the given note has an explicit octave. Always returns true
-  # for MIDI note numbers. Returns true for note symbols or strings that end in
-  # a number, e.g. :cs4.
-  def self.has_octave?(note)
-    return true if note.is_a?(Numeric)
-
-    match = NOTE_REGEX.match(note.to_s)
-    raise "Invalid note symbol #{note}" if match.nil?
-    return !match[:octave].empty?
-  end
-end
-
-module NoteUtils
-  # Wrapper around NormalizedNoteInfo.normalize; see there for details.
-  def self.normalize(note, octave: nil)
-    NormalizedNoteInfo.normalize(note, octave: octave)
+  # Returns a new note with the same pitch class but the given octave.
+  def with_octave(new_octave)
+    return self if new_octave == @octave
+    new_sym = (@pitch_class.to_s + new_octave.to_s).to_sym
+    MIDINote.new(new_sym)
   end
 
-  # Returns a normalized symbol for the given note (a symbol, string, or MIDI
-  # note number). Uses the same octave rules as normalize.
-  def self.sym(note, octave: nil)
-    normalize(note, octave: octave).sym
+  # Returns a new note with the same pitch class but with its octave shifted up
+  # by the given amount.
+  def shift_octave(shift)
+    return self if shift == 0
+    with_octave(@octave + shift)
   end
 
-  # Returns the symbol for the note's pitch class (e.g. :c for Cs in all
-  # octaves). note may be a symbol, string, or MIDI note number. The returned
-  # symbol will be in lowercase.
-  def self.pitch_class(note)
-    normalize(note).pitch_class
+  # Returns a new note with the same pitch class but with its octave shifted up
+  # by the given amount.
+  def up(octave_shift = 1)
+    shift_octave(octave_shift)
   end
 
-  # Returns the MIDI note number for the given note (a symbol, string, or MIDI
-  # note number). Uses the same octave rules as normalize.
-  def self.number(note, octave: nil)
-    normalize(note, octave: octave).number
+  # Returns a new note with the same pitch class but with its octave shifted
+  # down by the given amount.
+  def down(octave_shift = 1)
+    shift_octave(-octave_shift)
   end
 
-  # Wrapper around NormalizedNoteInfo.has_octave?; see there for details.
-  def self.has_octave?(note)
-    NormalizedNoteInfo.has_octave?(note)
+  # Returns a new note that is shift many semitones away.
+  def shift_tone(shift)
+    return self if shift == 0
+    MIDINote.new(@number + shift)
   end
 
-  # Returns the octave number for the given note (a symbol, string, or MIDI note
-  # number). Uses the same octave rules as normalize.
-  def self.octave(note, octave: nil)
-    normalize(note, octave: octave).octave
+  alias transpose shift_tone
+
+  # Returns a new note in the same octave but with the given pitch class.
+  def with_pitch_class(cls)
+    new_sym = (cls.to_s + @octave.to_s).to_sym
+    MIDINote.new(new_sym)
   end
 
-  # Returns a normalized symbol for the given note (a symbol, string, or MIDI
-  # note number), changing its octave to the given value. This is effectively an
-  # alias for sym.
-  def self.set_octave(note, octave)
-    sym(note, octave: octave)
+  # Returns true if other matches this note. That is:
+  # - other has an explicit octave (or is a MIDI number) and refers to the same
+  #   note. E.g. :cs2 matches :cs2 and :db2. 67 matches :g4.
+  # - other is missing an octave and has the same pitch class. E.g. :c2 and :c4
+  #   match :c. :cs matches :cs3, :db2, and :db.
+  def match?(other)
+    return false if MIDINote.rest?(other)
+    return self == other if MIDINote.has_octave?(other)
+    @pitch_class == MIDINote.new(other).pitch_class
   end
 
-  # Returns a normalized symbol for the given note, with its octave shifted by
-  # the given offset.
-  def self.shift_octave(note, octave_shift)
-    sym(note, octave: octave(note) + octave_shift)
-  end
-
-  # Returns a normalized symbol for the given note, shifted by the given number
-  # of semitones. The octave parameter, if given, is applied when resolving the
-  # note argument; the result will not be in the given octave if the tone shift
-  # moves it outside of that octave.
-  def self.shift_tone(note, semitone_shift, octave: nil)
-    sym(number(note, octave: octave) + semitone_shift)
-  end
-
-  # Returns a normalized symbol for the given note, snapped to the closest value
-  # in notes. notes must be an array of note representations (symbols, strings,
-  # or MIDI note numbers). The octave parameter, if given, is used to resolve
-  # the note parameter. It is not used to resolve notes in the notes array; you
-  # probably want to give those explicit octaves.
-  def self.snap(note, notes, octave: nil)
+  # Returns a new note snapped to the closest value in notes. notes must be an
+  # array of note representations (symbols, strings, MIDI note numbers, or
+  # MIDINotes).
+  def snap(notes)
     # TODO: be more particular about rounding up or down?
-    notes = notes.map { |n| number(n) }
-    note = number(note, octave: octave)
+    notes = notes.map { |n| MIDINote.new(n) }
     winner = nil
     smallest_diff = 256
     notes.each do |n|
-      diff = (n - note).abs
+      diff = (n.number - @number).abs
       if diff < smallest_diff
         smallest_diff = diff
         winner = n
       end
     end
 
-    sym(winner)
+    winner
   end
 
-  # Given a tonic and a scale name, returns an array with two elements:
-  # - the full set of integer MIDI notes (0-127) that belong to the scale
-  # - the index in the array where the tonic can be found
-  def self.full_scale_and_tonic_idx(tonic, name)
-    @__full_scales_cache ||= {}
-
-    key = [tonic, name]
-    val = @__full_scales_cache[key]
-
-    if val.nil?
-      # Note 0 is c-1, and 127 is g9, so if we do 11 octaves from -1, we'll
-      # cover the whole MIDI range.
-      low_tonic = (pitch_class(tonic).to_s + "-1").to_sym
-      full_scale = ExtApi.scale(low_tonic, name, num_octaves: 11).to_a.reject { |n| n < 0 || n > 127 }
-      tonic_index = full_scale.index(number(tonic))
-      val = [full_scale, tonic_index]
-      @__full_scales_cache[key] = val
-    end
-
-    val
-  end
-
-  private_class_method :full_scale_and_tonic_idx
-
-  # Returns the full set of integer MIDI notes (0-127) that belong to the given
-  # scale with the given tonic.
+  # Returns the full set of MIDINotes (in the MIDI range 0-127) that belong to
+  # the given scale with the given tonic.
   def self.full_scale(tonic, scale_name)
-    return full_scale_and_tonic_idx(tonic, scale_name)[0]
+    @@__full_scales_cache ||= {}
+
+    tonic = MIDINote.new(tonic)
+    key = [tonic.to_sym, scale_name.to_sym]
+    scale = @@__full_scales_cache[key]
+    return scale unless scale.nil?
+
+    # Note 0 is c-1, and 127 is g9, so if we do 11 octaves from -1, we'll cover
+    # the whole MIDI range.
+    low_tonic = tonic.with_octave(-1)
+    scale = ExtApi.scale(low_tonic, scale_name, num_octaves: 11).to_a.reject { |n| n < 0 || n > 127 }
+    scale.map! { |n| MIDINote.new(n) }
+    @@__full_scales_cache[key] = scale
+    scale
   end
 
-  # Returns a normalized symbol for the given note, snapped to the nearest note
-  # in the given scale. root is the root note for the scale and must be a symbol
-  # or string for a note without an octave (e.g. :c or :fs). scale is a symbol
-  # for one of the scales known to Sonic Pi. The octave parameter, if given, is
-  # used to resolve the note parameter. It has no effect on the scale.
-  def self.snap_to_scale(note, root, scale, octave: nil)
-    snap(note, full_scale(root, scale), octave: octave)
+  # Returns a new note, snapped to the nearest note in the given scale. tonic is
+  # the root note for the scale and must be a symbol or string for a note
+  # without an octave (e.g. :c or :fs). scale is a symbol for one of the scales
+  # known to Sonic Pi.
+  def snap_to_scale(tonic, scale_name)
+    snap(MIDINote.full_scale(tonic, scale_name))
   end
 
-  # Returns a sort of degree number for the given note in the given scale with
-  # the given tonic. The result is an integer, which may be positive or
-  # negative, representing how many degrees the note is away from the tonic.
+
+  ### Auto-harmonize
+
+  # Returns a sort of degree number for the note in the given scale with the
+  # given tonic. The result is an integer, which may be positive or negative,
+  # representing how many degrees the note is away from the tonic.
   # Returns nil if the note is not in the scale.
-  def self.degree_number(note, scale_tonic, scale_name)
-    sc, tonic_index = full_scale_and_tonic_idx(scale_tonic, scale_name)
-    note_index = sc.index(number(note))
+  private def degree_number(tonic, scale_name)
+    scale = MIDINote.full_scale(tonic, scale_name)
+    note_index = scale.index(note)
     return nil if note_index.nil?
-    note_index - tonic_index
+    note_index - scale.index(MIDINote.new(tonic))
   end
 
-  private_class_method :degree_number
-
-  # Returns the symbol for a note that is num many degrees away from the tonic
-  # in the given scale. num may be positive or negative.
-  def self.my_degree(num, scale_tonic, scale_name)
-    sc, tonic_idx = full_scale_and_tonic_idx(scale_tonic, scale_name)
-    sym(sc[tonic_idx + num])
+  # Returns the note that is num many degrees away from the tonic in the given
+  # scale. num may be positive or negative.
+  def self.my_degree(num, tonic, scale_name)
+    scale = full_scale(tonic, scale_name)
+    tonic_index = scale.index(MIDINote.new(tonic))
+    scale[tonic_index + num]
   end
 
   private_class_method :my_degree
@@ -229,11 +205,12 @@ module NoteUtils
   # array will be sorted from low to high, and the given note itself will be
   # the final element of the array. If note is not in the scale, returns a
   # single-element array containing just note.
-  # This is based on an article by Neil Bickford (https://www.gathering4gardner.org/g4g14gift/G4G14-NeilBickford-AlgorithmsForMusicalHarmonization.pdf)
+  # This is based on an article by Neil Bickford:
+  # https://www.gathering4gardner.org/g4g14gift/G4G14-NeilBickford-AlgorithmsForMusicalHarmonization.pdf
   # which in turn references a paper by Donald Knuth.
-  def self.harmonize(note, scale_tonic, scale_name, position: 0)
-    n = degree_number(note, scale_tonic, scale_name)
-    return [sym(note)] if n.nil?
+  def harmonize(tonic, scale_name, position: 0)
+    n = degree_number(tonic, scale_name)
+    return [self] if n.nil?
 
     degrees = case position
     when 0
@@ -249,7 +226,110 @@ module NoteUtils
     # Avoid tritones
     degrees[0] -= 2 if degrees[0] % 7 == 6
 
-    degrees.map { |d| my_degree(d, scale_tonic, scale_name) }
+    degrees.map { |d| MIDINote.my_degree(d, tonic, scale_name) }
+  end
+
+
+  ### Ruby magic methods and Numeric implementation
+
+  def to_i
+    @number.to_i
+  end
+
+  def to_f
+    @number.to_f
+  end
+
+  def <(other)
+    return @number < other.to_f if other.is_a?(Numeric)
+    @number < MIDINote.new(other).number
+  end
+
+  def <=(other)
+    return @number <= other.to_f if other.is_a?(Numeric)
+    @number <= MIDINote.new(other).number
+  end
+
+  def >(other)
+    return @number > other.to_f if other.is_a?(Numeric)
+    @number > MIDINote.new(other).number
+  end
+
+  def >=(other)
+    return @number >= other.to_f if other.is_a?(Numeric)
+    @number >= MIDINote.new(other).number
+  end
+
+  def <=>(other)
+    return @number <=> other.to_f if other.is_a?(Numeric)
+    @number <=> MIDINote.new(other).number
+  end
+
+  def ==(other)
+    return false if MIDINote.rest?(other)
+    return @number == other.to_f if other.is_a?(Numeric)
+    # The symbol and string checks are just fast paths. :c4 and :C4 are still
+    # equal, e.g., so we have to normalize if they don't match.
+    return true if other.is_a?(Symbol) && @sym == other
+    return true if other.is_a?(String) && @sym.to_s == other
+    @sym == MIDINote.new(other).sym
+  end
+
+  alias eql? ==
+
+  def hash
+    @sym.hash
+  end
+
+  def coerce(other)
+    return [MIDINote.new(other), self]
+  end
+
+  def +(other)
+    shift_tone(other.to_f)
+  end
+
+  def -(other)
+    shift_tone(-other.to_f)
+  end
+
+  def *(other)
+    MIDINote.new(@number * other.to_f)
+  end
+
+  def /(other)
+    MIDINote.new(@number / other.to_f)
+  end
+
+  def to_sym
+    @sym
+  end
+
+  def to_s
+    @sym.to_s
+  end
+
+  def inspect
+    ":#{@sym}"
+  end
+
+  def repr
+    ":#{@sym}"
+  end
+
+
+  ### Misc. class methods
+
+  # Returns true if the given note value (number, string, symbol, or MIDINote)
+  # has an explicit octave. Always returns true for MIDI note numbers and
+  # MIDINote objects. Returns true for note symbols or strings that end in a
+  # number, e.g. :cs4.
+  def self.has_octave?(note)
+    return true if note.is_a?(Numeric) || note.is_a?(MIDINote)
+
+    match = NOTE_REGEX.match(note.to_s)
+    raise "Invalid note symbol #{note}" if match.nil?
+    return !match[:octave].empty?
   end
 
   # Returns true if the given value represents a rest. nil, :r, and :rest are
@@ -257,30 +337,8 @@ module NoteUtils
   def self.rest?(val)
     val.nil? || val == :r || val == :rest
   end
+end
 
-  # Returns true if the two values refer to the same note, or are both rests.
-  def self.equal_notes?(a, b)
-    (rest?(a) && rest?(b)) || (sym(a) == sym(b))
-  end
-
-  # Returns true if the two values match one another. Two values match if:
-  # - Both are a rest. E.g. :r matches :rest and nil.
-  # - Both have an explicit octave (or are a MIDI number) and refer to the same
-  #   note. E.g. :cs2 matches :cs2 and :db2. 67 matches :g4.
-  # - Either (or both) is missing an octave, and the two have the same pitch
-  #   class. E.g. :c2 and :c4 match :c. :cs matches :cs3, :db2, and :db.
-  def self.match?(a, b)
-    return true if rest?(a) && rest?(b)
-    return false if rest?(a) || rest?(b)
-
-    a_has_octave = has_octave?(a)
-    b_has_octave = has_octave?(b)
-    if (a_has_octave && b_has_octave) || (!a_has_octave && !b_has_octave)
-      # If they both have an octave, or both don't, compare symbols directly. If
-      # both don't have an octave, this will collapse them to the same default.
-      return sym(a) == sym(b)
-    end
-
-    pitch_class(a) == pitch_class(b)
-  end
+def N(note)
+  MIDINote.new(note)
 end

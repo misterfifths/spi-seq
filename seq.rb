@@ -8,12 +8,11 @@ require_relative "arp.rb"
 # TODO: legato?
 # TODO: microtiming?
 class Step
-  attr_reader :note, :note_number, :octave, :vel, :gate, :prob
+  attr_reader :note, :vel, :gate, :prob
 
-  # note can be a string, symbol, integer MIDI note. It is always normalized
-  # to a lower-case symbol of the Sonic Pi note name, and sharps and flats are
-  # standardized into sharps. If you need to compare against a Step's note, make
-  # sure you use such a normalized symbol, or use the has_note? method.
+  # note can be a string, symbol, integer MIDI note, or MIDINote instance. The
+  # note attribute always contains a MIDINote instance corresponding to the
+  # argument.
   # vel is the MIDI velocity for the note, 0 - 127. It is only used when the
   # note is played via MIDI, obviously.
   # gate is the percentage of the duration of the step for which the note will
@@ -27,10 +26,7 @@ class Step
   #    Prob.custom. If the predicate returns true, the step will trigger.
   # 4. an instance of Prob. See that class for some common cases.
   def initialize(note, vel: 127, gate: 1.0, prob: nil)
-    note_info = NoteUtils.normalize(note)
-    @note = note_info.sym
-    @note_number = note_info.number
-    @octave = note_info.octave
+    @note = MIDINote.new(note)
 
     @vel = vel.to_i
     if @vel < 0
@@ -100,16 +96,16 @@ class Step
   end
 
   def with_octave(new_octave)
-    with_note(NoteUtils.set_octave(@note, new_octave))
+    with_note(@note.with_octave(new_octave))
   end
 
   def shift_octave(shift)
-    with_note(NoteUtils.shift_octave(@note, shift))
+    with_note(@note.shift_octave(shift))
   end
 
   # Adjusts the note by the given number of semitones.
   def shift_tone(shift)
-    with_note(NoteUtils.shift_tone(@note, shift))
+    with_note(@note.shift_tone(shift))
   end
 
   alias transpose shift_tone
@@ -120,21 +116,6 @@ class Step
 
   def tied?
     @gate == 1.0
-  end
-
-  # Returns whether this Step has the given note, which may be a MIDI note
-  # number, a string, or a symbol. You can compare directly against the note
-  # attribute if you use a normalized note symbol as returned from NoteUtils.sym
-  # (lowercase, with sharps and flats standardized into sharps). Otherwise, this
-  # function makes sure to do the normalization for you.
-  def has_note?(n)
-    @note == NoteUtils.sym(n)
-  end
-
-  # Returns whether this Step's note matches the given note. See
-  # NoteUtils.match? for the definition of "match".
-  def matches_note?(n)
-    NoteUtils.match?(@note, n)
   end
 
   # Returns whether this step should play in the given cycle of playback, with
@@ -151,7 +132,7 @@ class Step
     else
       prob_desc = " prob=#{@prob}"
     end
-    "<Step #{@note}/#{@note_number} vel=#{@vel} gate=#{@gate}#{prob_desc}>"
+    "<Step #{@note}/#{@note.number} vel=#{@vel} gate=#{@gate}#{prob_desc}>"
   end
 
   def repr
@@ -161,10 +142,10 @@ class Step
     ctor_args[:prob] = "#{@prob.repr}" unless @prob.nil?  # prob.repr may throw
 
     if ctor_args.empty?
-      ":#{@note}"
+      "#{@note.repr}"
     else
       kwargs = ctor_args.map { |k, v| "#{k}: #{v}" }.join(", ")
-      "S(:#{@note}, #{kwargs})"
+      "S(#{@note.repr}, #{kwargs})"
     end
   end
 end
@@ -217,7 +198,7 @@ class Track
   #   containing a single Step created with that note and the default arguments
   #   to Step.new.
   # - A single Step becomes a grid with one slot containing just that Step.
-  # - A single rest (see NoteUtils.rest?) becomes a grid with one empty slot.
+  # - A single rest (see MIDINote.rest?) becomes a grid with one empty slot.
   # - Each element of an array-like value is converted to a slot. Conversion
   #   rules for each child element:
   #   1. Rests become empty slots.
@@ -1132,9 +1113,9 @@ class Track
 
   # Returns two tracks by extracting steps that match the given note. The first
   # track contains the non-matching steps, and the second contains the matching
-  # ones. See NoteUtils.match? for matching rules.
+  # ones. See MIDINote.match? for matching rules.
   def extract_note(note)
-    extract { |step| step.matches_note?(note) }
+    extract { |step| step.note.match?(note) }
   end
 
   alias extract_notes extract_note
@@ -1450,7 +1431,7 @@ class Track
   # For each slot, yields to its block a two-element array of:
   # - the step in the slot being harmonized, or nil if the slot is empty
   # - an array of notes that harmonize with the note in the step, as given by
-  #   NoteUtils.harmonize. The note from the step itself is not included.
+  #   MIDINote.harmonize. The note from the step itself is not included.
   #   If the note is not in the given scale, or if the slot is empty, this array
   #   is empty.
   private def iter_harmonized_slots(tonic, scale_name, position:, voices: nil)
@@ -1484,7 +1465,7 @@ class Track
 
       s = slot[0]
 
-      notes = NoteUtils.harmonize(s.note, tonic, scale_name, position: position)
+      notes = s.note.harmonize(tonic, scale_name, position: position)
       notes.pop  # Remove the step note itself (which may leave the array empty)
 
       if voices.is_a?(Numeric)
@@ -1513,7 +1494,7 @@ class Track
 
   # Return a new track where each slot has new steps added to it for notes that
   # harmonize with the existing step in that slot. Can only be called on mono
-  # tracks. Arguments are as described in NoteUtils.harmonize.
+  # tracks. Arguments are as described in MIDINote.harmonize.
   # position is the starting position to use when harmonizing. It may be 0, 1,
   # 2, or :rand. If it is an integer, the position will increment for each step.
   # If it is :rand, random, non-repeating positions will be used.
@@ -1565,7 +1546,7 @@ class Track
   # note among the given array, which should consist of MIDI note numbers or
   # symbols.
   def snap_to_notes(notes)
-    mutate_each_step { |step| step.with_note(NoteUtils.snap(step.note, notes)) }
+    mutate_each_step { |step| step.with_note(step.note.snap(notes)) }
   end
 
   # Return a new track in which each Step has its note snapped to the nearest
@@ -1573,7 +1554,7 @@ class Track
   # MIDI note number of symbol, and scale should be one of the scale names known
   # to Sonic Pi.
   def snap_to_scale(root, scale)
-    mutate_each_step { |step| step.with_note(NoteUtils.snap_to_scale(step.note, root, scale)) }
+    mutate_each_step { |step| step.with_note(step.note.snap_to_scale(root, scale)) }
   end
 
   # Returns a new track where each Step with note orig is replaced with a Step
@@ -1586,22 +1567,19 @@ class Track
   # track with steps [:e4, :d2, :e3].
   # repl may be nil, :r, or :rest to remove Steps that match orig.
   def sub_note(orig, repl)
-    has_octave = NoteUtils.has_octave?(orig)
-    repl_is_rest = NoteUtils.rest?(repl)
-    if has_octave
-      orig = NoteUtils.sym(orig)
-    else
-      if !repl_is_rest && NoteUtils.has_octave?(repl)
-        raise "Replacement notes cannot have an octave if the original note doesn't"
-      end
-      orig = NoteUtils.pitch_class(orig)
+    has_octave = MIDINote.has_octave?(orig)
+    repl_is_rest = MIDINote.rest?(repl)
+    if !has_octave && !repl_is_rest && MIDINote.has_octave?(repl)
+      raise "Replacement notes cannot have an octave if the original note doesn't"
     end
+
+    orig = MIDINote.new(orig)
 
     mutate_each_step do |step|
       if has_octave && step.note == orig
         repl_is_rest ? nil : step.with_note(repl)
-      elsif !has_octave && NoteUtils.pitch_class(step.note) == orig
-        repl_is_rest ? nil : step.with_note(NoteUtils.sym(repl, octave: step.octave))
+      elsif !has_octave && step.note.pitch_class == orig.pitch_class
+        repl_is_rest ? nil : step.with_note(step.note.with_pitch_class(repl))
       else
         step
       end
@@ -1640,7 +1618,7 @@ class Track
       if tone_shift != 0
         step = step.shift_tone(tone_shift)
 
-        new_octave = NoteUtils.octave(step.note)
+        new_octave = step.note.octave
         new_octave = octave_limit.min if new_octave < octave_limit.min
         new_octave = octave_limit.max if new_octave > octave_limit.max
 
@@ -1694,16 +1672,16 @@ class Track
   # - Steps are passed through verbatim.
   # - Notes (symbols, strings and numbers) are converted to Steps using that
   #   note and the default values for the other arguments of Step's initializer.
-  # - It is an error to pass a rest (as defined by NoteUtils.rest?) to this
+  # - It is an error to pass a rest (as defined by MIDINote.rest?) to this
   #   function.
   # def_gate and def_vel will be used for any Steps that need to be constructed.
   def self.stepify(x, def_gate: 1.0, def_vel: 127)
-    raise "A rest cannot be converted to a Step" if NoteUtils.rest?(x)
+    raise "A rest cannot be converted to a Step" if MIDINote.rest?(x)
 
     case x
     when Step
       x
-    when Symbol, String, Numeric
+    when Symbol, String, Numeric, MIDINote
       Step.new(x, gate: def_gate, vel: def_vel)
     else
       raise "Not a valid value for a Step: #{x.inspect}"
@@ -1736,7 +1714,7 @@ class Track
 
   # Attempts to convert its argument to a grid slot (i.e. an array of Steps).
   # The returned array will be frozen. Conversion rules:
-  # - Rests (see NoteUtils.rest?) become an empty slot ([]).
+  # - Rests (see MIDINote.rest?) become an empty slot ([]).
   # - Single notes (symbols, strings, or numbers) become a slot with a single
   #   Step that is the result of calling `stepify` on the argument.
   # - Single Steps become a slot containing just that step.
@@ -1747,12 +1725,12 @@ class Track
   #      printed, and only the Step with the longest gate is chosen.
   # def_gate and def_vel will be used for any Steps that need to be constructed.
   def self.slotify(x, def_gate: 1.0, def_vel: 127)
-    return [].freeze if NoteUtils.rest?(x)
+    return [].freeze if MIDINote.rest?(x)
 
     case x
     when Step
       [x].freeze
-    when Symbol, String, Numeric
+    when Symbol, String, Numeric, MIDINote
       [stepify(x, def_gate: def_gate, def_vel: def_vel)].freeze
     # NOTE: 'Enumerable' resolves to SonicPi::RuntimeMethods::Enumerable in this
     # context, which Array does *not* have as a superclass. So we need to use
@@ -1765,7 +1743,7 @@ class Track
     # to be broken on Chord objects, and should be avoided. See Arp.arpeggiate
     # for some notes.
     when ::Enumerable, SonicPi::Core::SPVector
-      raw_slot = x.to_a.reject { |s| NoteUtils.rest?(s) }.map { |s| stepify(s, def_gate: def_gate, def_vel: def_vel) }
+      raw_slot = x.to_a.reject { |s| MIDINote.rest?(s) }.map { |s| stepify(s, def_gate: def_gate, def_vel: def_vel) }
       dedupe_slot(raw_slot).freeze
     else
       raise "Not a valid value for a slot: #{x.inspect}"
@@ -1774,7 +1752,7 @@ class Track
 
   # Attempts to convert its argument to a grid (a 2d array of Steps). The
   # returned array and all of its elements will be frozen. Conversion rules:
-  # - A single rest (see NoteUtils.rest?) becomes a grid with one rest ([[]]).
+  # - A single rest (see MIDINote.rest?) becomes a grid with one rest ([[]]).
   # - A single note (symbol, string, or number) becomes a grid with one slot
   #   that is the result of calling `slotify` on the argument.
   # - A single Step becomes a grid with one slot containing that step.
@@ -1782,12 +1760,12 @@ class Track
   #   `slotify`.
   # def_gate and def_vel will be used for any Steps that need to be constructed.
   def self.gridify(x, def_gate: 1.0, def_vel: 127)
-    return [[].freeze].freeze if NoteUtils.rest?(x)
+    return [[].freeze].freeze if MIDINote.rest?(x)
 
     case x
     when Step
       [[x].freeze].freeze
-    when Symbol, String, Numeric
+    when Symbol, String, Numeric, MIDINote
       [slotify(x, def_gate: def_gate, def_vel: def_vel)].freeze
     # See note in slotify about these class selections.
     when ::Enumerable, SonicPi::Core::SPVector
