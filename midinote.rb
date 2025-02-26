@@ -33,17 +33,45 @@ class MIDINote < Numeric
     raise "Cannot convert a rest to a MIDINote" if rest?(note)
 
     @@__note_cache ||= {}
+
+    # Attempt a raw cache lookup.
     instance = @@__note_cache[note]
     return instance unless instance.nil?
 
+    # No dice; canonicalize the key a bit.
+    cache_key = case note
+    when String
+      note.downcase
+    when Symbol
+      note.to_s.downcase
+    when Numeric
+      note.to_f
+    else
+      note
+    end
+
+    instance = @@__note_cache[cache_key]
+    unless instance.nil?
+      # `note` must be a new representation of a value we already know about; we
+      # should update the cache.
+      @@__note_cache[note] = instance
+      return instance
+    end
+
+    # We've got to make a new instance.
     instance = super(note)
     @@__note_cache[note] = instance
-    @@__note_cache[instance.number] = instance
+    @@__note_cache[cache_key] = instance
     @@__note_cache[instance.to_f] = instance
-    # Note that it is not correct to cache with instance.to_i or instance.sym as
-    # keys. The note number may be a float, so either of those would collapse it
-    # with its integer counterpart. If the note number *is* an integer, it will
-    # get cached with that key via instance.number (and/or the note arg itself).
+
+    # It's only safe to cache against instance.to_s if the note number is an
+    # integer. If it was a float, it is not the canonical representation of that
+    # note symbol, and we should only cache it against instance.to_f (which will
+    # also be the cache_key in that case).
+    if instance.number.is_a?(Integer)
+      @@__note_cache[instance.to_s] = instance
+    end
+
     return instance
   end
 
