@@ -4,9 +4,7 @@
 # For now, there are direct calls to ExtApi scattered around the code. A medium-
 # term goal is to move things out of ExtApi into their own higher-level modules
 # which can individually call into Sonic Pi, or provide some other
-# implementation. See the example of MIDINote, which requires this module for
-# the globals it sets, then uses $__SPI directly to provide an implementation of
-# note normalization.
+# implementation.
 
 begin
   # FIXME: This is an abject sin, but I can't figure out a good way to reliably

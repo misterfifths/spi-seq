@@ -1,4 +1,4 @@
-require_relative "extapi.rb"
+require_relative "extapi"
 
 # Represents information about a note.
 # - sym: A normalized symbol for the note. It will be in lower-case, with all
@@ -20,6 +20,8 @@ require_relative "extapi.rb"
 class MIDINote < Numeric
   # See https://github.com/sonic-pi-net/sonic-pi/blob/714d33316620d46d6815e554f17c5a76e4967471/app/server/ruby/lib/sonicpi/note.rb#L65
   NOTE_REGEX = /^:?(?<pitch_class>[a-g][sbf]?)(?<octave>-?\d*)$/i
+  NOTE_NAMES = [[:c, :bs], [:cs, :db, :df], [:d], [:ds, :eb, :ef], [:e, :fb, :ff], [:f, :es],
+                [:fs, :gb, :gf], [:g], [:gs, :ab, :af], [:a], [:as, :bb, :bf], [:b, :cb, :cf]]
 
   attr_reader :sym, :pitch_class, :number, :octave
 
@@ -46,36 +48,32 @@ class MIDINote < Numeric
   end
 
   def initialize(note)
-    raise "Unimplemented outside of Sonic Pi" unless $__IN_SPI
+    case note
+    when Numeric
+      # The argument may be a float. Keep it as-is in @number, but be sure to
+      # use to_i when using it as a MIDI note number.
+      @number = note
+      @octave = (note.to_i / 12) - 1
+      @pitch_class = NOTE_NAMES[note.to_i % 12][0]
+      @sym = (@pitch_class.to_s + @octave.to_s).to_sym
+    when Symbol, String
+      match = NOTE_REGEX.match(note.to_s.downcase)
+      raise "Invalid note name #{note}" if match.nil?
 
-    # note_info leaves pitch classes in symbols alone, so we always need to
-    # go to a number first so that sharps and flats are normalized. Note that
-    # calling `note` is what enforces the default octave of 4 on symbols
-    # without an explicit octave.
-    # There's also something tricky here with regards to non-integer notes.
-    # The midi_note attr on the return of `note_info` is always an integer, but
-    # we may have been handed a float (e.g. if there's a cent tuning). `note`
-    # will keep floats intact, so that's what we should use for @number.
-    @number = $__SPI.note(note)
-    info = $__SPI.note_info(@number)
-    @octave = info.octave
+      @octave = match[:octave].empty? ? 4 : match[:octave].to_i
+      @pitch_class = match[:pitch_class].to_sym
 
-    # Pull out the pitch class.
-    match = NOTE_REGEX.match(info.midi_string.downcase)
-    @pitch_class = match[:pitch_class].to_sym
+      # Check for octave boundary crossings: cb (down an octave) and bs (up)
+      @octave -= 1 if [:cb, :cf].include?(@pitch_class)
+      @octave += 1 if @pitch_class == :bs
 
-    # Make sure flats are converted to sharps.
-    # Not trying to be exhaustive here; these are just the notes for which
-    # note_info returns flats.
-    if @pitch_class == :eb
-      @pitch_class = :ds
-    elsif @pitch_class == :ab
-      @pitch_class = :gs
-    elsif @pitch_class == :bb
-      @pitch_class = :as
+      name_idx = NOTE_NAMES.find_index { |names| names.include?(@pitch_class) }
+      @pitch_class = NOTE_NAMES[name_idx][0]  # normalize
+      @number = 12 + @octave * 12 + name_idx  # 12 is c0
+      @sym = (@pitch_class.to_s + @octave.to_s).to_sym
+    else
+      raise "Invalid note value #{note}"
     end
-
-    @sym = (@pitch_class.to_s + @octave.to_s).to_sym
   end
 
   # Returns a new note with the same pitch class but the given octave.
