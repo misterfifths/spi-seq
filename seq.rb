@@ -348,6 +348,8 @@ class Track
     @grid.length
   end
 
+  alias length num_slots
+
   def beat_length
     num_slots * @granularity.to_f
   end
