@@ -1,5 +1,5 @@
 require_relative "extapi.rb"
-require_relative "noteutils.rb"
+require_relative "midinote.rb"
 require_relative "notelength.rb"
 require_relative "prob.rb"
 require_relative "arp.rb"

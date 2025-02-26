@@ -1,4 +1,4 @@
-require_relative "noteutils.rb"
+require_relative "midinote.rb"
 
 module Arp
   Up = :up
