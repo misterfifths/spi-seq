@@ -76,9 +76,9 @@ class ExtApiTest < Test::Unit::TestCase
 
     assert_quantise 11.25, 0.1, 11.3
 
-    assert_quantise -1, 1, -1
-    assert_quantise -1, 0.5, -1
-    assert_quantise -1.25, 0.5, -1.5
+    assert_quantise(-1, 1, -1)
+    assert_quantise(-1, 0.5, -1)
+    assert_quantise(-1.25, 0.5, -1.5)
   end
 
   def test_get_set
