@@ -60,7 +60,7 @@ module Arp
       end
     end
 
-    if spread > 0 && notes.length > 0
+    if spread > 0 && !notes.empty?
       # take the spread lowest notes and add a note an octave up. do not
       # duplicate notes, and do not effect the sorting of the original array.
       # notes added from spread go at the end, in case we're playing in order.

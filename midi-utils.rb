@@ -253,7 +253,7 @@ end
 # Received CCs that are not in the given map will be ignored by this loop.
 def cc_fx_control_loop(loop_name = :cc_fx_control, send_name_sysex: true,
                        port: nil, channel: nil, **cc_mappings)
-  return if cc_mappings.size == 0
+  return if cc_mappings.empty?
 
   port, channel = __resolve_cc_port_and_channel(port, channel)
 

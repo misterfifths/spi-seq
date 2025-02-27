@@ -61,12 +61,12 @@ class Prob
 
   # Step will trigger if any step triggered in the previously played slot.
   def self.pre
-    new(->(_, _, _, prev_steps) { prev_steps.length != 0 }, "pre", "pre")
+    new(->(_, _, _, prev_steps) { !prev_steps.empty? }, "pre", "pre")
   end
 
   # Step will trigger if no step triggered in the previously played slot.
   def self.not_pre
-    new(->(_, _, _, prev_steps) { prev_steps.length == 0 }, "!pre", "not_pre")
+    new(->(_, _, _, prev_steps) { prev_steps.empty? }, "!pre", "not_pre")
   end
 
   # Step will trigger if a step triggered in the previously played slot with the
