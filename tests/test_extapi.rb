@@ -40,8 +40,8 @@ class ExtApiTest < Test::Unit::TestCase
     assert_equal 1, ExtApi.choose([1])
 
     callable = ExtApi.choose
-    assert_includes [1, 2, 3], callable.([1, 2, 3])
-    assert_equal 1, callable.([1])
+    assert_includes [1, 2, 3], callable[[1, 2, 3]]
+    assert_equal 1, callable[[1]]
   end
 
   def test_one_in
