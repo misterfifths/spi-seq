@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Curves
   # These are all intended to be called with x in [0, 1], and for such values,
   # will return a value in [0, 1]. For values of x outside of that range, the

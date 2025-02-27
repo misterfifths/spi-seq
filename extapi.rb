@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # The goal here is to keep track of direct calls into SonicPi's library, with
 # the long-term plan of allowing (at least some of) the code to run outside of
 # that environment.

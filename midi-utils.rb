@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "extapi"
 
 # Start a live_loop named loop_name that sends MIDI clock beats for the global

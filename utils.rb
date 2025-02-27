@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "extapi"
 
 # Runs the given block the first time the script runs, and whenever it is

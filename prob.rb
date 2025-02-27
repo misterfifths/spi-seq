@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Prob
   # Use a custom trigger probability predicate. The predicate must respond to
   # call and arity, and must have an arity between 0 and 3 inclusive. It will be
