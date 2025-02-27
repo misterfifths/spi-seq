@@ -11,7 +11,7 @@ def on_cold_run(thread_name = :__default_cold_run, &block)
     block.call
 
     # spin to keep this thread alive until the script is manually stopped
-    ExtApi.sleep(100) while true
+    loop { ExtApi.sleep(100) }
   end
 end
 
