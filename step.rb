@@ -1,6 +1,13 @@
 require_relative "midinote.rb"
 require_relative "prob.rb"
 
+
+# An alias for Step.new.
+def S(*args, **kwargs)
+  Step.new(*args, **kwargs)
+end
+
+
 # TODO: legato?
 # TODO: microtiming?
 class Step
@@ -144,8 +151,4 @@ class Step
       "S(#{@note.repr}, #{kwargs})"
     end
   end
-end
-
-def S(*args, **kwargs)
-  Step.new(*args, **kwargs)
 end

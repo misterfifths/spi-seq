@@ -6,6 +6,12 @@ require_relative "prob.rb"
 require_relative "arp.rb"
 
 
+# An alias for Track.new.
+def T(*args, **kwargs)
+  Track.new(*args, **kwargs)
+end
+
+
 # Set global Track behaviors.
 # strict_track_merging: If true, Tracks with mismatched granularities or
 # timescales cannot interact with one another. That is, they cannot be merged,
@@ -1679,8 +1685,4 @@ class Track
     # We can just pass this off to the initializer and let it call gridify.
     mutate(grid: x)
   end
-end
-
-def T(*args, **kwargs)
-  Track.new(*args, **kwargs)
 end

@@ -1,5 +1,12 @@
 require_relative "extapi"
 
+
+# An alias for MIDINote.new.
+def N(note)
+  MIDINote.new(note)
+end
+
+
 # Represents information about a note.
 # - sym: A normalized symbol for the note. It will be in lower-case, with all
 #   incidentals standardized to sharps. It will always include an octave number.
@@ -363,8 +370,4 @@ class MIDINote < Numeric
   def self.rest?(val)
     val.nil? || val == :r || val == :rest
   end
-end
-
-def N(note)
-  MIDINote.new(note)
 end
