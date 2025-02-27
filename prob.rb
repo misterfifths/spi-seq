@@ -16,7 +16,7 @@ class Prob
 
   # Step will trigger with the given probability (0-1 inclusive).
   def self.chance(p)
-    new(->{ ExtApi.rand < p }, "#{p.round(2)}", "chance(#{p})")
+    new(->{ ExtApi.rand < p }, p.round(2).to_s, "chance(#{p})")
   end
 
   # Step will trigger with a probablity of 1 in n.

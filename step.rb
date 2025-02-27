@@ -142,12 +142,12 @@ class Step
 
   def repr
     ctor_args = {}
-    ctor_args[:vel] = "#{@vel}" unless @vel == 127
-    ctor_args[:gate] = "#{@gate}" unless @gate == 1.0
-    ctor_args[:prob] = "#{@prob.repr}" unless @prob.nil?  # prob.repr may throw
+    ctor_args[:vel] = @vel.to_s unless @vel == 127
+    ctor_args[:gate] = @gate.to_s unless @gate == 1.0
+    ctor_args[:prob] = @prob.repr unless @prob.nil?  # prob.repr may throw
 
     if ctor_args.empty?
-      "#{@note.repr}"
+      @note.repr
     else
       kwargs = ctor_args.map { |k, v| "#{k}: #{v}" }.join(", ")
       "S(#{@note.repr}, #{kwargs})"
