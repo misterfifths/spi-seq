@@ -17,17 +17,17 @@ module Arp
 
   # See https://www.reddit.com/r/musictheory/comments/1clent8/names_for_common_arpeggio_patterns
   module DegreePatterns
-    OneThreeFive = [1, 3, 5]
-    OneThreeFiveThree = [1, 3, 5, 3]
-    Alberti = [1, 5, 3, 5]
-    AlbertiFirstInv = [3, 8, 5, 8]
-    AlbertiSecondInv = [5, 10, 8, 10]
-    AlbertiSeventh = [1, 7, 3, 7]
-    OpenPosition = [1, 5, 10]
-    OneOctave = [1, 3, 5, 8]
-    OneOctaveFirstInv = [3, 5, 8, 10]
-    OneOctaveSecondInv = [5, 8, 10, 12]
-    TwoOctaveBroken = [1, 5, 3, 8, 5, 10, 8, 12, 10, 15]
+    OneThreeFive = [1, 3, 5].freeze
+    OneThreeFiveThree = [1, 3, 5, 3].freeze
+    Alberti = [1, 5, 3, 5].freeze
+    AlbertiFirstInv = [3, 8, 5, 8].freeze
+    AlbertiSecondInv = [5, 10, 8, 10].freeze
+    AlbertiSeventh = [1, 7, 3, 7].freeze
+    OpenPosition = [1, 5, 10].freeze
+    OneOctave = [1, 3, 5, 8].freeze
+    OneOctaveFirstInv = [3, 5, 8, 10].freeze
+    OneOctaveSecondInv = [5, 8, 10, 12].freeze
+    TwoOctaveBroken = [1, 5, 3, 8, 5, 10, 8, 12, 10, 15].freeze
   end
 
   # Returns an array of MIDINotes by arpeggiating the given array of notes.
