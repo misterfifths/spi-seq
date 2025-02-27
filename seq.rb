@@ -54,7 +54,7 @@ class Step
     end
   end
 
-  def mutate(**mutations)
+  private def mutate(**mutations)
     note = mutations.delete(:note) || @note
     [:vel, :gate, :prob].each do |ivar|
       mutations[ivar] = send(ivar) unless mutations.has_key?(ivar)
@@ -516,7 +516,7 @@ class Track
         step2 = nil
       end
 
-      step1 = step.mutate(gate: total_gate, prob: step1_prob)
+      step1 = step.with_gate(total_gate).with_prob(step1_prob)
 
       [step1, step2]
     end
