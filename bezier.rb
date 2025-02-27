@@ -62,12 +62,12 @@ class CubicBezier
     # Linear interpolation of spline curve for initial guess.
     delta_t = 1.0 / (SPLINE_SAMPLES - 1)
     (1...SPLINE_SAMPLES).each do |i|
-      if x <= @spline_samples[i]
-        t1 = delta_t * i
-        t0 = t1 - delta_t
-        t2 = t0 + (t1 - t0) * (x - @spline_samples[i - 1]) / (@spline_samples[i] - @spline_samples[i - 1])
-        break
-      end
+      next if x > @spline_samples[i]
+
+      t1 = delta_t * i
+      t0 = t1 - delta_t
+      t2 = t0 + (t1 - t0) * (x - @spline_samples[i - 1]) / (@spline_samples[i] - @spline_samples[i - 1])
+      break
     end
 
     # Perform a few iterations of Newton's method -- normally very fast.
@@ -78,7 +78,7 @@ class CubicBezier
       d2 = sample_curve_derivative_x(t2)
       break if d2.abs < epsilon
 
-      t2 = t2 - x2 / d2
+      t2 -= x2 / d2
     end
 
     return t2 if x2.abs < epsilon
