@@ -20,42 +20,41 @@ rescue NameError
 end
 
 
-$__SPI_FORWARDS = [
-  # General helpers
-  :puts,
-  :rand, :rand_i, :choose, :one_in,
-  :quantise,
-
-  # Music theory
-  :scale, :degree,
-  :spread,
-
-  # Internal synth playback & effects
-  :play, :kill,
-  :with_fx, :control, :set_mixer_control!,
-
-  # MIDI
-  :midi, :midi_cc, :midi_pc, :midi_sysex, :midi_start, :midi_stop,
-  :midi_note_on, :midi_note_off, :midi_all_notes_off, :midi_sound_off,
-  :midi_clock_beat,
-
-  # Timestate and live loops
-  :live_loop, :in_thread, :sleep,
-  :vt,
-  :time_warp,
-  :use_real_time, :with_real_time, :with_bpm_mul,
-  :get, :set,
-  :cue, :sync
-]
-
-
 if $__IN_SPI
   require 'forwardable'
 
   module ExtApi
+    SPI_FORWARDS = [
+      # General helpers
+      :puts,
+      :rand, :rand_i, :choose, :one_in,
+      :quantise,
+
+      # Music theory
+      :scale, :degree,
+      :spread,
+
+      # Internal synth playback & effects
+      :play, :kill,
+      :with_fx, :control, :set_mixer_control!,
+
+      # MIDI
+      :midi, :midi_cc, :midi_pc, :midi_sysex, :midi_start, :midi_stop,
+      :midi_note_on, :midi_note_off, :midi_all_notes_off, :midi_sound_off,
+      :midi_clock_beat,
+
+      # Timestate and live loops
+      :live_loop, :in_thread, :sleep,
+      :vt,
+      :time_warp,
+      :use_real_time, :with_real_time, :with_bpm_mul,
+      :get, :set,
+      :cue, :sync
+    ].freeze
+
     class << self
       extend Forwardable
-      def_delegators :$__SPI, *$__SPI_FORWARDS
+      def_delegators :$__SPI, *SPI_FORWARDS
     end
   end
 else
