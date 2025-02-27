@@ -20,9 +20,11 @@ end
 # initializers, you should provide different keys for each call to this
 # function.
 def one_time_init(key = :default)
-  var = '$__ONE_TIME_' + key.to_s
-  if eval(var).nil?
+  # rubocop:disable Style/GlobalVars
+  $__ONE_TIME_INIT_KEYS ||= Set.new
+  unless $__ONE_TIME_INIT_KEYS.include?(key)
     yield
-    eval("#{var} = true")
+    $__ONE_TIME_INIT_KEYS.add(key)
   end
+  # rubocop:enable Style/GlobalVars
 end
