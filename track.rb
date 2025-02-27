@@ -438,7 +438,7 @@ class Track
     def condense_slots(slot1, slot2 = nil)
       steps_by_note = Hash.new { |h, k| h[k] = [nil, nil] }
       slot1.each { |step| steps_by_note[step.note][0] = step }
-      slot2.each { |step| steps_by_note[step.note][1] = step } unless slot2.nil?
+      slot2&.each { |step| steps_by_note[step.note][1] = step }
 
       new_slot = []
       steps_by_note.each_value do |steps|
