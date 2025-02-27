@@ -166,7 +166,7 @@ class Player
       ExtApi.midi_note_off(step.note, **@midi_spi_kwargs) unless @active_midi_notes.delete?(step.note).nil?
     else
       node = @active_synth_nodes.delete(step.note)
-      ExtApi.kill(node) if !node.nil?
+      ExtApi.kill(node) unless node.nil?
     end
   end
 

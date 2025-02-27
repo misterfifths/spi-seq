@@ -283,7 +283,7 @@ class Track
     prev_steps.each do |prev_step|
       # any note we were playing that is not tied has ended
       note_continues = tied_steps.one? { |tie| tie.note == prev_step.note }
-      ended_steps << prev_step if !note_continues
+      ended_steps << prev_step unless note_continues
     end
 
     [new_steps, tied_steps, ended_steps]
@@ -1560,7 +1560,7 @@ class Track
       if old_step_with_same_note.nil?
         steps_by_note[step.note] = step
       else
-        if !yelled
+        unless yelled
           ExtApi.puts("warning: more than one Step with note #{step.note} in the same slot! Picking one with the longest gate!")
           yelled = true
         end
