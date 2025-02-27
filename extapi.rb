@@ -89,17 +89,17 @@ else
     end
 
     def self.get(key = nil)
-      @@__timespace_vals ||= {}
+      @__timespace_vals ||= {}
 
       # This behavior is kind of undocumented, but shows up in the examples.
-      return ->(k) { @@__timespace_vals[k] } if key.nil?
+      return ->(k) { @__timespace_vals[k] } if key.nil?
 
-      @@__timespace_vals[key]
+      @__timespace_vals[key]
     end
 
     def self.set(key, val)
-      @@__timespace_vals ||= {}
-      @@__timespace_vals[key] = val
+      @__timespace_vals ||= {}
+      @__timespace_vals[key] = val
     end
   end
 end
