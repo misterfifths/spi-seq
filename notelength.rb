@@ -89,11 +89,12 @@ class NoteLength
   # - A number, which is fed to from_length.
   # Any other type, invalid numbers, or invalid symbols are an error.
   def self.normalize(x)
-    if x.is_a?(NoteLength)
+    case x
+    when NoteLength
       x
-    elsif x.is_a?(Symbol)
+    when Symbol
       new(x)
-    elsif x.is_a?(Numeric)
+    when Numeric
       from_length(x)
     else
       raise "Invalid note length value #{x}; must be a symbol, number, or NoteLength"
