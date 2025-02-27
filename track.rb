@@ -310,7 +310,7 @@ class Track
       elsif slot.length == 1
         slot[0].repr
       else
-        "[" + slot.map { |step| step.repr }.join(", ") + "]"
+        "[" + slot.map { |step| step.repr }.join(", ") + "]"  # rubocop:disable Style/StringConcatenation
       end
     end
 
@@ -330,7 +330,7 @@ class Track
     if ctor_args.empty?
       kwargs = ""
     else
-      kwargs = ", " + ctor_args.map { |k, v| "#{k}: #{v}" }.join(", ")
+      kwargs = ", " + ctor_args.map { |k, v| "#{k}: #{v}" }.join(", ")  # rubocop:disable Style/StringConcatenation
     end
 
     if slot_repr_lines > 1

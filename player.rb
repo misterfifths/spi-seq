@@ -298,11 +298,11 @@ def track_live_loop(loop_name, track = nil, start_muted: false,
   track ||= Track.rest
 
   player = Player.new(track, midi: midi, debug: debug, port: port, channel: channel)
-  cycle_cue_sym = (loop_name.to_s + "_cycle").to_sym
+  cycle_cue_sym = :"#{loop_name}_cycle"
 
   if fill_cc
     cc_port, cc_channel = __resolve_cc_port_and_channel(cc_port, cc_channel)
-    cc_watcher_loop_name = ("__live_loop_" + loop_name.to_s + "_cc_fill_watcher").to_sym
+    cc_watcher_loop_name = :"__live_loop_#{loop_name}_cc_fill_watcher"
 
     ExtApi.live_loop(cc_watcher_loop_name) do
       ExtApi.use_real_time

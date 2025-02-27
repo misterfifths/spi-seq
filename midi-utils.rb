@@ -31,7 +31,7 @@ end
 # Returns the Time State key that can be used to control muting of a mutable
 # live_loop created by that family of functions.
 def mute_key(loop_name)
-  ("__live_loop_" + loop_name.to_s + "_muted").to_sym
+  :"__live_loop_#{loop_name}_muted"
 end
 
 # Mutes the given live_loop, assuming it was created by one of the functions in
@@ -96,7 +96,7 @@ end
 def cc_mutable_live_loop(loop_name, cc:, port: nil, channel: nil, start_muted: false, **kwargs, &block)
   port, channel = __resolve_cc_port_and_channel(port, channel)
 
-  cc_watcher_loop_name = ("__live_loop_" + loop_name.to_s + "_cc_mute_watcher").to_sym
+  cc_watcher_loop_name = :"__live_loop_#{loop_name}_cc_mute_watcher"
   ExtApi.live_loop(cc_watcher_loop_name) do
     ExtApi.use_real_time
 
