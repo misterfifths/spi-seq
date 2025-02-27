@@ -68,7 +68,7 @@ class MIDINote < Numeric
     end
 
     # We've got to make a new instance.
-    instance = super(note)
+    instance = super
     @__note_cache[note] = instance
     @__note_cache[cache_key] = instance
     @__note_cache[instance.to_f] = instance
@@ -85,6 +85,8 @@ class MIDINote < Numeric
   end
 
   def initialize(note)
+    super()
+
     case note
     when Numeric
       # The argument may be a float. Keep it as-is in @number, but be sure to
