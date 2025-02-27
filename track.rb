@@ -1102,11 +1102,7 @@ class Track
 
     if !min.nil? || !max.nil?
       min = 0 if min.nil?
-      if zero_to_one
-        max = 1 if max.nil?
-      else
-        max = 127 if max.nil?
-      end
+      max = zero_to_one ? 1 : 127 if max.nil?
 
       curve_func = Curves.scale(curve_func, min, max)
     end
