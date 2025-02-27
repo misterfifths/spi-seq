@@ -182,7 +182,7 @@ class Player
       @active_midi_notes.each { |n| ExtApi.midi_note_off(n, **@midi_spi_kwargs) }
       @active_midi_notes.clear
     else
-      @active_synth_nodes.each { |_, node| ExtApi.kill(node) }
+      @active_synth_nodes.each_value { |node| ExtApi.kill(node) }
       @active_synth_nodes.clear
     end
   end

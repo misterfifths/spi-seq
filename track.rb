@@ -441,7 +441,7 @@ class Track
       slot2.each { |step| steps_by_note[step.note][1] = step } unless slot2.nil?
 
       new_slot = []
-      steps_by_note.each do |_, steps|
+      steps_by_note.each_value do |steps|
         condensed_step = condense_steps(*steps)
         new_slot << condensed_step unless condensed_step.nil?
       end
