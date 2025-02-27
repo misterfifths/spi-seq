@@ -120,7 +120,7 @@ class Step
   end
 
   def tied?
-    @gate == 1.0
+    @gate == 1.0  # rubocop:disable Lint/FloatComparison
   end
 
   # Returns whether this step should play in the given cycle of playback, with
@@ -143,7 +143,7 @@ class Step
   def repr
     ctor_args = {}
     ctor_args[:vel] = @vel.to_s unless @vel == 127
-    ctor_args[:gate] = @gate.to_s unless @gate == 1.0
+    ctor_args[:gate] = @gate.to_s unless tied?
     ctor_args[:prob] = @prob.repr unless @prob.nil?  # prob.repr may throw
 
     if ctor_args.empty?

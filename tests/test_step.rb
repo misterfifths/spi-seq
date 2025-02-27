@@ -11,7 +11,7 @@ class StepTest < Test::Unit::TestCase
     assert_equal step.vel, vel
     assert_in_delta step.velf, vel / 127.0, 0.001
     assert_equal step.gate, gate
-    assert_equal step.tied?, gate == 1.0
+    assert_equal step.tied?, gate == 1.0  # rubocop:disable Lint/FloatComparison
     if prob.nil?
       assert_nil step.prob
     else

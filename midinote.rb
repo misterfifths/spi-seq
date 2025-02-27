@@ -302,7 +302,7 @@ class MIDINote < Numeric
 
   def ==(other)
     return false if MIDINote.rest?(other)
-    return @number == other.to_f if other.is_a?(Numeric)
+    return @number == other.to_f if other.is_a?(Numeric)  # rubocop:disable Lint/FloatComparison
     # The symbol and string checks are just fast paths. :c4 and :C4 are still
     # equal, e.g., so we have to normalize if they don't match.
     return true if other.is_a?(Symbol) && @sym == other
