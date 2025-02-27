@@ -542,7 +542,7 @@ class Track
     raise "Block must take 1 argument" if block.arity != 1
 
     new_slot = @grid[idx].map { |step| block.call(step) }.flatten
-    self.set_slot(idx, new_slot)
+    set_slot(idx, new_slot)
   end
 
   alias mutate_slot_steps mutate_steps_in_slot
