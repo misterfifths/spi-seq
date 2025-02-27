@@ -211,11 +211,13 @@ class Player
       # duration, so we won't need to kill them later in normal playback. And
       # stop/end_all_steps will only be called between cycles, so we don't need
       # to hold on to them for that either.
+      # rubocop:disable Style/IfInsideElse
       if @midi
         ExtApi.midi(step.note, velocity: step.vel, sustain: step.gate * @track.granularity.to_f, **@midi_spi_kwargs)
       else
         ExtApi.play(step.note, amp: step.velf, sustain: step.gate * @track.granularity.to_f)
       end
+      # rubocop:enable Style/IfInsideElse
     end
   end
 end
