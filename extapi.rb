@@ -22,10 +22,11 @@ $__SPI_FORWARDS = [
   # General helpers
   :puts,
   :rand, :rand_i, :choose, :one_in,
-  :quantise, :spread,
+  :quantise,
 
   # Music theory
   :scale, :degree,
+  :spread,
 
   # Internal synth playback & effects
   :play, :kill,
@@ -52,12 +53,51 @@ if $__IN_SPI
   module ExtApi
     class << self
       extend Forwardable
-
       def_delegators :$__SPI, *$__SPI_FORWARDS
     end
   end
 else
   module ExtApi
-    # let these raise for now
+    def self.puts(s)
+      Kernel.puts(s)
+    end
+
+    def self.rand(max_or_range = 1)
+      # Sonic Pi's is float-oriented
+      max_or_range = 0..max_or_range if max_or_range.is_a?(Numeric)
+      max_or_range.min + Kernel.rand * max_or_range.max
+    end
+
+    def self.rand_i(max_or_range = 2)
+      Kernel.rand(max_or_range)
+    end
+
+    def self.choose(list = nil)
+      return ->(l) { l.sample } if list.nil?
+      list.sample
+    end
+
+    def self.one_in(n)
+      return false if n == 0
+      Kernel.rand < (1 / n.to_f)
+    end
+
+    def self.quantise(n, step)
+      (n.to_f / step).round * step
+    end
+
+    def self.get(key = nil)
+      @@__timespace_vals ||= {}
+
+      # This behavior is kind of undocumented, but shows up in the examples.
+      return ->(k) { @@__timespace_vals[k] } if key.nil?
+
+      @@__timespace_vals[key]
+    end
+
+    def self.set(key, val)
+      @@__timespace_vals ||= {}
+      @@__timespace_vals[key] = val
+    end
   end
 end
