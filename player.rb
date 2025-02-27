@@ -299,7 +299,7 @@ def track_live_loop(loop_name, track = nil, start_muted: false,
   cycle_cue_sym = (loop_name.to_s + "_cycle").to_sym
 
   if fill_cc
-    _cc_port, _cc_channel = __resolve_cc_port_and_channel(cc_port, cc_channel)
+    cc_port, cc_channel = __resolve_cc_port_and_channel(cc_port, cc_channel)
     cc_watcher_loop_name = ("__live_loop_" + loop_name.to_s + "_cc_fill_watcher").to_sym
 
     ExtApi.live_loop(cc_watcher_loop_name) do
@@ -307,7 +307,7 @@ def track_live_loop(loop_name, track = nil, start_muted: false,
 
       # TODO: could support arrays of ports/channels by constructing {x,y,z}-style
       # strings for the path here.
-      incoming_cc, cc_val = ExtApi.sync("/midi:#{_cc_port}:#{_cc_channel}/control_change")
+      incoming_cc, cc_val = ExtApi.sync("/midi:#{cc_port}:#{cc_channel}/control_change")
       if incoming_cc == fill_cc
         player.fill = cc_val == 127
         ExtApi.puts("[cc fill control] CC #{cc} = #{cc_val} -> #{player.fill ? '' : 'un'}setting fill for live loop #{loop_name}")
@@ -315,7 +315,7 @@ def track_live_loop(loop_name, track = nil, start_muted: false,
     end
 
     ExtApi.puts "[cc fill control] sending default CC #{fill_cc} value 0 for live loop #{loop_name}"
-    ExtApi.midi_cc(cc, 0, port: _cc_port, channel: _cc_channel)
+    ExtApi.midi_cc(cc, 0, port: cc_port, channel: cc_channel)
   end
 
   # Use the default sync unless we were passed one explicitly.
