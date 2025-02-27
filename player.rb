@@ -1,4 +1,4 @@
-require_relative "seq.rb"
+require_relative "track.rb"
 require_relative "midi-utils.rb"
 
 # Set global default Player behaviors.

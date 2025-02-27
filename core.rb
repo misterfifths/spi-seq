@@ -6,5 +6,5 @@ require_relative "curves.rb"
 
 require_relative "midi-utils.rb"
 
-require_relative "seq.rb"
+require_relative "track.rb"
 require_relative "player.rb"
