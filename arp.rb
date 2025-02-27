@@ -51,7 +51,7 @@ module Arp
     # Chord object. Chords are technically subclasses of Array, but they're
     # kind of broken - in-place mutations like `map!` and `sort!` don't modify
     # them! So we explicitly call to_a twice here.
-    notes = notes.to_a.to_a.dup.map! { |n| MIDINote.new(n) }
+    notes = notes.to_a.to_a.dup.map! { |n| MIDINote.new(n) }  # rubocop:disable Lint/RedundantTypeConversion
 
     # TODO: where should this apply in relation to spread?
     extra_octaves.each do |octave_shift|
