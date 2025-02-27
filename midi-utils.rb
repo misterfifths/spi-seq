@@ -1,4 +1,4 @@
-require_relative "extapi.rb"
+require_relative "extapi"
 
 # Start a live_loop named loop_name that sends MIDI clock beats for the global
 # BPM. Sends a MIDI start message on the first iteration if send_start is true.

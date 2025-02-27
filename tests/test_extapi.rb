@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require "test/unit"
-require_relative "../extapi.rb"
+require_relative "../extapi"
 
 class ExtApiTest < Test::Unit::TestCase
   def test_rand

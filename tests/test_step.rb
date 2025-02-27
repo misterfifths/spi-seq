@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require "test/unit"
-require_relative "../step.rb"
+require_relative "../step"
 
 class StepTest < Test::Unit::TestCase
   def assert_attrs(step, note, vel, gate, prob = nil)

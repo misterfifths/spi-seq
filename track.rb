@@ -1,9 +1,9 @@
-require_relative "extapi.rb"
-require_relative "step.rb"
-require_relative "midinote.rb"
-require_relative "notelength.rb"
-require_relative "prob.rb"
-require_relative "arp.rb"
+require_relative "extapi"
+require_relative "step"
+require_relative "midinote"
+require_relative "notelength"
+require_relative "prob"
+require_relative "arp"
 
 
 # An alias for Track.new.

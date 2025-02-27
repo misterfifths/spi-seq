@@ -1,4 +1,4 @@
-require_relative "bezier.rb"
+require_relative "bezier"
 
 module Easings
   # everything in here has some things in common:

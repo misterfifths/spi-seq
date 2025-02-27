@@ -1,5 +1,5 @@
-require_relative "track.rb"
-require_relative "midi-utils.rb"
+require_relative "track"
+require_relative "midi-utils"
 
 # Set global default Player behaviors.
 # midi: Specifies the default value for the midi parameter of Player's

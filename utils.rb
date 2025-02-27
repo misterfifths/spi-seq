@@ -1,4 +1,4 @@
-require_relative "extapi.rb"
+require_relative "extapi"
 
 # Runs the given block the first time the script runs, and whenever it is
 # restarted after having been stopped. thread_name is the name used for the

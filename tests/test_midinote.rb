@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require "test/unit"
-require_relative "../midinote.rb"
+require_relative "../midinote"
 
 # TODO: missing tests for things heavily involving Sonic Pi methods (e.g.
 # full_scale and harmonize).

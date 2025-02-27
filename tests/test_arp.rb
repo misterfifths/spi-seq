@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require "test/unit"
-require_relative "../arp.rb"
+require_relative "../arp"
 
 # TODO: missing degree tests
 

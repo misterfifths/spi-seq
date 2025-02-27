@@ -1,5 +1,5 @@
-require_relative "midinote.rb"
-require_relative "prob.rb"
+require_relative "midinote"
+require_relative "prob"
 
 
 # An alias for Step.new.
