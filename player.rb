@@ -109,7 +109,7 @@ class Player
   def resolve_midi_arg(midi)
     defaults = ExtApi.get(:__player_defaults) || {}
     midi = defaults[:midi] || false if midi.nil?
-    return midi
+    midi
   end
 
   def play_slot(i)

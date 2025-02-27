@@ -147,7 +147,7 @@ class NoteLength
   # two steps between a quarter and a sixteenth, since it requires two halvings
   # to get between the two.
   def steps_to(other_note_length)
-    return (@log2 - other_note_length.log2).abs
+    (@log2 - other_note_length.log2).abs
   end
 
   def length

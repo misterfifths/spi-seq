@@ -81,7 +81,7 @@ class MIDINote < Numeric
       @@__note_cache[instance.to_s] = instance
     end
 
-    return instance
+    instance
   end
 
   def initialize(note)
@@ -317,7 +317,7 @@ class MIDINote < Numeric
   end
 
   def coerce(other)
-    return [MIDINote.new(other), self]
+    [MIDINote.new(other), self]
   end
 
   def +(other)
@@ -364,7 +364,7 @@ class MIDINote < Numeric
 
     match = NOTE_REGEX.match(note.to_s)
     raise "Invalid note symbol #{note}" if match.nil?
-    return !match[:octave].empty?
+    !match[:octave].empty?
   end
 
   # Returns true if the given value represents a rest. nil, :r, and :rest are

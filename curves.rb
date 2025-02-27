@@ -41,7 +41,7 @@ module Curves
   UpDown3Sine = ->(x) { -Math.cos(4.0 * Math::PI * x) / 2.0 + 0.5 }  # 0->1->0->1->0
 
   def self.scale(f, min, max)
-    return ->(x) { min + (max - min) * f.call(x) }
+    ->(x) { min + (max - min) * f.call(x) }
   end
 
   # Returns a function that increases linearly from min_value to max_value over
@@ -54,7 +54,7 @@ module Curves
     max_value = max_value.to_f
     ramp_up_start = ramp_up_start.to_f
 
-    return lambda do |x|
+    lambda do |x|
       return min_value if x < ramp_up_start
       return max_value if x >= 1
 
@@ -79,7 +79,7 @@ module Curves
     min_value = min_value.to_f
     ramp_down_start = ramp_down_start.to_f
 
-    return lambda do |x|
+    lambda do |x|
       return max_value if x < ramp_down_start
       return min_value if x >= 1
 
@@ -100,7 +100,7 @@ module Curves
     max_value = max_value.to_f
     ramp_up_start = ramp_up_start.to_f
 
-    return lambda do |x|
+    lambda do |x|
       return min_value if x < ramp_up_start
       return max_value if x >= 1
 
@@ -120,7 +120,7 @@ module Curves
     min_value = min_value.to_f
     ramp_down_start = ramp_down_start.to_f
 
-    return lambda do |x|
+    lambda do |x|
       return max_value if x < ramp_down_start
       return min_value if x >= 1
 

@@ -154,7 +154,7 @@ module Arp
         high_idx -= 1
       end
 
-      return idxs
+      idxs
     when Arp::AlternOut
       center_idx = length.odd? ? (length - 1) / 2 : length / 2
       idxs = [center_idx]
@@ -167,12 +167,12 @@ module Arp
         high_idx += 1
       end
 
-      return idxs
+      idxs
     when Arp::AlternInOut
       # TODO: drop the last note when it would repeat in a loop?
       in_idxs = altern_indexes(length, Arp::AlternIn)
       out_idxs = altern_indexes(length, Arp::AlternOut)
-      return in_idxs + out_idxs.drop(1)
+      in_idxs + out_idxs.drop(1)
     end
   end
 
