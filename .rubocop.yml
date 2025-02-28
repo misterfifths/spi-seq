@@ -53,10 +53,6 @@ Lint/AmbiguousOperatorPrecedence:
   Enabled: false
 
 
-Style/GlobalVars:
-  Exclude:
-    - 'extapi.rb'
-
 Lint/BinaryOperatorWithIdenticalOperands:
   Exclude:
     - 'tests/test_midinote.rb'
