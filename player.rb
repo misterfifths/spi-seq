@@ -11,12 +11,16 @@ require_relative "midi-utils"
 # May be overridden by specifying the parameter manually in the call to
 # track_live_loop. Passing nil as the sync parameter to this function unsets the
 # default.
-def use_player_defaults(midi: nil, sync: :__dummy_sync_sentinel)
+# start_muted: Specifies the default value for the start_muted parameter of
+# track_live_loop. May be overridden by specifying the parameter manually in the
+# call to track_live_loop. Default: false.
+def use_player_defaults(midi: nil, sync: :__dummy_sync_sentinel, start_muted: nil)
   # `set` hashes become SPMaps, apparently, so we need to call to_h on this.
   defaults = ExtApi.get(:__player_defaults).to_h
   defaults[:midi] = midi unless midi.nil?
   defaults.delete(:sync) if sync.nil?
   defaults[:sync] = sync unless sync == :__dummy_sync_sentinel
+  defaults[:start_muted] = start_muted unless start_muted.nil?
   ExtApi.set(:__player_defaults, defaults)
 end
 
@@ -287,7 +291,7 @@ end
 # passed verbatim to the internal live_loop. If a sync parameter is not
 # specified, the default from use_player_defaults is used, if there is one. You
 # can explicitly use no sync by providing a nil value for the sync parameter.
-def track_live_loop(loop_name, track = nil, start_muted: false,
+def track_live_loop(loop_name, track = nil, start_muted: nil,
                     fade_in: false, fade_out: false,
                     midi: nil, port: nil, channel: nil,
                     cc: nil, fill_cc: nil, cc_port: nil, cc_channel: nil,
@@ -320,12 +324,13 @@ def track_live_loop(loop_name, track = nil, start_muted: false,
     ExtApi.midi_cc(cc, 0, port: cc_port, channel: cc_channel)
   end
 
-  # Use the default sync unless we were passed one explicitly.
+  # Use the default sync and start_muted unless we were passed one explicitly.
+  player_defaults = ExtApi.get(:__player_defaults) || {}
   unless kwargs.member?(:sync)
-    defaults = ExtApi.get(:__player_defaults) || {}
-    sync = defaults[:sync]
+    sync = player_defaults[:sync]
     kwargs[:sync] = sync unless sync.nil?
   end
+  start_muted = player_defaults[:start_muted] || false if start_muted.nil?
 
   wrapped_block = lambda do |muted, arg|
     # We're smuggling some state between loops via our return value, along with
