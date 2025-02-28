@@ -353,15 +353,28 @@ end
 # This function sends a MIDI stop, all notes off, sound off, and individual note
 # offs for every MIDI note on the given port/channel. Messages are sent in real
 # time.
-def midi_uber_stop(port: nil, channel: nil)
-  midi_kwargs = {}
-  midi_kwargs[:port] = port unless port.nil?
-  midi_kwargs[:channel] = channel unless channel.nil?
+# You can call this function with either `port` and/or `channel` kwargs, or an
+# array of hashes of the same, in which case all provided devices will be
+# stopped. E.g.:
+#     midi_uber_stop(port: "my_device", channel: 7)  # stops one device
+#     midi_uber_stop({ channel: 2 }, { port: "another", channel: 5 })  # stops 2
+def midi_uber_stop(*args, **kwargs)
+  uber_stop = lambda do |port: nil, channel: nil|
+    midi_kwargs = {}
+    midi_kwargs[:port] = port unless port.nil?
+    midi_kwargs[:channel] = channel unless channel.nil?
 
-  ExtApi.with_real_time do
-    ExtApi.midi_stop(**midi_kwargs)
-    ExtApi.midi_all_notes_off(**midi_kwargs)
-    ExtApi.midi_sound_off(**midi_kwargs)
-    0.upto(127) { |n| ExtApi.midi_note_off(n, **midi_kwargs) }
+    ExtApi.with_real_time do
+      ExtApi.midi_stop(**midi_kwargs)
+      ExtApi.midi_all_notes_off(**midi_kwargs)
+      ExtApi.midi_sound_off(**midi_kwargs)
+      0.upto(127) { |n| ExtApi.midi_note_off(n, **midi_kwargs) }
+    end
+  end
+
+  if kwargs.empty?
+    args.each { |midi_hash| uber_stop.call(**midi_hash) }
+  else
+    uber_stop.call(**kwargs)
   end
 end
