@@ -6,7 +6,7 @@ require_relative "extapi"
 # BPM. Sends a MIDI start message on the first iteration if send_start is true.
 # Note that the channel argument is only relevant if send_start or send_start is
 # true; clock messages are not per-channel.
-def midi_clock_live_loop(loop_name = :midi_clock, send_start: true, send_stop: true, port: nil, start_port: nil, start_channel: nil, auto_cue: false)
+def midi_clock_live_loop(loop_name = :midi_clock, send_start: false, send_stop: true, port: nil, start_port: nil, start_channel: nil, auto_cue: false)
   beat_kwargs = port.nil? ? {} : { port: port }
 
   start_stop_kwargs = {}
