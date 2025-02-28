@@ -24,6 +24,7 @@ class ExtApiTest < Test::Unit::TestCase
     assert_instance_of Integer, ExtApi.rand_i
     assert_instance_of Integer, ExtApi.rand_i(5)
     assert_instance_of Integer, ExtApi.rand_i(1..3)
+    assert_instance_of Integer, ExtApi.rand_i(0)
 
     # Again, these are kind of silly, just looking for glaring issues.
     assert ExtApi.rand_i >= 0

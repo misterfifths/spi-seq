@@ -66,6 +66,7 @@ module ExtApi
       end
 
       def rand_i(max_or_range = 2)
+        return 0 if max_or_range == 0
         Kernel.rand(max_or_range)
       end
 
