@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "weakref"
 require_relative "extapi"
 
 # Start a live_loop named loop_name that sends MIDI clock beats for the global
@@ -24,6 +25,32 @@ def midi_clock_live_loop(loop_name = :midi_clock, send_start: false, send_stop: 
     ExtApi.cue(loop_name) unless inited || auto_cue
 
     true
+  end
+end
+
+
+# Helpers to track running live_loops and associate values with them.
+module LiveLoopTracker
+  # Record the live loop with `name` as being associated with `thread` (which is
+  # the return value of `live_loop`). You must call this after creating a live
+  # loop for this module to be able to track the loop.
+  def self.register_live_loop(name, thread)
+    @ll_threads ||= {}
+    @ll_threads[name] = WeakRef.new(thread)
+  end
+
+  # Returns the Thread object associated with the live loop with the given name.
+  # If the live loop is not running (or has not been created), returns nil.
+  def self.thread_for_live_loop(name)
+    @ll_threads ||= {}
+    thread = @ll_threads[name]
+    return thread if !thread.nil? && thread.weakref_alive? && thread.alive?
+    nil
+  end
+
+  # Returns true if a live loop with the given name is running.
+  def self.live_loop_is_running(name)
+    !thread_for_live_loop(name).nil?
   end
 end
 
@@ -57,9 +84,12 @@ def mutable_live_loop(loop_name, start_muted: false, **kwargs, &block)
   raise "Block must take 1 or 2 arguments" if block.arity == 0 || block.arity > 2
 
   key = mute_key(loop_name)
-  ExtApi.set(key, start_muted)
 
-  ExtApi.live_loop(loop_name, **kwargs) do |arg|
+  # Only apply start_muted if this is a fresh definition of the loop (i.e, not a
+  # restart of the same sketch).
+  ExtApi.set(key, start_muted) unless LiveLoopTracker.live_loop_is_running(loop_name)
+
+  ll = ExtApi.live_loop(loop_name, **kwargs) do |arg|
     muted = ExtApi.get(key)
 
     if block.arity == 2
@@ -68,6 +98,9 @@ def mutable_live_loop(loop_name, start_muted: false, **kwargs, &block)
       block.call(muted)
     end
   end
+
+  LiveLoopTracker.register_live_loop(loop_name, ll)
+  ll
 end
 
 def use_cc_control_defaults(port: nil, channel: nil)
@@ -110,9 +143,13 @@ def cc_mutable_live_loop(loop_name, cc:, port: nil, channel: nil, start_muted: f
     end
   end
 
-  default_cc_val = start_muted ? 0 : 127
-  ExtApi.puts "[cc mute control] sending default CC #{cc} value #{default_cc_val} for live loop #{loop_name}"
-  ExtApi.midi_cc(cc, default_cc_val, port: port, channel: channel)
+  # Only send a CC for the start_muted value if this is a fresh definition of
+  # the loop (i.e., not a restart of the same sketch).
+  unless LiveLoopTracker.live_loop_is_running(loop_name)
+    default_cc_val = start_muted ? 0 : 127
+    ExtApi.puts "[cc mute control] sending default CC #{cc} value #{default_cc_val} for live loop #{loop_name}"
+    ExtApi.midi_cc(cc, default_cc_val, port: port, channel: channel)
+  end
 
   mutable_live_loop(loop_name, start_muted: start_muted, **kwargs, &block)
 end

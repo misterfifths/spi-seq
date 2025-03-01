@@ -327,8 +327,11 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
       end
     end
 
-    ExtApi.puts "[cc fill control] sending default CC #{fill_cc} value 0 for live loop #{loop_name}"
-    ExtApi.midi_cc(cc, 0, port: cc_port, channel: cc_channel)
+    # Don't send a 0 fill CC for restarts of the same sketch.
+    unless LiveLoopTracker.live_loop_is_running(loop_name)
+      ExtApi.puts "[cc fill control] sending default CC #{fill_cc} value 0 for live loop #{loop_name}"
+      ExtApi.midi_cc(cc, 0, port: cc_port, channel: cc_channel)
+    end
   end
 
   # Use the default sync and start_muted unless we were passed one explicitly.
