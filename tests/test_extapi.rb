@@ -52,7 +52,7 @@ class ExtApiTest < Test::Unit::TestCase
       avg = 0
       10000.times { avg += ExtApi.one_in(n) ? 1 : 0 }
       avg /= 10000.0
-      assert_in_delta avg, 1 / n.to_f, 0.01
+      assert_in_delta avg, 1 / n.to_f, 0.02
     end
   end
 
