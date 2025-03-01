@@ -42,10 +42,10 @@ class MIDINote < Numeric
     return note if note.is_a?(MIDINote)
     raise "Cannot convert a rest to a MIDINote" if rest?(note)
 
-    @__note_cache ||= {}
+    @note_cache ||= {}
 
     # Attempt a raw cache lookup.
-    instance = @__note_cache[note]
+    instance = @note_cache[note]
     return instance unless instance.nil?
 
     # No dice; canonicalize the key a bit.
@@ -60,26 +60,26 @@ class MIDINote < Numeric
       note
     end
 
-    instance = @__note_cache[cache_key]
+    instance = @note_cache[cache_key]
     unless instance.nil?
       # `note` must be a new representation of a value we already know about; we
       # should update the cache.
-      @__note_cache[note] = instance
+      @note_cache[note] = instance
       return instance
     end
 
     # We've got to make a new instance.
     instance = super
-    @__note_cache[note] = instance
-    @__note_cache[cache_key] = instance
-    @__note_cache[instance.to_f] = instance
+    @note_cache[note] = instance
+    @note_cache[cache_key] = instance
+    @note_cache[instance.to_f] = instance
 
     # It's only safe to cache against instance.to_s if the note number is an
     # integer. If it was a float, it is not the canonical representation of that
     # note symbol, and we should only cache it against instance.to_f (which will
     # also be the cache_key in that case).
     if instance.number.is_a?(Integer)
-      @__note_cache[instance.to_s] = instance
+      @note_cache[instance.to_s] = instance
     end
 
     instance
@@ -189,11 +189,11 @@ class MIDINote < Numeric
   # Returns the full set of MIDINotes (in the MIDI range 0-127) that belong to
   # the given scale with the given tonic.
   def self.full_scale(tonic, scale_name)
-    @__full_scales_cache ||= {}
+    @scale_cache ||= {}
 
     tonic = MIDINote.new(tonic)
     key = [tonic.to_sym, scale_name.to_sym]
-    scale = @__full_scales_cache[key]
+    scale = @scale_cache[key]
     return scale unless scale.nil?
 
     # Note 0 is c-1, and 127 is g9, so if we do 11 octaves from -1, we'll cover
@@ -201,7 +201,7 @@ class MIDINote < Numeric
     low_tonic = tonic.with_octave(-1)
     scale = ExtApi.scale(low_tonic, scale_name, num_octaves: 11).to_a.reject { |n| n < 0 || n > 127 }
     scale.map! { |n| MIDINote.new(n) }
-    @__full_scales_cache[key] = scale
+    @scale_cache[key] = scale
     scale
   end
 

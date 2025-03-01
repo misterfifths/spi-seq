@@ -92,17 +92,17 @@ module ExtApiStubs
     end
 
     def get(key = nil)
-      @__timespace_vals ||= {}
+      @timespace_vals ||= {}
 
       # This behavior is kind of undocumented, but shows up in the examples.
-      return ->(k) { @__timespace_vals[k] } if key.nil?
+      return ->(k) { @timespace_vals[k] } if key.nil?
 
-      @__timespace_vals[key]
+      @timespace_vals[key]
     end
 
     def set(key, val)
-      @__timespace_vals ||= {}
-      @__timespace_vals[key] = val
+      @timespace_vals ||= {}
+      @timespace_vals[key] = val
     end
   end
 end
