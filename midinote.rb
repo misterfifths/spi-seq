@@ -31,6 +31,7 @@ class MIDINote < Numeric
   NOTE_REGEX = /^:?(?<pitch_class>[a-g][sbf]?)(?<octave>-?\d*)$/i.freeze
   NOTE_NAMES = [[:c, :bs], [:cs, :db, :df], [:d], [:ds, :eb, :ef], [:e, :fb, :ff], [:f, :es],
                 [:fs, :gb, :gf], [:g], [:gs, :ab, :af], [:a], [:as, :bb, :bf], [:b, :cb, :cf]].freeze
+  NOTE_NAMES.each { |names| names.freeze }
 
   attr_reader :pitch_class, :number, :octave
 
