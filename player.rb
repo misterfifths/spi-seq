@@ -313,7 +313,7 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
   fill_cc = player_defaults[:fill_cc] if fill_cc.nil?
   if fill_cc
     cc_port, cc_channel = __resolve_cc_port_and_channel(cc_port, cc_channel)
-    cc_watcher_loop_name = :"__live_loop_#{loop_name}_cc_fill_watcher"
+    cc_watcher_loop_name = :"__#{loop_name}_cc_fill_watcher"
 
     ExtApi.live_loop(cc_watcher_loop_name) do
       ExtApi.use_real_time
