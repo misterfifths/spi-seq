@@ -14,13 +14,17 @@ require_relative "midi-utils"
 # start_muted: Specifies the default value for the start_muted parameter of
 # track_live_loop. May be overridden by specifying the parameter manually in the
 # call to track_live_loop. Default: false.
-def use_player_defaults(midi: nil, sync: :__dummy_sync_sentinel, start_muted: nil)
+# fill_cc: Specifies the default value for the fill_cc parameter of
+# track_live_loop. May be overridden by specifying the parameter manually in the
+# call to track_live_loop. Default: nil (no fill CC).
+def use_player_defaults(midi: nil, sync: :__dummy_sync_sentinel, start_muted: nil, fill_cc: nil)
   # `set` hashes become SPMaps, apparently, so we need to call to_h on this.
   defaults = ExtApi.get(:__player_defaults).to_h
   defaults[:midi] = midi unless midi.nil?
   defaults.delete(:sync) if sync.nil?
   defaults[:sync] = sync unless sync == :__dummy_sync_sentinel
   defaults[:start_muted] = start_muted unless start_muted.nil?
+  defaults[:fill_cc] = fill_cc unless fill_cc.nil?
   ExtApi.set(:__player_defaults, defaults)
 end
 
@@ -301,9 +305,12 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
 
   track ||= Track.rest
 
+  player_defaults = ExtApi.get(:__player_defaults) || {}
+
   player = Player.new(track, midi: midi, debug: debug, port: port, channel: channel)
   cycle_cue_sym = :"#{loop_name}_cycle"
 
+  fill_cc = player_defaults[:fill_cc] if fill_cc.nil?
   if fill_cc
     cc_port, cc_channel = __resolve_cc_port_and_channel(cc_port, cc_channel)
     cc_watcher_loop_name = :"__live_loop_#{loop_name}_cc_fill_watcher"
@@ -325,7 +332,6 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
   end
 
   # Use the default sync and start_muted unless we were passed one explicitly.
-  player_defaults = ExtApi.get(:__player_defaults) || {}
   unless kwargs.member?(:sync)
     sync = player_defaults[:sync]
     kwargs[:sync] = sync unless sync.nil?
