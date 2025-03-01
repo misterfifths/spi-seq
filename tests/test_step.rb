@@ -46,6 +46,8 @@ class StepTest < Test::Unit::TestCase
 
     p = Prob.one_in(5)
     assert_attrs S(:c4, prob: p), :c4, 127, 1.0, p
+
+    # TODO: test that float values for prob get turned into Prob.chance.
   end
 
   def test_with_mutators
