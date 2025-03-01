@@ -527,36 +527,6 @@ class Track
 
   alias mutate_slots mutate_each_slot
 
-  # Return a new track, replacing the Steps in the given slot with the result of
-  # the given block. The block must take 1 argument, and will be called for each
-  # Step in the slot. The result of the block will replace the Step it is called
-  # with. The block should return:
-  # - A single Step, which will replace the given Step in the slot.
-  # - An array of Steps, which will all be added to the slot in place of the
-  #   given Step.
-  # - An empty array or a rest, which will remove the given Step from the slot.
-  # - Equivalents of any of the above (see slotify).
-  # Note that if the slot at the given index is empty, the block will not be
-  # called and no changes will be made.
-  def mutate_steps_in_slot(idx, &block)
-    raise "Block must take 1 argument" if block.arity != 1
-
-    new_slot = @grid[idx].map { |step| block.call(step) }.flatten
-    set_slot(idx, new_slot)
-  end
-
-  alias mutate_slot_steps mutate_steps_in_slot
-  alias mutate_slot mutate_steps_in_slot
-
-  # Return a new track, replacing the Steps in the nth non-empty slot with the
-  # result of the given block. This is equivalent to a call to
-  # mutate_steps_in_slot with the index of the nth non-empty slot; see that
-  # method for details.
-  def mutate_filled_slot(n, &block)
-    idx = indexes_of_filled_slots[n]
-    mutate_steps_in_slot(idx, &block)
-  end
-
   def with_rate(rate)
     mutate(timescale: rate)
   end
@@ -1025,6 +995,36 @@ class Track
   end
 
   alias mutate_steps mutate_each_step
+
+  # Return a new track, replacing the Steps in the given slot with the result of
+  # the given block. The block must take 1 argument, and will be called for each
+  # Step in the slot. The result of the block will replace the Step it is called
+  # with. The block should return:
+  # - A single Step, which will replace the given Step in the slot.
+  # - An array of Steps, which will all be added to the slot in place of the
+  #   given Step.
+  # - An empty array or a rest, which will remove the given Step from the slot.
+  # - Equivalents of any of the above (see slotify).
+  # Note that if the slot at the given index is empty, the block will not be
+  # called and no changes will be made.
+  def mutate_steps_in_slot(idx, &block)
+    raise "Block must take 1 argument" if block.arity != 1
+
+    new_slot = @grid[idx].map { |step| block.call(step) }.flatten
+    set_slot(idx, new_slot)
+  end
+
+  alias mutate_slot_steps mutate_steps_in_slot
+  alias mutate_slot mutate_steps_in_slot
+
+  # Return a new track, replacing the Steps in the nth non-empty slot with the
+  # result of the given block. This is equivalent to a call to
+  # mutate_steps_in_slot with the index of the nth non-empty slot; see that
+  # method for details.
+  def mutate_filled_slot(n, &block)
+    idx = indexes_of_filled_slots[n]
+    mutate_steps_in_slot(idx, &block)
+  end
 
   def with_gate(new_gate)
     mutate_each_step { |step| step.with_gate(new_gate) }
