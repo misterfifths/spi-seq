@@ -65,6 +65,20 @@ class Player
     stop
   end
 
+  # Inherits the state of another Player, including the set of currently active
+  # notes. An internal function to be called when replacing one Player instance
+  # with another, as happens when a track_live_loop is restarted.
+  def __inherit_state(other)
+    # This will be called during a restart of a sketch, while an old live_loop
+    # is in the middle of handling `other.play`. So `other.cycle` has not yet
+    # been incremented (that happens at the end of `play`), and we should do it
+    # ourself.
+    @cycle = other.cycle + 1
+    @fill = other.fill
+    @active_synth_nodes = other.active_synth_nodes
+    @active_midi_notes = other.active_midi_notes
+  end
+
   def stop
     end_all_steps
     @prev_steps = nil
@@ -110,6 +124,11 @@ class Player
     @track = new_track
     @cycle = 0 if reset_cycle
   end
+
+
+  protected
+
+  attr_reader :active_synth_nodes, :active_midi_notes
 
 
   private
@@ -308,6 +327,13 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
   player_defaults = ExtApi.get(:__player_defaults) || {}
 
   player = Player.new(track, midi: midi, debug: debug, port: port, channel: channel)
+  # If this is a restart of the same track_live_loop, we will already have a
+  # Player instance for the old one. We don't want to reuse it per se (other
+  # settings may have changed), but we do want the new player to inherit some of
+  # the old one's private state.
+  old_player = LiveLoopTracker.live_loop_var_get(loop_name, :__player)
+  player.__inherit_state(old_player) unless old_player.nil?
+
   cycle_cue_sym = :"#{loop_name}_cycle"
 
   fill_cc = player_defaults[:fill_cc] if fill_cc.nil?
@@ -406,10 +432,14 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
   init_arg = { was_muted: true, block_res: init }
 
   if cc.nil?
-    mutable_live_loop(loop_name, start_muted: start_muted, init: init_arg, **kwargs, &wrapped_block)
+    ll = mutable_live_loop(loop_name, start_muted: start_muted, init: init_arg, **kwargs, &wrapped_block)
   else
-    cc_mutable_live_loop(loop_name, start_muted: start_muted, init: init_arg, cc: cc, port: cc_port, channel: cc_channel, **kwargs, &wrapped_block)
+    ll = cc_mutable_live_loop(loop_name, start_muted: start_muted, init: init_arg, cc: cc, port: cc_port, channel: cc_channel, **kwargs, &wrapped_block)
   end
+
+  LiveLoopTracker.live_loop_var_set(loop_name, :__player, player)
+
+  ll
 end
 
 alias tll track_live_loop

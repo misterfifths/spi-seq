@@ -52,6 +52,20 @@ module LiveLoopTracker
   def self.live_loop_is_running(name)
     !thread_for_live_loop(name).nil?
   end
+
+  # Associates a value with the live loop with the given name. The value can be
+  # retrieved with live_loop_var_get. When the live loop stops, this value will
+  # no longer be accessible.
+  def self.live_loop_var_set(loop_name, var_name, value)
+    thread_for_live_loop(loop_name)&.thread_variable_set(var_name, value)
+  end
+
+  # Returns the value of a variable associated with the live loop with the given
+  # name, as set by live_loop_var_set. Returns nil if there is no such variable
+  # associated with the loop, or if the live loop has stopped.
+  def self.live_loop_var_get(loop_name, var_name)
+    thread_for_live_loop(loop_name)&.thread_variable_get(var_name)
+  end
 end
 
 
