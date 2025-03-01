@@ -1,6 +1,58 @@
 # frozen_string_literal: true
 
 class NoteLength
+  # Create a new NoteLength representing the given length, which may be:
+  # - Another NoteLength object, which is returned as-is.
+  # - A symbol for the name of a length, e.g. :whole or :thirty_second.
+  # - A number that represents the fraction of a beat for the note length, e.g.
+  #   0.5 for eighth notes, or 4 for whole notes.
+  def self.new(length, *aliases)
+    return length if length.is_a?(NoteLength)
+
+    @cache ||= {}
+
+    instance = @cache[length]
+    return instance unless instance.nil?
+
+    instance = case length
+    when Symbol
+      super(length)
+    when Numeric
+      from_number(length)
+    else
+      raise "Invalid note length #{f}"
+    end
+
+    @cache[length] = instance
+    @cache[instance.to_sym] = instance
+    @cache[instance.to_f] = instance
+    aliases.each { |a| @cache[a] = instance }
+
+    instance
+  end
+
+  def self.from_number(f)
+    case f
+    when 4.0
+      Whole
+    when 2.0
+      Half
+    when 1.0
+      Quarter
+    when 1/2.0
+      Eighth
+    when 1/4.0
+      Sixteenth
+    when 1/8.0
+      ThirtySecond
+    when 1/16.0
+      SixtyFourth
+    else
+      raise "Invalid note length #{f}"
+    end
+  end
+  private_class_method :from_number
+
   def initialize(sym)
     @sym = sym
 
@@ -51,53 +103,6 @@ class NoteLength
       @next_shorter = nil
     else
       raise "Invalid note length symbol #{sym}"
-    end
-  end
-
-  Whole = new(:whole)
-  Half = new(:half)
-  Quarter = new(:quarter)
-  Eighth = new(:eighth)
-  Sixteenth = new(:sixteenth)
-  ThirtySecond = new(:thirty_second)
-  SixtyFourth = new(:sixty_fourth)
-
-  def self.from_length(f)
-    case f
-    when 4.0
-      Whole
-    when 2.0
-      Half
-    when 1.0
-      Quarter
-    when 1/2.0
-      Eighth
-    when 1/4.0
-      Sixteenth
-    when 1/8.0
-      ThirtySecond
-    when 1/16.0
-      SixtyFourth
-    else
-      raise "Invalid note length #{f}"
-    end
-  end
-
-  # Attempts to convert the given value to a NoteLength. It may be:
-  # - A NoteLength, in which case it is returned verbatim
-  # - A symbol, which is fed to the constructor of the class
-  # - A number, which is fed to from_length.
-  # Any other type, invalid numbers, or invalid symbols are an error.
-  def self.normalize(x)
-    case x
-    when NoteLength
-      x
-    when Symbol
-      new(x)
-    when Numeric
-      from_length(x)
-    else
-      raise "Invalid note length value #{x}; must be a symbol, number, or NoteLength"
     end
   end
 
@@ -174,6 +179,15 @@ class NoteLength
   def repr
     ":#{@sym}"
   end
+
+
+  Whole = new(:whole)
+  Half = new(:half)
+  Quarter = new(:quarter)
+  Eighth = new(:eighth)
+  Sixteenth = new(:sixteenth)
+  ThirtySecond = new(:thirty_second, :thirtysecond)
+  SixtyFourth = new(:sixty_fourth, :sixtyfourth)
 
 
   protected

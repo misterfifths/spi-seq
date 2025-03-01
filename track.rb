@@ -85,7 +85,7 @@ class Track
   def initialize(gridish, granularity: NoteLength::Eighth, timescale: 1)
     @grid = Track.gridify(gridish)
     raise "A Track's grid must have at least one slot" if @grid.empty?
-    @granularity = NoteLength.normalize(granularity)
+    @granularity = NoteLength.new(granularity)
 
     raise "Timescale must be a number greater than 0" unless timescale.is_a?(Numeric) && timescale > 0
     @timescale = timescale
@@ -460,7 +460,7 @@ class Track
   # Calls expand or condense the appropriate number of times to return a new
   # Track with the given granularity.
   def regranularize(new_granularity)
-    new_granularity = NoteLength.normalize(new_granularity)
+    new_granularity = NoteLength.new(new_granularity)
 
     return self if @granularity == new_granularity
 
