@@ -2,6 +2,36 @@
 
 require_relative "extapi"
 
+# Assembles a stack of nested effects and runs the given block inside of them.
+# Provide a map from a Time State key to an array:
+# [ effect name, hash of arguments for the effect ]
+# The hash in each array is optional. In fact, you may provide just a symbol
+# for the fx name instead of an array if there are no arguments.
+# Effects are stacked with the first one as the outermost; earlier effects apply
+# to later ones.
+# Each effect will be stored in the Time State with the provided key.
+def with_fx_stack(**fx, &block)
+  if fx.empty? == 0
+    block.call
+  else
+    key, with_fx_args = fx.shift
+    if with_fx_args.is_a?(Symbol)
+      name = with_fx_args
+    else
+      name, params = with_fx_args
+    end
+
+    params ||= {}
+    ExtApi.puts "#{key} => #{name} / #{params}"
+
+    ExtApi.with_fx(name, **params) do |effect|
+      ExtApi.set(key, effect)
+      with_fx_stack(**fx, &block)
+    end
+  end
+end
+
+
 def __midi_val_to_range(midi_val, range, quantum: nil)
   return range.min if midi_val <= 0
   return range.max if midi_val >= 127
