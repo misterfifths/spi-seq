@@ -7,6 +7,7 @@ require_relative "easings"
 require_relative "curves"
 
 require_relative "midi_utils"
+require_relative "fx_utils"
 
 require_relative "track"
 require_relative "player"
