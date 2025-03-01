@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "track"
-require_relative "midi-utils"
+require_relative "midi_utils"
 
 # Set global default Player behaviors.
 # midi: Specifies the default value for the midi parameter of Player's
