@@ -36,7 +36,6 @@ class MIDINoteTest < Test::Unit::TestCase
     assert_equal note.number, number
     assert_equal note.to_f, number.to_f
     assert_equal note.to_i, number.to_i
-    assert_equal note.sym, sym
     assert_equal note.to_sym, sym
     assert_equal note.to_s, sym.to_s
     assert_equal note.pitch_class, pitch_class

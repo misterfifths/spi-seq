@@ -32,7 +32,7 @@ class MIDINote < Numeric
   NOTE_NAMES = [[:c, :bs], [:cs, :db, :df], [:d], [:ds, :eb, :ef], [:e, :fb, :ff], [:f, :es],
                 [:fs, :gb, :gf], [:g], [:gs, :ab, :af], [:a], [:as, :bb, :bf], [:b, :cb, :cf]].freeze
 
-  attr_reader :sym, :pitch_class, :number, :octave
+  attr_reader :pitch_class, :number, :octave
 
   # Creates a new MIDINote instance from the given value, which must be either a
   # MIDI note number, a string, a symbol, or a MIDINote instance (in which case
@@ -309,7 +309,7 @@ class MIDINote < Numeric
     # equal, e.g., so we have to normalize if they don't match.
     return true if other.is_a?(Symbol) && @sym == other
     return true if other.is_a?(String) && @sym.to_s == other
-    @sym == MIDINote.new(other).sym
+    @sym == MIDINote.new(other).to_sym
   end
 
   alias eql? ==
