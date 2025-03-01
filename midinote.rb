@@ -11,7 +11,7 @@ end
 
 # Represents information about a note.
 # - sym: A normalized symbol for the note. It will be in lower-case, with all
-#   incidentals standardized to sharps. It will always include an octave number.
+#   accidentals standardized to sharps. It will always include an octave number.
 # - pitch_class: A symbol for the pitch class of the note (e.g. :c for C notes
 #   in any octave), normalized in the same manner as `sym`.
 # - number: The MIDI note number for the note. Note that this may not be an

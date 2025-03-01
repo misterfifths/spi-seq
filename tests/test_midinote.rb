@@ -50,7 +50,7 @@ class MIDINoteTest < Test::Unit::TestCase
     assert_attrs N(60.0), 60, :c4, :c
     assert_attrs N(60.5), 60.5, :c4, :c
 
-    # Incidental standardization
+    # Accidental standardization
     assert_attrs N(:cs4), 61, :cs4, :cs
     assert_attrs N(:Cs4), 61, :cs4, :cs
     assert_attrs N("Cs4"), 61, :cs4, :cs
@@ -89,7 +89,7 @@ class MIDINoteTest < Test::Unit::TestCase
     assert_not_equal N(60.5), N(:c4)
     assert_not_equal N(60.5), 60
 
-    # Incidentals
+    # Accidentals
     assert_equal N(:cs4), 61
     assert_equal N(:cs4), N(61)
     [:cs4, :Cs4, :CS4, :db4, :Db4, :DB4].each do |name|
