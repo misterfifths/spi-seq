@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "forwardable"
-
 # The goal here is to keep track of direct calls into SonicPi's library, with
 # the long-term plan of allowing (at least some of) the code to run outside of
 # that environment.
@@ -10,18 +8,19 @@ require "forwardable"
 # which can individually call into Sonic Pi, or provide some other
 # implementation.
 
-module ExtApi
-  begin
-    # FIXME: This is an abject sin, but I can't figure out a good way to
-    # reliably get a handle on the Sonic Pi namespace from inside something
-    # that's `require`d. The `sp` local is from here:
-    # https://github.com/sonic-pi-net/sonic-pi/blob/916d4ea040871756b069b8d7c0e1b21fd6656fa9/app/server/ruby/bin/spider-server.rb#L304
-    SPI = TOPLEVEL_BINDING.local_variable_get(:sp)
-    IN_SPI = true
-  rescue NameError
-    IN_SPI = false
-  end
+# For the life of me, I cannot figure out a good way to get a reference to the
+# context that Sonic Pi code executes in when trying to do so from a required
+# file. Forcing a call to something like this is the best I've come up with.
+# This method must be global (otherwise `self` will evaluate to the module that
+# contains it).
+def init_spi_seq
+  method(:live_loop)  # Is this Sonic Pi?
+  ExtApi.instance_variable_set(:@spi, self)
+rescue NameError
+  ExtApi.instance_variable_set(:@spi, nil)
+end
 
+module ExtApi
   SPI_FORWARDS = [
     # General helpers
     :puts,
@@ -49,54 +48,61 @@ module ExtApi
     :get, :set,
     :cue, :sync
   ].freeze
+  private_constant :SPI_FORWARDS
 
   class << self
-    if IN_SPI
-      extend Forwardable
-      def_delegators "ExtApi::SPI", *SPI_FORWARDS
-    else
-      def puts(s)
-        Kernel.puts(s)
+    SPI_FORWARDS.each do |fwd|
+      define_method(fwd) do |*args, **kwargs, &block|
+        m = @spi.nil? ? ExtApiStubs.method(fwd) : @spi.method(fwd)
+        m.call(*args, **kwargs, &block)
       end
+    end
+  end
+end
 
-      def rand(max_or_range = 1)
-        # Sonic Pi's is float-oriented
-        max_or_range = 0..max_or_range if max_or_range.is_a?(Numeric)
-        max_or_range.min + Kernel.rand * max_or_range.max
-      end
+module ExtApiStubs
+  class << self
+    def puts(s)
+      Kernel.puts(s)
+    end
 
-      def rand_i(max_or_range = 2)
-        return 0 if max_or_range == 0
-        Kernel.rand(max_or_range)
-      end
+    def rand(max_or_range = 1)
+      # Sonic Pi's is float-oriented
+      max_or_range = 0..max_or_range if max_or_range.is_a?(Numeric)
+      max_or_range.min + Kernel.rand * max_or_range.max
+    end
 
-      def choose(list = nil)
-        return ->(l) { l.sample } if list.nil?
-        list.sample
-      end
+    def rand_i(max_or_range = 2)
+      return 0 if max_or_range == 0
+      Kernel.rand(max_or_range)
+    end
 
-      def one_in(n)
-        return false if n == 0
-        Kernel.rand < (1 / n.to_f)
-      end
+    def choose(list = nil)
+      return ->(l) { l.sample } if list.nil?
+      list.sample
+    end
 
-      def quantise(n, step)
-        (n.to_f / step).round * step
-      end
+    def one_in(n)
+      return false if n == 0
+      Kernel.rand < (1 / n.to_f)
+    end
 
-      def get(key = nil)
-        @__timespace_vals ||= {}
+    def quantise(n, step)
+      (n.to_f / step).round * step
+    end
 
-        # This behavior is kind of undocumented, but shows up in the examples.
-        return ->(k) { @__timespace_vals[k] } if key.nil?
+    def get(key = nil)
+      @__timespace_vals ||= {}
 
-        @__timespace_vals[key]
-      end
+      # This behavior is kind of undocumented, but shows up in the examples.
+      return ->(k) { @__timespace_vals[k] } if key.nil?
 
-      def set(key, val)
-        @__timespace_vals ||= {}
-        @__timespace_vals[key] = val
-      end
+      @__timespace_vals[key]
+    end
+
+    def set(key, val)
+      @__timespace_vals ||= {}
+      @__timespace_vals[key] = val
     end
   end
 end
