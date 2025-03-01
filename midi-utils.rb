@@ -82,6 +82,11 @@ def mute_live_loop(loop_name, mute=true)
   ExtApi.set(mute_key(loop_name), mute)
 end
 
+# Unmutes the given live_loop - alias for mute_live_loop(loop_name, false).
+def unmute_live_loop(loop_name)
+  mute_live_loop(loop_name, false)
+end
+
 # Starts a new live_loop that can be muted by setting the Time State key given
 # by the mute_key function to true. What 'mute' means must be implemented by the
 # given block; this function merely manages the muted state and informs the
