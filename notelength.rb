@@ -134,7 +134,7 @@ class NoteLength
   end
 
   def ==(other)
-    @sym == other.sym
+    @sym == other.to_sym
   end
 
   alias eql? ==
@@ -178,5 +178,5 @@ class NoteLength
 
   protected
 
-  attr_reader :sym, :log2
+  attr_reader :log2
 end
