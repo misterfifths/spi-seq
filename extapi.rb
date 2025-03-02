@@ -103,3 +103,17 @@ module ExtApiStubs
     end
   end
 end
+
+
+# TODO: figure out a better way to avoid unconditionally referencing this in
+# Track.
+begin
+  Object.const_get("SonicPi::Core::SPVector")
+rescue NameError
+  module SonicPi
+    module Core
+      class SPVector  # rubocop:disable Lint/EmptyClass
+      end
+    end
+  end
+end
