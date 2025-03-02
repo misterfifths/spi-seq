@@ -518,9 +518,7 @@ class Track
       end
 
       args = [slot, i, pct].take(block.arity)
-      new_slot = block.call(*args)
-
-      new_grid << Track.slotify(new_slot)
+      new_grid << block.call(*args)  # This will get slotified by the initializer.
     end
     mutate(grid: new_grid)
   end
@@ -906,9 +904,8 @@ class Track
   # steps.
   def replace_slot(idx, new_steps)
     raise "Index #{idx} is beyond the length of the track (#{@grid.length})" if idx >= @grid.length
-    new_steps = Track.slotify(new_steps)
     new_grid = @grid.dup
-    new_grid[idx] = new_steps
+    new_grid[idx] = new_steps  # This will get slotified by the initializer.
     mutate(grid: new_grid)
   end
 
