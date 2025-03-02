@@ -620,50 +620,62 @@ class Track
   # Unlike zip, this function does not alternate between 1 slot of each track.
   # Instead, group_size many slots of this track appear consecutively, followed
   # by other_group_size slots of other_track, then group_size many slots of this
-  # track, and so on. cycle controls the behavior when the other track has fewer
-  # groups than this one. It behaves as described in zip. pad_short_groups
-  # controls the behavior when a group size does not evenly divide the number of
-  # slots in its corresponding track. If it is true, rests are added to the
-  # final chunk of slots so that it has the group size.
+  # track, and so on.
+  # `cycle` controls the behavior when either track does not have enough
+  # remaining  slots to fill a group. If it is true, the group is filled by
+  # returning to the beginning of the short track and using slots from there.
+  # If it is true, when one track is exhausted, no more groups from it are
+  # added to the resulting track.
+  # `pad_with_rests` only takes effect when `cycle` is false. If it is true,
+  # when either track is exhausted, empty slots (rests) are added to the
+  # resulting track in place of the missing slots.
   # For instance, consider gzipping together a track with slots with the steps
   #     :a1 :b1 :c1 :d1
   # and one with slots with steps
   #     :e2 :f2
-  # If group_size is 3 and other_group_size is 1, and pad_short_groups is false,
-  # the result will be
+  # If group_size is 3, other_group_size is 1, and cycle is true, you'll get
+  #     :a1 :b1 :c1 :e2 :d1 :a1 :b1 :f2
+  # Note that when the tracks in the first slot were exhausted (after the :d1),
+  # the remaining slots in that group came from wrapping around to the beginning
+  # of the track - hence the :a1 and :b1.
+  # If cycle were false in that example, the result would be
   #     :a1 :b1 :c1 :e2 :d1 :f2
-  # But if pad_short_groups is true, the second group of slots from the first
-  # track will be padded with two rests so that it has a length equal to its
-  # group size. The result then would be
-  #    :a1 :b1 :c1 :e2 :d1 rest rest :f2
-  # Note that pad_short_groups applies to both groups from this track and
-  # other_track.
-  def grouped_zip(other_track, group_size, other_group_size, cycle: true, pad_short_groups: false)
+  # No wrap-around occurred here, and the group beginning with :d1 is just cut
+  # short. If cycle were false and pad_with_rests were true, the result would be
+  #     :a1 :b1 :c1 :e2 :d1 rest rest :f2
+  # In this case, the shortfall from the first track was replace with rests, so
+  # that the group beginning with :d1 was ensured to have group_size many slots.
+  def grouped_zip(other_track, group_size, other_group_size, cycle: true, pad_with_rests: true)
     other_track = compatibly_trackify(other_track)
     assert_compatible_track(other_track)
 
-    a_chunks = @grid.each_slice(group_size).to_a
-    b_chunks = other_track.grid.each_slice(other_group_size).to_a
+    new_grid = []
 
-    if pad_short_groups
-      if a_chunks.last.length < group_size
-        a_chunks[-1] += [[]] * (group_size - a_chunks.last.length)
+    # Append n elements to new_grid from grid, starting at idx, wrapping around
+    # if we're cycling or adding empty slots if we're padding. Returns the index
+    # from which we should begin adding on the next iteration.
+    add_group = lambda do |n, grid, idx|
+      n.times do
+        idx %= grid.length if cycle
+        if idx < grid.length
+          new_grid << grid[idx]
+        elsif pad_with_rests
+          new_grid << []
+        end
+
+        idx += 1
       end
 
-      if b_chunks.last.length < other_group_size
-        b_chunks[-1] += [[]] * (other_group_size - b_chunks.last.length)
-      end
+      idx
     end
 
-    if cycle
-      b_chunks = b_chunks.cycle
-    else
-      # In the case of a length mismatch, fill in with groups of
-      # other_group_size many empty slots.
-      repeating_empty_chunks = [[[]] * other_group_size].cycle
-      b_chunks = b_chunks.chain(repeating_empty_chunks)
+    a_idx = 0
+    b_idx = 0
+    num_groups = (@grid.length / group_size.to_f).ceil
+    num_groups.times do
+      a_idx = add_group.call(group_size, @grid, a_idx)
+      b_idx = add_group.call(other_group_size, other_track.grid, b_idx)
     end
-    new_grid = a_chunks.zip(b_chunks).flatten(2)
 
     mutate(grid: new_grid)
   end
