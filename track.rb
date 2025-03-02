@@ -699,7 +699,10 @@ class Track
   # false, each overlapped set of slots will be grouped into a slot. For
   # example, with n=2 and flatten=false, a track with slots :a :b :c :d will
   # result in a track with three slots: [[:a, :b], [:b, :c], [:c, :d]].
+  # Raises an error if n is greater than the length of the track.
   def each_cons(n, flatten: true)
+    raise "n=#{n} is greater than the length of the track (#{@grid.length})" if n > @grid.length
+
     new_grid = @grid.each_cons(n).to_a
     if flatten
       new_grid = new_grid.flatten(1)
