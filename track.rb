@@ -905,6 +905,7 @@ class Track
   # Returns a new Track with the steps in slot idx replaced with the given
   # steps.
   def replace_slot(idx, new_steps)
+    raise "Index #{idx} is beyond the length of the track (#{@grid.length})" if idx >= @grid.length
     new_steps = Track.slotify(new_steps)
     new_grid = @grid.dup
     new_grid[idx] = new_steps
