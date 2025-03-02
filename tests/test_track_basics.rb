@@ -6,7 +6,7 @@ require_relative "../track"
 require_relative "track_test_helpers"
 
 # Test basic Track methods - simple methods, direct attr mutators, etc.
-class TrackInitTest < Test::Unit::TestCase
+class TrackBasicTest < Test::Unit::TestCase
   include TrackTestHelpers
 
   def test_basic_methods
