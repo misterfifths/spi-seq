@@ -895,7 +895,7 @@ class Track
 
   # Return a new Track by, with probability p, removing all Steps in any given
   # slot.
-  def rand_dropout(p)
+  def rand_dropout(p = 0.5)
     new_grid = @grid.map { |slot| ExtApi.rand < p ? [] : slot }
     mutate(grid: new_grid)
   end
