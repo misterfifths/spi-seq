@@ -586,30 +586,41 @@ class Track
   # Creates a new Track that interleaves the slots of other_track with those of
   # this track. If other_track is not a Track, it is converted to a compatible
   # one using the initializer.
-  # cycle controls the behavior if other_track is shorter than this track. When
-  # cycle is false, blank slots (rests) will be interleaved once those of
-  # other_track are exhausted. If cycle is true, the slots of other_track will
-  # be looped as needed. For instance, consider zipping together two sequences
-  # with Steps [:a1, :b1, :c1, :d1] and [:e5, :f5].
-  # When cycle is false, the resulting Track will contain slots with the
-  # following steps:
-  #    :a1 :e5 :b1 :f5 :c1 rest :d1 rest
-  # When cycle is true, the same operation will result in slots
+  # cycle and pad_with_rests control the behavior if other_track is shorter than
+  # this track. If cycle is true (the default), the slots of other_track will be
+  # looped as needed.
+  # If cycle is false, the behavior depends on pad_with_rests. If it is true
+  # (the default), when other_track's slots are exhausted, empty slots (rests)
+  # are inserted in place of the missing slots. If it is false, the remaining
+  # slots of this track appear consecutively once other_track is exhausted.
+  # pad_with_rests is only relevant when cycle is false.
+  # For example, consider zipping together two sequences with Steps
+  # [:a1, :b1, :c1, :d1] and [:e5, :f5].
+  # When cycle is true (the default), the resulting Track will contain slots
+  # with the following steps:
   #    :a1 :e5 :b1 :f5 :c1 :e5 :d1 :f5
-  def zip(other_track, cycle: true)
+  # When cycle is false and pad_with_rests is true (the default), the resulting
+  # Track will contain slots with the following steps:
+  #    :a1 :e5 :b1 :f5 :c1 rest :d1 rest
+  # If cycle is false and pad_with_rests is also false, the result is
+  #    :a1 :e5 :b1 :f5 :c1 :d1
+  def zip(other_track, cycle: true, pad_with_rests: true)
     other_track = compatibly_trackify(other_track)
     assert_compatible_track(other_track)
 
-    other_grid = other_track.grid
-    if cycle
-      other_grid = other_grid.cycle
-    else
-      # In the case of a length mismatch, fill in with empty slots.
-      repeating_rests = [[]].cycle
-      other_grid = other_grid.chain(repeating_rests)
-    end
+    new_grid = []
+    b_idx = 0
+    @grid.each do |slot|
+      new_grid << slot
+      b_idx %= other_track.length if cycle
+      if b_idx < other_track.length
+        new_grid << other_track.grid[b_idx]
+      elsif pad_with_rests
+        new_grid << []
+      end
 
-    new_grid = @grid.zip(other_grid).flatten(1)
+      b_idx += 1
+    end
 
     mutate(grid: new_grid)
   end
