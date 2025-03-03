@@ -14,6 +14,47 @@ require_relative "track_test_helpers"
 class TrackGridTest < Test::Unit::TestCase
   include TrackTestHelpers
 
+  def assert_mutate_slots(track, grid, &block)
+    t = track.mutate_each_slot(&block)
+    assert_grid t, grid
+  end
+
+  def test_mutate_each_slot
+    t = T([:a1, [:b2, :b3], :c3])
+
+    assert_mutate_slots(t, [[:f9], [:f9], [:f9]]) { |_| :f9 }
+    assert_mutate_slots(t, [[:f9], [:f9], [:f9]]) { |_, _| :f9 }
+    assert_mutate_slots(t, [[:f9], [:f9], [:f9]]) { |_, _, _| :f9 }
+
+    [[], nil, :r, :rest].each do |rest|
+      assert_mutate_slots(t, [[], [], []]) { |_| rest }
+    end
+
+    assert_mutate_slots(t, [[:a1], [:b2, :b3], [:c3]]) { |slot| slot }
+    assert_mutate_slots(t, [[:a1], [:f9], [:c3]]) { |slot| slot.length == 2 ? [:f9] : slot }
+    assert_mutate_slots(t, [[:f8, :f9], [:b2, :b3], [:f8, :f9]]) { |slot| slot.length == 2 ? slot : [:f8, :f9] }
+
+    assert_mutate_slots(t, [[:a1], [:f9], [:c3]]) { |slot, idx| idx == 1 ? [:f9] : slot }
+
+    # rubocop:disable Lint/FloatComparison
+    assert_mutate_slots(t, [[:f9], [:b2, :b3], [:c3]]) { |slot, _, pct| pct == 0 ? [:f9] : slot }
+    assert_mutate_slots(t, [[:a1], [:f9], [:c3]]) { |slot, _, pct| pct == 0.5 ? [:f9] : slot }
+    assert_mutate_slots(t, [[:a1], [:b2, :b3], [:f9]]) { |slot, _, pct| pct == 1 ? [:f9] : slot }
+    # rubocop:enable Lint/FloatComparison
+
+    # Returning something gridish from the block.
+    assert_mutate_slots(t, [[:a1], [:f8], [:f9], [:c3]]) { |slot, idx| idx == 1 ? [[:f8], [:f9]] : slot }
+    assert_mutate_slots(t, [[:c3, :c4], [:f8], [:f9], [:g7], [:g8], [:a2, :a3]]) do |_, idx|
+      if idx == 1
+        [[:f8], [:f9]]
+      elsif idx == 2
+        [:g7, :g8, [:a2, :a3]]  # Interpreted as a grid, since it contains an array
+      else
+        [:c3, :c4]  # Interpreted as a slot
+      end
+    end
+  end
+
   def test_append
     assert_merge_strictness :+
 
