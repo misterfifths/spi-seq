@@ -518,7 +518,21 @@ class Track
       end
 
       args = [slot, i, pct].take(block.arity)
-      new_grid << block.call(*args)  # This will get slotified by the initializer.
+      replacement = block.call(*args)
+
+      # The block may return something convertible to a slot (step/note/etc.),
+      # or a 1d array (which we will take as a slot), or an array that contains
+      # some number of other arrays (which we will take as a set of slots). This
+      # behavior is pretty odd. But, it's somewhat in keeping with set_slot, and
+      # having the ability to expand one slot into multiple here is nice...
+      replacement = [replacement] unless replacement.is_a?(::Enumerable) || replacement.is_a?(SonicPi::Core::SPVector)
+      is_gridish = replacement.any? { |e| e.is_a?(::Enumerable) || e.is_a?(SonicPi::Core::SPVector) }
+
+      if is_gridish
+        new_grid += Track.gridify(replacement)
+      else
+        new_grid << replacement  # This will get slotified by the initializer.
+      end
     end
     mutate(grid: new_grid)
   end
