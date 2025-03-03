@@ -39,4 +39,25 @@ class TrackBasicTest < Test::Unit::TestCase
     assert_gt T(:c4).with_rate(2), NoteLength::Eighth, 2
     assert_gt T(:c4, timescale: 5).with_rate(0.5), NoteLength::Eighth, 0.5
   end
+
+  def test_filled_slots
+    assert_empty Track.rest(3).indexes_of_filled_slots
+    assert_raises { Track.rest(3).nth_filled_slot(0) }
+
+    t = T([:a1, [:b2, :b3], :r, :c3, :r])
+    assert_equal t.indexes_of_filled_slots, [0, 1, 3]
+
+    s = t.nth_filled_slot(0)
+    assert_equal s.length, 1
+    assert_equal s[0].note, :a1
+
+    s = t.nth_filled_slot(1)
+    assert_equal s.length, 2
+    assert(s.one? { |slot| slot.note == :b2 })
+    assert(s.one? { |slot| slot.note == :b3 })
+
+    s = t.nth_filled_slot(2)
+    assert_equal s.length, 1
+    assert_equal s[0].note, :c3
+  end
 end
