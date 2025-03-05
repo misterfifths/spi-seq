@@ -2,7 +2,6 @@
 
 require_relative "utils"
 
-require_relative "bezier"
 require_relative "easings"
 require_relative "curves"
 
