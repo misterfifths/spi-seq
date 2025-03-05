@@ -1093,7 +1093,6 @@ class Track
       curve_func = Curves.scale(curve_func, min, max)
     end
 
-    # TODO: implement this with mutate_each_slot instead?
     mutate_each_step do |step, slot_idx, pct|
       args = [pct, slot_idx].take(curve_func.arity)
       gate = curve_func.call(*args)
@@ -1145,7 +1144,6 @@ class Track
       curve_func = Curves.scale(curve_func, min, max)
     end
 
-    # TODO: implement this with mutate_each_slot instead?
     mutate_each_step do |step, slot_idx, pct|
       args = [pct, slot_idx].take(curve_func.arity)
       vel = curve_func.call(*args)
