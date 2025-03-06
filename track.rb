@@ -1064,6 +1064,15 @@ class Track
     mutate_steps_in_slot(idx, &block)
   end
 
+  # Return a new track, replacing the Steps in the nth non-empty slot with the
+  # given steps.
+  def replace_filled_slot(n, new_steps)
+    idx = indexes_of_filled_slots[n]
+    set_slot(idx, new_steps)
+  end
+
+  alias set_filled_slot replace_filled_slot
+
   def with_gate(new_gate)
     mutate_each_step { |step| step.with_gate(new_gate) }
   end
