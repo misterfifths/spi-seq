@@ -60,12 +60,15 @@ module TrackTestHelpers
     # Strict merging is off by default. The result should have the granularity
     # and timescale of the receiver.
     assert_gt t8_1.send(method, t8_2, *args, **kwargs), NoteLength::Eighth, 1
+    assert_gt t8_1.send(method, t16_1, *args, **kwargs), NoteLength::Eighth, 1
+    assert_gt t16_1.send(method, t8_1, *args, **kwargs), NoteLength::Sixteenth, 1
     assert_gt t8_2.send(method, t16_1, *args, **kwargs), NoteLength::Eighth, 2
     assert_gt t16_1.send(method, t32_2, *args, **kwargs), NoteLength::Sixteenth, 1
 
     # Under strict merging, these should all fail.
     with_strict_merging do
       assert_raises { t8_1.send(method, t8_2, *args, **kwargs) }
+      assert_raises { t8_1.send(method, t16_1, *args, **kwargs) }
       assert_raises { t8_2.send(method, t16_1, *args, **kwargs) }
       assert_raises { t16_1.send(method, t32_2, *args, **kwargs) }
     end
