@@ -15,7 +15,7 @@ class StepTest < Test::Unit::TestCase
     if prob.nil?
       assert_nil step.prob
     else
-      assert_same step.prob, prob
+      assert_equal step.prob.to_s, prob.to_s  # TODO: this is a crappy way to test Prob equality
     end
   end
 
@@ -47,7 +47,7 @@ class StepTest < Test::Unit::TestCase
     p = Prob.one_in(5)
     assert_attrs S(:c4, prob: p), :c4, 127, 1.0, p
 
-    # TODO: test that float values for prob get turned into Prob.chance.
+    assert_attrs S(:c4, prob: 0.1), :c4, 127, 1.0, Prob.chance(0.1)
   end
 
   def test_with_mutators
