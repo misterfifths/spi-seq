@@ -1464,26 +1464,34 @@ class Track
   # Returns a new track where each Step with note orig is replaced with a Step
   # that has note repl but is otherwise identical. If orig has an explicit
   # octave (or is a MIDI note number), only Steps with that exact note are
-  # effected. If orig does not have an explicit octave, repl must not either. In
-  # that case, all Steps with the same pitch class as orig have their notes
-  # changed to repl, in the same octave as the original step. For instance,
-  # sub_note(:c, :e) on a Track with steps [:c4, :d2, :c3] would result in a
-  # track with steps [:e4, :d2, :e3].
+  # effected. If orig does not have an explicit octave, all Steps with the same
+  # pitch class as orig have their notes changed to repl. If repl also does not
+  # have an octave, the replacements are in the same octave as the original
+  # step. For instance, consider a track with steps
+  #     :c4, [:d1, :d2], :c3
+  # sub_note(:c, :e) on that track would result in a track with the steps
+  #     :e4, [:d1, :d2], :e3
+  # And sub_note(:c, :f9) would result in
+  #     :f9, [:d1, :d2], :f9
+  # But sub_note(:d2, :f9) would only match the D2:
+  #     :c4, [:d1, :f9], :c3
   # repl may be nil, :r, or :rest to remove Steps that match orig.
   def sub_note(orig, repl)
-    has_octave = MIDINote.has_octave?(orig)
+    orig_has_octave = MIDINote.has_octave?(orig)
     repl_is_rest = MIDINote.rest?(repl)
-    if !has_octave && !repl_is_rest && MIDINote.has_octave?(repl)
-      raise "Replacement notes cannot have an octave if the original note doesn't"
-    end
+    repl_has_octave = repl_is_rest ? false : MIDINote.has_octave?(repl)
 
     orig = MIDINote.new(orig)
 
     mutate_each_step do |step|
-      if has_octave && step.note == orig
-        repl_is_rest ? nil : step.with_note(repl)
-      elsif !has_octave && step.note.pitch_class == orig.pitch_class
-        repl_is_rest ? nil : step.with_note(step.note.with_pitch_class(repl))
+      if (orig_has_octave && step.note == orig) || (!orig_has_octave && step.note.pitch_class == orig.pitch_class)
+        if repl_is_rest
+          nil
+        elsif repl_has_octave
+          step.with_note(repl)
+        else
+          step.with_note(step.note.with_pitch_class(repl))
+        end
       else
         step
       end
