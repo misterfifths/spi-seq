@@ -39,6 +39,29 @@ module TrackTestHelpers
     assert_equal track.timescale, timescale
   end
 
+  def each_step(track, &block)
+    track.grid.each do |slot|
+      slot.each do |step|
+        args = [step, slot].take(block.arity)
+        block.call(*args)
+      end
+    end
+  end
+
+  def assert_steps_attr(track, attr_name, value, tol = 0.01)
+    each_step(track) do |step|
+      actual = step.send(attr_name)
+      if attr_name == :prob
+        # TODO: this is a crappy way to test Prob equality
+        assert_equal step.prob.to_s, value.to_s, "expected #{step.inspect} to have prob #{value.inspect}, but got #{step.prob.inspect}"
+      elsif actual.is_a?(Float) || value.is_a?(Float)
+        assert_in_delta actual, value, tol, "expected #{step.inspect} #{attr_name} to be #{value.inspect}, but got #{actual}"
+      else
+        assert_equal actual, value, "expected #{step.inspect} #{attr_name} to be #{value.inspect}, but got #{actual}"
+      end
+    end
+  end
+
   def with_strict_merging
     use_track_defaults(strict_track_merging: true)
     yield
