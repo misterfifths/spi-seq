@@ -40,8 +40,8 @@ module Curves
   DownUp3Sine = ->(x) { Math.cos(4.0 * Math::PI * x) / 2.0 + 0.5 }  # 1->0->1->0->1
   UpDown3Sine = ->(x) { -Math.cos(4.0 * Math::PI * x) / 2.0 + 0.5 }  # 0->1->0->1->0
 
-  def self.scale(f, min, max)
-    ->(x) { min + (max - min) * f.call(x) }
+  def self.scale(f, min, max, orig_min: 0, orig_max: 1)
+    ->(x) { min + (max - min) * ((f.call(x) - orig_min) / (orig_max - orig_min)) }
   end
 
   # Returns a function that increases linearly from min_value to max_value over
