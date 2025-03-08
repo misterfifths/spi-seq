@@ -1128,6 +1128,8 @@ class Track
     mutate_each_step { |step| step.with_vel(step.vel * factor) }
   end
 
+  alias scale_velf scale_vel
+
   # Returns a new track where each Step's velocity is replaced with the result
   # of curve_func. curve_func must take 1-2 arguments:
   # - the percentage through the track (0.0-1.0) where the slot falls in the
