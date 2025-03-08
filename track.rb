@@ -1228,48 +1228,147 @@ class Track
     end
   end
 
+  # Finds runs of tied steps with the same notes and yields to its block two
+  # arguments for each: the index of the slot that begins the run, and the array
+  # of steps that belong to the run. A run is ended by the end of the track, or
+  # a step that is not tied. The final step in a run is included in the array
+  # yielded to the block. Runs that consist of a single step (i.e. non-tied
+  # steps that are not continuing a note from the previous step, or steps at the
+  # end of the track that are not continuing a note) are also yielded to the
+  # block.
+  private def each_run
+    ended_runs = []
+    active_runs_by_note = {}  # notes -> { starting_slot_idx:, steps: }
+
+    @grid.each_with_index do |slot, slot_idx|
+      # Find what's new and what continues in this slot.
+      slot.each do |step|
+        run_info = active_runs_by_note[step.note]
+        if run_info.nil?
+          # A new run.
+          active_runs_by_note[step.note] = { starting_slot_idx: slot_idx, steps: [step] }
+        else
+          # If the step is tied, the run continues. Otherwise it ends here.
+          run_info[:steps] << step
+          unless step.tied?
+            ended_runs << run_info
+            active_runs_by_note.delete(step.note)
+          end
+        end
+      end
+
+      # Now look for ended runs, which are missing in this slot.
+      ended_notes = []
+      active_runs_by_note.each do |note, run_info|
+        next if slot.any? { |step| step.note == note }
+
+        # This is an ended run.
+        ended_runs << run_info
+        ended_notes << note
+      end
+
+      ended_notes.each { |note| active_runs_by_note.delete(note) }
+    end
+
+    # Collect runs that lasted the whole track, and sort.
+    ended_runs += active_runs_by_note.values
+    ended_runs.sort_by! { |run_info| run_info[:starting_slot_idx] }
+
+    ended_runs.each do |run_info|
+      yield run_info[:starting_slot_idx], run_info[:steps]
+    end
+  end
+
+  # Replaces steps in a run of tied steps with the same note. starting_slot_idx
+  # is the index of the slot where replacement should begin. orig_steps is an
+  # array of the original steps that are being replaced. new_steps is an array
+  # of steps which should replace those from orig_steps.
+  # orig_steps must be the actual Step instances that are currently in this
+  # track, not copies of them with the same properties. This method is meant to
+  # be used in tandem with each_run, which returns such an array of steps.
+  # This method works by first removing all the steps from orig_steps from their
+  # corresponding slots, and then adding all the steps from new_steps. So, it is
+  # valid for new_steps to be a different length than orig_steps, as long as
+  # starting_slot_idx + new_steps.length is not greater than the length of the
+  # track.
+  protected def set_run(starting_slot_idx, orig_steps, new_steps)
+    raise "replacement steps are past the end of the track" if starting_slot_idx + new_steps.length > @grid.length
+
+    new_grid = mutable_grid_dup
+
+    orig_steps.each_with_index do |orig_step, i|
+      new_grid[starting_slot_idx + i].delete orig_step
+    end
+
+    # TODO: gridify new_steps?
+    new_steps.each_with_index do |new_step, i|
+      new_grid[starting_slot_idx + i] << new_step
+    end
+
+    mutate(grid: new_grid)
+  end
+
+  # Returns a new track with each run of tied steps replaced with those returned
+  # from the block. The block will be given two arguments: the index of the slot
+  # where the run begins, and an array of the steps that constitute the run. The
+  # block should return an array of steps, which will take the place of the
+  # run's step in the returned track. The array returned from the block may have
+  # a different length than the original run, but, when the new steps are added
+  # beginning at the run's starting slot, they must not exceed the length of the
+  # track.
+  private def mutate_runs
+    new_track = self
+    each_run do |starting_slot_idx, orig_steps|
+      new_steps = yield starting_slot_idx, orig_steps.dup
+      new_track = new_track.set_run(starting_slot_idx, orig_steps, new_steps)
+    end
+    new_track
+  end
+
   # Returns a new track where the final steps in runs of tied steps with the
   # same note are replaced with the result of the block. Helper for taper_vel
   # and taper_gate.
-  private def taper_slots(taper_final_slot: true, taper_single: false)
-    mutate_each_step do |step, slot_idx|
-      next step if !step.tied? || slot_idx == 0
+  private def taper_steps(taper_final_tie: false, taper_single: false)
+    mutate_runs do |starting_slot_idx, steps|
+      run_loops = false
 
-      prev_slot = @grid[(slot_idx - 1) % num_slots]
-      next_slot = @grid[(slot_idx + 1) % num_slots]
-
-      continuing = prev_slot.any? { |s| s.note == step.note && s.tied? }
-      continues = next_slot.any? { |s| s.note == step.note && s.tied? }
-
-      if (taper_single || continuing) && ((taper_final_slot && slot_idx == num_slots - 1) || !continues)
-        yield step
-      else
-        step
+      if (starting_slot_idx + steps.length) == @grid.length && steps[-1].tied?
+        run_loops = @grid[0].any? { |slot_0_step| slot_0_step.note == steps[-1].note }
+        next steps if run_loops && !taper_final_tie
       end
+
+      next steps if steps.length == 1 && !run_loops && !taper_single
+
+      steps[-1] = yield steps[-1]
+      steps
     end
   end
 
   # Sets the gate on the final step of runs of tied steps with the same note.
-  # The final step must have a gate of 1 for this method to adjust its gate.
-  # If taper_final_slot is true, steps in the final slot of the track will have
-  # their gate adjusted even if their note would continue when the track loops
-  # to slot 0. If taper_single is true, steps that are not continuations of a
-  # tie also have their gate adjusted.
-  def taper_gate(trailing_gate = 0.75, taper_final_slot: true, taper_single: false)
-    taper_slots(taper_final_slot: taper_final_slot, taper_single: taper_single) { |s| s.with_gate(trailing_gate) }
+  # The final step does not have to be tied for this method to adjust its gate;
+  # such a step's gate will be set to trailing_gate.
+  # If taper_final_tie is false (the default), steps in the final slot of the
+  # track will not have their gate adjusted if they are tied and are continued
+  # with a step with the same note in the first slot of the track.
+  # If taper_single is true, standalone steps that are not continuations of a
+  # tie also have their gate adjusted. Note that steps in the final slot of the
+  # track that are tied and continue in the first slot of the track are not
+  # effected by taper_single.
+  def taper_gate(trailing_gate = 0.75, taper_final_tie: false, taper_single: false)
+    taper_steps(taper_final_tie: taper_final_tie, taper_single: taper_single) { |s| s.with_gate(trailing_gate) }
   end
 
   # Sets the velocity on the final step of runs of tied steps, in the same
   # manner as taper_gate. If zero_to_one is true, the velocity is a percentage
   # between 0 and 1, rather than a MIDI value from 0 - 127. taper_velf is an
   # alias with zero_to_one set to true.
-  def taper_vel(trailing_vel = 64, taper_final_slot: true, taper_single: false, zero_to_one: false)
+  def taper_vel(trailing_vel = 64, taper_final_tie: false, taper_single: false, zero_to_one: false)
     trailing_vel *= 127 if zero_to_one
-    taper_slots(taper_final_slot: taper_final_slot, taper_single: taper_single) { |s| s.with_vel(trailing_vel) }
+    taper_steps(taper_final_tie: taper_final_tie, taper_single: taper_single) { |s| s.with_vel(trailing_vel) }
   end
 
-  def taper_velf(trailing_vel = 0.5, taper_final_slot: true, taper_single: false)
-    taper_vel(trailing_vel, taper_final_slot: taper_final_slot, taper_single: taper_single, zero_to_one: true)
+  def taper_velf(trailing_vel = 0.5, taper_final_tie: false, taper_single: false)
+    taper_vel(trailing_vel, taper_final_tie: taper_final_tie, taper_single: taper_single, zero_to_one: true)
   end
 
   def with_octave(new_octave)
