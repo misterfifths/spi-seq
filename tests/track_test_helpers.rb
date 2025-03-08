@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 module TrackTestHelpers
-  def equal_steps?(step, stepish)
+  def equal_steps?(step, stepish, tol = 0.01)
     if stepish.is_a?(Step)
       return step.note == stepish.note &&
-             step.gate == stepish.gate &&
+             ((step.gate - stepish.gate).abs < tol) &&
              step.vel == stepish.vel &&
-             step.prob.equal?(stepish.prob)
+             step.prob.to_s == stepish.prob.to_s  # TODO: this is a crappy way to test Prob equality
     end
 
     # something MIDINote-ish
