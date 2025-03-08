@@ -1218,7 +1218,7 @@ class Track
     mutate_each_step do |step|
       if fill
         step.with_prob(Prob.fill)
-      elsif step.prob == Prob.fill
+      elsif step.prob.equal?(Prob.fill)
         step.with_prob(nil)
       else
         step
