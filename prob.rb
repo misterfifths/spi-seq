@@ -34,7 +34,7 @@ class Prob
   # Step will trigger every other cycle, beginning with the first. Equivalent to
   # x_of_y(1, 2);
   def self.every_other
-    x_of_y(1, 2)
+    @every_other_inst ||= x_of_y(1, 2)
   end
 
   # Step will trigger on the first cycle out of each set of n cycles. Equivalent
@@ -51,22 +51,22 @@ class Prob
 
   # Step will trigger only on the first cycle.
   def self.first
-    new(->(cycle) { cycle == 0 }, "first", "first")
+    @first_inst ||= new(->(cycle) { cycle == 0 }, "first", "first")
   end
 
   # Step will trigger on every cycle except the first.
   def self.not_first
-    new(->(cycle) { cycle != 0 }, "!first", "not_first")
+    @not_first_inst ||= new(->(cycle) { cycle != 0 }, "!first", "not_first")
   end
 
   # Step will trigger if any step triggered in the previously played slot.
   def self.pre
-    new(->(_, _, _, prev_steps) { !prev_steps.empty? }, "pre", "pre")
+    @pre_inst ||= new(->(_, _, _, prev_steps) { !prev_steps.empty? }, "pre", "pre")
   end
 
   # Step will trigger if no step triggered in the previously played slot.
   def self.not_pre
-    new(->(_, _, _, prev_steps) { prev_steps.empty? }, "!pre", "not_pre")
+    @not_pre_inst ||= new(->(_, _, _, prev_steps) { prev_steps.empty? }, "!pre", "not_pre")
   end
 
   # Step will trigger if a step triggered in the previously played slot with the
@@ -75,7 +75,7 @@ class Prob
     pred = lambda do |_, _, step, prev_steps|
       prev_steps.any? { |prev_step| prev_step.note == step.note }
     end
-    new(pred, "pre same note", "pre_same_note")
+    @pre_same_note_inst ||= new(pred, "pre same note", "pre_same_note")
   end
 
   # Step will trigger only if none of the steps that triggered in the previously
@@ -84,15 +84,15 @@ class Prob
     pred = lambda do |_, _, step, prev_steps|
       prev_steps.all? { |prev_step| prev_step.note != step.note }
     end
-    new(pred, "!pre same note", "not_pre_same_note")
+    @not_pre_same_inst ||= new(pred, "!pre same note", "not_pre_same_note")
   end
 
   def self.fill
-    new(->(_, fill) { fill }, "fill", "fill")
+    @fill_inst ||= new(->(_, fill) { fill }, "fill", "fill")
   end
 
   def self.not_fill
-    new(->(_, fill) { !fill }, "!fill", "not_fill")
+    @not_fill_inst ||= new(->(_, fill) { !fill }, "!fill", "not_fill")
   end
 
   # Evaluates the probability function for the given step in the given cycle of
