@@ -6,6 +6,8 @@ require_relative "midinote"
 require_relative "notelength"
 require_relative "prob"
 require_relative "arp"
+require_relative "curves"
+require_relative "easings"
 
 
 # An alias for Track.new.
