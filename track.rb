@@ -1152,7 +1152,7 @@ class Track
       min = 0 if min.nil?
       max = zero_to_one ? 1 : 127 if max.nil?
 
-      curve_func = Curves.scale(curve_func, min, max)
+      curve_func = Curves.scale(curve_func, min, max, orig_min: 0, orig_max: zero_to_one ? 1 : 127)
     end
 
     mutate_each_step do |step, slot_idx, pct|
