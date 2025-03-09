@@ -63,4 +63,22 @@ class ArpTest < Test::Unit::TestCase
     assert_arp ns, :thumb, %i[a0 c0 a1 c0 d3 c0]
     assert_arp ns.take(2), :thumb, %i[a1 c0]
   end
+
+  def test_peak_valley
+    ns = %i[a1 c0 d3 a0 c2 e5]
+
+    assert_arp ns, :peak, %i[c0 a1 d3 e5 c2 a0]
+    assert_arp ns.take(5), :peak, %i[c0 a1 d3 c2 a0]
+    assert_arp ns.take(4), :peak, %i[c0 a1 d3 a0]
+    assert_arp ns.take(3), :peak, %i[c0 d3 a1]
+    assert_arp ns.take(2), :peak, %i[c0 a1]
+    assert_arp ns.take(1), :peak, %i[a1]
+
+    assert_arp ns, :valley, %i[e5 c2 a0 c0 a1 d3]
+    assert_arp ns.take(5), :valley, %i[d3 a1 c0 a0 c2]
+    assert_arp ns.take(4), :valley, %i[d3 a0 c0 a1]
+    assert_arp ns.take(3), :valley, %i[d3 c0 a1]
+    assert_arp ns.take(2), :valley, %i[a1 c0]
+    assert_arp ns.take(1), :valley, %i[a1]
+  end
 end

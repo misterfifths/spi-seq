@@ -12,6 +12,8 @@ module Arp
   AlternInOut = :alterninout
   Pinky = :pinky
   Thumb = :thumb
+  Peak = :peak
+  Valley = :valley
   Random = :random
   Order = :order
 
@@ -100,6 +102,9 @@ module Arp
       notes.sort!
       lowest = notes.shift
       notes = notes.zip([lowest].cycle).flatten
+    when Arp::Peak, Arp::Valley
+      notes.sort!
+      notes = notes.values_at(*peak_indexes(notes.length, direction))
     when Arp::Random
       notes.shuffle!
     when Arp::Order
@@ -177,6 +182,49 @@ module Arp
   end
 
   private_class_method :altern_indexes
+
+  def self.peak_indexes(length, direction)
+    return [] if length == 0
+    return [0] if length == 1
+
+    case direction
+    when Arp::Peak
+      # Climb up to the maximum with even indexes, then descend with the odds.
+      rising_idxs = []
+      falling_idxs = []
+      0.upto(length - 1) do |i|
+        if i.even?
+          rising_idxs << i
+        else
+          falling_idxs << i
+        end
+      end
+
+      rising_idxs + falling_idxs.reverse
+    when Arp::Valley
+      # Descend from the maximum then ascend, with alternating indexes going
+      # into the descension and ascension.
+      falling_idxs = []
+      rising_idxs = []
+      (length - 1).downto(0) do |i|
+        if length.even?
+          if i.odd?
+            falling_idxs << i
+          else
+            rising_idxs << i
+          end
+        elsif i.odd?
+          rising_idxs << i
+        else
+          falling_idxs << i
+        end
+      end
+
+      falling_idxs + rising_idxs.reverse
+    end
+  end
+
+  private_class_method :peak_indexes
 end
 
 def arp(*args, **kwargs)
