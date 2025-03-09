@@ -18,8 +18,9 @@ class Step
   # note can be a string, symbol, integer MIDI note, or MIDINote instance. The
   # note attribute always contains a MIDINote instance corresponding to the
   # argument.
-  # vel is the MIDI velocity for the note, 0 - 127. It is only used when the
-  # note is played via MIDI, obviously.
+  # vel is the MIDI velocity for the note, 0 - 127. When played with Sonic Pi's
+  # internal synthesis, the velocity will translate into the `amp` value for the
+  # note.
   # gate is the percentage of the duration of the step for which the note will
   # be triggered. The note will not be played with a gate of 0, and will be
   # tied to the following step (if any) with a gate of 1.
