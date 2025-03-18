@@ -58,7 +58,7 @@ module Arp
     # TODO: where should this apply in relation to spread?
     extra_octaves.each do |octave_shift|
       orig_notes.each do |n|
-        notes << n.up(octave_shift)
+        notes << MIDINote.new(n).up(octave_shift)
       end
     end
 
