@@ -323,7 +323,7 @@ class Track
     end
 
     slot_repr_lines = grouped_slot_reprs.length
-    total_slot_repr = grouped_slot_reprs.map { |chunk| chunk.join(", ") }.join("\n#{slot_line_indent}")
+    total_slot_repr = grouped_slot_reprs.map { |chunk| chunk.join(", ") }.join(",\n#{slot_line_indent}")
 
     ctor_args = {}
     ctor_args[:granularity] = @granularity.repr unless @granularity == NoteLength::Eighth
