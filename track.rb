@@ -787,6 +787,22 @@ class Track
     mutate(grid: @grid.shuffle)
   end
 
+  # Returns a new Track by shuffling the filled slots in the grid. Any slots
+  # that were rests remain so; only the contents of filled slots is effected.
+  def shuffle_filled_slots
+    shuffled_idxs = indexes_of_filled_slots.shuffle
+
+    shuffled_idxs_cursor = 0
+    mutate_each_slot do |slot|
+      next [] if slot.empty?
+      ret = @grid[shuffled_idxs[shuffled_idxs_cursor]]
+      shuffled_idxs_cursor += 1
+      ret
+    end
+  end
+
+  alias shuffle_filled shuffle_filled_slots
+
   # Returns a new Track with the slots in the grid rotated to the right by the
   # given amount. The track duration is maintained; slots will be wrapped around
   # to the beginning of the grid as needed.
