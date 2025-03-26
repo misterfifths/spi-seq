@@ -241,6 +241,7 @@ class TrackGridTest < Test::Unit::TestCase
     assert_grid T(:c4).shuffle, [[:c4]]
 
     srand 1234
+    # Inexplicably, Array.shuffle does nothing immediately after an srand?
     assert_grid T([:a1, :b2, :c3, :d4]).shuffle, [[:a1], [:b2], [:c3], [:d4]]
     assert_grid T([:a1, :b2, :c3, :d4]).shuffle, [[:b2], [:c3], [:d4], [:a1]]
   end
