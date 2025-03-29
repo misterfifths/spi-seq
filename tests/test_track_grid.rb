@@ -381,11 +381,12 @@ class TrackGridTest < Test::Unit::TestCase
     assert_grid T(:c4).sample(2), [[:c4]]
 
     srand 1234
-    t = T([:a1, :b2, :c3, :d4])
-    assert_grid t.sample(4), [[:d4], [:c3], [:b2], [:a1]]
-    assert_grid t.sample(3), [[:a1], [:b2], [:c3]]
-    assert_grid t.sample(2), [[:b2], [:c3]]
-    assert_grid t.sample(1), [[:d4]]
+    t = T([:a1, :b2, :r, :c3, :d4])
+    assert_grid t.sample(5), [[:a1], [:b2], [], [:c3], [:d4]]
+    assert_grid t.sample(4), [[:a1], [], [:c3], [:d4]]
+    assert_grid t.sample(3), [[:b2], [], [:d4]]
+    assert_grid t.sample(2), [[], [:c3]]
+    assert_grid t.sample(1), [[:c3]]
   end
 
   def test_drop_every

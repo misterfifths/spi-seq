@@ -890,12 +890,11 @@ class Track
   alias [] slice
 
   # Returns a new Track consisting of n random slots from this track's grid. The
-  # relative order of the chosen slots is not maintained.
+  # relative order of the slots is maintained.
   def sample(n)
     # TODO: does this use spi's rng?
-    # TODO: more useful if it does maintain order? could sample an array of
-    # indexes instead, sort the result, and use those to choose slots.
-    mutate(grid: @grid.sample(n))
+    idxs = (0...@grid.length).to_a.sample(n).sort
+    mutate(grid: @grid.values_at(*idxs))
   end
 
   # Returns a new Track with all Steps in every nth slot removed. The duration
