@@ -78,7 +78,7 @@ module TrackTestHelpers
     t8_1 = T(:c1)
     t8_2 = T(:c2, timescale: 2)
     t16_1 = T(:c3, granularity: :sixteenth)
-    t32_2 = T(:c4, granularity: :sixteenth, timescale: 2)
+    t32_2 = T(:c4, granularity: :thirty_second, timescale: 2)
 
     # Strict merging is off by default. The result should have the granularity
     # and timescale of the receiver.
