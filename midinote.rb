@@ -95,7 +95,7 @@ class MIDINote < Numeric
       @number = note
       @octave = (note.to_i / 12) - 1
       @pitch_class = NOTE_NAMES[note.to_i % 12][0]
-      @sym = (@pitch_class.to_s + @octave.to_s).to_sym
+      @sym = :"#{@pitch_class}#{@octave}"
     when Symbol, String
       match = NOTE_REGEX.match(note.to_s.downcase)
       raise "Invalid note name #{note}" if match.nil?
@@ -110,7 +110,7 @@ class MIDINote < Numeric
       name_idx = NOTE_NAMES.find_index { |names| names.include?(@pitch_class) }
       @pitch_class = NOTE_NAMES[name_idx][0]  # normalize
       @number = 12 + @octave * 12 + name_idx  # 12 is c0
-      @sym = (@pitch_class.to_s + @octave.to_s).to_sym
+      @sym = :"#{@pitch_class}#{@octave}"
     else
       raise "Invalid note value #{note}"
     end
@@ -119,8 +119,7 @@ class MIDINote < Numeric
   # Returns a new note with the same pitch class but the given octave.
   def with_octave(new_octave)
     return self if new_octave == @octave
-    new_sym = (@pitch_class.to_s + new_octave.to_s).to_sym
-    MIDINote.new(new_sym)
+    MIDINote.new(:"#{@pitch_class}#{new_octave}")
   end
 
   # Returns a new note with the same pitch class but with its octave shifted up
@@ -152,8 +151,7 @@ class MIDINote < Numeric
 
   # Returns a new note in the same octave but with the given pitch class.
   def with_pitch_class(cls)
-    new_sym = (cls.to_s + @octave.to_s).to_sym
-    MIDINote.new(new_sym)
+    MIDINote.new(:"#{cls}#{@octave}")
   end
 
   # Returns true if other matches this note. That is:
