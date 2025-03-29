@@ -897,6 +897,16 @@ class Track
     mutate(grid: @grid.values_at(*idxs))
   end
 
+  # Returns a new Track consisting of n random slots from this track's grid.
+  # Only picks from filled slots; rests are not considered. The relative order
+  # of the slots is maintained.
+  def sample_filled_slots(n)
+    idxs = indexes_of_filled_slots.sample(n).sort
+    mutate(grid: @grid.values_at(*idxs))
+  end
+
+  alias sample_filled sample_filled_slots
+
   # Returns a new Track with all Steps in every nth slot removed. The duration
   # of the Track does not change; the emptied slots simply become rests. Does
   # nothing if n is zero.
