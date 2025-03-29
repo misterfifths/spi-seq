@@ -10,13 +10,13 @@ end
 
 
 # Represents information about a note.
-# - sym: A normalized symbol for the note. It will be in lower-case, with all
+# - to_sym: A normalized symbol for the note. It will be in lower-case, with all
 #   accidentals standardized to sharps. It will always include an octave number.
 # - pitch_class: A symbol for the pitch class of the note (e.g. :c for C notes
-#   in any octave), normalized in the same manner as `sym`.
+#   in any octave), normalized in the same manner as `to_sym`.
 # - number: The MIDI note number for the note. Note that this may not be an
-#   integer (e.g. if there's a cent tuning in effect). In that case, `sym` and
-#   `pitch_class` will correspond to the floor of `number`. If you need an
+#   integer (e.g. if there's a cent tuning in effect). In that case, `to_sym`
+#   and `pitch_class` will correspond to the floor of `number`. If you need an
 #   integer MIDI note value, use the to_i method.
 # - octave: The octave for the note.
 #
