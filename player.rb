@@ -285,8 +285,8 @@ end
 # play for one additional cycle after they become muted, during which they will
 # fade out. Like fade_in, fade_out may also have the value :quad.
 # If fill_cc is provided, a CC message with that number will control whether the
-# player is in fill mode. A value of 127 turns on fill, and any other value
-# turns it off. Unlike muting, fill takes effect immediately, not at the start
+# player is in fill mode. A value of 0 turns off fill, and any other value
+# turns it on. Unlike muting, fill takes effect immediately, not at the start
 # of a new cycle.
 # If send_cycle_cues is true, immediately before the live_loop plays a cycle of
 # the track, it sends a cue with the name <loop_name>_cycle and a single value,
@@ -348,7 +348,7 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
       # strings for the path here.
       incoming_cc, cc_val = ExtApi.sync("/midi:#{cc_port}:#{cc_channel}/control_change")
       if incoming_cc == fill_cc
-        player.fill = cc_val == 127
+        player.fill = cc_val != 0
         ExtApi.puts("[cc fill control] CC #{cc} = #{cc_val} -> #{player.fill ? '' : 'un'}setting fill for live loop #{loop_name}")
       end
     end
