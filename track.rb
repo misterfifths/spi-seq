@@ -110,27 +110,27 @@ class Track
   # through the arpeggiated notes) however many times is needed to ensure that
   # all the notes are played and that the track loops cleanly, unless full_cycle
   # is false. The rotate parameter controls rotation of the Euclidean pattern.
-  def self.arp(notes, direction = Arp::Up, spread: 0, extra_octaves: [], pulses: nil, length: nil, rotate: 0, full_cycle: true, granularity: NoteLength::Eighth, gate: 1, vel: 127, timescale: 1)
+  def self.arp(notes, direction = Arp::Up, spread: 0, extra_octaves: [], pulses: nil, length: nil, rotate: 0, full_cycle: true, granularity: NoteLength::Eighth, timescale: 1)
     notes = Arp.arpeggiate(notes, direction, spread: spread, extra_octaves: extra_octaves)
     if pulses.nil?
-      grid = notes.map { |n| [Step.new(n, vel: vel, gate: gate)] }
+      grid = notes.map { |n| [Step.new(n)] }
       new(grid, granularity: granularity, timescale: timescale)
     else
       raise "pulses and length must both be nil or both be integers" if length.nil?
-      euclid(notes, pulses, length, rotate: rotate, full_cycle: full_cycle, granularity: granularity, gate: gate, vel: vel, timescale: timescale)
+      euclid(notes, pulses, length, rotate: rotate, full_cycle: full_cycle, granularity: granularity, timescale: timescale)
     end
   end
 
   # Constructs a track that arpeggiates the given degrees of the tonic note in
   # the given scale. Other arguments are as specified in arp.
-  def self.arp_degrees(tonic, degrees, direction = Arp::Order, scale: :major, spread: 0, extra_octaves: [], pulses: nil, length: nil, granularity: NoteLength::Eighth, gate: 1, vel: 127, timescale: 1)
+  def self.arp_degrees(tonic, degrees, direction = Arp::Order, scale: :major, spread: 0, extra_octaves: [], pulses: nil, length: nil, granularity: NoteLength::Eighth, timescale: 1)
     notes = Arp.arp_degrees(tonic, degrees, direction, scale: scale, spread: spread, extra_octaves: extra_octaves)
     if pulses.nil?
-      grid = notes.map { |n| [Step.new(n, vel: vel, gate: gate)] }
+      grid = notes.map { |n| [Step.new(n)] }
       new(grid, granularity: granularity, timescale: timescale)
     else
       raise "pulses and length must both be nil or both be integers" if length.nil?
-      euclid(notes, pulses, length, full_cycle: true, granularity: granularity, gate: gate, vel: vel, timescale: timescale)
+      euclid(notes, pulses, length, full_cycle: true, granularity: granularity, timescale: timescale)
     end
   end
 
@@ -165,12 +165,12 @@ class Track
   # Note that each group repeats the same pattern of hits (hit rest hit hit),
   # but the slots cycle across repetitions, so that every given slot is played
   # and the overall track is a perfect loop.
-  def self.euclid(gridish, pulses, length, invert: false, rotate: 0, cycle: true, full_cycle: false, granularity: NoteLength::Eighth, gate: 1, vel: 127, timescale: 1)
+  def self.euclid(gridish, pulses, length, invert: false, rotate: 0, cycle: true, full_cycle: false, granularity: NoteLength::Eighth, timescale: 1)
     hits = ExtApi.spread(pulses, length).to_a
     hits.rotate!(rotate) if rotate != 0
     hits.map! { |hit| !hit } if invert
 
-    gridish = Track.gridify(gridish, def_gate: gate, def_vel: vel)
+    gridish = Track.gridify(gridish)
 
     # If we're doing a full cycle, we may need multiple copies of the Euclidean
     # pattern to complete a perfect loop. If we're spreading n slots over p
@@ -237,7 +237,7 @@ class Track
   # was assigned the same note from `notes`. In the final track, the rhythm
   # defined by `gates` was repeated three times while cycling through `notes`,
   # so that every note was used and the track ends on the final note of `notes`.
-  def self.isorhythm(notes, gates, granularity: NoteLength::Eighth, vel: 127, timescale: 1)
+  def self.isorhythm(notes, gates, granularity: NoteLength::Eighth, timescale: 1)
     # Gameplan:
     # This is a variation on `euclid` above, really, with the added complication
     # that a "hit" can last more than one slot.
@@ -252,7 +252,7 @@ class Track
     # We're going to leverage the existing run manipulation machinery on Track
     # by building a rhythm track with the proper gates but all C4s. We'll then
     # repeat that track, fixing up the notes as we go along.
-    hit_grid = gates.map { |g| g == 0 ? [] : Step.new(:c4, gate: g, vel: vel) }
+    hit_grid = gates.map { |g| g == 0 ? [] : Step.new(:c4, gate: g) }
     hit_track = Track.new(hit_grid, granularity: granularity, timescale: timescale)
 
     # TODO: make these methods public so we don't have to call them with send.
