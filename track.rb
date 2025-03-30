@@ -1633,13 +1633,13 @@ class Track
   # notes.
   # If a note in the track is not in the given scale, no additional notes will
   # be added in that slot.
-  def harmonize(tonic, scale_name, position: 0, voices: nil, gate: 1, vel: 127)
+  def harmonize(tonic, scale_name, position: 0, voices: nil)
     new_grid = []
     iter_harmonized_slots(tonic, scale_name, position: position, voices: voices) do |step, notes|
       if step.nil?
         new_grid << []
       else
-        new_slot = notes.map { |n| Step.new(n, gate: gate, vel: vel) }
+        new_slot = notes.map { |n| Step.new(n) }
         new_slot.unshift(step)
         new_grid << new_slot
       end
@@ -1654,14 +1654,14 @@ class Track
   # (soprano). Arguments are as described in harmonize.
   # If a note in the track is not in the given scale, there will be a rest in
   # the corresponding slots in the returned tracks.
-  def split_harmonize(tonic, scale_name, position: 0, gate: 1, vel: 127)
+  def split_harmonize(tonic, scale_name, position: 0)
     new_grids = [[], [], []]
     iter_harmonized_slots(tonic, scale_name, position: position) do |step, notes|
       if step.nil? || notes.empty?
         new_grids.each { |g| g << [] }
       else
         notes.each_with_index do |n, i|
-          new_grids[i] << [Step.new(n, gate: gate, vel:vel)]
+          new_grids[i] << [Step.new(n)]
         end
       end
     end
