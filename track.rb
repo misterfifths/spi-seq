@@ -202,6 +202,96 @@ class Track
     new(grid, granularity: granularity, timescale: timescale)
   end
 
+  # Construct an isorhythmic track. See https://en.wikipedia.org/wiki/Isorhythm.
+  # To use classical terms, `gates` defines the talea and `notes` the color.
+  #
+  # `gates` is an array of numbers which defines the rhythm over which `notes`
+  # will be played. The numbers in `gates` will become the gates of the Steps in
+  # the track.
+  #
+  # Within `gates`, there are "runs". A run is a series of gates that would
+  # define a tied sequence of steps (or single untied steps). For instance, a
+  # gates array of [1, 0.5, 0.25, 1] defines 3 runs: the first two steps would
+  # be tied together, then a standalone step with gate 0.5, and a final step
+  # with gate 1. (Note that trailing tied steps are considered to end at the end
+  # end of the array.)
+  #
+  # Each run in `gates` will be assigned the same note from the `notes` array.
+  # Subsequent runs will be assigned the next note, cycling as needed if the
+  # number of runs outnumbers the number of notes.
+  #
+  # The entire pattern of notes over the rhythm defined by `gates` will be
+  # repeated as many times as needed so that the resulting track uses all the
+  # elements of `notes` and cycles cleanly.
+  #
+  # This method has much in common with `euclid`, except that a "hit" can last
+  # more than one slot.
+  #
+  # For example:
+  # isorhythm([:a1, :b2, :c3], [1, 0.5, 0, 0.25]) would result in a track with
+  # slots
+  #   [:a1, S(:a1, gate: 0.5), :r, S(:b2, gate: 0.25),
+  #    :c3, S(:c3, gate: 0.5), :r, S(:a1, gate: 0.25),
+  #    :b2, S(:b2, gate: 0.5), :r, S(:c3, gate: 0.25)]
+  # The `gates` array represents 2 runs, and you can see that each of those runs
+  # was assigned the same note from `notes`. In the final track, the rhythm
+  # defined by `gates` was repeated three times while cycling through `notes`,
+  # so that every note was used and the track ends on the final note of `notes`.
+  def self.isorhythm(notes, gates, granularity: NoteLength::Eighth, vel: 127, timescale: 1)
+    # Gameplan:
+    # This is a variation on `euclid` above, really, with the added complication
+    # that a "hit" can last more than one slot.
+    # Calculate the number of distinct notes that the `gates` array specifies.
+    # That is: find the number of runs, a run being a sequence of tied notes.
+    # Ties at the end of `gates` are considered ended even if they would
+    # continue in a loop. As with `euclid` above, call that number p.
+    # We are spreading n = notes.length notes over those p hits, and we want to
+    # cleanly cycle while using all the notes. As per the calculation in
+    # `euclid`, that will take exactly lcm(p, n) / p cycles.
+
+    # We're going to leverage the existing run manipulation machinery on Track
+    # by building a rhythm track with the proper gates but all C4s. We'll then
+    # repeat that track, fixing up the notes as we go along.
+    hit_grid = gates.map { |g| g == 0 ? [] : Step.new(:c4, gate: g, vel: vel) }
+    hit_track = Track.new(hit_grid, granularity: granularity, timescale: timescale)
+
+    # TODO: make these methods public so we don't have to call them with send.
+    run_count = 0
+    hit_track.send(:each_run) { |_, _| run_count += 1 }
+
+    needed_cycles = run_count.lcm(notes.length) / run_count
+
+    # Now build up the track by mutating hit_track, needed_cycle times.
+    track = nil
+    note_idx = 0
+    needed_cycles.times do
+      this_track = hit_track.send(:mutate_runs) do |_, orig_steps|
+        # Replace each note in the run with the proper note at note_idx. Aside
+        # from the note, the Steps in hit_track already have the correct
+        # properties.
+        new_steps = orig_steps.map do |step|
+          step.with_note(notes[note_idx])
+        end
+
+        note_idx = (note_idx + 1) % notes.length
+
+        new_steps
+      end
+
+      if track.nil?
+        track = this_track
+      else
+        track += this_track
+      end
+    end
+
+    track
+  end
+
+  def self.iso(*args, **kwargs)
+    isorhythm(*args, **kwargs)
+  end
+
 
   ### Properties
 

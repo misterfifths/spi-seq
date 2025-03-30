@@ -83,4 +83,105 @@ class TrackInitTest < Test::Unit::TestCase
     assert_grid T([[S(:cs4, gate: 0.5), S(:df4, gate: 0.75)]]), [[S(:cs4, gate: 0.75)]]
     assert_grid T([[:cs4, :df4, :db4]]), [[:cs4]]
   end
+
+  def test_isorhythm
+    ns = [:a1, :b2, :c3, :d4]
+
+    assert_gt Track.iso(ns, [1]), NoteLength::Eighth, 1
+    assert_gt Track.iso(ns, [1], granularity: :sixteenth), NoteLength::Sixteenth, 1
+    assert_gt Track.iso(ns, [1], timescale: 2), NoteLength::Eighth, 2
+
+    # Single runs, even division.
+    assert_grid Track.iso(ns, [1]), [[:a1], [:b2], [:c3], [:d4]]
+    assert_grid Track.iso(ns, [0.5]), [
+      [S(:a1, gate: 0.5)],
+      [S(:b2, gate: 0.5)],
+      [S(:c3, gate: 0.5)],
+      [S(:d4, gate: 0.5)]
+    ]
+    assert_grid Track.iso(ns, [1, 0]), [
+      [:a1], [],
+      [:b2], [],
+      [:c3], [],
+      [:d4], []
+    ]
+    assert_grid Track.iso(ns, [1, 0.5]), [
+      [:a1], [S(:a1, gate: 0.5)],
+      [:b2], [S(:b2, gate: 0.5)],
+      [:c3], [S(:c3, gate: 0.5)],
+      [:d4], [S(:d4, gate: 0.5)]
+    ]
+    assert_grid Track.iso(ns, [1, 1]), [
+      [:a1], [:a1],
+      [:b2], [:b2],
+      [:c3], [:c3],
+      [:d4], [:d4]
+    ]
+
+    # Multiple runs, even division.
+    assert_grid Track.iso(ns, [0.5, 0.25]), [
+      [S(:a1, gate: 0.5)],
+      [S(:b2, gate: 0.25)],
+
+      [S(:c3, gate: 0.5)],
+      [S(:d4, gate: 0.25)]
+    ]
+    assert_grid Track.iso(ns, [0.5, 0.25, 0.1, 1]), [
+      [S(:a1, gate: 0.5)],
+      [S(:b2, gate: 0.25)],
+      [S(:c3, gate: 0.1)],
+      [S(:d4, gate: 1)]
+    ]
+    assert_grid Track.iso(ns, [0.5, 1, 0.25, 0, 1, 0, 1]), [
+      [S(:a1, gate: 0.5)],
+      [S(:b2, gate: 1)],
+      [S(:b2, gate: 0.25)],
+      [],
+      [S(:c3, gate: 1)],
+      [],
+      [S(:d4, gate: 1)]
+    ]
+
+    # Multiple runs, uneven division
+    assert_grid Track.iso(ns, [0.5, 0.25, 0, 0.1]), [
+      [S(:a1, gate: 0.5)],
+      [S(:b2, gate: 0.25)],
+      [],
+      [S(:c3, gate: 0.1)],
+
+      [S(:d4, gate: 0.5)],
+      [S(:a1, gate: 0.25)],
+      [],
+      [S(:b2, gate: 0.1)],
+
+      [S(:c3, gate: 0.5)],
+      [S(:d4, gate: 0.25)],
+      [],
+      [S(:a1, gate: 0.1)],
+
+      [S(:b2, gate: 0.5)],
+      [S(:c3, gate: 0.25)],
+      [],
+      [S(:d4, gate: 0.1)]
+    ]
+
+    # gates longer than notes, uneven division
+    assert_grid Track.iso(ns, [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0]), [
+      [S(:a1, gate: 0.5)],
+      [S(:b2, gate: 0.5)],
+      [S(:c3, gate: 0.5)],
+      [S(:d4, gate: 0.5)],
+      [S(:a1, gate: 0.5)],
+      [S(:b2, gate: 0.5)],
+      [],
+
+      [S(:c3, gate: 0.5)],
+      [S(:d4, gate: 0.5)],
+      [S(:a1, gate: 0.5)],
+      [S(:b2, gate: 0.5)],
+      [S(:c3, gate: 0.5)],
+      [S(:d4, gate: 0.5)],
+      []
+    ]
+  end
 end
