@@ -1271,7 +1271,14 @@ class Track
         run_info = active_runs_by_note[step.note]
         if run_info.nil?
           # A new run.
-          active_runs_by_note[step.note] = { starting_slot_idx: slot_idx, steps: [step] }
+          run_info = { starting_slot_idx: slot_idx, steps: [step] }
+
+          # If it's not tied it ends immediately.
+          if step.tied?
+            active_runs_by_note[step.note] = run_info
+          else
+            ended_runs << run_info
+          end
         else
           # If the step is tied, the run continues. Otherwise it ends here.
           run_info[:steps] << step

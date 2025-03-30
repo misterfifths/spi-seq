@@ -293,22 +293,85 @@ class TrackStepTest < Test::Unit::TestCase
       [:c1, :d1],
       [:c1],
       [S(:c1, gate: 0.75, vel: 63), :e1],
-      [:c1, :e1],  # This begins a new run of c1; the previous one was not tied.
-      [:f1],
+      [S(:c1, gate: 0.25), :e1],  # This begins a new run of c1; the previous one was not tied.
+      [:f1, S(:c1, gate: 0.1)],  # This is a new run of c1 too; the previous lasted one slot.
       [:f1, :d1, S(:c1, gate: 0.25)]  # This c1 run does not loop into slot 0, but the d1 does.
     ])
 
-    assert_grid t.taper_gate(0.5), [[:c1, :d1], [:c1], [S(:c1, gate: 0.5, vel: 63), :e1], [:c1, S(:e1, gate: 0.5)], [:f1], [S(:f1, gate: 0.5), :d1, S(:c1, gate: 0.25)]]
-    assert_grid t.taper_gate(0.5, taper_final_tie: true), [[:c1, :d1], [:c1], [S(:c1, gate: 0.5, vel: 63), :e1], [:c1, S(:e1, gate: 0.5)], [:f1], [S(:f1, gate: 0.5), S(:d1, gate: 0.5), S(:c1, gate: 0.25)]]
-    assert_grid t.taper_gate(0.5, taper_single: true), [[:c1, S(:d1, gate: 0.5)], [:c1], [S(:c1, gate: 0.5, vel: 63), :e1], [S(:c1, gate: 0.5), S(:e1, gate: 0.5)], [:f1], [S(:f1, gate: 0.5), :d1, S(:c1, gate: 0.5)]]
+    assert_grid t.taper_gate(0.5), [
+      [:c1, :d1],
+      [:c1],
+      [S(:c1, gate: 0.5, vel: 63), :e1],
+      [S(:c1, gate: 0.25), S(:e1, gate: 0.5)],
+      [:f1, S(:c1, gate: 0.1)],
+      [S(:f1, gate: 0.5), :d1, S(:c1, gate: 0.25)]
+    ]
+    assert_grid t.taper_gate(0.5, taper_final_tie: true), [
+      [:c1, :d1],
+      [:c1],
+      [S(:c1, gate: 0.5, vel: 63), :e1],
+      [S(:c1, gate: 0.25), S(:e1, gate: 0.5)],
+      [:f1, S(:c1, gate: 0.1)],
+      [S(:f1, gate: 0.5), S(:d1, gate: 0.5), S(:c1, gate: 0.25)]
+    ]
+    assert_grid t.taper_gate(0.5, taper_single: true), [
+      [:c1, S(:d1, gate: 0.5)],
+      [:c1],
+      [S(:c1, gate: 0.5, vel: 63), :e1],
+      [S(:c1, gate: 0.5), S(:e1, gate: 0.5)],
+      [:f1, S(:c1, gate: 0.5)],
+      [S(:f1, gate: 0.5), :d1, S(:c1, gate: 0.5)]
+    ]
 
-    assert_grid t.taper_vel(48), [[:c1, :d1], [:c1], [S(:c1, gate: 0.75, vel: 48), :e1], [:c1, S(:e1, vel: 48)], [:f1], [S(:f1, vel: 48), :d1, S(:c1, gate: 0.25)]]
-    assert_grid t.taper_vel(48, taper_final_tie: true), [[:c1, :d1], [:c1], [S(:c1, gate: 0.75, vel: 48), :e1], [:c1, S(:e1, vel: 48)], [:f1], [S(:f1, vel: 48), S(:d1, vel: 48), S(:c1, gate: 0.25)]]
-    assert_grid t.taper_vel(48, taper_single: true), [[:c1, S(:d1, vel: 48)], [:c1], [S(:c1, gate: 0.75, vel: 48), :e1], [S(:c1, vel: 48), S(:e1, vel: 48)], [:f1], [S(:f1, vel: 48), :d1, S(:c1, gate: 0.25, vel: 48)]]
+    assert_grid t.taper_vel(48), [
+      [:c1, :d1],
+      [:c1],
+      [S(:c1, gate: 0.75, vel: 48), :e1],
+      [S(:c1, gate: 0.25), S(:e1, vel: 48)],
+      [:f1, S(:c1, gate: 0.1)],
+      [S(:f1, vel: 48), :d1, S(:c1, gate: 0.25)]
+    ]
+    assert_grid t.taper_vel(48, taper_final_tie: true), [
+      [:c1, :d1],
+      [:c1],
+      [S(:c1, gate: 0.75, vel: 48), :e1],
+      [S(:c1, gate: 0.25), S(:e1, vel: 48)],
+      [:f1, S(:c1, gate: 0.1)],
+      [S(:f1, vel: 48), S(:d1, vel: 48), S(:c1, gate: 0.25)]
+    ]
+    assert_grid t.taper_vel(48, taper_single: true), [
+      [:c1, S(:d1, vel: 48)],
+      [:c1],
+      [S(:c1, gate: 0.75, vel: 48), :e1],
+      [S(:c1, gate: 0.25, vel: 48), S(:e1, vel: 48)],
+      [:f1, S(:c1, gate: 0.1, vel: 48)],
+      [S(:f1, vel: 48), :d1, S(:c1, gate: 0.25, vel: 48)]
+    ]
 
-    assert_grid t.taper_velf(0.25), [[:c1, :d1], [:c1], [S(:c1, gate: 0.75, vel: 31), :e1], [:c1, S(:e1, vel: 31)], [:f1], [S(:f1, vel: 31), :d1, S(:c1, gate: 0.25)]]
-    assert_grid t.taper_velf(0.25, taper_final_tie: true), [[:c1, :d1], [:c1], [S(:c1, gate: 0.75, vel: 31), :e1], [:c1, S(:e1, vel: 31)], [:f1], [S(:f1, vel: 31), S(:d1, vel: 31), S(:c1, gate: 0.25)]]
-    assert_grid t.taper_velf(0.25, taper_single: true), [[:c1, S(:d1, vel: 31)], [:c1], [S(:c1, gate: 0.75, vel: 31), :e1], [S(:c1, vel: 31), S(:e1, vel: 31)], [:f1], [S(:f1, vel: 31), :d1, S(:c1, gate: 0.25, vel: 31)]]
+    assert_grid t.taper_velf(0.25), [
+      [:c1, :d1],
+      [:c1],
+      [S(:c1, gate: 0.75, vel: 31), :e1],
+      [S(:c1, gate: 0.25), S(:e1, vel: 31)],
+      [:f1, S(:c1, gate: 0.1)],
+      [S(:f1, vel: 31), :d1, S(:c1, gate: 0.25)]
+    ]
+    assert_grid t.taper_velf(0.25, taper_final_tie: true), [
+      [:c1, :d1],
+      [:c1],
+      [S(:c1, gate: 0.75, vel: 31), :e1],
+      [S(:c1, gate: 0.25), S(:e1, vel: 31)],
+      [:f1, S(:c1, gate: 0.1)],
+      [S(:f1, vel: 31), S(:d1, vel: 31), S(:c1, gate: 0.25)]
+    ]
+    assert_grid t.taper_velf(0.25, taper_single: true), [
+      [:c1, S(:d1, vel: 31)],
+      [:c1],
+      [S(:c1, gate: 0.75, vel: 31), :e1],
+      [S(:c1, gate: 0.25, vel: 31), S(:e1, vel: 31)],
+      [:f1, S(:c1, gate: 0.1, vel: 31)],
+      [S(:f1, vel: 31), :d1, S(:c1, gate: 0.25, vel: 31)]
+    ]
   end
 
   def test_snap_to_notes
