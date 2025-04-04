@@ -207,7 +207,8 @@ class Track
   #
   # `gates` is an array of numbers which defines the rhythm over which `notes`
   # will be played. The numbers in `gates` will become the gates of the Steps in
-  # the track.
+  # the track. The values in `gates` may also be booleans - true will be
+  # interpreted as a gate of 1 and false a gate of 0.
   #
   # Within `gates`, there are "runs". A run is a series of gates that would
   # define a tied sequence of steps (or single untied steps). For instance, a
@@ -252,7 +253,16 @@ class Track
     # We're going to leverage the existing run manipulation machinery on Track
     # by building a rhythm track with the proper gates but all C4s. We'll then
     # repeat that track, fixing up the notes as we go along.
-    hit_grid = gates.map { |g| g == 0 ? [] : Step.new(:c4, gate: g) }
+    hit_grid = gates.map do |g|
+      case g
+      when 0, false
+        []
+      when true
+        Step.new(:c4)
+      else
+        Step.new(:c4, gate: g)
+      end
+    end
     hit_track = Track.new(hit_grid, granularity: granularity, timescale: timescale)
 
     # TODO: make these methods public so we don't have to call them with send.

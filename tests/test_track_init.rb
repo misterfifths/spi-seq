@@ -183,5 +183,13 @@ class TrackInitTest < Test::Unit::TestCase
       [S(:d4, gate: 0.5)],
       []
     ]
+
+    # Boolean gates
+    assert_grid Track.iso(ns, [true, false, false]), [
+      [:a1], [], [],
+      [:b2], [], [],
+      [:c3], [], [],
+      [:d4], [], []
+    ]
   end
 end
