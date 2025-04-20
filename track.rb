@@ -4,10 +4,10 @@ require_relative "extapi"
 require_relative "theory/midinote"
 require_relative "theory/notelength"
 require_relative "theory/arp"
+require_relative "math/curves"
+require_relative "math/easings"
 require_relative "step"
 require_relative "prob"
-require_relative "curves"
-require_relative "easings"
 
 
 # An alias for Track.new.

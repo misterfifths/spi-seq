@@ -2,8 +2,8 @@
 
 require_relative "utils"
 
-require_relative "easings"
-require_relative "curves"
+require_relative "math/easings"
+require_relative "math/curves"
 
 require_relative "theory/chord"
 
