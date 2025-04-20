@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "weakref"
-require_relative "extapi"
+require_relative "../extapi"
 
 # Helpers to track running live_loops and associate values with them.
 module LiveLoopTracker

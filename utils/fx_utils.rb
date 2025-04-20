@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "extapi"
+require_relative "../extapi"
 
 # Assembles a stack of nested effects and runs the given block inside of them.
 # Provide a map from a Time State key to an array:

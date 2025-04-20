@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "extapi"
+require_relative "../extapi"
 
 # Start a live_loop named loop_name that sends MIDI clock beats for the global
 # BPM. Sends a MIDI start message on the first iteration if send_start is true.
@@ -29,8 +29,8 @@ end
 # This function sends a MIDI stop, all notes off, sound off, and individual note
 # offs for every MIDI note on the given port/channel. Messages are sent in real
 # time.
-# You can call this function with either `port` and/or `channel` kwargs, or an
-# array of hashes of the same, in which case all provided devices will be
+# You can call this function with either `port` and/or `channel` kwargs, or a
+# number of hashes of the same, in which case all provided devices will be
 # stopped. E.g.:
 #     midi_uber_stop(port: "my_device", channel: 7)  # stops one device
 #     midi_uber_stop({ channel: 2 }, { port: "another", channel: 5 })  # stops 2
