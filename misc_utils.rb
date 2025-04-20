@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "extapi"
+require_relative "../extapi"
 
 # Runs the given block the first time the script runs, and whenever it is
 # restarted after having been stopped. thread_name is the name used for the
