@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "extapi"
+require_relative "../extapi"
 
 
 # An alias for MIDINote.new.

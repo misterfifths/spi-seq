@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 require "test/unit"
-require_relative "../arp"
+require_relative "../theory/arp"
 
 # TODO: missing degree tests
 # TODO: missing spread & extra_octaves tests

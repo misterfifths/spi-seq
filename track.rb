@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 require_relative "extapi"
+require_relative "theory/midinote"
+require_relative "theory/notelength"
+require_relative "theory/arp"
 require_relative "step"
-require_relative "midinote"
-require_relative "notelength"
 require_relative "prob"
-require_relative "arp"
 require_relative "curves"
 require_relative "easings"
 
@@ -1451,7 +1451,7 @@ class Track
   private def mutate_runs
     new_track = self
     each_run do |starting_slot_idx, orig_steps|
-      new_steps = yield starting_slot_idx, orig_steps.dup
+      new_steps = yield starting_slot_idx, orig_steps.dup  # TODO: why did I dup that?
       new_track = new_track.set_run(starting_slot_idx, orig_steps, new_steps)
     end
     new_track

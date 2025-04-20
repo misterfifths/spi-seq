@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 require "test/unit"
-require_relative "../midinote"
+require_relative "../theory/midinote"
 
 # TODO: missing tests for things heavily involving Sonic Pi methods (e.g.
 # full_scale and harmonize).
