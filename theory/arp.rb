@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "../extapi"
 require_relative "midinote"
 
 module Arp
