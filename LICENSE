@@ -19,3 +19,10 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+
+---
+
+Scale interval definitions in theory/scale.rb are based on the Overtone project,
+also under the MIT license. The copyright in Overtone is owned by the
+contributors named in its README file, found at
+https://github.com/overtone/overtone/blob/master/README.md.

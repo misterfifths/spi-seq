@@ -4,6 +4,7 @@ require_relative "math/easings"
 require_relative "math/curves"
 
 require_relative "theory/chord"
+require_relative "theory/scale"
 
 require_relative "utils/misc_utils"
 require_relative "utils/midi_utils"
