@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "../extapi"
+require_relative "scale"
 
 
 # An alias for MIDINote.new.
@@ -184,31 +185,12 @@ class MIDINote < Numeric
     winner
   end
 
-  # Returns the full set of MIDINotes (in the MIDI range 0-127) that belong to
-  # the given scale with the given tonic.
-  def self.full_scale(tonic, scale_name)
-    @scale_cache ||= {}
-
-    tonic = MIDINote.new(tonic)
-    key = [tonic.to_sym, scale_name.to_sym]
-    scale = @scale_cache[key]
-    return scale unless scale.nil?
-
-    # Note 0 is c-1, and 127 is g9, so if we do 11 octaves from -1, we'll cover
-    # the whole MIDI range.
-    low_tonic = tonic.with_octave(-1)
-    scale = ExtApi.scale(low_tonic, scale_name, num_octaves: 11).to_a.reject { |n| n < 0 || n > 127 }
-    scale.map! { |n| MIDINote.new(n) }
-    @scale_cache[key] = scale
-    scale
-  end
-
   # Returns a new note, snapped to the nearest note in the given scale. tonic is
   # the root note for the scale and must be a symbol or string for a note
   # without an octave (e.g. :c or :fs). scale is a symbol for one of the scales
   # known to Sonic Pi.
   def snap_to_scale(tonic, scale_name)
-    snap(MIDINote.full_scale(tonic, scale_name))
+    snap(Scale.full_scale(tonic, scale_name))
   end
 
 
@@ -219,7 +201,7 @@ class MIDINote < Numeric
   # representing how many degrees the note is away from the tonic.
   # Returns nil if the note is not in the scale.
   private def degree_number(tonic, scale_name)
-    scale = MIDINote.full_scale(tonic, scale_name)
+    scale = Scale.full_scale(tonic, scale_name)
     note_index = scale.index(note)
     return nil if note_index.nil?
     note_index - scale.index(MIDINote.new(tonic))
