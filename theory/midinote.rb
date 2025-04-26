@@ -196,27 +196,6 @@ class MIDINote < Numeric
 
   ### Auto-harmonize
 
-  # Returns a sort of degree number for the note in the given scale with the
-  # given tonic. The result is an integer, which may be positive or negative,
-  # representing how many degrees the note is away from the tonic.
-  # Returns nil if the note is not in the scale.
-  private def degree_number(tonic, scale_name)
-    scale = Scale.full_scale(tonic, scale_name)
-    note_index = scale.index(note)
-    return nil if note_index.nil?
-    note_index - scale.index(MIDINote.new(tonic))
-  end
-
-  # Returns the note that is num many degrees away from the tonic in the given
-  # scale. num may be positive or negative.
-  def self.my_degree(num, tonic, scale_name)
-    scale = full_scale(tonic, scale_name)
-    tonic_index = scale.index(MIDINote.new(tonic))
-    scale[tonic_index + num]
-  end
-
-  private_class_method :my_degree
-
   # Returns an array of note symbols that represent a 4-part harmony for the
   # give note in the given scale and tonic. position must be 0, 1, or 2, and
   # determines which of the three possible harmonies is returned. The returned
@@ -227,8 +206,13 @@ class MIDINote < Numeric
   # https://www.gathering4gardner.org/g4g14gift/G4G14-NeilBickford-AlgorithmsForMusicalHarmonization.pdf
   # which in turn references a paper by Donald Knuth.
   def harmonize(tonic, scale_name, position: 0)
-    n = degree_number(tonic, scale_name)
-    return [self] if n.nil?
+    scale = Scale.full_scale(tonic, scale_name)
+
+    begin
+      n = scale.steps_between(tonic, self)
+    rescue ArgumentError
+      return [self]
+    end
 
     degrees = case position
     when 0
@@ -244,7 +228,7 @@ class MIDINote < Numeric
     # Avoid tritones
     degrees[0] -= 2 if degrees[0] % 7 == 6
 
-    degrees.map { |d| MIDINote.my_degree(d, tonic, scale_name) }
+    degrees.map { |d| scale.note_at_step(tonic, d) }
   end
 
 
