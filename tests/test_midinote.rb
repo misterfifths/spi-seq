@@ -4,8 +4,7 @@
 require "test/unit"
 require_relative "../theory/midinote"
 
-# TODO: missing tests for things heavily involving Sonic Pi methods (e.g.
-# full_scale and harmonize).
+# TODO: missing tests for harmonize.
 
 class MIDINoteTest < Test::Unit::TestCase
   def self.startup
@@ -279,5 +278,18 @@ class MIDINoteTest < Test::Unit::TestCase
     assert_equal N(60).snap([70, 50]), 70
     assert_equal N(60.5).snap([60, 61]), 61
     assert_equal N(60.5).snap([61, 60]), 61
+  end
+
+  def test_snap_to_scale
+    assert_equal N(:c4).snap_to_scale(:c, :major), :c4
+    assert_equal N(:d3).snap_to_scale(:c, :major), :d3
+    assert_equal N(:e2).snap_to_scale(:c, :major), :e2
+    assert_equal N(:f1).snap_to_scale(:c, :major), :f1
+    assert_equal N(:"g-1").snap_to_scale(:c, :major), :"g-1"
+
+    # We should snap upwards.
+    assert_equal N(:cs4).snap_to_scale(:c, :major), :d4
+    assert_equal N(:eb4).snap_to_scale(:c, :major), :e4
+    assert_equal N(:bs4).snap_to_scale(:c, :major), :c5
   end
 end
