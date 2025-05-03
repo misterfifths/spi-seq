@@ -5,8 +5,7 @@ require "test/unit"
 require_relative "../track"
 require_relative "track_test_helpers"
 
-# TODO: missing tests for things heavily involving Sonic Pi methods:
-# harmonize, split_harmonize, snap_to_scale.
+# TODO: missing tests for harmonize, split_harmonize.
 
 # Test Track's step manipulation methods.
 # This is mostly things that deal with individual steps in the Track, rather
@@ -380,6 +379,15 @@ class TrackStepTest < Test::Unit::TestCase
     assert_grid t.snap_to_notes([58]), [[58], [58], [58], [58]]
     assert_grid t.snap_to_notes([60, 68]), [[60], [60], [68], [68]]
     assert_grid t.snap_to_notes([50, 61, 68]), [[50], [61], [68], [68]]
+  end
+
+  def test_snap_to_scale
+    t = T([:c4, :d3, :e2, :f1, :"g-1",
+           :cs4, :eb4, :bs4])
+
+    assert_grid t.snap_to_scale(:c, :major),
+                [[:c4], [:d3], [:e2], [:f1], [:"g-1"],
+                 [:d4], [:e4], [:c5]]  # The accidentals should snap upward.
   end
 
   def test_evolve
