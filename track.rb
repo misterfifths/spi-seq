@@ -4,6 +4,7 @@ require_relative "extapi"
 require_relative "theory/midinote"
 require_relative "theory/notelength"
 require_relative "theory/arp"
+require_relative "theory/scale"
 require_relative "math/curves"
 require_relative "math/easings"
 require_relative "step"
@@ -1687,11 +1688,12 @@ class Track
   end
 
   # Return a new track in which each Step has its note snapped to the nearest
-  # note in the given scale starting at the given root note. root should be a
-  # MIDI note number of symbol, and scale should be one of the scale names known
-  # to Sonic Pi.
-  def snap_to_scale(root, scale)
-    mutate_each_step { |step| step.with_note(step.note.snap_to_scale(root, scale)) }
+  # note in the given scale starting at the given tonic. tonic should be a
+  # symbol or string for a pitch class (e.g. :c), and scale_name should be one
+  # of the scale names known to the Scale class.
+  def snap_to_scale(tonic, scale_name)
+    scale = Scale.full_scale(tonic, scale_name)
+    mutate_each_step { |step| step.with_note(scale.snap(step.note)) }
   end
 
   # Returns a new track where each Step with note orig is replaced with a Step
