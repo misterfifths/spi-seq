@@ -144,7 +144,7 @@ class Scale
     @full_scale_cache ||= {}
 
     tonic = MIDINote.new(tonic)
-    key = [tonic.to_sym, scale_name.to_sym]
+    key = [tonic.pitch_class, scale_name.to_sym]
     scale = @full_scale_cache[key]
     return scale unless scale.nil?
 
