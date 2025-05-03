@@ -166,18 +166,20 @@ class MIDINote < Numeric
     @pitch_class == MIDINote.new(other).pitch_class
   end
 
-  # Returns a new note snapped to the closest value in notes. notes must be an
-  # array of note representations (symbols, strings, MIDI note numbers, or
+  # Returns a new note snapped upward to the closest value in notes. notes must
+  # be an array of note representations (symbols, strings, MIDI note numbers, or
   # MIDINotes).
   def snap(notes)
-    # TODO: be more particular about rounding up or down?
     notes = notes.map { |n| MIDINote.new(n) }
     winner = nil
     smallest_diff = 256
     notes.each do |n|
       diff = (n.number - @number).abs
-      if diff < smallest_diff
+      if winner.nil? || diff < smallest_diff
         smallest_diff = diff
+        winner = n
+      elsif diff == smallest_diff && n.number > winner.number
+        # Prefer the upper note in the case of an equal distance.
         winner = n
       end
     end
@@ -185,10 +187,10 @@ class MIDINote < Numeric
     winner
   end
 
-  # Returns a new note, snapped to the nearest note in the given scale. tonic is
-  # the root note for the scale and must be a symbol or string for a note
-  # without an octave (e.g. :c or :fs). scale is a symbol for one of the scales
-  # known to Sonic Pi.
+  # Returns a new note, snapped upward to the nearest note in the given scale.
+  # tonic is the root note for the scale and must be a symbol or string for a
+  # note without an octave (e.g. :c or :fs). scale is a symbol for one of the
+  # scales known to Sonic Pi.
   def snap_to_scale(tonic, scale_name)
     snap(Scale.full_scale(tonic, scale_name))
   end

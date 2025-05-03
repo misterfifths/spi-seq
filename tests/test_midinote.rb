@@ -273,5 +273,11 @@ class MIDINoteTest < Test::Unit::TestCase
     assert_equal N(60).snap([40, 70]), 70
     assert_equal N(60.5).snap([40, 70]), 70
     assert_equal N(60.5).snap([40, 70, 60.5]), 60.5
+
+    # In the case of equal distances, the upper note should win.
+    assert_equal N(60).snap([50, 70]), 70
+    assert_equal N(60).snap([70, 50]), 70
+    assert_equal N(60.5).snap([60, 61]), 61
+    assert_equal N(60.5).snap([61, 60]), 61
   end
 end
