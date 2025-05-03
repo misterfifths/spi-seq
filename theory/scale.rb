@@ -211,6 +211,14 @@ class Scale
   end
 
 
+  # Returns a new note, snapped upward to the nearest note in this scale. `note`
+  # must be a note representation of some sort (symbol, string, a MIDI note
+  # number, or a MIDINote).
+  def snap(note)
+    MIDINote.new(note).snap(self)
+  end
+
+
   def to_s
     clamp_str = @clamp_to_midi ? ", clamped" : ""
     "<Scale #{@tonic} #{@name}, #{@num_octaves} octaves#{clamp_str}>"

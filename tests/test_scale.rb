@@ -71,4 +71,19 @@ class ScaleTest < Test::Unit::TestCase
     assert_raises { sc.degree_of(:c3, relative_tonic: :d6) }
     assert_raises { sc.degree_of(:d6, relative_tonic: :c3) }
   end
+
+  def test_snap
+    s = Scale.full_scale(:c, :major)
+
+    assert_equal s.snap(:c4), :c4
+    assert_equal s.snap(:d3), :d3
+    assert_equal s.snap(:e2), :e2
+    assert_equal s.snap(:f1), :f1
+    assert_equal s.snap(:"g-1"), :"g-1"
+
+    # We should snap upwards.
+    assert_equal s.snap(:cs4), :d4
+    assert_equal s.snap(:eb4), :e4
+    assert_equal s.snap(:bs4), :c5
+  end
 end
