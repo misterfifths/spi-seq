@@ -166,7 +166,7 @@ class Player
     # distinguish between tied notes and newly started ones
     cur_steps.each do |step|
       # were we just playing this note as a tie?
-      is_tie = @prev_steps.one? { |prev_step| prev_step.tied? && prev_step.note == step.note }
+      is_tie = @prev_steps.any? { |prev_step| prev_step.tied? && prev_step.note == step.note }
       if is_tie
         tied_steps << step
       else
@@ -177,7 +177,7 @@ class Player
     # find notes from the last slot that have ended.
     @prev_steps.each do |prev_step|
       # any note we were playing that is not tied has ended
-      note_continues = tied_steps.one? { |tie| tie.note == prev_step.note }
+      note_continues = tied_steps.any? { |tie| tie.note == prev_step.note }
       ended_steps << prev_step unless note_continues
     end
 
