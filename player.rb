@@ -142,7 +142,11 @@ class Player
   # play. NOTE: This is only valid for Steps in @track! It may rely on the state
   # of the track itself.
   def note_for_step(step)
-    step.note
+    if @track.scale.nil?
+      step.note
+    else
+      @track.scale.snap(step.note)
+    end
   end
 
   def dedupe_steps(steps)

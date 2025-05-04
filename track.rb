@@ -43,10 +43,19 @@ end
 # Tracks also have a timescale, which is the speed at which this track will play
 # relative to the global bpm. A timescale of 2 means that this track will play
 # at twice the global bpm, e.g., and 0.5 means half-speed.
+# A Track may have a global scale assigned, which should be an instance of Scale
+# (you probably want one from the `full_scale` method). If such a scale is
+# provided, all the notes in the track are quantized to that scale before being
+# played. Note that that operation is non-destructive; a Track with a scale can
+# contain Steps with notes that are not on the scale, and they will be snapped
+# to the scale just in time for playback. Also note that the snapping operation
+# may result in duplicate notes within one slot (e.g. a C# and a D on a C major
+# scale will both result in a D). In that case, the Step with the longest gate
+# is played.
 # TODO: does timescale belong here? really only effects the Player, so it could
 # live there, but this feels like a convenient place for it (& to mutate it)
 class Track
-  attr_reader :granularity, :grid, :timescale
+  attr_reader :granularity, :grid, :scale, :timescale
 
 
   ### Basic constructors
@@ -85,10 +94,14 @@ class Track
   #   only contain one. E.g. if gridish is [:a1, [:b2, :c3], :d4], the result
   #   will be a Track with three slots, :a1 in the first, :b2 + :c3 in the
   #   second, and :d4 in the third.
-  def initialize(gridish, granularity: NoteLength::Eighth, timescale: 1)
+  def initialize(gridish, granularity: NoteLength::Eighth, scale: nil, timescale: 1)
     @grid = Track.gridify(gridish)
     raise "A Track's grid must have at least one slot" if @grid.empty?
     @granularity = NoteLength.new(granularity)
+
+    # Track itself does basically nothing with the scale; it's all handled by
+    # the Player.
+    @scale = scale
 
     raise "Timescale must be a number greater than 0" unless timescale.is_a?(Numeric) && timescale > 0
     @timescale = timescale
@@ -529,6 +542,11 @@ class Track
   # sounding roughly the same, use condense, expand, or regranularize.
   def with_granularity(granularity)
     mutate(granularity: granularity)
+  end
+
+  # Returns a new track with the given scale.
+  def with_scale(scale)
+    mutate(scale: scale)
   end
 
 
@@ -1633,6 +1651,9 @@ class Track
   # note in the given scale starting at the given tonic. tonic should be a
   # symbol or string for a pitch class (e.g. :c), and scale_name should be one
   # of the scale names known to the Scale class.
+  #
+  # Unlike providing a global Track scale for quantization in the initializer,
+  # this action is destructive and will return a new track with modified notes.
   def snap_to_scale(tonic, scale_name)
     scale = Scale.full_scale(tonic, scale_name)
     mutate_each_step { |step| step.with_note(scale.snap(step.note)) }
@@ -1882,7 +1903,7 @@ class Track
 
   def mutate(**mutations)
     grid = mutations.delete(:grid) || @grid
-    [:granularity, :timescale].each do |ivar|
+    [:granularity, :scale, :timescale].each do |ivar|
       mutations[ivar] = send(ivar) unless mutations.has_key?(ivar)
     end
 
