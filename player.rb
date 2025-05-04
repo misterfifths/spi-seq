@@ -67,7 +67,7 @@ class Player
 
   def stop
     end_all_steps
-    @prev_steps = nil
+    @prev_steps = []
     @cycle = 0
   end
 
@@ -136,15 +136,59 @@ class Player
     midi
   end
 
+  # Returns an array of arrays of Steps representing the state of playback for
+  # the current track at slot i in the current cycle, assuming that the steps in
+  # @prev_steps were the Steps played in the most recently evaluated slot. The
+  # array has the following elements:
+  #   [newly triggered Steps, continued (tied) Steps, newly ended Steps]
+  # Step probabilities are evaluated, and steps that should not trigger are not
+  # returned.
+  # Note that the returned array of ended steps does not strictly contain steps
+  # that ended exactly at the beginning of this step. It also contains steps
+  # that ended between this step and the previous one - i.e. steps with gates
+  # less than 1.
+  # Wraps the slot index if it exceeds the number of slots in the track.
+  def steps_at_slot(i)
+    # To support changing the playhead direction and swapping between Tracks,
+    # it is important that this method does not assume anything about the order
+    # in which slots were or will be played. It must base its logic solely on
+    # the contents of slot i and prev_steps. The next steps may not come from
+    # slot i+1, and the previous ones may not have come from slot i-1. In fact
+    # they may not even be from this Track, if the track was swapped.
+    new_steps = []
+    tied_steps = []
+    ended_steps = []
+
+    cur_steps = @track.grid[i % @track.length].filter do |step|
+      step.should_trigger?(@cycle, @fill, @prev_steps)
+    end
+
+    # distinguish between tied notes and newly started ones
+    cur_steps.each do |step|
+      # were we just playing this note as a tie?
+      is_tie = @prev_steps.one? { |prev_step| prev_step.tied? && prev_step.note == step.note }
+      if is_tie
+        tied_steps << step
+      else
+        new_steps << step
+      end
+    end
+
+    # find notes from the last slot that have ended.
+    @prev_steps.each do |prev_step|
+      # any note we were playing that is not tied has ended
+      note_continues = tied_steps.one? { |tie| tie.note == prev_step.note }
+      ended_steps << prev_step unless note_continues
+    end
+
+    [new_steps, tied_steps, ended_steps]
+  end
+
   def play_slot(i)
     # To support changing the playhead direction and swapping between Tracks,
-    # as with Track.steps_at_slot, it is important that this code does not
-    # assume anything about the order in which slots were or will be played. It
-    # must base its logic entirely off the result of steps_at_slot(i) and the
-    # most recently played steps in @prev_steps. The next steps may not come
-    # from slot i+1, and the previous ones may not have come from slot i-1. In
-    # fact they may not even be from this Track, if the track is swapped.
-    new_steps, tied_steps, ended_steps = @track.steps_at_slot(i, prev_steps: @prev_steps, cycle: @cycle, fill: @fill)
+    # as with steps_at_slot, it is important that this method does not assume
+    # anything about the order in which slots were or will be played.
+    new_steps, tied_steps, ended_steps = steps_at_slot(i)
 
     if @debug
       ExtApi.puts "@ slot=#{i} cycle=#{@cycle}"

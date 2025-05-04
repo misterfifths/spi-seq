@@ -335,64 +335,6 @@ class Track
   end
 
 
-  ### Playback support
-
-  # Returns an array of arrays of Steps representing the state of playback at
-  # slot i in the given cycle, assuming that the steps in prev_steps were the
-  # Steps played in the most recently evaluated slot. The array has the
-  # following elements:
-  #   [newly triggered Steps, continued (tied) Steps, newly ended Steps]
-  # Step probabilities are evaluated, and steps that should not trigger are not
-  # returned.
-  # Note that the returned array of ended steps does not strictly contain steps
-  # that ended exactly at the beginning of this step. It also contains steps
-  # that ended between this step and the previous one - i.e. steps with gates
-  # less than 1.
-  # Wraps the slot index if it exceeds the number of slots in the grid.
-  # prev_steps is an array of the Steps that were active in the most recently
-  # played slot. prev_steps should be nil or empty when playback is beginning.
-  # cycle is the number of times the Track has played in its entirety (used to
-  # evaluate Step trigger probabilities).
-  # If fill is true, steps with the 'fill' probability will be triggered.
-  # Intended to be called iteratively, incrementing i and the cycle, and feeding
-  # back playing and tied steps from the return value as prev_steps.
-  def steps_at_slot(i, prev_steps:, cycle:, fill:)
-    # To support changing the playhead direction and swapping between Tracks,
-    # it is important that this code does not assume anything about the order
-    # in which slots were or will be played. It must base its logic solely on
-    # the contents of slot i and prev_steps. The next steps may not come from
-    # slot i+1, and the previous ones may not have come from slot i-1. In fact
-    # they may not even be from this Track, if the track is swapped in the
-    # Player calling this function.
-    new_steps = []
-    tied_steps = []
-    ended_steps = []
-
-    prev_steps ||= []
-    cur_steps = @grid[i % num_slots].filter { |step| step.should_trigger?(cycle, fill, prev_steps) }
-
-    # distinguish between tied notes and newly started ones
-    cur_steps.each do |step|
-      # were we just playing this note as a tie?
-      is_tie = prev_steps.one? { |prev_step| prev_step.tied? && prev_step.note == step.note }
-      if is_tie
-        tied_steps << step
-      else
-        new_steps << step
-      end
-    end
-
-    # find notes from the last slot that have ended.
-    prev_steps.each do |prev_step|
-      # any note we were playing that is not tied has ended
-      note_continues = tied_steps.one? { |tie| tie.note == prev_step.note }
-      ended_steps << prev_step unless note_continues
-    end
-
-    [new_steps, tied_steps, ended_steps]
-  end
-
-
   ### Etc.
 
   def inspect
