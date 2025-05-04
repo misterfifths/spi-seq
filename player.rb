@@ -191,7 +191,7 @@ class Player
     new_steps, tied_steps, ended_steps = steps_at_slot(i)
 
     if @debug
-      ExtApi.puts "@ slot=#{i} cycle=#{@cycle}"
+      ExtApi.puts "@ slot=#{i} cycle=#{@cycle} fill=#{@fill}"
       ExtApi.puts "new steps: #{new_steps}"
       ExtApi.puts "tied steps: #{tied_steps}"
       ExtApi.puts "ended steps: #{ended_steps}"
