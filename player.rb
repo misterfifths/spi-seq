@@ -140,6 +140,26 @@ class Player
     step.note
   end
 
+  def dedupe_steps(steps)
+    steps_by_note = {}
+    yelled = false
+    steps.each do |step|
+      step_note = note_for_step(step)
+      old_step_with_same_note = steps_by_note[step_note]
+      if old_step_with_same_note.nil?
+        steps_by_note[step_note] = step
+      else
+        if @debug && !yelled
+          ExtApi.puts("warning: wound up with more than one Step with note #{step_note} in the same slot! Picking one with the longest gate!")
+          yelled = true
+        end
+        steps_by_note[step_note] = step if old_step_with_same_note.gate < step.gate
+      end
+    end
+
+    steps_by_note.values
+  end
+
   # Returns an array of arrays of Steps representing the state of playback for
   # the current track at slot i in the current cycle, assuming that the steps in
   # @prev_steps were the Steps played in the most recently evaluated slot. The
@@ -166,6 +186,8 @@ class Player
     cur_steps = @track.grid[i % @track.length].filter do |step|
       step.should_trigger?(@cycle, @fill, @prev_steps)
     end
+
+    cur_steps = dedupe_steps(cur_steps)
 
     # distinguish between tied notes and newly started ones
     cur_steps.each do |step|
