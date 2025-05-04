@@ -65,20 +65,6 @@ class Player
     stop
   end
 
-  # Inherits the state of another Player, including the set of currently active
-  # notes. An internal function to be called when replacing one Player instance
-  # with another, as happens when a track_live_loop is restarted.
-  def __inherit_state(other)
-    # This will be called during a restart of a sketch, while an old live_loop
-    # is in the middle of handling `other.play`. So `other.cycle` has not yet
-    # been incremented (that happens at the end of `play`), and we should do it
-    # ourself.
-    @cycle = other.cycle + 1
-    @fill = other.fill
-    @active_synth_nodes = other.active_synth_nodes
-    @active_midi_notes = other.active_midi_notes
-  end
-
   def stop
     end_all_steps
     @prev_steps = nil
@@ -128,10 +114,21 @@ class Player
 
   protected
 
-  attr_reader :active_synth_nodes, :active_midi_notes
+  attr_reader :active_synth_nodes, :active_midi_notes, :prev_steps
 
 
   private
+
+  # Inherits the state of another Player, including the set of currently active
+  # notes. This will be called after a sketch is restarted, just before this
+  # player is to take over from `other`.
+  def inherit_state(other)
+    @cycle = other.cycle
+    @fill = other.fill
+    @prev_steps = other.prev_steps
+    @active_synth_nodes = other.active_synth_nodes
+    @active_midi_notes = other.active_midi_notes
+  end
 
   def resolve_midi_arg(midi)
     defaults = ExtApi.get(:__player_defaults) || {}
@@ -324,17 +321,20 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
 
   track ||= Track.rest
 
-  player_defaults = ExtApi.get(:__player_defaults) || {}
-
   player = Player.new(track, midi: midi, debug: debug, port: port, channel: channel)
+
   # If this is a restart of the same track_live_loop, we will already have a
   # Player instance for the old one. We don't want to reuse it per se (other
   # settings may have changed), but we do want the new player to inherit some of
-  # the old one's private state.
+  # the old one's private state. We shouldn't do that immediately though; we
+  # should wait until the old player finishes its final loop so that its
+  # internal state is accurate. So we do the inheriting on the first iteration
+  # of the new live loop, below.
   old_player = LiveLoopTracker.live_loop_var_get(loop_name, :__player)
-  player.__inherit_state(old_player) unless old_player.nil?
 
-  cycle_cue_sym = :"#{loop_name}_cycle"
+
+  ### Resolve default arguments
+  player_defaults = ExtApi.get(:__player_defaults) || {}
 
   fill_cc = player_defaults[:fill_cc] if fill_cc.nil?
   if fill_cc
@@ -367,12 +367,23 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
   end
   start_muted = player_defaults[:start_muted] || false if start_muted.nil?
 
+
+  ### Build the block for the live_loop
   wrapped_block = lambda do |muted, arg|
     # We're smuggling some state between loops via our return value, along with
     # the actual return value of the user's block.
     was_muted = arg[:was_muted]
     unfaded_track = arg[:unfaded_track]
     arg = arg[:block_res]
+
+    unless old_player.nil?
+      # This is the first iteration run by a new player; old_player just
+      # finished its final loop. So we should have the new player inherit some
+      # private state of the old.
+      ExtApi.puts("#{loop_name} player: inheriting state from old player") if debug
+      player.send(:inherit_state, old_player)
+      old_player = nil
+    end
 
     # If we just finished a fade, swap back to the normal version so we don't
     # tell the user's block about it.
@@ -422,13 +433,15 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
     if muted && !fading_out
       player.sleep
     else
-      ExtApi.cue(cycle_cue_sym, player.cycle) if send_cycle_cues
+      ExtApi.cue(:"#{loop_name}_cycle", player.cycle) if send_cycle_cues
       player.play
     end
 
     { unfaded_track: unfaded_track, was_muted: muted, block_res: res }
   end
 
+
+  ### Start the loop
   init_arg = { was_muted: true, block_res: init }
 
   if cc.nil?
