@@ -256,7 +256,7 @@ class Chord
   # the usual rules. Raises an ArgumentError if the chord does not contain a
   # matching interval.
   private def with_altered_interval(interval, delta)
-    interval = Interval.new(number: interval) if interval.is_a?(Numeric) && !interval.is_a(Interval)
+    interval = Interval.new(number: interval) if interval.is_a?(Numeric) && !interval.is_a?(Interval)
     i = @intervals.find_index(interval)
     raise ArgumentError, "chord does not have a #{interval} interval" if i.nil?
     new_intervals = @intervals.dup
