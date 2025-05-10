@@ -7,8 +7,9 @@ class Prob
   # 1. cycle number
   # 2. a boolean indicating whether fill mode is active
   # 3. the Step
-  # 4. an array of Steps that were played in the slot immediately prior to the
-  #    current one
+  # 4. the resolved MIDINote that the Step would play if it triggers
+  # 5. an array of MIDINotes that were played in the slot immediately prior to
+  #    the current one
   # The predicate should return true if the Step should trigger.
   def self.custom(callable)
     new(callable, "custom", nil)
@@ -61,29 +62,25 @@ class Prob
 
   # Step will trigger if any step triggered in the previously played slot.
   def self.pre
-    @pre_inst ||= new(->(_, _, _, prev_steps) { !prev_steps.empty? }, "pre", "pre")
+    @pre_inst ||= new(->(_, _, _, _, prev_notes) { !prev_notes.empty? }, "pre", "pre")
   end
 
   # Step will trigger if no step triggered in the previously played slot.
   def self.not_pre
-    @not_pre_inst ||= new(->(_, _, _, prev_steps) { prev_steps.empty? }, "!pre", "not_pre")
+    @not_pre_inst ||= new(->(_, _, _, _, prev_notes) { prev_notes.empty? }, "!pre", "not_pre")
   end
 
   # Step will trigger if a step triggered in the previously played slot with the
   # same note as this step.
   def self.pre_same_note
-    pred = lambda do |_, _, step, prev_steps|
-      prev_steps.any? { |prev_step| prev_step.note == step.note }
-    end
+    pred = ->(_, _, _, effective_note, prev_notes) { prev_notes.include?(effective_note) }
     @pre_same_note_inst ||= new(pred, "pre same note", "pre_same_note")
   end
 
   # Step will trigger only if none of the steps that triggered in the previously
   # played slot had the same note as this step.
   def self.not_pre_same_note
-    pred = lambda do |_, _, step, prev_steps|
-      prev_steps.all? { |prev_step| prev_step.note != step.note }
-    end
+    pred = ->(_, _, _, effective_note, prev_notes) { !prev_notes.include?(effective_note) }
     @not_pre_same_inst ||= new(pred, "!pre same note", "not_pre_same_note")
   end
 
@@ -95,10 +92,15 @@ class Prob
     @not_fill_inst ||= new(->(_, fill) { !fill }, "!fill", "not_fill")
   end
 
-  # Evaluates the probability function for the given step in the given cycle of
-  # the Track. Returns true if the step should trigger.
-  def should_trigger?(cycle, fill, step, prev_steps)
-    args = [cycle, fill, step, prev_steps].take(@callable.arity)
+  # Evaluates the probability function, accounting for:
+  # - cycle: The current cycle of playback of the Track
+  # - fill: The fill state of the Player
+  # - step: The Step whose probability is being evaluated
+  # - effective_note: The resolved MIDINote that the Step will play
+  # - prev_notes: An array of MIDINotes that were triggered in the most recent
+  #   slot that was played
+  def should_trigger?(cycle, fill, step, effective_note, prev_notes)
+    args = [cycle, fill, step, effective_note, prev_notes].take(@callable.arity)
     @callable.call(*args)
   end
 
@@ -119,10 +121,10 @@ class Prob
   private
 
   def initialize(callable, desc, repr)
-    if callable.respond_to?(:call) && callable.respond_to?(:arity) && callable.arity <= 3
+    if callable.respond_to?(:call) && callable.respond_to?(:arity) && callable.arity <= 5
       @callable = callable
     else
-      raise "Invalid probability predicate: must be a callable that takes <= 3 arguments"
+      raise "Invalid probability predicate: must be a callable that takes <= 5 arguments"
     end
 
     @desc = desc

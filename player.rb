@@ -68,6 +68,7 @@ class Player
   def stop
     end_all_steps
     @prev_steps = []
+    @notes_for_prev_steps = {}
     @cycle = 0
   end
 
@@ -114,7 +115,7 @@ class Player
 
   protected
 
-  attr_reader :active_synth_nodes, :active_midi_notes, :prev_steps
+  attr_reader :active_synth_nodes, :active_midi_notes, :prev_steps, :notes_for_prev_steps
 
 
   private
@@ -126,6 +127,7 @@ class Player
     @cycle = other.cycle
     @fill = other.fill
     @prev_steps = other.prev_steps
+    @notes_for_prev_steps = other.notes_for_prev_steps
     @active_synth_nodes = other.active_synth_nodes
     @active_midi_notes = other.active_midi_notes
   end
@@ -136,6 +138,9 @@ class Player
     midi
   end
 
+  # Resolves the MIDINote that a given Step in the current track would actually
+  # play. NOTE: This is only valid for Steps in @track! It may rely on the state
+  # of the track itself.
   def note_for_step(step)
     step.note
   end
@@ -184,7 +189,7 @@ class Player
     ended_steps = []
 
     cur_steps = @track.grid[i % @track.length].filter do |step|
-      step.should_trigger?(@cycle, @fill, @prev_steps)
+      step.should_trigger?(@cycle, @fill, note_for_step(step), @notes_for_prev_steps.values)
     end
 
     cur_steps = dedupe_steps(cur_steps)
@@ -193,7 +198,7 @@ class Player
     cur_steps.each do |step|
       # were we just playing this note as a tie?
       is_tie = @prev_steps.any? do |prev_step|
-        prev_step.tied? && note_for_step(prev_step) == note_for_step(step)
+        prev_step.tied? && @notes_for_prev_steps[prev_step] == note_for_step(step)
       end
 
       if is_tie
@@ -206,7 +211,7 @@ class Player
     # find notes from the last slot that have ended.
     @prev_steps.each do |prev_step|
       # any note we were playing that is not tied has ended
-      note_continues = tied_steps.any? { |tie| note_for_step(tie) == note_for_step(prev_step) }
+      note_continues = tied_steps.any? { |tie| note_for_step(tie) == @notes_for_prev_steps[prev_step] }
       ended_steps << prev_step unless note_continues
     end
 
@@ -226,7 +231,9 @@ class Player
       ExtApi.puts "ended steps: #{ended_steps}"
     end
 
-    # Turn off or kill ended steps
+    # Turn off or kill ended steps. Note that ended_steps is a subset of
+    # @prev_steps; end_step will handle finding the correct note for them from
+    # @notes_for_prev_steps.
     ended_steps.each { |step| end_step(step) }
 
     # Schedule ends for continued steps that end before the next slot.
@@ -250,12 +257,24 @@ class Player
 
     # Update prev_steps for the next round
     @prev_steps = tied_steps + new_steps
+
+    # The next slot may not come from @track, so we can't safely use
+    # note_for_step in the next iteration on anything in @prev_steps. We need to
+    # cache the resolved notes we actually played for each of those steps, so
+    # that we can detect ties and ended notes in the next call to play_slot/
+    # steps_at_slot.
+    @notes_for_prev_steps.clear
+    @prev_steps.each { |step| @notes_for_prev_steps[step] = note_for_step(step) }
   end
 
+  # Stop the MIDI note or kill the synth node corresponding to the given Step,
+  # which is assumed to be in @prev_steps (and thus may not be part of @track).
+  # Note that we may have already ended the step if it didn't have a full gate,
+  # in which case it will not have an entry in active_midi_notes or
+  # active_synth_nodes. Do nothing in that case.
   def end_step(step)
-    # Stop the MIDI note or kill the synth node. Note that we may have already
-    # ended the step if it didn't have a full gate, in which case it will not
-    # be in active_midi_notes or active_synth_nodes. Do nothing in that case.
+    step_note = @notes_for_prev_steps[step]
+
     if @midi
       # Note that @active_midi_notes is a Set, and Set.delete acts differently
       # than Array.delete. We want delete? to remove and return nil if nothing

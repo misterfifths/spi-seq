@@ -127,9 +127,9 @@ class Step
   # Returns whether this step should play in the given cycle of playback, with
   # the given set of notes played in the previous slot. This evaluates the
   # step's probability predicate.
-  def should_trigger?(cycle, fill, prev_steps)
+  def should_trigger?(cycle, fill, effective_note, prev_notes)
     return true if @prob.nil?
-    @prob.should_trigger?(cycle, fill, self, prev_steps)
+    @prob.should_trigger?(cycle, fill, self, effective_note, prev_notes)
   end
 
   def inspect
