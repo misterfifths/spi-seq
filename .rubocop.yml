@@ -1,5 +1,7 @@
 AllCops:
   NewCops: enable
+  Exclude:
+    - 'scratch/*.rb'
 
 Style/NumericPredicate:
   Enabled: false
