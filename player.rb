@@ -218,6 +218,20 @@ class Player
     [new_steps, tied_steps, ended_steps]
   end
 
+  def steps_debug_string(steps, slot_idx, from_prev: false)
+    s = "["
+    steps.each_with_index do |step, i|
+      s += ", " if i > 0
+      s += step.repr
+
+      note = from_prev ? @notes_for_prev_steps[step] : note_for_step(step, slot_idx)
+      s += " -> :#{note}" unless note == step.note
+    end
+
+    s += "]"
+    s
+  end
+
   def play_slot(i)
     # To support changing the playhead direction and swapping between Tracks,
     # as with steps_at_slot, it is important that this method does not assume
@@ -226,9 +240,9 @@ class Player
 
     if @debug
       ExtApi.puts "@ slot=#{i} cycle=#{@cycle} fill=#{@fill}"
-      ExtApi.puts "new steps: #{new_steps}"
-      ExtApi.puts "tied steps: #{tied_steps}"
-      ExtApi.puts "ended steps: #{ended_steps}"
+      ExtApi.puts "new steps: #{steps_debug_string(new_steps, i)}"
+      ExtApi.puts "tied steps: #{steps_debug_string(tied_steps, i)}"
+      ExtApi.puts "ended steps: #{steps_debug_string(ended_steps, i, from_prev: true)}"
     end
 
     # Turn off or kill ended steps. Note that ended_steps is a subset of
