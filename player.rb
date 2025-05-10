@@ -70,6 +70,8 @@ class Player
     @prev_steps = []
     @notes_for_prev_steps = {}
     @cycle = 0
+
+    @accum_data = {}  # Step hash keys (step_accum_hash_key) -> hash
   end
 
   # Plays one cycle of the track
@@ -110,12 +112,14 @@ class Player
   def swap_track(new_track, reset_cycle: false)
     @track = new_track
     @cycle = 0 if reset_cycle
+
+    # TODO: clear accum_data?
   end
 
 
   protected
 
-  attr_reader :active_synth_nodes, :active_midi_notes, :prev_steps, :notes_for_prev_steps
+  attr_reader :active_synth_nodes, :active_midi_notes, :prev_steps, :notes_for_prev_steps, :accum_data
 
 
   private
@@ -130,6 +134,7 @@ class Player
     @notes_for_prev_steps = other.notes_for_prev_steps
     @active_synth_nodes = other.active_synth_nodes
     @active_midi_notes = other.active_midi_notes
+    @accum_data = other.accum_data
   end
 
   def resolve_midi_arg(midi)
@@ -138,22 +143,87 @@ class Player
     midi
   end
 
-  # Resolves the MIDINote that a given Step in the current track would actually
-  # play. NOTE: This is only valid for Steps in @track! It may rely on the state
-  # of the track itself.
-  def note_for_step(step)
-    if @track.scale.nil?
+  # Returns a hash key for the given Step from the given slot in @track, to be
+  # used when indexing @accum_data.
+  def step_accum_hash_key(step, slot_idx)
+    # Since they're immutable, Steps could theoretically be shared across
+    # multiple slots in different tracks. So we need to hash based on enough
+    # information to uniquely identify the step within the track.
+    [step.object_id, slot_idx, @track.object_id]
+  end
+
+  # Updates the accumulation state of the given Step, which is assumed to be
+  # triggering (i.e. its `prob` predicate passed). Evaluates the Step's
+  # `accum_prob` (if any) and updates the Step's entry in @accum_data
+  # appropriately with the new total semitone delta and other state.
+  def apply_accum(step, slot_idx)
+    return if step.accum_delta == 0
+
+    hash_key = step_accum_hash_key(step, slot_idx)
+    data = @accum_data[hash_key]
+    if data.nil?
+      # This is the first time we've seen this Step. Accumulation should not
+      # trigger, but we should make a note that we've seen it so that we may
+      # trigger it the next time it plays.
+      @accum_data[hash_key] = { delta: 0, direction: 1 }
+      return
+    end
+
+    # This Step has played before, and its accumulation may trigger.
+    return unless step.accum_should_trigger?(@cycle, @fill, note_for_step(step, slot_idx), @notes_for_prev_steps.values)
+
+    delta = data[:delta] + data[:direction] * step.accum_delta
+    if delta < step.accum_min
+      case step.accum_mode
+      when :freeze
+        delta = step.accum_min
+      when :reverse
+        data[:direction] *= -1
+        delta += data[:direction] * step.accum_delta
+      when :wrap
+        # We know accum_min <= accum_delta <= accum_max, so we don't need to
+        # worry about modding to get the overage here; we can just subtract.
+        overage = step.accum_min - delta
+        delta = step.accum_max - overage
+      end
+    elsif delta > step.accum_max
+      case step.accum_mode
+      when :freeze
+        delta = step.accum_max
+      when :reverse
+        data[:direction] *= -1
+        delta += data[:direction] * step.accum_delta
+      when :wrap
+        overage = delta - step.accum_max
+        delta = step.accum_min + overage
+      end
+    end
+
+    data[:delta] = delta
+  end
+
+  # Returns the effective note for the given Step (which must be from @track!)
+  # playing in the given slot index. You must call apply_accum for the step
+  # prior to this method, so that the Step's accumulation parameters will take
+  # effect.
+  def note_for_step(step, slot_idx)
+    note = if @track.scale.nil?
       step.note
     else
       @track.scale.snap(step.note)
     end
+
+    acc_data = @accum_data[step_accum_hash_key(step, slot_idx)]
+    note += acc_data[:delta] unless acc_data.nil?
+
+    note
   end
 
-  def dedupe_steps(steps)
+  def dedupe_steps(steps, slot_idx)
     steps_by_note = {}
     yelled = false
     steps.each do |step|
-      step_note = note_for_step(step)
+      step_note = note_for_step(step, slot_idx)
       old_step_with_same_note = steps_by_note[step_note]
       if old_step_with_same_note.nil?
         steps_by_note[step_note] = step
@@ -175,7 +245,8 @@ class Player
   # array has the following elements:
   #   [newly triggered Steps, continued (tied) Steps, newly ended Steps]
   # Step probabilities are evaluated, and steps that should not trigger are not
-  # returned.
+  # returned. Accumulation is also applied to steps with those options, should
+  # it trigger.
   # Note that the returned array of ended steps does not strictly contain steps
   # that ended exactly at the beginning of this step. It also contains steps
   # that ended between this step and the previous one - i.e. steps with gates
@@ -193,16 +264,22 @@ class Player
     ended_steps = []
 
     cur_steps = @track.grid[i % @track.length].filter do |step|
-      step.should_trigger?(@cycle, @fill, note_for_step(step), @notes_for_prev_steps.values)
+      # TODO: using `note_for_step` here is tricky, since it means that the
+      # predicate will not take accumulation into account. Perhaps it's worth
+      # just getting rid of the `pre_same_note` predicates; they're causing a
+      # lot of trouble.
+      step.should_trigger?(@cycle, @fill, note_for_step(step, i), @notes_for_prev_steps.values)
     end
 
-    cur_steps = dedupe_steps(cur_steps)
+    cur_steps.each { |step| apply_accum(step, i) }
+
+    cur_steps = dedupe_steps(cur_steps, i)
 
     # distinguish between tied notes and newly started ones
     cur_steps.each do |step|
       # were we just playing this note as a tie?
       is_tie = @prev_steps.any? do |prev_step|
-        prev_step.tied? && @notes_for_prev_steps[prev_step] == note_for_step(step)
+        prev_step.tied? && @notes_for_prev_steps[prev_step] == note_for_step(step, i)
       end
 
       if is_tie
@@ -215,7 +292,7 @@ class Player
     # find notes from the last slot that have ended.
     @prev_steps.each do |prev_step|
       # any note we were playing that is not tied has ended
-      note_continues = tied_steps.any? { |tie| note_for_step(tie) == @notes_for_prev_steps[prev_step] }
+      note_continues = tied_steps.any? { |tie| note_for_step(tie, i) == @notes_for_prev_steps[prev_step] }
       ended_steps << prev_step unless note_continues
     end
 
@@ -271,7 +348,7 @@ class Player
     end
 
     # Start new steps
-    new_steps.each { |step| start_step(step) }
+    new_steps.each { |step| start_step(step, i) }
 
     # Update prev_steps for the next round
     @prev_steps = tied_steps + new_steps
@@ -282,7 +359,7 @@ class Player
     # that we can detect ties and ended notes in the next call to play_slot/
     # steps_at_slot.
     @notes_for_prev_steps.clear
-    @prev_steps.each { |step| @notes_for_prev_steps[step] = note_for_step(step) }
+    @prev_steps.each { |step| @notes_for_prev_steps[step] = note_for_step(step, i) }
   end
 
   # Stop the MIDI note or kill the synth node corresponding to the given Step,
@@ -321,8 +398,8 @@ class Player
     end
   end
 
-  def start_step(step)
-    step_note = note_for_step(step)
+  def start_step(step, slot_idx)
+    step_note = note_for_step(step, slot_idx)
 
     if step.tied?
       # Step has indeterminate duration; it may be continued in the next played
