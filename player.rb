@@ -136,6 +136,10 @@ class Player
     midi
   end
 
+  def note_for_step(step)
+    step.note
+  end
+
   # Returns an array of arrays of Steps representing the state of playback for
   # the current track at slot i in the current cycle, assuming that the steps in
   # @prev_steps were the Steps played in the most recently evaluated slot. The
@@ -166,7 +170,10 @@ class Player
     # distinguish between tied notes and newly started ones
     cur_steps.each do |step|
       # were we just playing this note as a tie?
-      is_tie = @prev_steps.any? { |prev_step| prev_step.tied? && prev_step.note == step.note }
+      is_tie = @prev_steps.any? do |prev_step|
+        prev_step.tied? && note_for_step(prev_step) == note_for_step(step)
+      end
+
       if is_tie
         tied_steps << step
       else
@@ -177,7 +184,7 @@ class Player
     # find notes from the last slot that have ended.
     @prev_steps.each do |prev_step|
       # any note we were playing that is not tied has ended
-      note_continues = tied_steps.any? { |tie| tie.note == prev_step.note }
+      note_continues = tied_steps.any? { |tie| note_for_step(tie) == note_for_step(prev_step) }
       ended_steps << prev_step unless note_continues
     end
 
@@ -231,9 +238,9 @@ class Player
       # Note that @active_midi_notes is a Set, and Set.delete acts differently
       # than Array.delete. We want delete? to remove and return nil if nothing
       # was removed.
-      ExtApi.midi_note_off(step.note, **@midi_spi_kwargs) unless @active_midi_notes.delete?(step.note).nil?
+      ExtApi.midi_note_off(step_note, **@midi_spi_kwargs) unless @active_midi_notes.delete?(step_note).nil?
     else
-      node = @active_synth_nodes.delete(step.note)
+      node = @active_synth_nodes.delete(step_note)
       ExtApi.kill(node) unless node.nil?
     end
   end
@@ -256,20 +263,22 @@ class Player
   end
 
   def start_step(step)
+    step_note = note_for_step(step)
+
     if step.tied?
       # Step has indeterminate duration; it may be continued in the next played
       # slot. Start it and we'll kill it later when it ends in play_slot.
       if @midi
-        ExtApi.midi_note_on(step.note, velocity: step.vel, **@midi_spi_kwargs)
-        @active_midi_notes << step.note
+        ExtApi.midi_note_on(step_note, velocity: step.vel, **@midi_spi_kwargs)
+        @active_midi_notes << step_note
       else
         # TODO: there's no good way to just have a synth note go forever and
         # eventually gracefully kick it into release. Luckily I'm really only
         # using this for previewing stuff away from my real synth...
         # For now just having ties go for 100 * the length of the whole track.
         # Obviously that's ridiculous.
-        node = ExtApi.play(step.note, amp: step.velf, sustain: @track.beat_length * 100)
-        @active_synth_nodes[step.note] = node
+        node = ExtApi.play(step_note, amp: step.velf, sustain: @track.beat_length * 100)
+        @active_synth_nodes[step_note] = node
       end
     else
       # Step has a known duration, so we can specify it now and don't have to
@@ -281,9 +290,9 @@ class Player
       # to hold on to them for that either.
       # rubocop:disable Style/IfInsideElse
       if @midi
-        ExtApi.midi(step.note, velocity: step.vel, sustain: step.gate * @track.granularity.to_f, **@midi_spi_kwargs)
+        ExtApi.midi(step_note, velocity: step.vel, sustain: step.gate * @track.granularity.to_f, **@midi_spi_kwargs)
       else
-        ExtApi.play(step.note, amp: step.velf, sustain: step.gate * @track.granularity.to_f)
+        ExtApi.play(step_note, amp: step.velf, sustain: step.gate * @track.granularity.to_f)
       end
       # rubocop:enable Style/IfInsideElse
     end
