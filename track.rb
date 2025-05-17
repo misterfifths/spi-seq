@@ -18,20 +18,15 @@ def T(*args, **kwargs)
 end
 
 
-# A Track is mostly a "grid" of Steps together with a granularity. The grid is a
-# 2d array, each element of which is a "slot". A slot contains some number
-# (possibly 0) of Steps. Those are the Steps that should trigger (subject to
-# their probabilities) when that slot is played. The order of Steps within a
-# slot is not significant. There should not be more than one Step with the same
-# note in a given slot; if there is, one with the longest gate will be used.
-# Each slot represents the Steps for a timespan equal to the Track's
-# granularity, which is some fraction of a beat (e.g. 1/4 for sixteenth note
-# granularity). An empty slot represents a rest for the same duration. Thus the
-# length of a Track in beats is the granularity multiplied by the number of
-# slots in the grid.
-# Tracks also have a timescale, which is the speed at which this track will play
-# relative to the global bpm. A timescale of 2 means that this track will play
-# at twice the global bpm, e.g., and 0.5 means half-speed.
+# A Track deals with a grid whose slots contain Steps. Step instances represent
+# MIDI notes and their properties (e.g. gate and velocity). See the TrackBase
+# documentation for details on grids, slots, and the basic inherited
+# functionality.
+#
+# In addition to the basic mutation methods from TrackBase, Track contains
+# functionality tailored to deal with Steps - e.g. note-based manipulation, or
+# global gate/velocity adjustment.
+#
 # A Track may have a global scale assigned, which should be an instance of Scale
 # (you probably want one from the `full_scale` method). If such a scale is
 # provided, all the notes in the track are quantized to that scale before being
@@ -41,48 +36,50 @@ end
 # may result in duplicate notes within one slot (e.g. a C# and a D on a C major
 # scale will both result in a D). In that case, the Step with the longest gate
 # is played.
-# TODO: does timescale belong here? really only effects the Player, so it could
-# live there, but this feels like a convenient place for it (& to mutate it)
 class Track < TrackBase
   attr_reader :scale
 
 
   ### Basic constructors
 
-  # Constructs a track with the given "gridish" definition. gridish will be
+  # Constructs a Track with the given "gridish" definition. `gridish` will be
   # converted into a proper grid, an array of "slots". A slot is itself an
-  # array of Steps, which all play simultaneously for a duration of the
+  # array of Steps, which all trigger simultaneously for a duration of the
   # granularity. A slot may be empty to represent a rest.
-  # gridish is converted to a grid in the following way:
-  # - A single MIDI note (symbol, string, or number) becomes grid with one slot
-  #   containing a single Step created with that note and the default arguments
-  #   to Step.new.
+  #
+  # `gridish` is converted to a grid in the following way:
+  # - A single MIDI note (symbol, string, number or MIDINote instance) becomes
+  #   grid with one slot containing a single Step created with that note and the
+  #   default arguments to `Step.new`.
   # - A single Step becomes a grid with one slot containing just that Step.
-  # - A single rest (see MIDINote.rest?) becomes a grid with one empty slot.
+  # - A single rest (see `MIDINote.rest?`) becomes a grid with one empty slot.
   # - Each element of an array-like value is converted to a slot. Conversion
   #   rules for each child element:
   #   1. Rests become empty slots.
-  #   2. Single steps become slots containing just that step.
-  #   3. Single MIDI notes become slots containing a single step created with
-  #      that note and the default arguments to Step.new.
+  #   2. Single Steps become slots containing just that Step.
+  #   3. Single MIDI notes become slots containing a single Step created with
+  #      that note and the default arguments to `Step.new`.
   #   4. Each element of an array-like child is converted into an array of
   #      Steps using rules analogous to the above, except that rests are
   #      ignored.
+  #
   # If, after all the above conversions, there is more than one Step with the
   # same note in the same slot, a warning is printed, and only the Step with the
   # longest gate is chosen.
+  #
   # The resulting grid must have at least one slot.
+  #
   # In the end, gridish should do what you expect. For example:
   # - Pass a single note to get a one-slot track with just that note.
-  # - Pass a 1-d array of notes or Steps to get a mono track where each element
+  # - Pass a 1d array of notes or Steps to get a mono track where each element
   #   becomes its own slot.
-  # - Pass a 2-d array of notes or Steps to get a poly track where each subarray
+  # - Pass a 2d array of notes or Steps to get a poly track where each subarray
   #   represents the contents of a slot.
-  # - Pass an array with some mixure of solitary notes and arrays to easily
-  #   express a track with some slots that contain multiple Steps and some that
-  #   only contain one. E.g. if gridish is [:a1, [:b2, :c3], :d4], the result
-  #   will be a Track with three slots, :a1 in the first, :b2 + :c3 in the
-  #   second, and :d4 in the third.
+  # - Pass an array with some mixure of solitary notes/steps and arrays to
+  #   easily express a track with some slots that contain multiple Steps and
+  #   some that only contain one. E.g. if `gridish` is [:a1, [:b2, :c3], :d4],
+  #   the result will be a Track with three slots, :a1 in the first, :b2 + :c3
+  #   in the second, and :d4 in the third.
   def initialize(gridish, granularity: NoteLength::Eighth, scale: nil, timescale: 1)
     # Track itself does basically nothing with the scale; it's all handled by
     # the Player.
@@ -94,14 +91,16 @@ class Track < TrackBase
 
   ### More interesting constructors
 
-  # Constructs a track that arpeggiates the given notes. extra_octaves is an
-  # array of octave shifts. The arpeggiation will include all the notes from the
-  # note array in addition to copies of them with the given octave shifts.
-  # If pulses and length are given, the arpeggiated notes are spread in a
+  # Constructs a Track that arpeggiates the given notes. See the `Arp` class
+  # for possible values of the `direction` parameter, and the meaning of the
+  # `spread` and `extra_octaves` arguments.
+  #
+  # If `pulses` and `length` are given, the arpeggiated notes are spread in a
   # Euclidean rhythm. The track will repeat the Euclidean pattern (while cycling
   # through the arpeggiated notes) however many times is needed to ensure that
-  # all the notes are played and that the track loops cleanly, unless full_cycle
-  # is false. The rotate parameter controls rotation of the Euclidean pattern.
+  # all the notes are played and that the track loops cleanly, unless
+  # `full_cycle` is false. The `rotate` parameter controls rotation of the
+  # Euclidean pattern.
   def self.arp(notes, direction = Arp::Up, spread: 0, extra_octaves: [], pulses: nil, length: nil, rotate: 0, full_cycle: true, granularity: NoteLength::Eighth, timescale: 1)
     notes = Arp.arpeggiate(notes, direction, spread: spread, extra_octaves: extra_octaves)
     if pulses.nil?
@@ -126,7 +125,7 @@ class Track < TrackBase
     end
   end
 
-  # Construct an isorhythmic track. See https://en.wikipedia.org/wiki/Isorhythm.
+  # Construct an isorhythmic Track. See https://en.wikipedia.org/wiki/Isorhythm.
   # To use classical terms, `gates` defines the talea and `notes` the color.
   #
   # `gates` is an array of numbers which defines the rhythm over which `notes`
@@ -137,7 +136,7 @@ class Track < TrackBase
   # Within `gates`, there are "runs". A run is a series of gates that would
   # define a tied sequence of steps (or single untied steps). For instance, a
   # gates array of [1, 0.5, 0.25, 1] defines 3 runs: the first two steps would
-  # be tied together, then a standalone step with gate 0.5, and a final step
+  # be tied together, then a standalone step with gate 0.25, and a final step
   # with gate 1. (Note that trailing tied steps are considered to end at the end
   # end of the array.)
   #
@@ -222,6 +221,7 @@ class Track < TrackBase
     track
   end
 
+  # An alias for `isorhythm`.
   def self.iso(*args, **kwargs)
     isorhythm(*args, **kwargs)
   end
@@ -325,7 +325,7 @@ class Track < TrackBase
   end
 
   # Creates a new Track with half the granularity and number of slots. Steps and
-  # tied steps have their lengths halved to keep the track sounding roughly the
+  # tied Steps have their lengths halved to keep the track sounding roughly the
   # same. For example, condensing a 10-slot Track with 8th-note granularity will
   # result in a 5-slot Track with quarter-note granularity. Say the Track
   # contained two Steps in back-to-back slots for the same note, the first a tie
@@ -416,9 +416,9 @@ class Track < TrackBase
 
   ## Grid-level mutations
 
-  # Returns two tracks by extracting steps that match the given note. The first
-  # track contains the non-matching steps, and the second contains the matching
-  # ones. See MIDINote.match? for matching rules.
+  # Returns two tracks by extracting Steps that match the given note. The first
+  # track contains the non-matching Steps, and the second contains the matching
+  # ones. See `MIDINote.match?` for matching rules.
   def extract_note(note)
     extract { |step| step.note.match?(note) }
   end
@@ -428,26 +428,31 @@ class Track < TrackBase
 
   ## Step-level mutations
 
+  # Return a new Track where each Step has the given gate.
   def with_gate(new_gate)
     mutate_each_step { |step| step.with_gate(new_gate) }
   end
 
   alias gate with_gate
 
+  # Return a new Track where each step's gate is scaled by the given factor.
   def scale_gate(factor)
     mutate_each_step { |step| step.with_gate(step.gate * factor) }
   end
 
-  # Returns a new track where each Step's gate is replaced with the result of
-  # curve_func. curve_func must take 1-2 arguments:
+  # Returns a new Track where each Step's gate is replaced with the result of
+  # `curve_func`. `curve_func` must take 1-2 arguments:
   # - the percentage through the track (0.0-1.0) where the slot falls in the
   #   Track
   # - the index of the slot in the Track
-  # curve_func should return a floating point value 0-1 that will be used for
+  #
+  # `curve_func` should return a floating point value 0-1 that will be used for
   # all Steps in the slot at that percentage/index.
-  # If min or max is provided, the curve function will be scaled via
-  # Curves.scale so that it falls in the given range. If only one of min or max
-  # is provided, the other defaults to the respective endpoint of the range 0-1.
+  #
+  # If `min` or `max` is provided, the curve function will be scaled via
+  # `Curves.scale` so that it falls in the given range. If only one of `min` or
+  # `max` is provided, the other defaults to the respective endpoint of the
+  # range 0-1.
   def with_gate_curve(curve_func, min: nil, max: nil)
     raise "Curve function must be a callable that takes 1-2 arguments" if !curve_func.respond_to?(:call) || curve_func.arity == 0 || curve_func.arity > 2
 
@@ -467,39 +472,48 @@ class Track < TrackBase
 
   alias gate_curve with_gate_curve
 
+  # Return a new Track where each Step has the given velocity, specified in the
+  # MIDI range of 0 - 127.
   def with_vel(new_vel)
     mutate_each_step { |step| step.with_vel(new_vel) }
   end
 
   alias vel with_vel
 
+  # Return a new Track where each Step has the given velocity, specified as a
+  # value between 0 and 1, inclusive.
   def with_velf(new_velf)
     mutate_each_step { |step| step.with_velf(new_velf) }
   end
 
   alias velf with_velf
 
+  # Return a new Track where each Step's velocity is scaled by the given factor.
   def scale_vel(factor)
     mutate_each_step { |step| step.with_vel(step.vel * factor) }
   end
 
   alias scale_velf scale_vel
 
-  # Returns a new track where each Step's velocity is replaced with the result
-  # of curve_func. curve_func must take 1-2 arguments:
+  # Returns a new Track where each Step's velocity is replaced with the result
+  # of `curve_func`. `curve_func` must take 1-2 arguments:
   # - the percentage through the track (0.0-1.0) where the slot falls in the
   #   Track
   # - the index of the slot in the Track
-  # curve_func should return a velocity to use for all Steps in the slot at that
-  # percentage/index. The value returned by curve_func should be either:
-  # - If zero_to_one is true, a floating point number 0 - 1 that will be scaled
-  #   to a velocity value between 0 and 127, inclusive.
-  # - If zero_to_one is false, an integer between 0 and 127, inclusive.
-  # with_velf_curve is an alias where zero_to_one is true.
-  # If min or max is provided, the curve function will be scaled via
-  # Curves.scale so that it falls in the given range. If only one of min or max
-  # is provided, the other defaults to the respective endpoint of the range of
-  # the curve function (0-127 if zero_to_one is false, otherwise 0-1).
+  #
+  # `curve_func` should return a velocity to use for all Steps in the slot at
+  # that percentage/index. The value returned by `curve_func` should be either:
+  # - If `zero_to_one` is true, a floating point number 0 - 1 that will be
+  #   scaled to a velocity value between 0 and 127, inclusive.
+  # - If `zero_to_one` is false, an integer between 0 and 127, inclusive.
+  #
+  # `with_velf_curve` is an alias where `zero_to_one` is true.
+  #
+  # If `min` or `max` is provided, the curve function will be scaled via
+  # `Curves.scale` so that it falls in the given range. If only one of `min` or
+  # `max` is provided, the other defaults to the respective endpoint of the
+  # range of the curve function (0 - 127 if `zero_to_one` is false, otherwise
+  # 0 - 1).
   def with_vel_curve(curve_func, zero_to_one: false, min: nil, max: nil)
     raise "Curve function must be a callable that takes 1-2 arguments" if !curve_func.respond_to?(:call) || curve_func.arity == 0 || curve_func.arity > 2
 
@@ -521,16 +535,18 @@ class Track < TrackBase
 
   alias vel_curve with_vel_curve
 
+  # An alias for `with_vel_curve` with `zero_to_one` set to true.
   def with_velf_curve(curve_func, min: nil, max: nil)
     with_vel_curve(curve_func, zero_to_one: true, min: min, max: max)
   end
 
   alias velf_curve with_velf_curve
 
-  # Returns a new track that fades in linearly, via velocity. min is the
-  # starting velocity and max is the final velocity. start specifies at what
-  # percentage through the track to begin the fade; all steps before start will
-  # have a velocity of min, and ones thereafter will linearly increase to max.
+  # Returns a new Track that fades in linearly, via velocity. `min` is the
+  # starting velocity and `max` is the final velocity. `start` specifies at what
+  # percentage through the track to begin the fade; all steps before `start`
+  # will have a velocity of min, and ones thereafter will linearly increase to
+  # `max`.
   def fade_in_linear(min = 0.0, max = 1.0, start: 0.0)
     with_velf_curve(Curves.fade_in_linear(min, max, start))
   end
@@ -539,17 +555,18 @@ class Track < TrackBase
   alias fade_in fade_in_linear
   alias in_lin fade_in_linear
 
-  # Same as fade_in_linear, but quadratically increases velocity.
+  # Same as `fade_in_linear`, but quadratically increases velocity.
   def fade_in_quad(min = 0.0, max = 1.0, start: 0.0)
     with_velf_curve(Curves.fade_in_quad(min, max, start))
   end
 
   alias in_quad fade_in_quad
 
-  # Returns a new track that fades out linearly, via velocity. max is the
-  # starting velocity and min is the final velocity. start specifies at what
-  # percentage through the track to begin the fade; all steps before start will
-  # have a velocity of max, and ones thereafter will linearly decrease to min.
+  # Returns a new Track that fades out linearly, via velocity. `max` is the
+  # starting velocity and `min` is the final velocity. `start` specifies at what
+  # percentage through the track to begin the fade; all steps before `start`
+  # will have a velocity of `max`, and ones thereafter will linearly decrease to
+  # `min`.
   def fade_out_linear(max = 1.0, min = 0.0, start: 0.0)
     with_velf_curve(Curves.fade_out_linear(max, min, start))
   end
@@ -558,20 +575,20 @@ class Track < TrackBase
   alias fade_out fade_out_linear
   alias out_lin fade_out_linear
 
-  # Same as fade_in_quad, but quadratically decreases velocity.
+  # Same as `fade_in_quad`, but quadratically decreases velocity.
   def fade_out_quad(max = 1.0, min = 0.0, start: 0.0)
     with_velf_curve(Curves.fade_out_quad(max, min, start))
   end
 
   alias out_quad fade_out_quad
 
-  # Finds runs of tied steps with the same notes and yields to its block two
+  # Finds runs of tied Steps with the same notes and yields to its block two
   # arguments for each: the index of the slot that begins the run, and the array
-  # of steps that belong to the run. A run is ended by the end of the track, or
-  # a step that is not tied. The final step in a run is included in the array
-  # yielded to the block. Runs that consist of a single step (i.e. non-tied
-  # steps that are not continuing a note from the previous step, or steps at the
-  # end of the track that are not continuing a note) are also yielded to the
+  # of Steps that belong to the run. A run is ended by the end of the track, or
+  # a Step that is not tied. The final Step in a run is included in the array
+  # yielded to the block. Runs that consist of a single Step (i.e. non-tied
+  # Steps that are not continuing a note from the previous Step, or Steps at the
+  # end of the Track that are not continuing a note) are also yielded to the
   # block.
   private def each_run
     ended_runs = []
@@ -623,18 +640,23 @@ class Track < TrackBase
     end
   end
 
-  # Replaces steps in a run of tied steps with the same note. starting_slot_idx
-  # is the index of the slot where replacement should begin. orig_steps is an
-  # array of the original steps that are being replaced. new_steps is an array
-  # of steps which should replace those from orig_steps.
-  # orig_steps must be the actual Step instances that are currently in this
-  # track, not copies of them with the same properties. This method is meant to
-  # be used in tandem with each_run, which returns such an array of steps.
-  # This method works by first removing all the steps from orig_steps from their
-  # corresponding slots, and then adding all the steps from new_steps. So, it is
-  # valid for new_steps to be a different length than orig_steps, as long as
-  # starting_slot_idx + new_steps.length is not greater than the length of the
-  # track.
+  # Returns a new Track with the Steps in a run of tied Steps with the same note
+  # is replaced with another set of Steps.
+  #
+  # `starting_slot_idx` is the index of the slot where replacement should begin.
+  # `orig_steps` is an array of the original steps that are being replaced. ]
+  # `new_steps` is an array of steps which should replace those from
+  # `orig_steps`.
+  #
+  # `orig_steps` must be the actual Step instances that are currently in this
+  # Track, not copies of them with the same properties. This method is meant to
+  # be used in tandem with `each_run`, which returns such an array of steps.
+  #
+  # This method works by first removing all the steps from `orig_steps` from
+  # their corresponding slots, and then adding all the steps from `new_steps`.
+  # So, it is valid for new_steps to be a different length than `orig_steps`, as
+  # long as `starting_slot_idx + new_steps.length` is not greater than the
+  # length of the track.
   protected def set_run(starting_slot_idx, orig_steps, new_steps)
     raise "replacement steps are past the end of the track" if starting_slot_idx + new_steps.length > @grid.length
 
@@ -652,14 +674,14 @@ class Track < TrackBase
     mutate(grid: new_grid)
   end
 
-  # Returns a new track with each run of tied steps replaced with those returned
+  # Returns a new Track with each run of tied Steps replaced with those returned
   # from the block. The block will be given two arguments: the index of the slot
-  # where the run begins, and an array of the steps that constitute the run. The
-  # block should return an array of steps, which will take the place of the
-  # run's step in the returned track. The array returned from the block may have
-  # a different length than the original run, but, when the new steps are added
-  # beginning at the run's starting slot, they must not exceed the length of the
-  # track.
+  # where the run begins, and an array of the Steps that constitute the run. The
+  # block should return an array of Steps, which will take the place of the
+  # run's Steps in the returned track. The array returned from the block may
+  # have a different length than the original run, but, when the new Steps are
+  # added beginning at the run's starting slot, they must not exceed the length
+  # of the Track.
   private def mutate_runs
     new_track = self
     each_run do |starting_slot_idx, orig_steps|
@@ -669,9 +691,9 @@ class Track < TrackBase
     new_track
   end
 
-  # Returns a new track where the final steps in runs of tied steps with the
-  # same note are replaced with the result of the block. Helper for taper_vel
-  # and taper_gate.
+  # Returns a new track where the final Steps in runs of tied Steps with the
+  # same note are replaced with the result of the block. Helper for `taper_vel`
+  # and `taper_gate`.
   private def taper_steps(taper_final_tie: false, taper_single: false)
     mutate_runs do |starting_slot_idx, steps|
       run_loops = false
@@ -688,33 +710,40 @@ class Track < TrackBase
     end
   end
 
-  # Sets the gate on the final step of runs of tied steps with the same note.
-  # The final step does not have to be tied for this method to adjust its gate;
-  # such a step's gate will be set to trailing_gate.
-  # If taper_final_tie is false (the default), steps in the final slot of the
+  # Returns a new Track by setting the gate on the final Step of runs of tied
+  # Steps with the same note.
+  #
+  # The final Step does not have to be tied for this method to adjust its gate;
+  # such a step's gate will be set to `trailing_gate`.
+  #
+  # If `taper_final_tie` is false (the default), Steps in the final slot of the
   # track will not have their gate adjusted if they are tied and are continued
-  # with a step with the same note in the first slot of the track.
-  # If taper_single is true, standalone steps that are not continuations of a
-  # tie also have their gate adjusted. Note that steps in the final slot of the
-  # track that are tied and continue in the first slot of the track are not
-  # effected by taper_single.
+  # with a Step with the same note in the first slot of the track.
+  #
+  # If `taper_single` is true, standalone Steps that are not continuations of a
+  # tie also have their gate adjusted. Note that Steps in the final slot of the
+  # Track that are tied and continue in the first slot of the track are not
+  # effected by `taper_single`.
   def taper_gate(trailing_gate = 0.75, taper_final_tie: false, taper_single: false)
     taper_steps(taper_final_tie: taper_final_tie, taper_single: taper_single) { |s| s.with_gate(trailing_gate) }
   end
 
-  # Sets the velocity on the final step of runs of tied steps, in the same
-  # manner as taper_gate. If zero_to_one is true, the velocity is a percentage
-  # between 0 and 1, rather than a MIDI value from 0 - 127. taper_velf is an
-  # alias with zero_to_one set to true.
+  # Returns a new Track by setting the velocity on the final Step of runs of
+  # tied steps, in the same manner as `taper_gate`. If `zero_to_one` is true,
+  # the velocity is a percentage between 0 and 1, rather than a MIDI value from
+  # 0 - 127. `taper_velf` is an alias with zero_to_one set to true.
   def taper_vel(trailing_vel = 64, taper_final_tie: false, taper_single: false, zero_to_one: false)
     trailing_vel *= 127 if zero_to_one
     taper_steps(taper_final_tie: taper_final_tie, taper_single: taper_single) { |s| s.with_vel(trailing_vel) }
   end
 
+  # An alias for `taper_vel` with `zero_to_one` set to true.
   def taper_velf(trailing_vel = 0.5, taper_final_tie: false, taper_single: false)
     taper_vel(trailing_vel, taper_final_tie: taper_final_tie, taper_single: taper_single, zero_to_one: true)
   end
 
+  # Returns a new Track where the octave of each Step's note is set to the given
+  # value.
   def with_octave(new_octave)
     mutate_each_step { |step| step.with_octave(new_octave) }
   end
@@ -722,19 +751,25 @@ class Track < TrackBase
   alias octave with_octave
   alias oct octave
 
+  # Returns a new Track by shifting the octave of each Step's note by the given
+  # amount.
   def shift_octave(shift)
     mutate_each_step { |step| step.shift_octave(shift) }
   end
 
+  # Returns a new Track by increasing the octave of each Step's note by the
+  # given amount.
   def up(octave_shift = 1)
     shift_octave(octave_shift)
   end
 
+  # Returns a new Track by decreasing the octave of each Step's note by the
+  # given amount.
   def down(octave_shift = 1)
     shift_octave(-octave_shift)
   end
 
-  # Return a new track that, with probability p, shifts the octave of each Step
+  # Return a new Track that, with probability p, shifts the octave of each Step
   # by a random value in the given range. If range is an integer,
   # [-range, range] is used.
   def rand_octave(range = 1, p: 0.5)
@@ -758,6 +793,8 @@ class Track < TrackBase
 
   alias roct rand_octave
 
+  # Returns a new Track where each Step's note is shifted by the given number of
+  # semitones.
   def shift_tone(shift)
     mutate_each_step { |step| step.shift_tone(shift) }
   end
@@ -765,12 +802,16 @@ class Track < TrackBase
   alias tone shift_tone
   alias transpose shift_tone
 
+  # Returns a new Track where each Step's note is increased by the given number
+  # of semitones.
   def semi_up(tone_shift = 1)
     shift_tone(tone_shift)
   end
 
   alias sup semi_up
 
+  # Returns a new Track where each Step's note is decreased by the given number
+  # of semitones.
   def semi_down(tone_shift = 1)
     shift_tone(-tone_shift)
   end
@@ -778,9 +819,9 @@ class Track < TrackBase
   alias sdown semi_down
 
   # For each slot, yields to its block a two-element array of:
-  # - the step in the slot being harmonized, or nil if the slot is empty
+  # - the Step in the slot being harmonized, or nil if the slot is empty
   # - an array of notes that harmonize with the note in the step, as given by
-  #   MIDINote.harmonize. The note from the step itself is not included.
+  #   `MIDINote.harmonize`. The note from the Step itself is not included.
   #   If the note is not in the given scale, or if the slot is empty, this array
   #   is empty.
   private def iter_harmonized_slots(tonic, scale_name, position:, voices: nil)
@@ -841,19 +882,20 @@ class Track < TrackBase
     end
   end
 
-  # Return a new track where each slot has new steps added to it for notes that
-  # harmonize with the existing step in that slot. Can only be called on mono
-  # tracks. Arguments are as described in MIDINote.harmonize.
-  # position is the starting position to use when harmonizing. It may be 0, 1,
+  # Return a new Track where each slot has new Steps added to it for notes that
+  # harmonize with the existing Step in that slot. Can only be called on mono
+  # tracks. Arguments are as described in `MIDINote.harmonize`.
+  #
+  # `position` is the starting position to use when harmonizing. It may be 0, 1,
   # 2, or :rand. If it is an integer, the position will increment for each step.
   # If it is :rand, random, non-repeating positions will be used.
-  # voices represents which voices of the harmony to include in the results. If
-  # it is an integer, it represents the number of voices to include (from high
-  # to low). If it is an array, it represents individual voices to include
+  #
+  # `voices` represents which voices of the harmony to include in the results.
+  # If it is an integer, it represents the number of voices to include (from
+  # high to low). If it is an array, it represents individual voices to include
   # (from high to low; bass is 3 and soprano is 1).
-  # The gate and vel arguments are used when creating new steps for the added
-  # notes.
-  # If a note in the track is not in the given scale, no additional notes will
+  #
+  # If a note in the Track is not in the given scale, no additional notes will
   # be added in that slot.
   def harmonize(tonic, scale_name, position: 0, voices: nil)
     new_grid = []
@@ -873,7 +915,8 @@ class Track < TrackBase
   # Returns an array of three new Tracks, each representing a voice harmonized
   # with the note in the corresponding slot in this track. Can only be called
   # on mono tracks. The tracks are returned from lowest (bass) to highest
-  # (soprano). Arguments are as described in harmonize.
+  # (soprano). Arguments are as described in `harmonize`.
+  #
   # If a note in the track is not in the given scale, there will be a rest in
   # the corresponding slots in the returned tracks.
   def split_harmonize(tonic, scale_name, position: 0)
@@ -891,16 +934,16 @@ class Track < TrackBase
     new_grids.map { |g| mutate(grid: g) }
   end
 
-  # Return a new track in which each Step has its note snapped to the nearest
+  # Return a new Track in which each Step has its note snapped to the nearest
   # note among the given array, which should consist of MIDI note numbers or
   # symbols.
   def snap_to_notes(notes)
     mutate_each_step { |step| step.with_note(step.note.snap(notes)) }
   end
 
-  # Return a new track in which each Step has its note snapped to the nearest
-  # note in the given scale starting at the given tonic. tonic should be a
-  # symbol or string for a pitch class (e.g. :c), and scale_name should be one
+  # Return a new Track in which each Step has its note snapped to the nearest
+  # note in the given scale starting at the given tonic. `tonic` should be a
+  # symbol or string for a pitch class (e.g. :c), and `scale_name` should be one
   # of the scale names known to the Scale class.
   #
   # Unlike providing a global Track scale for quantization in the initializer,
@@ -910,21 +953,21 @@ class Track < TrackBase
     mutate_each_step { |step| step.with_note(scale.snap(step.note)) }
   end
 
-  # Returns a new track where each Step with note orig is replaced with a Step
-  # that has note repl but is otherwise identical. If orig has an explicit
+  # Returns a new Track where each Step with note `orig` is replaced with a Step
+  # that has note `repl` but is otherwise identical. If `orig` has an explicit
   # octave (or is a MIDI note number), only Steps with that exact note are
-  # effected. If orig does not have an explicit octave, all Steps with the same
-  # pitch class as orig have their notes changed to repl. If repl also does not
-  # have an octave, the replacements are in the same octave as the original
-  # step. For instance, consider a track with steps
+  # effected. If `orig` does not have an explicit octave, all Steps with the
+  # same pitch class as `orig` have their notes changed to `repl`. If `repl`
+  # also does not have an octave, the replacements are in the same octave as the
+  # original Step. For instance, consider a Track with Steps
   #     :c4, [:d1, :d2], :c3
-  # sub_note(:c, :e) on that track would result in a track with the steps
+  # `sub_note(:c, :e)` on that track would result in a Track with the Steps
   #     :e4, [:d1, :d2], :e3
-  # And sub_note(:c, :f9) would result in
+  # And `sub_note(:c, :f9)` would result in
   #     :f9, [:d1, :d2], :f9
-  # But sub_note(:d2, :f9) would only match the D2:
+  # But `sub_note(:d2, :f9)` would only match the D2:
   #     :c4, [:d1, :f9], :c3
-  # repl may be nil, :r, or :rest to remove Steps that match orig.
+  # `repl` may be nil, :r, or :rest to remove Steps that match `orig`.
   def sub_note(orig, repl)
     orig_has_octave = MIDINote.has_octave?(orig)
     repl_is_rest = MIDINote.rest?(repl)
@@ -949,23 +992,25 @@ class Track < TrackBase
 
   alias sub sub_note
 
-  # Returns a new track, applying controlled random mutations to each Step. The
-  # probability that any given mutation will apply to a Step is given by the p
-  # parameter. Any given step may have 0 or more independent mutations applied
+  # Returns a new Track, applying controlled random mutations to each Step. The
+  # probability that any given mutation will apply to a Step is given by the `p`
+  # parameter. Any given Step may have 0 or more independent mutations applied
   # to it.
+  #
   # Possible changes:
-  # - A transposition. The tone_shifts array (which may be nil) provides the
+  # - A transposition. The `tone_shifts` array (which may be nil) provides the
   #   possible semitone offsets that may be applied to a Step; a random value
   #   from it will be chosen if a transposition is to be applied. The
-  #   octave_limit range describes the valid octaves in which a transposition
-  #   can result. If the transposition moves a note outside of octave_limit,
-  #   the note's octave is clamped to the closest extreme of octave_limit.
-  # - A gate shift. The gate_delta float provides the maximum shift to apply to
-  #   a Step; a random value between 0 and gate_delta will be chosen if a gate
-  #   shift is to be applied. The gate_limit range restricts the resulting gate
-  #   value in the same way octave_limit restricts transpositions.
-  # - A velocity shift, controlled by velf_delta and velf_limit in the same way
-  #   as a gate shift.
+  #   `octave_limit` range describes the valid octaves in which a transposition
+  #   can result. If the transposition moves a note outside of `octave_limit`,
+  #   the note's octave is clamped to the closest extreme of `octave_limit`.
+  # - A gate shift. The `gate_delta` float provides the maximum shift to apply
+  #   to a Step; a random value between 0 and `gate_delta` will be chosen if a
+  #   gate shift is to be applied. The `gate_limit` range restricts the
+  #   resulting gate value in the same way `octave_limit` restricts
+  #   transpositions.
+  # - A velocity shift, controlled by `velf_delta` and `velf_limit` in the same
+  #   way as a gate shift.
   def evolve(tone_shifts: [-12, 12], octave_limit: 1..6, gate_delta: 0.5, gate_limit: 0.1..1, velf_delta: 0, velf_limit: 0.1..1, p: 0.25)
     gate_delta = -gate_delta..gate_delta unless gate_delta.is_a?(Range)
     velf_delta = -velf_delta..velf_delta unless velf_delta.is_a?(Range)
@@ -1008,17 +1053,17 @@ class Track < TrackBase
 
 
   ### Track construction helpers
-  # TODO: philosophically I want these to be private class methods, but you
-  # can't call private class methods from instance methods :(. Figure out a way
-  # to deal with that, or maybe just give up and make them instance methods.
 
   # Attempts to convert its argument to a Step. Conversion rules are:
   # - Steps are passed through verbatim.
-  # - Notes (symbols, strings and numbers) are converted to Steps using that
-  #   note and the default values for the other arguments of Step's initializer.
-  # - It is an error to pass a rest (as defined by MIDINote.rest?) to this
+  # - Notes (symbols, strings, numbers and MIDINote instances) are converted to
+  #   Steps using that note and the default values for the other arguments of
+  #   Step's initializer.
+  # - It is an error to pass a rest (as defined by `MIDINote.rest?`) to this
   #   function.
-  # def_gate and def_vel will be used for any Steps that need to be constructed.
+  #
+  # `def_gate` and `def_vel` will be used for any Steps that need to be
+  # constructed.
   def self.stepify(x, def_gate: 1.0, def_vel: 127)
     raise "A rest cannot be converted to a Step" if MIDINote.rest?(x)
 
@@ -1058,16 +1103,19 @@ class Track < TrackBase
 
   # Attempts to convert its argument to a grid slot (i.e. an array of Steps).
   # The returned array will be frozen. Conversion rules:
-  # - Rests (see MIDINote.rest?) become an empty slot ([]).
-  # - Single notes (symbols, strings, or numbers) become a slot with a single
-  #   Step that is the result of calling `stepify` on the argument.
-  # - Single Steps become a slot containing just that step.
+  # - Rests (see `MIDINote.rest?`) become an empty slot ([]).
+  # - Single notes (symbols, strings, numbers, or MIDINote instances) become a
+  #   slot with a single Step that is the result of calling `stepify` on the
+  #   argument.
+  # - Single Steps become a slot containing just that Step.
   # - Array-like arguments are converted as follows:
   #   1. All rests are removed.
   #   2. All remaining elements are passed through `stepify`.
   #   3. If more than one of the resulting Steps has the same note, a warning is
   #      printed, and only the Step with the longest gate is chosen.
-  # def_gate and def_vel will be used for any Steps that need to be constructed.
+  #
+  # `def_gate` and `def_vel` will be used for any Steps that need to be
+  # constructed.
   def self.slotify(x, def_gate: 1.0, def_vel: 127)
     return [].freeze if MIDINote.rest?(x)
 
@@ -1096,13 +1144,15 @@ class Track < TrackBase
 
   # Attempts to convert its argument to a grid (a 2d array of Steps). The
   # returned array and all of its elements will be frozen. Conversion rules:
-  # - A single rest (see MIDINote.rest?) becomes a grid with one rest ([[]]).
-  # - A single note (symbol, string, or number) becomes a grid with one slot
-  #   that is the result of calling `slotify` on the argument.
-  # - A single Step becomes a grid with one slot containing that step.
+  # - A single rest (see `MIDINote.rest?`) becomes a grid with one rest ([[]]).
+  # - A single note (symbol, string, number or MIDINote instance) becomes a grid
+  #   with one slot that is the result of calling `slotify` on the argument.
+  # - A single Step becomes a grid with one slot containing that Step.
   # - Array-like arguments are converted by passing each element through
   #   `slotify`.
-  # def_gate and def_vel will be used for any Steps that need to be constructed.
+  #
+  # `def_gate` and `def_vel` will be used for any Steps that need to be
+  # constructed.
   def self.gridify(x, def_gate: 1.0, def_vel: 127)
     return [[].freeze].freeze if MIDINote.rest?(x)
 
