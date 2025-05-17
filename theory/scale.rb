@@ -7,8 +7,8 @@ require_relative "interval"
 
 # Creates a new scale with the given name, starting on the given tonic, and
 # spanning a certain number of octaves. Shortcut for Scale.new.
-def SC(tonic, name, num_octaves: 1)
-  Scale.new(tonic, name, num_octaves: num_octaves)
+def SC(tonic, name, num_octaves: 1, clamp_to_midi: false)
+  Scale.new(tonic, name, num_octaves: num_octaves, clamp_to_midi: clamp_to_midi)
 end
 
 
