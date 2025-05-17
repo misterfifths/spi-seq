@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "../theory/scale"
+
 module TrackTestHelpers
   def equal_steps?(step, stepish, tol = 0.01)
     if stepish.is_a?(Step)
@@ -76,12 +78,14 @@ module TrackTestHelpers
   # for a correct granularity and timescale.
   def assert_merge_strictness(method, *args, **kwargs)
     t8_1 = T(:c1)
+    t8_1_cmajor = T(:c1, scale: Scale.full_scale(:c, :major))
     t8_2 = T(:c2, timescale: 2)
     t16_1 = T(:c3, granularity: :sixteenth)
     t32_2 = T(:c4, granularity: :thirty_second, timescale: 2)
 
     # Strict merging is off by default. The result should have the granularity
     # and timescale of the receiver.
+    assert_gt t8_1.send(method, t8_1_cmajor, *args, **kwargs), NoteLength::Eighth, 1
     assert_gt t8_1.send(method, t8_2, *args, **kwargs), NoteLength::Eighth, 1
     assert_gt t8_1.send(method, t16_1, *args, **kwargs), NoteLength::Eighth, 1
     assert_gt t16_1.send(method, t8_1, *args, **kwargs), NoteLength::Sixteenth, 1
@@ -90,6 +94,7 @@ module TrackTestHelpers
 
     # Under strict merging, these should all fail.
     with_strict_merging do
+      assert_raises { t8_1.send(method, t8_1_cmajor, *args, **kwargs) }
       assert_raises { t8_1.send(method, t8_2, *args, **kwargs) }
       assert_raises { t8_1.send(method, t16_1, *args, **kwargs) }
       assert_raises { t8_2.send(method, t16_1, *args, **kwargs) }

@@ -45,7 +45,8 @@ end
 # Subclasses of TrackBase must provide the following methods:
 # - `repr` (public method)
 # - `gridify`, `slotify`, `stepify` (public class methods)
-# - `ctor_kwargs` (protected; optional, used to implement `mutate`)
+# - `ctor_kwargs` (protected; optional, used to implement `mutate` and to test
+#   for track compatibility).
 class TrackBase
   attr_reader :granularity, :grid, :timescale
 
@@ -925,8 +926,9 @@ class TrackBase
 
   # Returns an array of symbols that represent the keyword arguments to the
   # initializer, and are assumed to also be readable attributes of the class.
-  # This array is used to implement `mutate`. Subclasses should override this
-  # method to add any additional arguments their initializer accepts.
+  # This array is used to implement `mutate` and `assert_compatible_track`.
+  # Subclasses should override this method to add any additional arguments their
+  # initializer accepts.
   def ctor_kwargs
     [:granularity, :scale, :timescale]
   end
@@ -952,12 +954,10 @@ class TrackBase
   def assert_compatible_track(other_track)
     return unless strict_track_merging?
 
-    if @granularity != other_track.granularity
-      raise "Granularity mismatch: #{@granularity} != #{other_track.granularity}"
-    end
-
-    if @timescale != other_track.timescale
-      raise "Timescale mismatch: #{@timescale} != #{other_track.timescale}"
+    ctor_kwargs.each do |kwarg|
+      us = send(kwarg)
+      them = other_track.send(kwarg)
+      raise "incompatible tracks: #{kwarg} #{us} != #{them}" unless us == them
     end
   end
 
