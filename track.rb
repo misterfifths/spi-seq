@@ -227,49 +227,6 @@ class Track < TrackBase
   end
 
 
-  ### Etc.
-
-  def repr(group: 8)
-    slot_line_indent = "    "  # to align with 'T([  '
-
-    slot_reprs = @grid.map do |slot|
-      if slot.empty?
-        ":r"
-      elsif slot.length == 1
-        slot[0].repr
-      else
-        "[" + slot.map { |step| step.repr }.join(", ") + "]"  # rubocop:disable Style/StringConcatenation
-      end
-    end
-
-    if group.nil?
-      grouped_slot_reprs = [slot_reprs]
-    else
-      grouped_slot_reprs = slot_reprs.each_slice(group).to_a
-    end
-
-    slot_repr_lines = grouped_slot_reprs.length
-    total_slot_repr = grouped_slot_reprs.map { |chunk| chunk.join(", ") }.join(",\n#{slot_line_indent}")
-
-    ctor_args = {}
-    ctor_args[:granularity] = @granularity.repr unless @granularity == NoteLength::Eighth
-    ctor_args[:scale] = @scale.repr unless @scale.nil?
-    ctor_args[:timescale] = @timescale unless @timescale == 1
-
-    if ctor_args.empty?
-      kwargs = ""
-    else
-      kwargs = ", " + ctor_args.map { |k, v| "#{k}: #{v}" }.join(", ")  # rubocop:disable Style/StringConcatenation
-    end
-
-    if slot_repr_lines > 1
-      "T([\n#{slot_line_indent}#{total_slot_repr}\n]#{kwargs})"
-    else
-      "T([#{total_slot_repr}]#{kwargs})"
-    end
-  end
-
-
   ### Mutators
 
   ## Granularity manipulations
@@ -1177,6 +1134,8 @@ class Track < TrackBase
   protected
 
   def ctor_kwargs
-    super + [:scale]
+    kwargs = super
+    kwargs[:scale] = nil
+    kwargs
   end
 end

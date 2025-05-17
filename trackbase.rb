@@ -43,10 +43,10 @@ end
 # functionality that is agnostic to the type of steps in the grid.
 #
 # Subclasses of TrackBase must provide the following methods:
-# - `repr` (public method)
-# - `gridify`, `slotify`, `stepify` (public class methods)
-# - `ctor_kwargs` (protected; optional, used to implement `mutate` and to test
-#   for track compatibility).
+# - `gridify`, `slotify`, `stepify` - public class methods
+# - `ctor_kwargs` - protected; optional, used to implement `mutate`, `repr`, and
+#   to test for track compatibility. Implement if your subclass takes additional
+#   keyword arguments to its initializer.
 class TrackBase
   attr_reader :granularity, :grid, :timescale
 
@@ -188,8 +188,46 @@ class TrackBase
 
   ### Etc.
 
-  def repr
-    raise "subclasses must implement repr"
+  def repr(group: 8)
+    slot_line_indent = "  "
+
+    slot_reprs = @grid.map do |slot|
+      if slot.empty?
+        ":r"
+      elsif slot.length == 1
+        slot[0].repr
+      else
+        "[" + slot.map { |step| step.repr }.join(", ") + "]"  # rubocop:disable Style/StringConcatenation
+      end
+    end
+
+    if group.nil?
+      grouped_slot_reprs = [slot_reprs]
+    else
+      grouped_slot_reprs = slot_reprs.each_slice(group).to_a
+    end
+
+    slot_repr_lines = grouped_slot_reprs.length
+    total_slot_repr = grouped_slot_reprs.map { |chunk| chunk.join(", ") }.join(",\n#{slot_line_indent}")
+
+    ctor_args = {}
+    ctor_kwargs.each do |kwarg, defval|
+      raw_val = send(kwarg)
+      next if raw_val == defval
+      ctor_args[kwarg] = raw_val.respond_to?(:repr) ? raw_val.repr : raw_val.to_s
+    end
+
+    if ctor_args.empty?
+      kwargs = ""
+    else
+      kwargs = ", " + ctor_args.map { |k, v| "#{k}: #{v}" }.join(", ")  # rubocop:disable Style/StringConcatenation
+    end
+
+    if slot_repr_lines > 1
+      "#{self.class.name}.new([\n#{slot_line_indent}#{total_slot_repr}\n]#{kwargs})"
+    else
+      "#{self.class.name}.new([#{total_slot_repr}]#{kwargs})"
+    end
   end
 
   def inspect
@@ -924,13 +962,17 @@ class TrackBase
     @grid.map { |slot| slot.dup }
   end
 
-  # Returns an array of symbols that represent the keyword arguments to the
-  # initializer, and are assumed to also be readable attributes of the class.
-  # This array is used to implement `mutate` and `assert_compatible_track`.
-  # Subclasses should override this method to add any additional arguments their
-  # initializer accepts.
+  # Returns a hash of the keyword arguments to the initializer and their default
+  # values. The keys of the hash are assumed to also be readable attributes of
+  # the class. This hash is used to implement `mutate`, `repr`, and
+  # `assert_compatible_track`. Subclasses should override this method to add any
+  # additional arguments their initializer accepts.
   def ctor_kwargs
-    [:granularity, :scale, :timescale]
+    {
+      granularity: NoteLength::Eighth,
+      scale: nil,
+      timescale: 1
+    }
   end
 
   # Returns a new track by applying the given mutations to this track. That is,
@@ -939,7 +981,7 @@ class TrackBase
   # keyword argument `grid` is used to change the grid itself.
   def mutate(**mutations)
     grid = mutations.delete(:grid) || @grid
-    ctor_kwargs.each do |ivar|
+    ctor_kwargs.each_key do |ivar|
       mutations[ivar] = send(ivar) unless mutations.has_key?(ivar)
     end
 
@@ -954,7 +996,7 @@ class TrackBase
   def assert_compatible_track(other_track)
     return unless strict_track_merging?
 
-    ctor_kwargs.each do |kwarg|
+    ctor_kwargs.each_key do |kwarg|
       us = send(kwarg)
       them = other_track.send(kwarg)
       raise "incompatible tracks: #{kwarg} #{us} != #{them}" unless us == them
