@@ -223,6 +223,19 @@ class Scale
     clamp_str = @clamp_to_midi ? ", clamped" : ""
     "<Scale #{@tonic} #{@name}, #{@num_octaves} octaves#{clamp_str}>"
   end
+
+  def repr
+    ctor_args = {}
+    ctor_args[:num_octaves] = @num_octaves.to_s unless @num_octaves == 1
+    ctor_args[:clamp_to_midi] = @clamp_to_midi.to_s if @clamp_to_midi
+
+    res = "SC(#{@tonic.repr}, :#{name}"
+    unless ctor_args.empty?
+      res += ", "
+      res += ctor_args.map { |k, v| "#{k}: #{v}" }.join(", ")
+    end
+    "#{res})"
+  end
 end
 
 

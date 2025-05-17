@@ -383,6 +383,7 @@ class Track
 
     ctor_args = {}
     ctor_args[:granularity] = @granularity.repr unless @granularity == NoteLength::Eighth
+    ctor_args[:scale] = @scale.repr unless @scale.nil?
     ctor_args[:timescale] = @timescale unless @timescale == 1
 
     if ctor_args.empty?
