@@ -234,7 +234,7 @@ class TrackBase
     res = "#{self.class.name} slots=#{num_slots} granularity=#{granularity} timescale=#{timescale} grid:\n"
     @grid.each_with_index do |slot, i|
       res += "slot #{i} @ t=#{i * granularity.to_f}\n"
-      slot.each { |step| res += "  #{step.inspect}\n" }
+      slot.each { |step| res += "  #{step.repr}\n" }
     end
     res
   end
