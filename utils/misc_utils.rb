@@ -28,3 +28,19 @@ def one_time_init(key = :default)
   end
   # rubocop:enable Style/GlobalVars
 end
+
+# Given a proc and a hash of keyword arguments, returns a new hash containing
+# only the members of the hash that are valid keyword arguments for the proc.
+# If the proc takes a double-star **kwargs argument, the hash is not filtered.
+def filter_kwargs_for_proc(proc, kwargs)
+  params = proc.parameters
+  return {} if params.empty?
+
+  # If there's a **kwargs param, just pass everything.
+  return kwargs if params.last[0] == :keyrest
+
+  # We want the key names from parameters that look like [:key, :keyname] or
+  # [:keyreq, :keyname].
+  key_args = params.filter { |p| [:key, :keyreq].member?(p[0]) }.map { |p| p[1] }
+  kwargs.filter { |k, _| key_args.member?(k) }
+end
