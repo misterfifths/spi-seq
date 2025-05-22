@@ -24,9 +24,10 @@ require_relative "cctrack"
 # that `cc` may be nil (the default), in which case the live_loop is not mutable
 # by CCs. The MIDI port and channel arguments are split into `port`, `channel`
 # and `cc_port`, `cc_channel`. The unprefixed ones control which device the
-# internal Player instance will target for playback. The `cc_`-prefixed ones are
+# internal player instance will target for playback. The `cc_`-prefixed ones are
 # passed to `cc_mutable_live_loop` to specify the device whose CC messages will
-# be monitored for muting.
+# be monitored for muting. They also specify the device to monitor for fill
+# changes (see `fill_cc`).
 #
 # The live_loop responds to muting by calling `sleep` on the internal Player for
 # muted cycles of playback, rather than `play`. Note that means that muting
@@ -48,7 +49,10 @@ require_relative "cctrack"
 # If `fill_cc` is provided, a CC message with that number will control whether
 # the player is in fill mode. A value of 0 turns off fill, and any other value
 # turns it on. Unlike muting, fill takes effect immediately, not at the start
-# of a new cycle.
+# of a new cycle. The device to watch for CC messages for fill is specified by
+# `cc_channel` and `cc_port`, which default to the global values set via a call
+# to `use_cc_control_defaults` (or to all ports and channels if that was not
+# set).
 #
 # If `send_cycle_cues` is true, immediately before the live_loop plays a cycle
 # of the track, it sends a cue with the name `<loop_name>_cycle` and a single
