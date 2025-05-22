@@ -4,10 +4,21 @@ require_relative "extapi"
 require_relative "utils/live_loop_utils"
 require_relative "utils/misc_utils"
 require_relative "player"
+require_relative "trackbase"
+require_relative "track"
+require_relative "cctrack"
 
 
-# Create a live_loop that plays the given track. Internally creates and controls
-# a Player instance.
+# Create a live_loop that plays the given track.
+#
+# This method accepts Track and CCTrack instances and internally creates and
+# controls an appropriate player instance (a Player or CCPlayer, respectively).
+# Certain options are only valid for one track type; see the details below.
+#
+# The `track` argument may be nil (the default), in which case the live loop
+# will play a single-slot rest Track. This is useful if the method is called
+# with a block that returns a track. See below for details on the block and its
+# arguments.
 #
 # Takes largely same arguments as `cc_mutable_live_loop`, with the exception
 # that `cc` may be nil (the default), in which case the live_loop is not mutable
@@ -31,6 +42,9 @@ require_relative "player"
 # actually play for one additional cycle after they become muted, during which
 # they will fade out. Like `fade_in`, `fade_out` may also have the value :quad.
 #
+# `fade_in` and `fade_out` are only applicable when a Track instance is passed;
+# it is an error to set them for CCTracks.
+#
 # If `fill_cc` is provided, a CC message with that number will control whether
 # the player is in fill mode. A value of 0 turns off fill, and any other value
 # turns it on. Unlike muting, fill takes effect immediately, not at the start
@@ -40,6 +54,16 @@ require_relative "player"
 # of the track, it sends a cue with the name `<loop_name>_cycle` and a single
 # value, the number of the cycle iteration that's about to play. Cycle cues are
 # not sent while the track is muted.
+#
+# If `midi` is true and a Track instance is passed, that track will play back
+# over MIDI, rather than Sonic Pi's internal synthesis. The `channel` and `port`
+# arguments determine what device will be used for playback. `midi` is only
+# applicable when a Track is passed; it is ignored for CCTracks because they
+# only function over MIDI. If the `midi` argument is omitted, the default value
+# from `use_player_defaults` is used (or false if that was not set). If
+# `channel` or `port` is omitted, the default value from Sonic Pi's
+# `use_midi_defaults` method is used (or all channels and ports if that was
+# not set).
 #
 # A block may be provided, in which case it is called before each cycle is
 # played. The block may take 0 - 5 arguments, which are as follows. The block
@@ -51,17 +75,28 @@ require_relative "player"
 #    cycle 0. (keyword: `was_muted`)
 # 5. the normal optional live_loop argument (keyword: `arg`)
 #
-# If the block returns a value, it is fed back in the next iteration as the
-# fifth argument.
-#
-# If the block returns a Track instance, the internal Player instance used by
-# the live loop will swap to that track. The swap takes effect immediately; the
-# current iteration of the live_loop will play the new track. The cycle count on
-# the player will not be reset to 0.
-#
-# Note that the internal block that plays the track will sleep, so a user-
-# provided block does not need to sleep or sync, unlike normal live_loop blocks.
+# The internal block that plays the track will sleep, so a user-provided block
+# does not need to call `sleep` or `sync`, unlike normal live_loop blocks.
 # If it does sync or sleep, it may cause delays between cycles of the track.
+#
+# If the block returns a value, it is fed back in the next iteration as the
+# fifth argument (`arg`).
+#
+# If the block returns a TrackBase instance (i.e. a Track or CCTrack), the
+# internal Player instance used by the live loop will swap to that track. The
+# swap takes effect immediately; the current iteration of the live_loop will
+# play the new track. The cycle count on the player will not be reset to 0.
+#
+# It is an error for the block to attempt to switch between types of tracks.
+# For example, the block cannot return a CCTrack when the initial call to
+# `track_live_loop` was given a Track.
+#
+# Note: a nil `track` results in playback of a Track, not a CCTrack. So it is
+# invalid for a block to return a CCTrack when this method is not passed a
+# track, because that would constitute a switch in track type. For that reason,
+# it is recommended to use `cc_track_live_loop` when playing back CCTracks, as
+# that method uses a single-slot rest CCTrack in that case instead. That method
+# is otherwise identical to this one.
 #
 # Any additional named arguments (e.g. delay: or seed:) to this function are
 # passed verbatim to the internal live_loop.
@@ -72,6 +107,10 @@ require_relative "player"
 #
 # If the `start_muted` parameter is not specified, the default from
 # `use_player_defaults` is used.
+#
+# If `debug` is true, details about muting, unmuting, and fill state will be
+# logged, as well as any information that comes from setting `debug` to true
+# on the internal player instance.
 def track_live_loop(loop_name, track = nil, start_muted: nil,
                     fade_in: false, fade_out: false,
                     midi: nil, port: nil, channel: nil,
@@ -84,7 +123,14 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
 
   track ||= Track.rest
 
-  player = Player.new(track, midi: midi, debug: debug, port: port, channel: channel)
+  raise "The fade parameters cannot be used with CCTracks" if track.is_a?(CCTrack) && (fade_in || fade_out)
+
+  player = case track
+  when Track
+    Player.new(track, midi: midi, port: port, channel: channel, debug: debug)
+  when CCTrack
+    CCPlayer.new(track, port: port, channel: channel, debug: debug)
+  end
 
   # If this is a restart of the same track_live_loop, we will already have a
   # Player instance for the old one. We don't want to reuse it per se (other
@@ -94,6 +140,8 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
   # internal state is accurate. So we do the inheriting on the first iteration
   # of the new live loop, below.
   old_player = LiveLoopTracker.live_loop_var_get(loop_name, :__player)
+
+  raise "cannot switch track live loop #{loop_name} between track types" unless old_player.nil? || player.is_a?(old_player.class)
 
 
   ### Resolve default arguments
@@ -163,7 +211,11 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
       res = block.call(*args, **block_kwargs)
     end
 
-    if res.is_a?(Track)
+    if res.is_a?(TrackBase)
+      if (res.is_a?(Track) && player.is_a?(CCPlayer)) || (res.is_a?(CCTrack) && player.is_a?(Player))
+        raise "cannot switch track live loop #{loop_name} between track types"
+      end
+
       ExtApi.puts("#{loop_name} player: swapping track on cycle #{player.cycle}") if debug
       player.swap_track(res)
     end
@@ -219,3 +271,14 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
 end
 
 alias tll track_live_loop
+
+
+# This method is identical to `track_live_loop` except when the `track`
+# parameter is nil. In that case, this method plays a single-slot rest CCTrack,
+# rather than a Track. That allows the block of this method to return a CCTrack
+# without causing an error.
+def cc_track_live_loop(loop_name, track = nil, **kwargs)
+  track_live_loop(loop_name, track || CCTrack.rest, **kwargs)
+end
+
+alias cctll cc_track_live_loop
