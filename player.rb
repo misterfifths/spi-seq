@@ -185,6 +185,9 @@ class Player < PlayerBase
 
     cur_steps.each { |step| apply_accum(step, i) }
 
+    # Even though the Track will not have any Steps with the same note in the
+    # same slot, accumulation may result in duplicates. So we need to do another
+    # deduplication pass here, based on the actual notes we'll be playing.
     cur_steps = dedupe_steps(cur_steps, i)
 
     # distinguish between tied notes and newly started ones
