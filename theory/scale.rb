@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require "forwardable"
-require_relative "midinote"
 require_relative "interval"
+require_relative "midinote"
 
 
 # Creates a new scale with the given name, starting on the given tonic, and

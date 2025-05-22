@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require "forwardable"
+require_relative "chord"
 require_relative "interval"
 require_relative "midinote"
-require_relative "chord"
 
 
 # A Chord that has been voiced on a particular root note in a particular style

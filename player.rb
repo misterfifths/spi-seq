@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require_relative "track"
 require_relative "extapi"
 require_relative "playerbase"
+require_relative "track"
 
 
 # Set global default player and track_live_loop behaviors. Only explicitly

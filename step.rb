@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative "theory/midinote"
 require_relative "stepbase"
+require_relative "theory/midinote"
 
 
 # An alias for Step.new.

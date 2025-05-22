@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require_relative "extapi"
-require_relative "trackbase"
 require_relative "ccstep"
+require_relative "extapi"
 require_relative "theory/midinote"  # Only for `rest?`
+require_relative "trackbase"
 
 
 # An alias for `CCTrack.new`.

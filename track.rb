@@ -1,14 +1,13 @@
 # frozen_string_literal: true
 
 require_relative "extapi"
+require_relative "math/curves"
+require_relative "prob"
+require_relative "step"
+require_relative "theory/arp"
 require_relative "theory/midinote"
 require_relative "theory/notelength"
-require_relative "theory/arp"
 require_relative "theory/scale"
-require_relative "math/curves"
-require_relative "math/easings"
-require_relative "step"
-require_relative "prob"
 require_relative "trackbase"
 
 

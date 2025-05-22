@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
+require_relative "cctrack"
 require_relative "extapi"
-require_relative "utils/live_loop_utils"
-require_relative "utils/misc_utils"
 require_relative "player"
 require_relative "trackbase"
 require_relative "track"
-require_relative "cctrack"
+require_relative "utils/live_loop_utils"
+require_relative "utils/misc_utils"
 
 
 # Create a live_loop that plays the given track.
