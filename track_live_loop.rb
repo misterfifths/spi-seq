@@ -144,7 +144,7 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
       # finished its final loop. So we should have the new player inherit some
       # private state of the old.
       ExtApi.puts("#{loop_name} player: inheriting state from old player") if debug
-      player.send(:inherit_state, old_player)
+      player.inherit_state(old_player)
       old_player = nil
     end
 
