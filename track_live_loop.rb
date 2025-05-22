@@ -80,6 +80,8 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
                     init: nil, **kwargs, &block)
   raise "Block must take 0 - 5 arguments" if !block.nil? && block.arity > 5
 
+  raise "If no track is provided, a block must be" if track.nil? && block.nil?
+
   track ||= Track.rest
 
   player = Player.new(track, midi: midi, debug: debug, port: port, channel: channel)
