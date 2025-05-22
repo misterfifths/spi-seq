@@ -2,22 +2,25 @@
 
 require_relative "track"
 require_relative "extapi"
+require_relative "playerbase"
 
 
-# Set global default Player behaviors.
-# midi: Specifies the default value for the midi parameter of Player's
-# initializer, used when that parameter is not explicitly passed. May be
-# overridden on a per-Player basis by specifying the parameter.
-# sync: Specifies the default value for the sync parameter of track_live_loops.
-# May be overridden by specifying the parameter manually in the call to
-# track_live_loop. Passing nil as the sync parameter to this function unsets the
-# default.
-# start_muted: Specifies the default value for the start_muted parameter of
-# track_live_loop. May be overridden by specifying the parameter manually in the
-# call to track_live_loop. Default: false.
-# fill_cc: Specifies the default value for the fill_cc parameter of
-# track_live_loop. May be overridden by specifying the parameter manually in the
-# call to track_live_loop. Default: nil (no fill CC).
+# Set global default player and track_live_loop behaviors. Only explicitly
+# specified parameters are changed.
+# - `midi`: Specifies the default value for the `midi` parameter of Player's
+#   initializer, used when that parameter is not explicitly passed. May be
+#   overridden on a per-Player basis by specifying the parameter. Default:
+#   false.
+# - `sync`: Specifies the default value for the `sync` parameter of
+#   `track_live_loop`. May be overridden by specifying the parameter manually
+#   in the call to `track_live_loop`. Passing nil as the `sync` parameter to
+#   this function unsets a previous default. Default: nil (no sync).
+# - `start_muted`: Specifies the default value for the `start_muted` parameter
+#   of `track_live_loop`. May be overridden by specifying the parameter manually
+#   in the call to `track_live_loop`. Default: false.
+# - `fill_cc`: Specifies the default value for the `fill_cc` parameter of
+#   `track_live_loop`. May be overridden by specifying the parameter manually in
+#   the call to `track_live_loop`. Default: nil (no fill CC).
 def use_player_defaults(midi: nil, sync: :__dummy_sync_sentinel, start_muted: nil, fill_cc: nil)
   # `set` hashes become SPMaps, apparently, so we need to call to_h on this.
   defaults = ExtApi.get(:__player_defaults).to_h
@@ -30,31 +33,39 @@ def use_player_defaults(midi: nil, sync: :__dummy_sync_sentinel, start_muted: ni
 end
 
 
-# TODO: playhead direction - mostly just a matter of how we move the slot index
-# in play, but also need to consider what "cycle" means in some of the weirder
-# cases like a drunk walk.
 # TODO: probably special-case Steps with a 0 gate
-# TODO: swing?
-# The fill attribute controls whether steps with the 'fill' probability are
-# played. It may be changed at any point, and will take effect when the next
-# slot is played.
-class Player
-  attr_reader :midi, :track, :cycle, :channel, :port
-  attr_accessor :fill
+# TODO: probably `sleep` should reset @prev_steps?
 
+
+# A Player plays back Tracks by triggering the Tracks' Steps' notes over MIDI or
+# via Sonic Pi's internal synthesis.
+#
+# Generally you will not make instances of Player directly, and instead use
+# `track_live_loop`, which will create and manage a Player for you.
+class Player < PlayerBase
+  attr_reader :midi, :channel, :port
+
+  # Constructs a Player.
+  #
+  # `midi` is a boolean that determines whether playback will happen via MIDI
+  # or Sonic Pi's internal synthesis. If it is not provided, it falls back to
+  # the global default set by `use_player_defaults`, or false if that was not
+  # set.
+  #
+  # `channel` and `port` specify the MIDI device to use when `midi` is true. If
+  # they are not provided, they fall back to the global default set by
+  # Sonic Pi's `use_midi_defaults`, or to all channels and ports if those were
+  # not set.
+  #
+  # If `debug` is true, detailed information about the starting and stopping of
+  # steps will be printed.
   def initialize(track, midi: nil, channel: nil, port: nil, debug: false)
-    @track = track
-
     @midi = resolve_midi_arg(midi)
     @channel = channel
     @port = port
     @midi_spi_kwargs = {}
     @midi_spi_kwargs[:channel] = channel unless channel.nil?
     @midi_spi_kwargs[:port] = port unless port.nil?
-
-    @debug = debug
-
-    @fill = false
 
     # These track the current synth nodes or MIDI notes that are playing. Note
     # that steps with a gate < 1 that do not continue a tie are not added to
@@ -63,144 +74,35 @@ class Player
     @active_synth_nodes = {}  # note symbols -> synth nodes. unused when playing midi
     @active_midi_notes = Set.new  # active midi note symbols. unused when playing built-in synths
 
-    stop
+    super(track, debug: debug)
   end
 
   def stop
-    end_all_steps
+    super
+
     @prev_steps = []
     @notes_for_prev_steps = {}
-    @cycle = 0
-
-    @accum_data = {}  # Step hash keys (step_accum_hash_key) -> hash
   end
 
-  # Plays one cycle of the track
-  def play
-    ExtApi.with_bpm_mul(@track.timescale) do
-      @track.num_slots.times do |i|
-        play_slot(i)
+  def inherit_state(other)
+    super
 
-        # Sleep until it's time for the next slot
-        ExtApi.sleep(@track.granularity.to_f)
-      end
-    end
-
-    @cycle += 1
-  end
-
-  # Sleeps for the duration of the track. Cycle count and tie tracking are not
-  # effected. All currently playing Steps are stopped.
-  # TODO: do we want to increment cycle count here? kinda depends on what this
-  # is philosophically - is it a muted play, or just a way to stall until we
-  # start playing for the first time? if it's a muted play, it should just be an
-  # argument to play. The only thing I can think of that would be screwed up is
-  # Steps with a 'first' probability.
-  # TODO: should this reset @prev_steps? feels like yes
-  def sleep
-    end_all_steps
-    ExtApi.with_bpm_mul(@track.timescale) do
-      ExtApi.sleep(@track.beat_length)
-    end
-  end
-
-  # Swap out the Track this player plays for new_track. Resets the cycle count
-  # to 0 if reset_cycle is true.
-  # This is intended to be called between calls to play or sleep. The new track
-  # will then play from slot 0 on the next call to play or sleep.
-  # The set of currently playing steps is not reset; the transition to the new
-  # track will seamlessly continue tied notes.
-  def swap_track(new_track, reset_cycle: false)
-    @track = new_track
-    @cycle = 0 if reset_cycle
-
-    # TODO: clear accum_data?
+    @prev_steps = other.prev_steps
+    @notes_for_prev_steps = other.notes_for_prev_steps
+    @active_synth_nodes = other.active_synth_nodes
+    @active_midi_notes = other.active_midi_notes
   end
 
 
   protected
 
-  attr_reader :active_synth_nodes, :active_midi_notes, :prev_steps, :notes_for_prev_steps, :accum_data
+  attr_reader :active_synth_nodes, :active_midi_notes, :prev_steps, :notes_for_prev_steps
 
-
-  private
-
-  # Inherits the state of another Player, including the set of currently active
-  # notes. This will be called after a sketch is restarted, just before this
-  # player is to take over from `other`.
-  def inherit_state(other)
-    @cycle = other.cycle
-    @fill = other.fill
-    @prev_steps = other.prev_steps
-    @notes_for_prev_steps = other.notes_for_prev_steps
-    @active_synth_nodes = other.active_synth_nodes
-    @active_midi_notes = other.active_midi_notes
-    @accum_data = other.accum_data
-  end
 
   def resolve_midi_arg(midi)
     defaults = ExtApi.get(:__player_defaults) || {}
     midi = defaults[:midi] || false if midi.nil?
     midi
-  end
-
-  # Returns a hash key for the given Step from the given slot in @track, to be
-  # used when indexing @accum_data.
-  def step_accum_hash_key(step, slot_idx)
-    # Since they're immutable, Steps could theoretically be shared across
-    # multiple slots in different tracks. So we need to hash based on enough
-    # information to uniquely identify the step within the track.
-    [step.object_id, slot_idx, @track.object_id]
-  end
-
-  # Updates the accumulation state of the given Step, which is assumed to be
-  # triggering (i.e. its `prob` predicate passed). Evaluates the Step's
-  # `accum_prob` (if any) and updates the Step's entry in @accum_data
-  # appropriately with the new total semitone delta and other state.
-  def apply_accum(step, slot_idx)
-    return if step.accum_delta == 0
-
-    hash_key = step_accum_hash_key(step, slot_idx)
-    data = @accum_data[hash_key]
-    if data.nil?
-      # This is the first time we've seen this Step. Accumulation should not
-      # trigger, but we should make a note that we've seen it so that we may
-      # trigger it the next time it plays.
-      @accum_data[hash_key] = { delta: 0, direction: 1 }
-      return
-    end
-
-    # This Step has played before, and its accumulation may trigger.
-    return unless step.accum_should_trigger?(@cycle, @fill, note_for_step(step, slot_idx), @notes_for_prev_steps.values)
-
-    delta = data[:delta] + data[:direction] * step.accum_delta
-    if delta < step.accum_min
-      case step.accum_mode
-      when :freeze
-        delta = step.accum_min
-      when :reverse
-        data[:direction] *= -1
-        delta += data[:direction] * step.accum_delta
-      when :wrap
-        # We know accum_min <= accum_delta <= accum_max, so we don't need to
-        # worry about modding to get the overage here; we can just subtract.
-        overage = step.accum_min - delta
-        delta = step.accum_max - overage
-      end
-    elsif delta > step.accum_max
-      case step.accum_mode
-      when :freeze
-        delta = step.accum_max
-      when :reverse
-        data[:direction] *= -1
-        delta += data[:direction] * step.accum_delta
-      when :wrap
-        overage = delta - step.accum_max
-        delta = step.accum_min + overage
-      end
-    end
-
-    data[:delta] = delta
   end
 
   # Returns the effective note for the given Step (which must be from @track!)
@@ -214,12 +116,16 @@ class Player
       @track.scale.snap(step.note)
     end
 
-    acc_data = @accum_data[step_accum_hash_key(step, slot_idx)]
-    note += acc_data[:delta] unless acc_data.nil?
-
-    note
+    note + accum_delta_for_step(step, slot_idx)
   end
 
+  def step_accum_should_trigger?(step, slot_idx)
+    step.accum_should_trigger?(@cycle, @fill, note_for_step(step, slot_idx), @notes_for_prev_steps.values)
+  end
+
+  # Deduplicate the given Steps, which come from slot_idx, based on their
+  # effective note (accounting for accumulation). In the case that more than
+  # one Step has the same effective note, chooses one with the longest gate.
   def dedupe_steps(steps, slot_idx)
     steps_by_note = {}
     yelled = false
@@ -240,26 +146,31 @@ class Player
     steps_by_note.values
   end
 
-  # Returns an array of arrays of Steps representing the state of playback for
-  # the current track at slot i in the current cycle, assuming that the steps in
-  # @prev_steps were the Steps played in the most recently evaluated slot. The
-  # array has the following elements:
-  #   [newly triggered Steps, continued (tied) Steps, newly ended Steps]
-  # Step probabilities are evaluated, and steps that should not trigger are not
-  # returned. Accumulation is also applied to steps with those options, should
-  # it trigger.
+  # Returns an array of arrays of steps representing the state of playback for
+  # the current track at slot `i` in the current cycle.
+  #
+  # The returned array has the following elements:
+  #   [newly triggered steps, continued (tied) steps, newly ended steps]
+  #
+  # Step probabilities are be evaluated, and steps that should not trigger are
+  # not returned. Accumulation is applied for triggered steps via `apply_accum`,
+  # and the steps in the returned array are deduplicated as needed to account
+  # for accumulation.
+  #
+  # Because this method must call `apply_accum`, it is not idempotent.
+  # TODO: fix that?
+  #
   # Note that the returned array of ended steps does not strictly contain steps
   # that ended exactly at the beginning of this step. It also contains steps
-  # that ended between this step and the previous one - i.e. steps with gates
+  # that ended between this step and the previous one - e.g. Steps with gates
   # less than 1.
-  # Wraps the slot index if it exceeds the number of slots in the track.
+  #
+  # The slot index is wrapped if it exceeds the number of slots in the track.
   def steps_at_slot(i)
-    # To support changing the playhead direction and swapping between Tracks,
-    # it is important that this method does not assume anything about the order
-    # in which slots were or will be played. It must base its logic solely on
-    # the contents of slot i and prev_steps. The next steps may not come from
-    # slot i+1, and the previous ones may not have come from slot i-1. In fact
-    # they may not even be from this Track, if the track was swapped.
+    # As noted in PlayerBase.play_slot, it is important that this method assume
+    # nothing about the order in which slots were or will be played. @prev_steps
+    # and @notes_for_prev_steps track the steps that were played from the
+    # previous slot.
     new_steps = []
     tied_steps = []
     ended_steps = []
@@ -382,6 +293,8 @@ class Player
     end
   end
 
+  # Schedules a call to `end_step` for a tied Step that will end between slots
+  # (i.e., before the next call to `play_slot`).
   def schedule_end_for_step_with_partial_gate(step)
     ExtApi.time_warp(step.gate * @track.granularity.to_f) do
       ExtApi.puts "killing #{step.inspect} @ t=#{ExtApi.vt}" if @debug
@@ -399,6 +312,9 @@ class Player
     end
   end
 
+  # Begins playback of the given Step, which is assumed to be from @track.
+  # Updates @active_midi_notes or @active_synth_nodes as needed to track ongoing
+  # steps.
   def start_step(step, slot_idx)
     step_note = note_for_step(step, slot_idx)
 
