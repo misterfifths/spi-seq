@@ -3,6 +3,7 @@
 require_relative "ccstep"
 require_relative "extapi"
 require_relative "theory/midinote"  # Only for `rest?`
+require_relative "theory/notelength"
 require_relative "trackbase"
 
 
@@ -17,6 +18,37 @@ end
 # TrackBase documentation for details on grids, slots, and the basic inherited
 # functionality.
 class CCTrack < TrackBase
+  ### Initializers
+
+  # Creates a new CCTrack where all steps target one CC number, `cc_number`.
+  #
+  # `slots` is an array which specifies how to construct the CCSteps in the
+  # resulting track; each element of `slots` will correspond to a step in its
+  # own slot. `slots` elements can be:
+  # - Value numbers, which will be combined with `cc_number` to make CCSteps.
+  # - CCStep instances, which will be passed through verbatim.
+  # - Rests (see `MIDINote.rest?`), which will result in an empty slot.
+  #
+  # The `granularity` and `timescale` arguments are as specified in the default
+  # initializer.
+  def self.simple(cc_number, slots, granularity: NoteLength::Eighth, timescale: 1)
+    slots = slots.map do |slot|
+      next :r if MIDINote.rest?(slot)
+
+      case slot
+      when CCStep
+        slot
+      when Numeric
+        CCStep.new(cc_number, slot)
+      else
+        raise ArgumentError, "slots must be numbers, CCSteps, or rests"
+      end
+    end
+
+    new(slots, granularity: granularity, timescale: timescale)
+  end
+
+
   ### Track construction helpers
 
   # Attempts to convert its argument to a CCStep. Conversion rules are:
