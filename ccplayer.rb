@@ -28,7 +28,6 @@ class CCPlayer < PlayerBase
 
   def play_slot(i)
     steps = @track.grid[i % @track.length].filter do |step|
-      # TODO: document that Prob can get a nil note
       step.should_trigger?(@cycle, @fill, nil, [])
     end
 
