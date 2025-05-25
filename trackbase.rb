@@ -264,6 +264,9 @@ class TrackBase
   #   will have percent 1.0.
   #
   # The block may return:
+  # - A single Step or something convertible to one (e.g. a MIDINote), which
+  #   will be converted to a one-step slot and replace the slot yielded to the
+  #   block.
   # - A slot (an array of steps), which will replace the slot yielded to the
   #   block
   # - nil, :r, or :rest, which will replace the slot yielded to the block with
