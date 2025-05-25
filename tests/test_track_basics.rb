@@ -3,6 +3,7 @@
 
 require_relative "test_helper"
 require_relative "../track"
+require_relative "../theory/scale"
 require_relative "track_test_helpers"
 
 # Test basic Track methods - simple methods, direct attr mutators, etc.
@@ -38,6 +39,12 @@ class TrackBasicTest < Test::Unit::TestCase
 
     assert_gt T(:c4).with_rate(2), NoteLength::Eighth, 2
     assert_gt T(:c4, timescale: 5).with_rate(0.5), NoteLength::Eighth, 0.5
+
+    c_maj = Scale.full_scale(:c, :major)
+    c_min = Scale.full_scale(:c, :minor)
+    assert_gt T(:c4).with_scale(c_maj), NoteLength::Eighth, 1, scale: c_maj
+    assert_gt T(:c4, scale: c_min).with_scale(c_maj), NoteLength::Eighth, 1, scale: c_maj
+    assert_gt T(:c4, scale: c_min).with_scale(nil), NoteLength::Eighth, 1
   end
 
   def test_filled_slots

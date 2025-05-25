@@ -36,9 +36,15 @@ module TrackTestHelpers
     end
   end
 
-  def assert_gt(track, granularity, timescale)
+  def assert_gt(track, granularity, timescale, scale: nil)
     assert_equal track.granularity, granularity
     assert_equal track.timescale, timescale
+
+    if scale.nil?
+      assert_nil track.scale
+    else
+      assert_same track.scale, scale
+    end
   end
 
   def each_step(track, &block)
