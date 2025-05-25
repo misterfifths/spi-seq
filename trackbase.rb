@@ -973,7 +973,6 @@ class TrackBase
   def ctor_kwargs
     {
       granularity: NoteLength::Eighth,
-      scale: nil,
       timescale: 1
     }
   end
