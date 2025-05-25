@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require "test/unit"
+require_relative "test_helper"
 require_relative "../extapi"
 
 class ExtApiTest < Test::Unit::TestCase
