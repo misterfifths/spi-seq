@@ -4,6 +4,7 @@
 require_relative "test_helper"
 require_relative "../track"
 require_relative "../cctrack"
+require_relative "../math/curves"
 
 class CCTrackTest < Test::Unit::TestCase
   def equal_steps?(a, b, tol = 0.01)
@@ -114,5 +115,30 @@ class CCTrackTest < Test::Unit::TestCase
       slot[0].note.pitch_class == :c ? [1, 2] : 3
     end
     assert_grid cct, [[a], [b], [], [c], [a], [b]]
+  end
+
+  def test_add_curve
+    t = CCTrack.rest(7)
+    t = t.add_curve(1, 20, 60, Curves::UpLinear, 1, 3)
+    assert_grid t, [
+      [],
+      [CC(1, 20)],
+      [CC(1, 40)],
+      [CC(1, 60)],
+      [],
+      [],
+      []
+    ]
+
+    t = t.add_curve(2, 0, 60, Curves::DownLinear, 0, 6)
+    assert_grid t, [
+      [CC(2, 60)],
+      [CC(1, 20), CC(2, 50)],
+      [CC(1, 40), CC(2, 40)],
+      [CC(1, 60), CC(2, 30)],
+      [CC(2, 20)],
+      [CC(2, 9)],  # rounding error
+      [CC(2, 0)]
+    ]
   end
 end

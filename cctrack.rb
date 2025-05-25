@@ -49,6 +49,31 @@ class CCTrack < TrackBase
   end
 
 
+  ### Mutators
+
+  def add_curve(cc_number, start_val, end_val, curve, slot_start_idx, slot_end_idx)
+    raise RangeError, "slot start is >= slot end" if slot_start_idx >= slot_end_idx
+    raise RangeError, "slot range is beyond the grid" if slot_start_idx < 0 || slot_end_idx >= @grid.length
+
+    new_grid = mutable_grid_dup
+
+    (slot_start_idx..slot_end_idx).each do |i|
+      pct = if i == slot_start_idx
+        0.0
+      elsif i == slot_end_idx
+        1.0
+      else
+        (i - slot_start_idx).to_f / (slot_end_idx - slot_start_idx)
+      end
+
+      val = start_val + curve.call(pct) * (end_val - start_val)
+      new_grid[i] << CCStep.new(cc_number, val)
+    end
+
+    mutate(grid: new_grid)
+  end
+
+
   ### Track construction helpers
 
   # Attempts to convert its argument to a CCStep. Conversion rules are:
