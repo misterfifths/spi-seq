@@ -14,6 +14,9 @@ end
 # in general, and their probability and accumulation mechanics.
 class CCStep < StepBase
   attr_reader :cc, :value
+  alias cc_number cc
+  alias number cc
+  alias num cc
   alias val value
 
 
@@ -48,6 +51,10 @@ class CCStep < StepBase
   def with_cc(new_cc)
     mutate(cc: new_cc)
   end
+
+  alias with_cc_number with_cc
+  alias with_number with_cc
+  alias with_num with_cc
 
   def with_value(new_value)
     mutate(value: new_value)
