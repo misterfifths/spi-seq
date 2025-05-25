@@ -101,4 +101,42 @@ class StepTest < Test::Unit::TestCase
       assert_attrs S(:c4).shift_octave(n), N(:c4).shift_octave(n), 127, 1
     end
   end
+
+  def assert_accum(step, delta, min: 0, max: 12, mode: :wrap, prob: nil)
+    assert_equal step.accum_delta, delta
+    assert_equal step.accum_min, min
+    assert_equal step.accum_max, max
+    assert_equal step.accum_mode, mode
+    if prob.nil?
+      assert_nil step.accum_prob
+    else
+      assert_equal step.accum_prob.to_s, prob.to_s  # TODO: this is a crappy way to test Prob equality
+    end
+  end
+
+  def test_accum
+    assert_accum S(:c4), 0
+    assert_accum S(:c4).accum(1), 1
+    assert_accum S(:c4).accum(1, min: -2), 1, min: -2
+    assert_accum S(:c4).accum(1, min: -2, max: 5), 1, min: -2, max: 5
+    assert_accum S(:c4).accum(1, min: -2, max: 5, mode: :reverse), 1, min: -2, max: 5, mode: :reverse
+
+    p = Prob.one_in(5)
+    assert_accum S(:c4).accum(1, min: -2, max: 5, mode: :reverse, prob: p), 1, min: -2, max: 5, mode: :reverse, prob: p
+    assert_accum S(:c4).accum(1, min: -2, max: 5, mode: :reverse, prob: 0.5), 1, min: -2, max: 5, mode: :reverse, prob: Prob.chance(0.5)
+
+    # Subsequent calls to accum reset missing parameters to defaults
+    s = S(:c4).accum(1, max: 20)
+    s = s.accum(2)
+    assert_accum s, 2, max: 12
+
+    # Accum values should persist when steps are mutated with unrelated methods
+    s = S(:c4).accum(1, max: 20)
+    s = s.with_note(:d5)
+    assert_accum s, 1, max: 20
+
+    # Invalid mode values should raise
+    assert_raises { S(:c4).accum(mode: :nope) }
+    assert_raises { S(:c4).accum(mode: nil) }
+  end
 end
