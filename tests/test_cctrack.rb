@@ -7,9 +7,9 @@ require_relative "../cctrack"
 require_relative "../math/curves"
 
 class CCTrackTest < Test::Unit::TestCase
-  def equal_steps?(a, b, tol = 0.01)
+  def equal_steps?(a, b)
     return a.cc == b.cc &&
-           (a.val - b.val).abs < tol &&
+           a.val == b.val &&
            a.prob.to_s == b.prob.to_s  # TODO: this is a crappy way to test Prob equality
   end
 
