@@ -8,9 +8,9 @@ require_relative "../math/curves"
 
 class CCTrackTest < Test::Unit::TestCase
   def equal_steps?(a, b)
-    return a.cc == b.cc &&
-           a.val == b.val &&
-           a.prob.to_s == b.prob.to_s  # TODO: this is a crappy way to test Prob equality
+    a.cc == b.cc &&
+      a.val == b.val &&
+      a.prob.to_s == b.prob.to_s  # TODO: this is a crappy way to test Prob equality
   end
 
   def assert_grid(track, slots)
@@ -82,14 +82,14 @@ class CCTrackTest < Test::Unit::TestCase
     assert_grid cct, [[a], [], [c], [d]]
 
     # Multiple steps -> a slot with those elements
-    cct = t.to_cc do |slot, i|
+    cct = t.to_cc do |slot, _|
       next [] if slot.empty?
       slot[0].note.pitch_class == :c ? [a, b] : c
     end
     assert_grid cct, [[a, b], [], [c], [a, b]]
 
     # Gridish -> expanded into multiple slots
-    cct = t.to_cc do |slot, i|
+    cct = t.to_cc do |slot, _|
       next [] if slot.empty?
       slot[0].note.pitch_class == :c ? [[a], [b, d]] : c
     end
@@ -110,7 +110,7 @@ class CCTrackTest < Test::Unit::TestCase
     assert_grid cct, [[a], [], [c], [d]]
 
     # Multiple numbers -> expanded into multiple slots
-    cct = t.to_simple_cc(5) do |slot, i|
+    cct = t.to_simple_cc(5) do |slot, _|
       next [] if slot.empty?
       slot[0].note.pitch_class == :c ? [1, 2] : 3
     end

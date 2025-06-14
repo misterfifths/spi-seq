@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 begin
-  require 'simplecov'
+  require "simplecov"
   SimpleCov.start
-rescue LoadError
+rescue LoadError  # rubocop:disable Lint/SuppressedException
 end
 
 require "test/unit"
