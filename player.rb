@@ -110,13 +110,15 @@ class Player < PlayerBase
   # prior to this method, so that the Step's accumulation parameters will take
   # effect.
   def note_for_step(step, slot_idx)
-    note = if @track.scale.nil?
-      step.note
-    else
-      @track.scale.snap(step.note)
-    end
+    note = step.note
+    note = @track.scale.snap(step.note) unless @track.scale.nil?
 
-    note + accum_delta_for_step(step, slot_idx)
+    note += accum_delta_for_step(step, slot_idx)
+
+    # Snap to the scale again after accumulation, if needed.
+    note = @track.scale.snap(note) unless @track.scale.nil?
+
+    note
   end
 
   def step_accum_should_trigger?(step, slot_idx)
