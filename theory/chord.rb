@@ -352,7 +352,7 @@ class Chord
   end
 
   def self.major_eleventh
-    major_ninth + :M11
+    major_ninth + :P11
   end
 
   def self.major_thirteenth
@@ -377,7 +377,7 @@ class Chord
   end
 
   def self.minor_eleventh
-    minor_ninth + :M11
+    minor_ninth + :P11
   end
 
   def self.minor_thirteenth
