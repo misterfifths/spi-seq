@@ -14,7 +14,8 @@ end
 
 
 # A grouping of Intervals that represents a chord. Enumerable over its
-# Intervals.
+# Intervals (i.e., the `intervals` attribute), which will always be sorted
+# ascending and will contain no duplicates.
 #
 # Note that this class only represents the intervals; it does not track a root
 # note or inversions. Instances can be concretely expressed (i.e., converted to

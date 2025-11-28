@@ -147,7 +147,7 @@ class PlayerBase
   # Updates the accumulation state of the given Step, which is assumed to be
   # triggering (i.e. its `prob` predicate passed). Evaluates the Step's
   # `accum_prob` (if any) and updates the Step's entry in @accum_data
-  # appropriately with the new total semitone delta and other state.
+  # appropriately with the new total accumulated delta and other state.
   def apply_accum(step, slot_idx)
     return if step.accum_delta == 0
 

@@ -154,10 +154,10 @@ class Player < PlayerBase
   # The returned array has the following elements:
   #   [newly triggered steps, continued (tied) steps, newly ended steps]
   #
-  # Step probabilities are be evaluated, and steps that should not trigger are
-  # not returned. Accumulation is applied for triggered steps via `apply_accum`,
-  # and the steps in the returned array are deduplicated as needed to account
-  # for accumulation.
+  # Step probabilities are evaluated, and steps that should not trigger are not
+  # returned. Accumulation is applied for triggered steps via `apply_accum`, and
+  # the steps in the returned array are deduplicated as needed to account for
+  # accumulation.
   #
   # Because this method must call `apply_accum`, it is not idempotent.
   # TODO: fix that?

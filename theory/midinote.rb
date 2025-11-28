@@ -189,7 +189,7 @@ class MIDINote < Numeric
   # Returns a new note, snapped upward to the nearest note in the given scale.
   # tonic is the root note for the scale and must be a symbol or string for a
   # note without an octave (e.g. :c or :fs). scale is a symbol for one of the
-  # scales known to Sonic Pi.
+  # scales known to the Scale class.
   def snap_to_scale(tonic, scale_name)
     snap(Scale.full_scale(tonic, scale_name))
   end
