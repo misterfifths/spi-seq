@@ -67,12 +67,15 @@ use_bpm 140
 # This is a built-in Sonic Pi function, which spi-seq respects.
 use_midi_defaults(port: "my_midi_device", channel: 1)
 
-# Set default options for Players and track_live_loop.
+# Set default options for Players and track_live_loop. The
+# :midi_clock live loop is defined by the midi_clock_live_loop call
+# below.
 use_player_defaults(midi: true, sync: :midi_clock)
 
 # Start a new live loop (named :midi_clock by default) that sends
 # MIDI clock messages in time with the global BPM. Note that we
-# used that name as the default sync source above.
+# used that name as the default sync source in user_player_defaults
+# above.
 midi_clock_live_loop
 
 t = T([:c4, :e4, :f4, :c5])
@@ -113,27 +116,34 @@ T([ [:c4, :c3], :e4, [:f4, :f3], :c5 ])
 
 In that track, the C4 and C3 will be played together (they share a slot), then the E4, then the F4 and F3 together, then the C5.
 
-You'll notice that we haven't manually created any `Step` objects yet. The `Track` initializer makes them for us as needed. However, if you want more control over a step, such as its gate, you can pass a `Step` to the `Track` initializer instead of a note. `Step.new` is aliased to just `S` for convenience. Here's a track where the notes have increasingly shorter gates, and the second note has a low velocity:
+You'll notice that we haven't manually created any `Step` objects yet; we've just been providing raw notes inside of slots. That's because the `Track` initializer will make `Step`s out of notes for us, using some defaults for attributes like the velocity and gate. However, if you want to specify those parameters, you can pass a `Step` to the `Track` initializer instead of a note. `Step.new` is aliased to just `S` for convenience. Here's a track where the notes have increasingly shorter gates, and the second note has a low velocity:
 
 ```ruby
 T([ :a2, S(:c4, vel: 20, gate: 0.75), S(:d4, gate: 0.5), S(:e4, gate: 0.25) ])
 ```
 
-The default velocity for a step is 127, and the default gate is 1.0 (tied). Tied notes are continued without release if they also appear in the following step.
+The default velocity for a step is 127, and the default gate is 1.0 (tied). Tied notes are continued without release if they also appear in the following step. For instance, in this track, the :c4 is held for the first three slots, terminating 25% of the way through the third:
+
+```ruby
+T([ S(:c4, gate: 1), [S(:c4, gate: 1), S(:c2, gate: 0.5)], S(:c4, gate: 0.25), S(:c2, gate: 0.75) ])
+
+# or, equivalently, since a gate of 1 is the default:
+T([ :c4, [:c4, S(:c2, gate: 0.5)], S(:c4, gate: 0.25), S(:c2, gate: 0.75) ])
+```
 
 ### Step probabilities
 
 By giving a `Step` a *probability*, you can control the conditions under which that step will trigger during playback. There are a variety of built-in probability functions, and you can also write your own with a lambda.
 
-The simplest way to express a probability is to pass a floating point number as the `prob` parameter to `Step.new`. That specifies the chance that the note will play, with 1.0 meaning a 100% chance. For instance, the C4 in this track only has a 25% chance of playing on any given loop:
+The simplest way to express a probability is to pass a floating point number as the `prob` parameter to `Step.new` (aliased to `S`). That specifies the chance that the note will play, with 1.0 meaning a 100% chance. For instance, the C4 in this track only has a 25% chance of playing on any given loop; there is a 75% chance that slot will be just a rest instead:
 
-```
+```ruby
 t = T([:e4, S(:c4, prob: 0.25), :g3])
 ```
 
-More elaborate probabilities are part of the `Prob` class. For instance, the `every` probability will trigger the given note every nth cycle. Here, the C4 will only play every 3rd loop:
+More elaborate probabilities are part of the `Prob` class. For instance, the `every` probability will trigger the given note every nth cycle. Here, the C4 will only play every 3rd loop; on other loops that slot will just be a rest:
 
-```
+```ruby
 t = T([:e4, S(:c4, prob: Prob.every(3)), :g3])
 ```
 
@@ -143,7 +153,7 @@ Check out the `Prob` documentation for more elaborate options. You can specify t
 
 One thing that greatly effects how you'll interact with them: `Track` objects are immutable. All the methods that manipulate them return new `Track` instances, rather than changing the one on which they are called.
 
-In these examples, I'm omitting most boilerplate and the `track_live_loop` calls for playback.
+Much of the power of spi-seq lies in its track mutation methods. Let's take a look at some of them. In these examples, I'm omitting most boilerplate and the `track_live_loop` calls for playback.
 
 You can transpose all notes in a track some number of semitones with `transpose`. You can merge the slots in two tracks with the `|` operator. So here's how you might construct a track that plays the notes in a C3 major 9th chord, together with those same notes down a fifth:
 
@@ -178,12 +188,14 @@ t |= t.transpose(-7)
 t = t + t.reverse.drop.drop_last
 ```
 
+The `reflect` method is actually shorthand for the `t + t.reverse.drop` pattern.
+
 Now let's alternate between those notes and the same ones shifted up an octave, so that we hear e.g. C3+F3 then C4+F4, and so on. The `up(n)` method transposes a track up `n` octaves (defaulting to 1). The `zip` function takes another track and interleaves the two tracks' steps. And for kicks, let's give the higher notes a shorter gate, using the `gate` method, which sets the gate on all steps in a track. We can do something like this:
 
 ```ruby
 t = T(chord(:c3, :major9))
 t |= t.transpose(-7)
-t = t + t.reverse.drop.drop_last
+t = t.reflect.drop_last
 t = t.zip(t.up.gate(0.5))
 ```
 
@@ -200,7 +212,7 @@ T([
 ])
 ```
 
-Note the alternating pairs generated by `zip`: each slot is followed by a slot with same notes up an octave with a shorter gate. Note also how the track is mirrored due to the concatenation with its `reverse` - the early A+E, C+G progression appears backwards at the end of the track. But the leading F+C pair is missing at the very end so that the track loops cleanly (that was the `drop_last`).
+Note the alternating pairs generated by `zip`: each slot is followed by a slot with same notes up an octave with a shorter gate. Note also how the track is mirrored due to the concatenation with its reverse (via `reflect`) - the early A+E, C+G progression appears backwards at the end of the track. But the leading F+C pair is missing at the very end so that the track loops cleanly (that was the `drop_last`).
 
 We've barely scratched the surface, but already it's easy to assemble complicated tracks. Here's a nice melody using things you've seen so far and a few new tricks: the `*` operator concatenates a track with itself some number of times, and the `shl` method shifts a track's slots to the left, wrapping the first slots back around to the end. This is an intricate 64-step sequence, all constructed from simple manipulations of a minor 7th chord!
 
@@ -255,7 +267,7 @@ For another example, we could randomly rearrange the notes in our track each cyc
 t = T(chord(:c3, :major13)).gate(0.5)
 
 track_live_loop :t do
-    t.shuffle
+  t.shuffle
 end
 ```
 
@@ -267,7 +279,7 @@ Just as you might use live-coding to add or stop `live_loops`, you can do the sa
 
 You can add the `cc` keyword parameter to a `track_live_loop` to specify that a CC should control whether it is muted. Sending a value of 0 for that CC will mute the track, and any other value will unmute it. Note that muting only takes effect *after a cycle of the track*; it will not abruptly make the track inaudible. Unmuting is the same; it will only happen in intervals of the track's duration, even though the track is not audible.
 
-By default, a `track_live_loop` will listen for the CC you specify from any MIDI port and any MIDI channel. To specify a specific device, use the `cc_port` and `cc_channel` arguments or set a default with the `use_cc_control_defaults` method.
+By default, a `track_live_loop` with a `cc` parameter will listen for the CC you specify from any MIDI port and any MIDI channel. To specify a specific device, use the `cc_port` and `cc_channel` arguments or set a default with the `use_cc_control_defaults` method.
 
 Tracks start unmuted by default. You can use the `start_muted` parameter to change that (or `use_player_defaults` to set a global default).
 
