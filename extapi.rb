@@ -25,6 +25,9 @@ module ExtApi
     [
       # General helpers
       :puts,
+
+      # Randomness. These would be easy to replace with builtins, but we want to
+      # tie into Sonic Pi's seed functionality.
       :rand, :rand_i, :choose, :one_in,
 
       # Music theory
