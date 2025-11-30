@@ -124,7 +124,7 @@ class PlayerBase
     # Since they're immutable, Steps could theoretically be shared across
     # multiple slots in different tracks. So we need to hash based on enough
     # information to uniquely identify the step within the track.
-    [step.object_id, slot_idx, @track.object_id]
+    [step.object_id, slot_idx, @track.object_id].freeze
   end
 
   # Returns the current accumulation delta for the given step from the given
