@@ -56,32 +56,6 @@ class ExtApiTest < Test::Unit::TestCase
     end
   end
 
-  def assert_quantise(n, step, result, tol = 0.001)
-    assert_in_delta ExtApi.quantise(n, step), result, tol
-  end
-
-  def test_quantise
-    assert_quantise 10, 1, 10
-    assert_quantise 10, 0.5, 10
-    assert_quantise 10, 2, 10
-    assert_quantise 11, 2, 12
-    assert_quantise 1, 2, 2
-    assert_quantise 0.5, 2, 0
-    assert_quantise 1.5, 2, 2
-
-    assert_quantise 0.5, 0.5, 0.5
-    assert_quantise 0.5, 0.25, 0.5
-    assert_quantise 0.5, 0.2, 0.6
-    assert_quantise 0.5, 1, 1
-    assert_quantise 0.5, 2, 0
-
-    assert_quantise 11.25, 0.1, 11.3
-
-    assert_quantise(-1, 1, -1)
-    assert_quantise(-1, 0.5, -1)
-    assert_quantise(-1.25, 0.5, -1.5)
-  end
-
   def test_get_set
     assert_nil ExtApi.get(:key)
 

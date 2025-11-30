@@ -37,7 +37,7 @@ def __midi_val_to_range(midi_val, range, quantum: nil)
   return range.max if midi_val >= 127
 
   val = range.min + (range.max - range.min) * (midi_val / 127.0)
-  val = ExtApi.quantise(val, quantum) unless quantum.nil?
+  val = (val.to_f / quantum).round * quantum unless quantum.nil?
 
   val = range.max if val > range.max
   val = range.min if val < range.min

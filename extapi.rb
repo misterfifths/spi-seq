@@ -26,7 +26,6 @@ module ExtApi
       # General helpers
       :puts,
       :rand, :rand_i, :choose, :one_in,
-      :quantise,
 
       # Music theory
       :spread,
@@ -81,10 +80,6 @@ module ExtApiStubs
     def one_in(n)
       return false if n == 0
       Kernel.rand < (1 / n.to_f)
-    end
-
-    def quantise(n, step)
-      (n.to_f / step).round * step
     end
 
     def get(key = nil)
