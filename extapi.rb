@@ -55,6 +55,27 @@ module ExtApi
         m.call(*args, **kwargs, &block)
       end
     end
+
+    begin
+      Object.const_get("SonicPi::Core::SPVector")
+
+      # 'Enumerable' resolves to SonicPi::RuntimeMethods::Enumerable from within
+      # Sonic Pi, which e.g. Array does not have as a superclass. So we need to
+      # use ::Enumerable to get the built-in class.
+      # SPVector is the parent class of RingVector, from e.g. `ring` and
+      # `chord`, and potentially other list types in SP. It unfortunately does
+      # not derive from (either) Enumerable, so we need to check for it
+      # manually. You must make sure to call `to_a` on SPVectors before calling
+      # Enumerable methods on them!
+
+      def enumerable?(e)
+        e.is_a?(::Enumerable) || e.is_a?(SonicPi::Core::SPVector)
+      end
+    rescue NameError
+      def enumerable?(e)
+        e.is_a?(Enumerable)
+      end
+    end
   end
 end
 
@@ -97,20 +118,6 @@ module ExtApiStubs
     def set(key, val)
       @timespace_vals ||= {}
       @timespace_vals[key] = val
-    end
-  end
-end
-
-
-# TODO: figure out a better way to avoid unconditionally referencing this in
-# Track.
-begin
-  Object.const_get("SonicPi::Core::SPVector")
-rescue NameError
-  module SonicPi
-    module Core
-      class SPVector  # rubocop:disable Lint/EmptyClass
-      end
     end
   end
 end

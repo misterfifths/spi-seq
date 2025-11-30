@@ -294,8 +294,8 @@ class TrackBase
       # some number of other arrays (which we will take as a set of slots). This
       # behavior is pretty odd. But, it's somewhat in keeping with set_slot, and
       # having the ability to expand one slot into multiple here is nice...
-      replacement = [replacement] unless replacement.is_a?(::Enumerable) || replacement.is_a?(SonicPi::Core::SPVector)
-      is_gridish = replacement.any? { |e| e.is_a?(::Enumerable) || e.is_a?(SonicPi::Core::SPVector) }
+      replacement = [replacement] unless ExtApi.enumerable?(replacement)
+      is_gridish = replacement.any? { |e| ExtApi.enumerable?(e) }
 
       if is_gridish
         new_grid += self.class.gridify(replacement)

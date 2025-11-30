@@ -126,13 +126,12 @@ class CCTrack < TrackBase
   #      warning is printed, and only the CCStep with the highest value is
   #      chosen.
   def self.slotify(x)
-    return [].freeze if MIDINote.rest?(x)
-
-    case x
-    when CCStep
+    if MIDINote.rest?(x)
+      [].freeze
+    elsif x.is_a?(CCStep)
       [x].freeze
-    # See the note in Track.slotify about these class selections.
-    when ::Enumerable, SonicPi::Core::SPVector
+    elsif ExtApi.enumerable?(x)
+      # See the note in ExtApi about why we need to explicitly call to_a here.
       raw_slot = x.to_a.reject { |s| MIDINote.rest?(s) }.map { |s| stepify(s) }
       dedupe_slot(raw_slot).freeze
     else
@@ -147,13 +146,12 @@ class CCTrack < TrackBase
   # - Array-like arguments are converted by passing each element through
   #   `slotify`.
   def self.gridify(x)
-    return [[].freeze].freeze if MIDINote.rest?(x)
-
-    case x
-    when CCStep
+    if MIDINote.rest?(x)
+      [[].freeze].freeze
+    elsif x.is_a?(CCStep)
       [[x].freeze].freeze
-    # See the note in Track.slotify about these class selections.
-    when ::Enumerable, SonicPi::Core::SPVector
+    elsif ExtApi.enumerable?(x)
+      # See the note in ExtApi about why we need to explicitly call to_a here.
       x.to_a.map { |s| slotify(s) }.freeze
     else
       raise "Not a valid value for a grid: #{x.inspect}"
