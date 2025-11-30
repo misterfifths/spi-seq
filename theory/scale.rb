@@ -5,6 +5,9 @@ require_relative "interval"
 require_relative "midinote"
 
 
+# TODO: support interval-ish notation to `degree`, add back Arp.arp_degrees
+
+
 # Creates a new scale with the given name, starting on the given tonic, and
 # spanning a certain number of octaves. Shortcut for Scale.new.
 def SC(tonic, name, num_octaves: 1, clamp_to_midi: false)

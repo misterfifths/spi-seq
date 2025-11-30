@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "../extapi"
 require_relative "midinote"
 
 module Arp
@@ -17,21 +16,6 @@ module Arp
   Valley = :valley
   Random = :random
   Order = :order
-
-  # See https://www.reddit.com/r/musictheory/comments/1clent8/names_for_common_arpeggio_patterns
-  module DegreePatterns
-    OneThreeFive = [1, 3, 5].freeze
-    OneThreeFiveThree = [1, 3, 5, 3].freeze
-    Alberti = [1, 5, 3, 5].freeze
-    AlbertiFirstInv = [3, 8, 5, 8].freeze
-    AlbertiSecondInv = [5, 10, 8, 10].freeze
-    AlbertiSeventh = [1, 7, 3, 7].freeze
-    OpenPosition = [1, 5, 10].freeze
-    OneOctave = [1, 3, 5, 8].freeze
-    OneOctaveFirstInv = [3, 5, 8, 10].freeze
-    OneOctaveSecondInv = [5, 8, 10, 12].freeze
-    TwoOctaveBroken = [1, 5, 3, 8, 5, 10, 8, 12, 10, 15].freeze
-  end
 
   # Returns an array of MIDINotes by arpeggiating the given array of notes.
   # direction should be one of the constants in the Arp module.
@@ -115,12 +99,6 @@ module Arp
     end
 
     notes
-  end
-
-  # Arpeggiate the given degrees of the tonic note in the given scale.
-  def self.arp_degrees(tonic, degrees, direction = Arp::Order, scale: :major, spread: 0, extra_octaves: [])
-    notes = degrees.map { |d| ExtApi.degree(d, tonic, scale) }
-    arpeggiate(notes, direction, spread: spread, extra_octaves: extra_octaves)
   end
 
 

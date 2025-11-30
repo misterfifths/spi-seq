@@ -29,7 +29,6 @@ module ExtApi
       :quantise,
 
       # Music theory
-      :degree,
       :spread,
 
       # Internal synth playback & effects
