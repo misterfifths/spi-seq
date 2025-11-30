@@ -165,29 +165,40 @@ class PlayerBase
     return unless step_accum_should_trigger?(step, slot_idx)
 
     delta = data[:delta] + data[:direction] * step.accum_delta
-    if delta < step.accum_min
+    if delta <= step.accum_min
       case step.accum_mode
       when :freeze
         delta = step.accum_min
       when :reverse
+        # Always reverse direction, but only immediately apply a reversal if we
+        # already stepped below the min. If we are exactly at the minimum, then
+        # do not change the delta and wait for the next accumulation to take the
+        # first step in the right direction.
         data[:direction] *= -1
-        delta += data[:direction] * step.accum_delta
+        delta += data[:direction] * step.accum_delta if delta < step.accum_min
       when :wrap
-        # We know accum_min <= accum_delta <= accum_max, so we don't need to
-        # worry about modding to get the overage here; we can just subtract.
-        overage = step.accum_min - delta
-        delta = step.accum_max - overage
+        # Again, only actually start wrapping if we already stepped below the
+        # min. The next accumulation will take delta below the min and handle
+        # the first wrap.
+        if delta < step.accum_min
+          # We know accum_min <= accum_delta <= accum_max, so we don't need to
+          # worry about modding to get the overage here; we can just subtract.
+          overage = step.accum_min - delta
+          delta = step.accum_max - overage
+        end
       end
-    elsif delta > step.accum_max
+    elsif delta >= step.accum_max
       case step.accum_mode
       when :freeze
         delta = step.accum_max
       when :reverse
         data[:direction] *= -1
-        delta += data[:direction] * step.accum_delta
+        delta += data[:direction] * step.accum_delta if delta > step.accum_max
       when :wrap
-        overage = delta - step.accum_max
-        delta = step.accum_min + overage
+        if delta > step.accum_max
+          overage = delta - step.accum_max
+          delta = step.accum_min + overage
+        end
       end
     end
 
