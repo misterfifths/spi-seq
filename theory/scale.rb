@@ -151,10 +151,11 @@ class Scale
     scale = @full_scale_cache[key]
     return scale unless scale.nil?
 
-    # Note 0 is c-1, and 127 is g9, so if we do 11 octaves from -1, we'll cover
+    # Note 0 is c-1, and 127 is g9. So we need to start at octave -2 to ensure
+    # we hit all possibilities for the scale, and do 12 total octaves to cover
     # the whole MIDI range.
-    low_tonic = tonic.with_octave(-1)
-    scale = new(low_tonic, scale_name, num_octaves: 11, clamp_to_midi: true)
+    low_tonic = tonic.with_octave(-2)
+    scale = new(low_tonic, scale_name, num_octaves: 12, clamp_to_midi: true)
     @full_scale_cache[key] = scale
     scale
   end
@@ -230,7 +231,7 @@ class Scale
   end
 
   def repr
-    if @tonic.octave == -1 && @num_octaves == 11 && @clamp_to_midi
+    if @tonic.octave == -2 && @num_octaves == 12 && @clamp_to_midi
       return "Scale.full_scale(:#{@tonic.pitch_class}, :#{@name})"
     end
 

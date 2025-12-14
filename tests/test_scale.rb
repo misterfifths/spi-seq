@@ -33,6 +33,11 @@ class ScaleTest < Test::Unit::TestCase
       assert n >= 0
       assert n <= 127
     end
+
+    # A scale that starts on B should contain notes below :b-1.
+    sc = Scale.full_scale(:b, :major)
+    assert_equal sc[0], :"cs-1"
+    assert_equal sc[-1], :fs9
   end
 
   def test_degree_methods
