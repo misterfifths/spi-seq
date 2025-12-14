@@ -154,7 +154,9 @@ class Scale
     # Note 0 is c-1, and 127 is g9, so if we do 11 octaves from -1, we'll cover
     # the whole MIDI range.
     low_tonic = tonic.with_octave(-1)
-    new(low_tonic, scale_name, num_octaves: 11, clamp_to_midi: true)
+    scale = new(low_tonic, scale_name, num_octaves: 11, clamp_to_midi: true)
+    @full_scale_cache[key] = scale
+    scale
   end
 
 
