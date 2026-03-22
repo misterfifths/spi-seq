@@ -741,6 +741,12 @@ class TrackBase
 
   alias set_slot replace_slot
 
+  # Returns a new track with all steps in slot `idx` removed (i.e., the slot is
+  # turned into a rest)
+  def clear_slot(idx)
+    replace_slot(idx, [])
+  end
+
   # Returns a new track with the given steps appended to slot `idx`.
   def append_slot(idx, new_steps)
     new_slot = @grid[idx] + self.class.slotify(new_steps)
