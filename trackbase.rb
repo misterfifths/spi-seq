@@ -122,7 +122,7 @@ class TrackBase
     hits.rotate!(rotate) if rotate != 0
     hits.map! { |hit| !hit } if invert
 
-    gridish = self.class.gridify(gridish)
+    gridish = gridify(gridish)
 
     # If we're doing a full cycle, we may need multiple copies of the Euclidean
     # pattern to complete a perfect loop. If we're spreading n slots over p
