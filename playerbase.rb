@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "extapi"
-require_relative "track"
+require_relative "trackbase"
 
 
 # TODO: playhead direction - mostly just a matter of how we move the slot index
