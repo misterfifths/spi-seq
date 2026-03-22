@@ -22,8 +22,6 @@ class VoicedChord
   def_delegators :@notes, :each, :[], :slice, :length, :size, :last, :to_a, :to_ary, :values_at
 
 
-  # TODO: double voicings that go up an octave
-
   VOICING_DEFS = {
     %i[closed]                  => :voice_closed,
     %i[rootless]                => :voice_rootless,
@@ -37,12 +35,30 @@ class VoicedChord
     %i[drop_three_four drop_3_4
        drop34]                  => ->(intervals, root) { voice_drop(intervals, root, 3, 4) },
     %i[drop_four drop_4 drop4]  => ->(intervals, root) { voice_drop(intervals, root, 4) },
-    %i[double_root]             => :voice_double_root,
-    %i[double_bass]             => :voice_double_bass,
+    %i[double_root
+       double_root_down]        => ->(intervals, root) { voice_double_root(intervals, root, -12) },
+    %i[double_root_up]          => ->(intervals, root) { voice_double_root(intervals, root, 12) },
+    %i[double_bass
+       double_bass_down]        => ->(intervals, root) { voice_double_bass(intervals, root, -12) },
+    %i[double_bass_up]          => ->(intervals, root) { voice_double_bass(intervals, root, 12) },
     %i[double_third double_three
-       double_3 double3]        => ->(intervals, root) { voice_double_interval_num(intervals, root, 3) },
+       double_3 double3
+       double_third_down
+       double_three_down
+       double_3_down
+       double3_down]            => ->(intervals, root) { voice_double_interval_num(intervals, root, 3, -12) },
+    %i[double_third_up
+       double_three_up
+       double_3_up double3_up]  => ->(intervals, root) { voice_double_interval_num(intervals, root, 3, 12) },
     %i[double_fifth double_five
-       double_5 double5]        => ->(intervals, root) { voice_double_interval_num(intervals, root, 5) },
+       double_5 double5
+       double_fifth_down
+       double_five_down
+       double_5_down
+       double5_down]            => ->(intervals, root) { voice_double_interval_num(intervals, root, 5, -12) },
+    %i[double_fifth_up
+       double_five_up
+       double_5_up double5_up]  => ->(intervals, root) { voice_double_interval_num(intervals, root, 5, 12) },
     %i[open]                    => :voice_open,
     %i[open2]                   => :voice_open2,
     %i[open3]                   => :voice_open3
@@ -142,34 +158,34 @@ class VoicedChord
     notes
   end
 
-  # Doubles the root note, an octave down.
-  private_class_method def self.voice_double_root(intervals, root)
+  # Doubles the root note, offset by the given number of semitones.
+  private_class_method def self.voice_double_root(intervals, root, shift)
     notes = voice_closed(intervals, root)
-    notes.append(root - 12) if notes.include?(root)
+    notes.append(root + shift) if notes.include?(root)
     notes.sort!
     notes.uniq!
     notes
   end
 
-  # Doubles the lowest note in the closed voicing, an octave down. Note that
-  # this will be equivalent to doubling the root note unless there's an
-  # inversion.
-  private_class_method def self.voice_double_bass(intervals, root)
+  # Doubles the lowest note in the closed voicing, offset by the given number of
+  # semitones. Note that this will be equivalent to doubling the root note
+  # unless there's an inversion.
+  private_class_method def self.voice_double_bass(intervals, root, shift)
     notes = voice_closed(intervals, root)
-    notes.append(notes[0] - 12)
+    notes.append(notes[0] + shift)
     notes.sort!
     notes.uniq!
     notes
   end
 
   # Doubles the note corresponding to the given interval number (in any
-  # alteration), an octave down. Equivalent to a closed voicing if there is no
-  # such interval in the chord.
-  private_class_method def self.voice_double_interval_num(intervals, root, doubled_num)
+  # alteration), offset by the given number of semitones. Equivalent to a closed
+  # voicing if there is no such interval in the chord.
+  private_class_method def self.voice_double_interval_num(intervals, root, doubled_num, shift)
     notes = []
     intervals.each do |i|
       notes << root + i
-      notes << root + i - 12 if i.expressible_as(doubled_num)
+      notes << root + i + shift if i.expressible_as(doubled_num)
     end
     notes.sort!
     notes.uniq!
