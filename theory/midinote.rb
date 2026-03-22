@@ -29,9 +29,17 @@ end
 class MIDINote < Numeric
   # See https://github.com/sonic-pi-net/sonic-pi/blob/714d33316620d46d6815e554f17c5a76e4967471/app/server/ruby/lib/sonicpi/note.rb#L65
   NOTE_REGEX = /^:?(?<pitch_class>[a-g][sbf]?)(?<octave>-?\d*)$/i.freeze
+  private_constant :NOTE_REGEX
+
+  # Order is significant, both in the subarrays and the array as a whole. The
+  # pitch classes must be in ascending order starting with C. And within each
+  # pitch class array, the first element is the canonical representation of that
+  # class (e.g. :db will be normalized to :cs because :cs is the first element
+  # of the corresponding array).
   NOTE_NAMES = [[:c, :bs], [:cs, :db, :df], [:d], [:ds, :eb, :ef], [:e, :fb, :ff], [:f, :es],
                 [:fs, :gb, :gf], [:g], [:gs, :ab, :af], [:a], [:as, :bb, :bf], [:b, :cb, :cf]].freeze
   NOTE_NAMES.each { |names| names.freeze }
+  private_constant :NOTE_NAMES
 
   attr_reader :pitch_class, :number, :octave
 
