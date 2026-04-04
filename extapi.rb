@@ -38,7 +38,7 @@ module ExtApi
       :with_fx, :control, :set_mixer_control!,
 
       # MIDI
-      :midi, :midi_cc, :midi_pc, :midi_sysex, :midi_start, :midi_stop,
+      :midi, :midi_cc, :midi_sysex, :midi_start, :midi_stop,
       :midi_note_on, :midi_note_off, :midi_all_notes_off, :midi_sound_off,
       :midi_clock_beat,
 
