@@ -948,6 +948,8 @@ class Track < TrackBase
   end
 
   alias sub sub_note
+  alias replace_note sub_note
+  alias replace sub_note
 
   # Returns a new Track, applying controlled random mutations to each Step. The
   # probability that any given mutation will apply to a Step is given by the `p`
