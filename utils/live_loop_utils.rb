@@ -110,6 +110,13 @@ def __resolve_cc_port_and_channel(port, channel)
   [port, channel]
 end
 
+def __resolve_midi_port_and_channel(port, channel)
+  defaults = ExtApi.current_midi_defaults || {}
+  port = defaults[:port] || "*" if port.nil?
+  channel = defaults[:channel] || "*" if channel.nil?
+  [port, channel]
+end
+
 # Starts a new live_loop that can be muted by a MIDI CC message with the given
 # CC number. A value of 0 for the CC will mute, and any other value will unmute.
 # What 'mute' means must be implemented by the given block; this function merely
