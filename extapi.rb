@@ -41,14 +41,17 @@ module ExtApi
       :midi, :midi_cc, :midi_sysex, :midi_start, :midi_stop,
       :midi_note_on, :midi_note_off, :midi_all_notes_off, :midi_sound_off,
       :midi_clock_beat,
+      :current_midi_defaults,
 
       # Timestate and live loops
       :live_loop, :in_thread, :sleep,
+      :current_bpm,
       :vt,
       :time_warp,
       :use_real_time, :with_real_time, :with_bpm_mul,
       :get, :set,
-      :cue, :sync
+      :cue, :sync,
+      :get_event  # undocumented; see TrackRecorder for some notes
     ].each do |fwd|
       define_method(fwd) do |*args, **kwargs, &block|
         m = @spi.nil? ? ExtApiStubs.method(fwd) : @spi.method(fwd)

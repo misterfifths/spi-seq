@@ -20,6 +20,7 @@ require_relative "prob"
 require_relative "step"
 require_relative "track"
 require_relative "player"
+require_relative "trackrecorder"
 
 require_relative "ccstep"
 require_relative "cctrack"
