@@ -189,7 +189,8 @@ class TrackBase
   ### Etc.
 
   def repr(group: 8)
-    slot_line_indent = "  "
+    ctor_invocation = "#{self.class.name}.new(["
+    slot_line_indent = " " * ctor_invocation.length
 
     slot_reprs = @grid.map do |slot|
       if slot.empty?
@@ -207,7 +208,6 @@ class TrackBase
       grouped_slot_reprs = slot_reprs.each_slice(group).to_a
     end
 
-    slot_repr_lines = grouped_slot_reprs.length
     total_slot_repr = grouped_slot_reprs.map { |chunk| chunk.join(", ") }.join(",\n#{slot_line_indent}")
 
     ctor_args = {}
@@ -223,11 +223,7 @@ class TrackBase
       kwargs = ", " + ctor_args.map { |k, v| "#{k}: #{v}" }.join(", ")  # rubocop:disable Style/StringConcatenation
     end
 
-    if slot_repr_lines > 1
-      "#{self.class.name}.new([\n#{slot_line_indent}#{total_slot_repr}\n]#{kwargs})"
-    else
-      "#{self.class.name}.new([#{total_slot_repr}]#{kwargs})"
-    end
+    "#{ctor_invocation}#{total_slot_repr}]#{kwargs})"
   end
 
   def inspect
