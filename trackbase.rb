@@ -226,6 +226,11 @@ class TrackBase
     "#{ctor_invocation}#{total_slot_repr}]#{kwargs})"
   end
 
+  # Copies the repr of this track to the clipboard.
+  def copy_repr
+    Clipboard.copy(repr)
+  end
+
   def inspect
     res = "#{self.class.name} slots=#{num_slots} granularity=#{granularity} timescale=#{timescale} grid:\n"
     @grid.each_with_index do |slot, i|
