@@ -105,7 +105,23 @@ class StepBase
     @accum_prob.should_trigger?(cycle, fill, self, effective_note, prev_notes)
   end
 
-  def repr
+  def repr(float_digits: 2)
+    stringify = lambda do |val|
+      if val.respond_to?(:repr)
+        val.repr
+      elsif val.is_a?(Symbol)
+        ":#{val}"
+      elsif val.is_a?(Float)
+        if val == val.to_i
+          val.to_i.to_s
+        else
+          format("%.*f", float_digits, val).delete_suffix("0")
+        end
+      else
+        val.to_s
+      end
+    end
+
     args = ctor_args.map do |arg_name|
       raw_val = send(arg_name)
       raw_val.respond_to?(:repr) ? raw_val.repr : raw_val.to_s
@@ -115,7 +131,7 @@ class StepBase
     ctor_kwargs.each do |kwarg, defval|
       raw_val = send(kwarg)
       next if raw_val == defval
-      kwargs[kwarg] = raw_val.respond_to?(:repr) ? raw_val.repr : raw_val.to_s
+      kwargs[kwarg] = stringify.call(raw_val)
     end
 
     accum_args = {}
@@ -123,17 +139,8 @@ class StepBase
       accum_kwargs.each do |kwarg, defval|
         raw_val = send(kwarg)
         next if raw_val == defval
-
-        if raw_val.respond_to?(:repr)
-          repr_val = raw_val.repr
-        elsif raw_val.is_a?(Symbol)
-          repr_val = ":#{raw_val}"
-        else
-          repr_val = raw_val.to_s
-        end
-
         accum_kwarg_name = kwarg.to_s.delete_prefix("accum_").to_sym
-        accum_args[accum_kwarg_name] = repr_val
+        accum_args[accum_kwarg_name] = stringify.call(raw_val)
       end
     end
 
@@ -163,6 +170,10 @@ class StepBase
     end
 
     res
+  end
+
+  def inspect
+    repr
   end
 
 
