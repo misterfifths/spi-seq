@@ -44,3 +44,20 @@ def filter_kwargs_for_proc(proc, kwargs)
   key_args = params.filter { |p| [:key, :keyreq].member?(p[0]) }.map { |p| p[1] }
   kwargs.filter { |k, _| key_args.member?(k) }
 end
+
+module Clipboard
+  # Copies the given string to the clipboard. Only supported on macOS.
+  def self.copy(s)
+    IO.popen("/usr/bin/pbcopy", "w") do |pipe|
+      pipe.print(s)
+      pipe.close_write
+    end
+  end
+
+  # Returns the contents of the clipboard as a string. Only supported on macOS.
+  def self.paste
+    IO.popen("/usr/bin/pbpaste", "r") do |pipe|
+      return pipe.read
+    end
+  end
+end
