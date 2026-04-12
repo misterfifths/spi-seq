@@ -144,13 +144,10 @@ module TrackRecorder
     secs_per_beat = 1.0 / beats_per_sec
     secs_per_slot = secs_per_beat * granularity.to_f
 
-    # TODO: I imagine with nil start/end times, the math is such that you may
-    # sometimes end up with rests at the beginning or end of the track, despite
-    # picking the values from the timeline. If we want to guarantee no rests
-    # (which I think we do), do we need to do a final trim pass? (TrackBase
-    # can easily grow methods for that.)
-    start_time = timeline.min_by { |entry| entry[1] }[1] if start_time.nil?
-    end_time = timeline.max_by { |entry| entry[2] }[2] if end_time.nil?
+    trim_start = start_time.nil?
+    trim_end = end_time.nil?
+    start_time = timeline.min_by { |entry| entry[1] }[1] if trim_start
+    end_time = timeline.max_by { |entry| entry[2] }[2] if trim_end
     duration = end_time - start_time
 
     total_track_gate = gates_for_duration(duration, secs_per_slot,
@@ -173,7 +170,15 @@ module TrackRecorder
                         min_gate: min_gate, quantize_gates: quantize_gates)
     end
 
-    Track.new(slots, granularity: granularity)
+    t = Track.new(slots, granularity: granularity)
+
+    # I imagine, with rounding error, it's possible that we still wind up with
+    # rests at either end of the track if one of the endpoints is nil. Trim the
+    # final track just in case.
+    t = t.ltrim if trim_start
+    t = t.rtrim if trim_end
+
+    t
   end
 
   # Records a timeline of note events, suitable for use with timeline_to_track.
