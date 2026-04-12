@@ -8,9 +8,8 @@ require_relative "extapi"
 require_relative "utils/live_loop_utils"
 
 module TrackRecorder
-  # TODO: probably this is overkill? can just do (a - b) < 0.01 or something?
-  private_class_method def self.lt_threshold(val, threshold, digits = 2)
-    (val.to_f.round(digits) - threshold.to_f.round(digits)).round(digits) < 0
+  private_class_method def self.float_lt(a, b, threshold = 0.01)
+    (a - b) < threshold
   end
 
   # Return a description of the total length in steps for a duration in seconds,
@@ -44,12 +43,12 @@ module TrackRecorder
     tied_steps = 0
     final_gate = 0.0
 
-    if lt_threshold(total_gate, 1.0)
+    if float_lt(total_gate, 1.0)
       tied_steps = 0
       final_gate = total_gate
 
       # Only going to be one slot, so round up if we need to.
-      final_gate = min_gate if lt_threshold(final_gate, min_gate)
+      final_gate = min_gate if float_lt(final_gate, min_gate)
     else
       # If we happened to be very close to the threshold for 1.0, but not quite,
       # round up.
@@ -59,7 +58,7 @@ module TrackRecorder
       final_gate = total_gate - total_gate.to_i
 
       # If the gate in the final step would be too small, drop it.
-      final_gate = 0.0 if lt_threshold(final_gate, min_gate)
+      final_gate = 0.0 if float_lt(final_gate, min_gate)
     end
 
     final_gate = (final_gate / min_gate).round * min_gate if quantize
