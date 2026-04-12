@@ -100,6 +100,10 @@ def use_cc_control_defaults(port: nil, channel: nil)
   ExtApi.set(:__cc_control_defaults, { port: port, channel: channel })
 end
 
+# Given values for a MIDI port and channel, returns an array [port, channel]
+# either of which is either the given value if it is not nil, the default set
+# via use_cc_control_defaults, or the wildcard "*" if no defaults are set, in
+# that order.
 def __resolve_cc_port_and_channel(port, channel)
   # TODO: it would be good to fall back to defaults here, but it's a little
   # tricky - we do need actual port and channel strings so we can construct
@@ -110,6 +114,9 @@ def __resolve_cc_port_and_channel(port, channel)
   [port, channel]
 end
 
+# Resolves a MIDI port and channel in the same manner as
+# __resolve_cc_port_and_channel, except it considers the values set by Sonic
+# Pi's use_midi_defaults instead of use_cc_control_defaults.
 def __resolve_midi_port_and_channel(port, channel)
   defaults = ExtApi.current_midi_defaults || {}
   port = defaults[:port] || "*" if port.nil?
