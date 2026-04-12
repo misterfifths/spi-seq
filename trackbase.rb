@@ -547,6 +547,27 @@ class TrackBase
     mutate(grid: @grid.reject { |slot| slot.empty? })
   end
 
+  # Returns a new track with all empty slots (rests) removed from the beginning
+  # of this track. Raises an exception if this would result in an empty track.
+  def ltrim
+    mutate(grid: @grid.drop_while { |slot| slot.empty? })
+  end
+
+  # Returns a new track with all empty slots (rests) removed from the end of
+  # this track. Raises an exception if this would result in an empty track.
+  def rtrim
+    # We could obviously be more clever about this but I'm feeling lazy.
+    new_grid = @grid.reverse.drop_while { |slot| slot.empty? }.reverse!
+    mutate(grid: new_grid)
+  end
+
+  # Returns a new track with all empty slots (rests) removed from the beginning
+  # and the end of this track. Raises an exception if this would result in an
+  # empty track.
+  def trim
+    ltrim.rtrim
+  end
+
   # Returns a new track with the slots of this track in reverse order.
   def reverse
     mutate(grid: @grid.reverse)

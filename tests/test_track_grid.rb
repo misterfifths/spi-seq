@@ -211,6 +211,18 @@ class TrackGridTest < Test::Unit::TestCase
     assert_raises { Track.rest.compact }
   end
 
+  def test_trim
+    t = T([:r, :r, :a1, :b2, :r, :c3, :r, :r, :r])
+
+    assert_grid t.ltrim, [[:a1], [:b2], [], [:c3], [], [], []]
+    assert_grid t.rtrim, [[], [], [:a1], [:b2], [], [:c3]]
+    assert_grid t.trim, [[:a1], [:b2], [], [:c3]]
+
+    assert_raises { Track.rest(2).ltrim }
+    assert_raises { Track.rest(2).rtrim }
+    assert_raises { Track.rest(2).trim }
+  end
+
   def test_reverse
     assert_grid T(:c4).rev, [[:c4]]
     assert_grid T([:a1, :b2]).rev, [[:b2], [:a1]]
