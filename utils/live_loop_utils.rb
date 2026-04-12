@@ -100,30 +100,6 @@ def use_cc_control_defaults(port: nil, channel: nil)
   ExtApi.set(:__cc_control_defaults, { port: port, channel: channel })
 end
 
-# Given values for a MIDI port and channel, returns an array [port, channel]
-# either of which is either the given value if it is not nil, the default set
-# via use_cc_control_defaults, or the wildcard "*" if no defaults are set, in
-# that order.
-def __resolve_cc_port_and_channel(port, channel)
-  # TODO: it would be good to fall back to defaults here, but it's a little
-  # tricky - we do need actual port and channel strings so we can construct
-  # the name of the control_change event we want to sync to.
-  defaults = ExtApi.get(:__cc_control_defaults) || {}
-  port = defaults[:port] || "*" if port.nil?
-  channel = defaults[:channel] || "*" if channel.nil?
-  [port, channel]
-end
-
-# Resolves a MIDI port and channel in the same manner as
-# __resolve_cc_port_and_channel, except it considers the values set by Sonic
-# Pi's use_midi_defaults instead of use_cc_control_defaults.
-def __resolve_midi_port_and_channel(port, channel)
-  defaults = ExtApi.current_midi_defaults || {}
-  port = defaults[:port] || "*" if port.nil?
-  channel = defaults[:channel] || "*" if channel.nil?
-  [port, channel]
-end
-
 # Starts a new live_loop that can be muted by a MIDI CC message with the given
 # CC number. A value of 0 for the CC will mute, and any other value will unmute.
 # What 'mute' means must be implemented by the given block; this function merely
@@ -134,20 +110,12 @@ end
 # Any additional named arguments (e.g. sync: or init:) to this function are
 # passed verbatim to the internal live_loop.
 def cc_mutable_live_loop(loop_name, cc:, port: nil, channel: nil, start_muted: false, **kwargs, &block)
-  port, channel = __resolve_cc_port_and_channel(port, channel)
-
-  cc_watcher_loop_name = :"__#{loop_name}_cc_mute_watcher"
-  ExtApi.live_loop(cc_watcher_loop_name) do
-    ExtApi.use_real_time
-
-    # TODO: could support arrays of ports/channels by constructing {x,y,z}-style
-    # strings for the path here.
-    incoming_cc, cc_val = ExtApi.sync("/midi:#{port}:#{channel}/control_change")
-    if incoming_cc == cc
-      muted = cc_val == 0
-      ExtApi.puts("[cc mute control] CC #{cc} = #{cc_val} -> #{muted ? '' : 'un'}muting live loop #{loop_name}")
-      mute_live_loop(loop_name, muted)
-    end
+  cc_watcher_live_loop(:"__#{loop_name}_cc_mute_watcher",
+                       port: port, channel: channel) do |incoming_cc, cc_val|
+    next if incoming_cc != cc
+    muted = cc_val == 0
+    ExtApi.puts("[cc mute control] CC #{cc} = #{cc_val} -> #{muted ? '' : 'un'}muting live loop #{loop_name}")
+    mute_live_loop(loop_name, muted)
   end
 
   # Only send a CC for the start_muted value if this is a fresh definition of

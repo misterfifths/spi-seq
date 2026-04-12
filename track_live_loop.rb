@@ -153,19 +153,12 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
 
   fill_cc = player_defaults[:fill_cc] if fill_cc.nil?
   if fill_cc
-    cc_port, cc_channel = __resolve_cc_port_and_channel(cc_port, cc_channel)
-    cc_watcher_loop_name = :"__#{loop_name}_cc_fill_watcher"
+    cc_watcher_live_loop(:"__#{loop_name}_cc_fill_watcher",
+                         port: cc_port, channel: cc_channel) do |incoming_cc, cc_val|
+      next if incoming_cc != fill_cc
 
-    ExtApi.live_loop(cc_watcher_loop_name) do
-      ExtApi.use_real_time
-
-      # TODO: could support arrays of ports/channels by constructing {x,y,z}-style
-      # strings for the path here.
-      incoming_cc, cc_val = ExtApi.sync("/midi:#{cc_port}:#{cc_channel}/control_change")
-      if incoming_cc == fill_cc
-        player.fill = cc_val != 0
-        ExtApi.puts("[cc fill control] CC #{cc} = #{cc_val} -> #{player.fill ? '' : 'un'}setting fill for live loop #{loop_name}")
-      end
+      player.fill = cc_val != 0
+      ExtApi.puts("[cc fill control] CC #{cc} = #{cc_val} -> #{player.fill ? '' : 'un'}setting fill for live loop #{loop_name}")
     end
 
     # Don't send a 0 fill CC for restarts of the same sketch.
