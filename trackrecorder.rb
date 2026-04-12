@@ -5,7 +5,7 @@ require_relative "step"
 require_relative "theory/notelength"
 require_relative "theory/midinote"
 require_relative "extapi"
-require_relative "utils/live_loop_utils"
+require_relative "utils/midi_utils"
 
 module TrackRecorder
   private_class_method def self.float_lt(a, b, threshold = 0.01)
