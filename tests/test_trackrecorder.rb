@@ -173,6 +173,47 @@ class TrackRecorderTest < Test::Unit::TestCase
                                         bpm: bpm, granularity: granularity,
                                         start_time: 0)
     assert_grid t, [[], [:a1], [:a1]]
+
+    # snaps up to a step, end time is small enough that it needs rounding up
+    # to min_gate
+    timeline = [[:a1, 0.75, 1.1, 127]]
+    t = TrackRecorder.timeline_to_track(timeline,
+                                        bpm: bpm, granularity: granularity,
+                                        start_time: 0, min_gate: 0.2)
+    assert_grid t, [[], [S(:a1, gate: 0.2)]]
+
+    # but with a set end time, that can't happen and we'll just lose the event.
+    # TODO: anything to do about that?
+    timeline = [[:a1, 0.75, 1.1, 127], [:b1, 0, 1, 127]]
+    t = TrackRecorder.timeline_to_track(timeline,
+                                        bpm: bpm, granularity: granularity,
+                                        start_time: 0, end_time: 1.1,
+                                        min_gate: 0.2)
+    assert_grid t, [[:b1]]
+
+    # snaps up to a step, which results in technically 0 duration; should get
+    # rounded up to min_gate though.
+    timeline = [[:a1, 0.75, 1.0, 127]]
+    t = TrackRecorder.timeline_to_track(timeline,
+                                        bpm: bpm, granularity: granularity,
+                                        start_time: 0, min_gate: 0.2)
+    assert_grid t, [[], [S(:a1, gate: 0.2)]]
+
+    # but again, with a fixed end time, that event will just get dropped
+    timeline = [[:a1, 0.75, 1.0, 127], [:b1, 0, 1, 127]]
+    t = TrackRecorder.timeline_to_track(timeline,
+                                        bpm: bpm, granularity: granularity,
+                                        start_time: 0, end_time: 1.0,
+                                        min_gate: 0.2)
+    assert_grid t, [[:b1]]
+
+    # snapping to a step results in a start time that is past the end time;
+    # we should snap to min_gate
+    timeline = [[:a1, 0.75, 0.8, 127]]
+    t = TrackRecorder.timeline_to_track(timeline,
+                                        bpm: bpm, granularity: granularity,
+                                        start_time: 0, min_gate: 0.2)
+    assert_grid t, [[], [S(:a1, gate: 0.2)]]
   end
 
   def test_secs_per_slot

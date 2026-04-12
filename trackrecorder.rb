@@ -31,14 +31,14 @@ module TrackRecorder
   # return would be [15, 0.01], but min_gate is 0.1, the function will return
   # [15, 0] instead. But if the return would be just [0, 0.01] and the min_gate
   # is 0.1, the function will return [0, 0.1]. This ensures that very short
-  # durations are not lost entirely. This function only returns [0, 0.0] if the
-  # duration is 0.
+  # durations are not lost entirely. The function always returns [0, min_gate]
+  # for a duration of 0.
   #
   # If quantize is true, the second element of the return will be rounded up to
   # the nearest multiple of min_gate.
   private_class_method def self.gates_for_duration(duration, secs_per_slot,
                                                    min_gate: 0.1, quantize: true)
-    return [0, 0.0] if duration == 0
+    return [0, min_gate] if duration == 0
 
     total_gate = duration.to_f / secs_per_slot
     tied_steps = 0
@@ -86,6 +86,12 @@ module TrackRecorder
     start_time = secs_per_slot * start_slot
     duration = end_time - start_time
 
+    # It's possible that we just snapped past the event's end time.
+    duration = 0 if duration < 0
+
+    # If we wound up with a zero duration from the snapping, gates_for_duration
+    # will give it min_gate.
+
     tied_steps, final_gate = gates_for_duration(duration, secs_per_slot,
                                                 min_gate: min_gate, quantize: quantize_gates)
 
@@ -97,7 +103,11 @@ module TrackRecorder
     end
 
     if final_gate > 0
-      slots[start_slot + tied_steps] << Step.new(note, vel: velocity, gate: final_gate)
+      if (start_slot + tied_steps) >= slots.length
+        ExtApi.puts("warning: dropping a note that would go past the end of the track")
+      else
+        slots[start_slot + tied_steps] << Step.new(note, vel: velocity, gate: final_gate)
+      end
     end
   end
 
@@ -147,7 +157,14 @@ module TrackRecorder
     trim_start = start_time.nil?
     trim_end = end_time.nil?
     start_time = timeline.min_by { |entry| entry[1] }[1] if trim_start
-    end_time = timeline.max_by { |entry| entry[2] }[2] if trim_end
+    if trim_end
+      # If we don't have a strict end time, be a little generous and add time
+      # for an additional slot to allow events that would get snapped up to the
+      # next slot and then need their duration rounded to play out. E.g. if we
+      # have 1s/slot and something goes from 0.5 - 1, we want to let that snap
+      # to slot 1 and get min_gate. We'll trim the excess later.
+      end_time = timeline.max_by { |entry| entry[2] }[2] + secs_per_slot
+    end
     duration = end_time - start_time
 
     total_track_gate = gates_for_duration(duration, secs_per_slot,
@@ -184,9 +201,10 @@ module TrackRecorder
 
     t = Track.new(slots, granularity: granularity)
 
-    # I imagine, with rounding error, it's possible that we still wind up with
-    # rests at either end of the track if one of the endpoints is nil. Trim the
-    # final track just in case.
+    # If we're snapping endpoints to the timeline, with rounding error, it's
+    # probably possible to wind up with rests at the beginning of the track.
+    # Also we purposefully added padding at the end in that case. So trim up the
+    # final track if need be.
     t = t.ltrim if trim_start
     t = t.rtrim if trim_end
 
