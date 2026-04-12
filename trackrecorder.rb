@@ -169,6 +169,12 @@ module TrackRecorder
       note_start = 0 if note_start < 0
       note_end = entry[2] - start_time
       note_end = duration if note_end > duration
+
+      if note_end <= note_start
+        ExtApi.puts("warning: timeline event ends before it starts or has 0 duration; ignoring")
+        next
+      end
+
       velocity = ignore_vel ? 127 : entry[3]
 
       add_note_to_slots(slots, secs_per_slot,
