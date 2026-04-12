@@ -153,27 +153,3 @@ def cc_mutable_live_loop(loop_name, cc:, port: nil, channel: nil, start_muted: f
 
   mutable_live_loop(loop_name, start_muted: start_muted, **kwargs, &block)
 end
-
-# Starts a new live_loop that can be muted by setting the Time State key given
-# by the mute_key function to true. The live_loop is wrapped in a level effect,
-# which will have its amp set to 0 when the live_loop is muted. Thus the block
-# itself doesn't need to have any logic related to muting; whatever sound it
-# creates will simply be silenced when it is muted. The arguments to the block
-# are as described in mutable_live_loop.
-# Any additional named arguments (e.g. sync: or init:) to this function are
-# passed verbatim to the internal live_loop.
-def fx_mutable_live_loop(loop_name, start_muted: false, unmuted_amp: 1, amp_slide: 0, **kwargs, &block)
-  raise "Block must take 1 or 2 arguments" if block.arity == 0 || block.arity > 2
-
-  ExtApi.with_fx(:level, amp: start_muted ? 0 : unmuted_amp, amp_slide: amp_slide) do |level_fx|
-    mutable_live_loop(loop_name, start_muted: start_muted, **kwargs) do |muted, arg|
-      ExtApi.control(level_fx, amp: muted ? 0 : unmuted_amp)
-
-      if block.arity == 2
-        block.call(muted, arg)
-      else
-        block.call(muted)
-      end
-    end
-  end
-end

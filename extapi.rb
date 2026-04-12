@@ -33,9 +33,8 @@ module ExtApi
       # Music theory
       :spread,
 
-      # Internal synth playback & effects
+      # Internal synth playback
       :play, :kill,
-      :with_fx, :control,
 
       # MIDI
       :midi, :midi_cc, :midi_start, :midi_stop,
