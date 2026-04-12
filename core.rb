@@ -10,7 +10,6 @@ require_relative "theory/midinote"
 require_relative "theory/notelength"
 require_relative "theory/scale"
 
-require_relative "utils/fx_utils"
 require_relative "utils/live_loop_utils"
 require_relative "utils/midi_utils"
 require_relative "utils/misc_utils"
