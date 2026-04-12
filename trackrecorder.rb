@@ -154,6 +154,12 @@ module TrackRecorder
                                           min_gate: min_gate, quantize: quantize_gates)
     num_slots = total_track_gate[0] + total_track_gate[1].ceil
 
+    # gates_for_duration will snap our duration to slots, up or down, so we
+    # should recalculate it. At this point we only care about it as a maximum
+    # end time for a timeline event, so it's ok that we're not accounting for
+    # the gate of the final slot.
+    duration = num_slots * secs_per_slot
+
     slots = Array.new(num_slots) { [] }
 
     timeline.each do |entry|
