@@ -66,15 +66,29 @@ class MIDINoteTest < Test::Unit::TestCase
 
   def test_eql
     assert_equal N(:c4), N(:c4)
+
     assert_equal N(:c4), 60
+    assert_equal 60, N(:c4)
+    assert_equal N(:c4), N(60)
+
     assert_equal N(:c4), 60.0
+    assert_equal 60.0, N(:c4)
     assert_equal N(:c4), N(60.0)
+
     assert_equal N(:c4), :c4
+    assert_equal :c4, N(:c4)
+
     assert_equal N(:c4), "c4"
+    assert_equal "c4", N(:c4)
+
     assert_equal N(:c4), :C4
+    assert_equal :C4, N(:c4)
+
     assert_equal N(:c4), "C4"
+    assert_equal "C4", N(:c4)
 
     assert_equal N(60.5), 60.5
+    assert_equal 60.5, N(60.5)
     assert_equal N(60.5), N(60.5)
 
     # TODO: It's debatable what these should return, but the current situation
@@ -93,16 +107,22 @@ class MIDINoteTest < Test::Unit::TestCase
     assert_equal N(:cs4), N(61)
     [:cs4, :Cs4, :CS4, :db4, :Db4, :DB4].each do |name|
       assert_equal N(name), 61
+      assert_equal 61, N(name)
       assert_equal N(:cs4), name
+      assert_equal name, N(:cs4)
       assert_equal N(:cs4), N(name)
       assert_equal N(:cs4), name.to_s
+      assert_equal name.to_s, N(:cs4)
       assert_equal N(:cs4), N(name.to_s)
     end
 
     # Octave wrap-around
     assert_equal N(:b2), :cb3
+    assert_equal :cb3, N(:b2)
     assert_equal N(:b2), :cf3
+    assert_equal :cf3, N(:b2)
     assert_equal N(:bs3), :c4
+    assert_equal :c4, N(:bs3)
   end
 
   def test_missing_octave

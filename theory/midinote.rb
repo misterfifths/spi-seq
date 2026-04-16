@@ -349,3 +349,36 @@ class MIDINote < Numeric
     val.nil? || val == :r || val == :rest
   end
 end
+
+
+# Some overrides so equality works when a string or symbol is on the left.
+# TODO: do we care to do all the comparison operators? Kind of a slippery slope
+# I think, and doesn't feel worth it. This is nice because it gets things like
+# [:c4].include?(N(:c4)) working.
+class Symbol
+  alias _orig_eql eql?
+  def eql?(other)
+    return MIDINote.new(self) == other if other.instance_of?(MIDINote)
+    _orig_eql(other)
+  end
+
+  alias _orig_eql_op ==
+  def ==(other)
+    return MIDINote.new(self) == other if other.instance_of?(MIDINote)
+    _orig_eql_op(other)
+  end
+end
+
+class String
+  alias _orig_eql eql?
+  def eql?(other)
+    return MIDINote.new(self) == other if other.instance_of?(MIDINote)
+    _orig_eql(other)
+  end
+
+  alias _orig_eql_op ==
+  def ==(other)
+    return MIDINote.new(self) == other if other.instance_of?(MIDINote)
+    _orig_eql_op(other)
+  end
+end
