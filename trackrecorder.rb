@@ -142,6 +142,10 @@ module TrackRecorder
   #
   # If ignore_vel is true, the velocities in the timeline will be ignored and
   # they will all be set to 127 in the resulting track.
+  #
+  # If for any reason the resulting track would be empty (e.g., if start_time
+  # and end_time are both nil and there are no events in the timeline), this
+  # function returns nil.
   def self.timeline_to_track(timeline,
                              bpm: nil, granularity: NoteLength::Eighth,
                              start_time: nil, end_time: nil,
@@ -155,6 +159,9 @@ module TrackRecorder
 
     trim_start = start_time.nil?
     trim_end = end_time.nil?
+
+    return nil if timeline.empty? && (trim_start || trim_end)
+
     start_time = timeline.min_by { |entry| entry[1] }[1] if trim_start
     if trim_end
       # If we don't have a strict end time, be a little generous and add time
@@ -169,6 +176,8 @@ module TrackRecorder
     total_track_gate = gates_for_duration(duration, secs_per_slot,
                                           min_gate: min_gate, quantize: quantize_gates)
     num_slots = total_track_gate[0] + total_track_gate[1].ceil
+
+    return nil if num_slots == 0
 
     # gates_for_duration will snap our duration to slots, up or down, so we
     # should recalculate it. At this point we only care about it as a maximum
@@ -204,6 +213,7 @@ module TrackRecorder
     # probably possible to wind up with rests at the beginning of the track.
     # Also we purposefully added padding at the end in that case. So trim up the
     # final track if need be.
+    return nil if (trim_start || trim_end) && t.empty?
     t = t.ltrim if trim_start
     t = t.rtrim if trim_end
 
@@ -346,6 +356,10 @@ module TrackRecorder
   #
   # If ignore_vel is true, the recorded velocity of notes will be ignored and
   # they will all be set to 127 in the resulting track.
+  #
+  # If for any reason the resulting track would be empty (e.g., if start_time
+  # and end_time are both nil and there are no events in the timeline), this
+  # function returns nil.
   def self.record(cc:, cc_port: nil, cc_channel: nil,
                   port: nil, channel: nil,
                   bpm: nil, granularity: NoteLength::Eighth,
@@ -363,8 +377,6 @@ module TrackRecorder
 
     start_time = nil if trim_start
     end_time = nil if trim_end
-
-    # TODO: guard against an empty track when trimming
 
     timeline_to_track(timeline,
                       start_time: start_time, end_time: end_time,

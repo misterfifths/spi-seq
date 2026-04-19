@@ -308,4 +308,15 @@ class TrackRecorderTest < Test::Unit::TestCase
                                         bpm: bpm, granularity: granularity)
     assert_grid t, [[:b2]]
   end
+
+  def test_empty_result
+    assert_nil TrackRecorder.timeline_to_track([], bpm: 120)
+    assert_nil TrackRecorder.timeline_to_track([], bpm: 120, start_time: 0)
+    assert_nil TrackRecorder.timeline_to_track([], bpm: 120, end_time: 1)
+    refute_nil TrackRecorder.timeline_to_track([], bpm: 120, start_time: 0, end_time: 1)
+
+    # if all events are thrown out because they're malformed:
+    assert_nil TrackRecorder.timeline_to_track([[:a1, 1, 0, 127]], bpm: 120)
+    assert_nil TrackRecorder.timeline_to_track([[:a1, 1, 1, 127]], bpm: 120)
+  end
 end
