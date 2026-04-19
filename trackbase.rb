@@ -227,8 +227,8 @@ class TrackBase
   end
 
   # Copies the repr of this track to the clipboard.
-  def copy_repr
-    Clipboard.copy(repr)
+  def copy_repr(group: 8)
+    Clipboard.copy(repr(group: group))
   end
 
   def inspect
