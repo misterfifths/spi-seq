@@ -527,4 +527,24 @@ class TrackGridTest < Test::Unit::TestCase
     assert_extract_note t, :c, [[:a1], [:b2, :b3], []], [[], [], [:c3]]
     assert_extract_note t, :c3, [[:a1], [:b2, :b3], []], [[], [], [:c3]]
   end
+
+  def test_extract_gates
+    assert_equal Track.rest.gates, [0]
+    assert_equal Track.rest(4).gates, [0, 0, 0, 0]
+    assert_equal T(:c4).gates, [1]
+    assert_equal T([:r, :c4]).gates, [0, 1]
+    assert_equal T([:c4, :c4]).gates, [1, 1]
+    assert_equal T([:r, :c4, :c4, :r]).gates, [0, 1, 1, 0]
+    assert_equal T([:r, :c4, :r, :c4]).gates, [0, 1, 0, 1]
+    assert_equal T([S(:c4, gate: 0.5)]).gates, [0.5]
+    assert_equal T([:c4, S(:c4, gate: 0.5)]).gates, [1, 0.5]
+    assert_equal T([S(:c4, gate: 0.25), S(:c4, gate: 0.5)]).gates, [0.25, 0.5]
+    assert_equal T([:c4, S(:c4, gate: 0.25), S(:c4, gate: 0.5)]).gates, [1, 0.25, 0.5]
+    assert_equal T([S(:c4, gate: 0.25), :r, S(:c4, gate: 0.5)]).gates, [0.25, 0, 0.5]
+
+    assert_equal T([:c4, :d4]).gates, [1, 1]
+    assert_equal T([:c4, S(:d4, gate: 0.1)]).gates, [1, 0.1]
+
+    assert_raises { T([[:c4, :d4]]).gates }
+  end
 end

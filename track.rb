@@ -382,6 +382,21 @@ class Track < TrackBase
 
   alias extract_notes extract_note
 
+  # Returns an array of numbers, one per slot in this track, containing the gate
+  # for the step in that slot (or 0 if the slot is empty). It is an error to
+  # call this method on a track with more than one step in any slot. The
+  # resulting array is suitable for use with the `isorhythm` method.
+  #
+  # For example, T([:c4, S(:c4, 0.1), :r]).extract_gates gives [1, 0.1, 0]
+  def extract_gates
+    raise ArgumentError, "extract_gates can only be used on a mono track" unless mono?
+    @grid.map { |slot| slot.empty? ? 0 : slot[0].gate }
+  end
+
+  alias gates extract_gates
+  alias extract_rhythm extract_gates
+  alias rhythm extract_gates
+
 
   ## Step-level mutations
 
