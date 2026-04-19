@@ -290,6 +290,13 @@ class TrackRecorderTest < Test::Unit::TestCase
                                         end_time: 1)
     assert_grid t, [[:a1]]
 
+    # events starting after (or at) the end time should get thrown out
+    timeline = [[:a1, 1, 2, 127], [:a1, 3, 4, 127], [:b2, 0, 1, 127]]
+    t = TrackRecorder.timeline_to_track(timeline,
+                                        bpm: bpm, granularity: granularity,
+                                        start_time: 0, end_time: 1)
+    assert_grid t, [[:b2]]
+
     # events that end before they start should be ignored
     timeline = [[:a1, 1, 0, 127], [:b2, 0, 1, 127]]
     t = TrackRecorder.timeline_to_track(timeline,
