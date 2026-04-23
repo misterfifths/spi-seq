@@ -88,6 +88,13 @@ class StepBase
     mutate(prob: new_prob)
   end
 
+  # Returns a new step with the probability (if any) removed.
+  def without_prob
+    @prob.nil? ? self : with_prob(nil)
+  end
+
+  alias clear_prob without_prob
+
   # Returns whether this step should play in the given cycle of playback, with
   # the given set of notes played in the previous slot. This evaluates the
   # step's probability predicate.

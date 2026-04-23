@@ -77,6 +77,9 @@ class StepTest < Test::Unit::TestCase
     p2 = Prob.first
     assert_attrs S(:c4).with_prob(p1), :c4, 127, 1, p1
     assert_attrs S(:c4, prob: p2).with_prob(p1), :c4, 127, 1, p1
+
+    assert_attrs S(:c4, prob: p2).clear_prob, :c4, 127, 1
+    assert_attrs S(:c4).clear_prob, :c4, 127, 1
   end
 
   def test_shift_mutators
