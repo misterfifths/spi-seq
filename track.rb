@@ -773,6 +773,7 @@ class Track < TrackBase
 
   alias tone shift_tone
   alias transpose shift_tone
+  alias t shift_tone
 
   # Returns a new Track where each Step's note is increased by the given number
   # of semitones.
