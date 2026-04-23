@@ -890,6 +890,21 @@ class TrackBase
     extract { |_, _, i| i % n == n - 1 }
   end
 
+  # Considers the track in groups of `y` slots and returns two tracks: the first
+  # with steps in slots that are not in the `x`th slot within each each group,
+  # and the second with those that are. See the documentation for the similar
+  # `drop_x_of_y` for examples and restrictions on the values of the arguments.
+  def extract_x_of_y(x, y)
+    raise ArgumentError, "x and y must be integers" unless x.is_a?(Integer) && y.is_a?(Integer)
+    raise ArgumentError, "x and y must be > 0" unless x > 0 and y > 0
+    raise ArgumentError, "x must be <= y" unless x <= y
+
+    extract { |_, _, i| i % y == x - 1 }
+  end
+
+  alias grouped_extract extract_x_of_y
+  alias gextract extract_x_of_y
+
 
   ## Step-level mutations
 
