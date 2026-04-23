@@ -283,7 +283,13 @@ class MIDINote < Numeric
     # equal, e.g., so we have to normalize if they don't match.
     return true if other.is_a?(Symbol) && @sym == other
     return true if other.is_a?(String) && @sym.to_s == other
-    @sym == MIDINote.new(other).to_sym
+    # rubocop:disable Style/RescueStandardError
+    begin
+      @sym == MIDINote.new(other).to_sym
+    rescue
+      false
+    end
+    # rubocop:enable Style/RescueStandardError
   end
 
   alias eql? ==
@@ -358,13 +364,13 @@ end
 class Symbol
   alias _orig_eql eql?
   def eql?(other)
-    return MIDINote.new(self) == other if other.instance_of?(MIDINote)
+    return other == self if other.instance_of?(MIDINote)
     _orig_eql(other)
   end
 
   alias _orig_eql_op ==
   def ==(other)
-    return MIDINote.new(self) == other if other.instance_of?(MIDINote)
+    return other == self if other.instance_of?(MIDINote)
     _orig_eql_op(other)
   end
 end
@@ -372,13 +378,13 @@ end
 class String
   alias _orig_eql eql?
   def eql?(other)
-    return MIDINote.new(self) == other if other.instance_of?(MIDINote)
+    return other == self if other.instance_of?(MIDINote)
     _orig_eql(other)
   end
 
   alias _orig_eql_op ==
   def ==(other)
-    return MIDINote.new(self) == other if other.instance_of?(MIDINote)
+    return other == self if other.instance_of?(MIDINote)
     _orig_eql_op(other)
   end
 end

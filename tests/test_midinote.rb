@@ -123,6 +123,24 @@ class MIDINoteTest < Test::Unit::TestCase
     assert_equal :cf3, N(:b2)
     assert_equal N(:bs3), :c4
     assert_equal :c4, N(:bs3)
+
+    # Comparisons with an invalid non-MIDINote
+    # right-hand side
+    refute N(:c4) == :nope
+    refute N(:c4).eql?(:nope)
+    assert N(:c4) != :nope
+    refute N(:c4) == "nope"
+    refute N(:c4).eql?("nope")
+    assert N(:c4) != "nope"
+    # left-hand side
+    # rubocop:disable Style/YodaCondition
+    refute :nope == N(:c4)
+    refute :nope.eql?(N(:c4))
+    assert :nope != N(:c4)
+    refute "nope" == N(:c4)
+    refute "nope".eql?(N(:c4))
+    assert "nope" != N(:c4)
+    # rubocop:enable Style/YodaCondition
   end
 
   def test_missing_octave
