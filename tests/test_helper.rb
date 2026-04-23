@@ -9,6 +9,7 @@ begin
     add_filter "track_live_loop.rb"
     add_filter "playerbase.rb"
     add_filter "player.rb"
+    add_filter "ccplayer.rb"
   end
 rescue LoadError  # rubocop:disable Lint/SuppressedException
 end

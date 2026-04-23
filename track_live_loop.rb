@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "ccplayer"
 require_relative "cctrack"
 require_relative "extapi"
 require_relative "player"
