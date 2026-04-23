@@ -358,6 +358,8 @@ end
 
 
 # Some overrides so equality works when a string or symbol is on the left.
+# Note that comparison to left-hand side numerics already works because the
+# MIDINote will be coerced automatically.
 # TODO: do we care to do all the comparison operators? Kind of a slippery slope
 # I think, and doesn't feel worth it. This is nice because it gets things like
 # [:c4].include?(N(:c4)) working.
