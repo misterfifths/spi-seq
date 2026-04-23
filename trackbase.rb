@@ -547,6 +547,12 @@ class TrackBase
     mutate(grid: @grid.reject { |slot| slot.empty? })
   end
 
+  # Returns a new track with the same length as this one, but with all slots
+  # cleared (i.e., rests).
+  def clear
+    Track.rest(@grid.length)
+  end
+
   # Returns a new track with all empty slots (rests) removed from the beginning
   # of this track. Raises an exception if this would result in an empty track.
   def ltrim

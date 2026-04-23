@@ -71,6 +71,10 @@ class TrackInitTest < Test::Unit::TestCase
 
     assert_grid Track.rest, [[]]
     assert_grid Track.rest(2), [[], []]
+
+    assert_grid T([:c4, :c4]).clear, [[], []]
+    assert_grid T([[:c4, :d4]]).clear, [[]]
+    assert_grid Track.rest(3).clear, [[], [], []]
   end
 
   def test_dupe_notes
