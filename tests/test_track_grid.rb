@@ -449,6 +449,36 @@ class TrackGridTest < Test::Unit::TestCase
       ]
   end
 
+  def test_drop_x_of_y
+    t = T([:a1] * 12)
+
+    assert_raises { t.gdrop(1, 0) }
+    assert_raises { t.gdrop(0, 1) }
+    assert_raises { t.gdrop(-1, 2) }
+    assert_raises { t.gdrop(5, 3) }
+    assert_raises { t.gdrop(0.25, 1) }
+
+    assert_grid t.gdrop(1, 3), [[], [:a1], [:a1]] * 4
+    assert_grid t.gdrop(2, 3), [[:a1], [], [:a1]] * 4
+    assert_grid t.gdrop(3, 3), [[:a1], [:a1], []] * 4
+
+    assert_grid t.gdrop(1, 5), [[], [:a1], [:a1], [:a1], [:a1]] * 2 + [[], [:a1]]
+    assert_grid t.gdrop(3, 5), [[:a1], [:a1], [], [:a1], [:a1]] * 2 + [[:a1], [:a1]]
+
+    assert_grid t.gdrop(2, 15), [[:a1], []] + [[:a1]] * 10
+
+    # this is useless but shouldn't be an error
+    assert_grid t.gdrop(1, 1), [[]] * 12
+
+    t = T([:a1, :r] * 6)
+    assert_grid t.gdrop(2, 3, skip_empty: true),
+      [
+        [:a1], [],
+        [], [],
+        [:a1], []
+      ] * 2
+  end
+
   def test_rand_dropout
     assert_grid T(:c4).rdropout(1), [[]]
     assert_grid T(:c4).rdropout(0), [[:c4]]

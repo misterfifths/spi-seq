@@ -769,6 +769,42 @@ class TrackBase
 
   alias dropout drop_every
 
+  # Considers the track in groups of `y` slots, and clears every `x`th slot
+  # within each group. The length of the track is not changed; cleared slots
+  # become rests. For instance, `t.drop_x_of_y(2, 3)` will clear every 2nd slot
+  # in groups of 3: a track with slots [:a1 :a2 :a3 :a4 :a5 :a6 :a7] would
+  # become [:a1 :r :a3 | :a4 :r :a6 | :a7] (pipes just to indicate the imaginary
+  # groups from which every second slot was cleared).
+  #
+  # x and y must both be integers > 0, and x must be <= y.
+  #
+  # If `skip_empty` is true, empty slots (rests) are not considered when
+  # counting slots.
+  def drop_x_of_y(x, y, skip_empty: false)
+    raise ArgumentError, "x and y must be integers" unless x.is_a?(Integer) && y.is_a?(Integer)
+    raise ArgumentError, "x and y must be > 0" unless x > 0 and y > 0
+    raise ArgumentError, "x must be <= y" unless x <= y
+
+    # This is equivalent to dropping indexes i where i % y == x - 1.
+    i = 0
+    new_grid = @grid.map do |slot|
+      if skip_empty && slot.empty?
+        slot
+      else
+        new_slot = i % y == x - 1 ? [] : slot
+        i += 1
+        new_slot
+      end
+    end
+
+    mutate(grid: new_grid)
+  end
+
+  alias grouped_drop drop_x_of_y
+  alias grouped_droput drop_x_of_y
+  alias gdropout drop_x_of_y
+  alias gdrop drop_x_of_y
+
   # Return a new track by, with probability `p`, removing all steps in any given
   # slot.
   def rand_dropout(p = 0.5)
