@@ -718,23 +718,49 @@ class TrackBase
 
   alias sample_filled sample_filled_slots
 
-  # Returns a new track with all steps in every `n`th slot removed. The duration
-  # of the track does not change; the emptied slots simply become rests. Does
-  # nothing if `n` is zero.
-  def drop_every(n, skip_empty: false)
-    return self if n == 0
+  # Returns a new track by removing all steps in certain slots. The duration of
+  # the track does not change; the emptied slots simply become rests.
+  #
+  # The arguments specify which slots to clear. They must all be integers > 0.
+  # This method will walk through the track and clear every nth slot, where n
+  # is the next number in the arguments. The function will cycle through the
+  # arguments if there are enough slots to warrant it.
+  #
+  # For instance, `t.drop_every(5)` will clear every 5th slot in the track.
+  # `t.drop_every(2, 3)` will clear the second slot, then the 3rd one after
+  # that, then (looping back to the first argument) the second after that, and
+  # so on.
+  #
+  # If `skip_empty` is true, empty slots (rests) are not considered when
+  # counting slots. For instance, `t.drop_every(3, skip_empty: true)` will clear
+  # every 3rd slot that contains at least one step; empty slots will be ignored.
+  def drop_every(*gaps, skip_empty: false)
+    raise ArgumentError, "you must pass at least one argument" if gaps.empty?
+    gaps.map! { |n| Integer.try_convert(n) }
+    raise ArgumentError, "all arguments must be convertible to integers" if gaps.any? { |n| n.nil? }
+    raise ArgumentError, "all arguments must be > 0" if gaps.any? { |n| n <= 0 }
 
     # e.g., drop every 3:
     # keep  | 0 1 - 3 4 - 6 7 - 9
     # drop  |     2     5     8
     # i % 3 | 0 1 2 0 1 2 0 1 2 0
-    i = 0
+
+    gap_idx = 0
+    kept_slots = 0
     new_grid = @grid.map do |slot|
       if skip_empty && slot.empty?
-        []
+        slot
       else
-        i += 1
-        (i - 1) % n == n - 1 ? [] : slot
+        gap = gaps[gap_idx % gaps.length]
+        if kept_slots % gap == gap - 1
+          # We're clearing this slot; move on to the next gap and reset count
+          kept_slots = 0
+          gap_idx += 1
+          []
+        else
+          kept_slots += 1
+          slot
+        end
       end
     end
 

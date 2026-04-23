@@ -409,7 +409,12 @@ class TrackGridTest < Test::Unit::TestCase
   end
 
   def test_drop_every
-    assert_grid T(:c4).dropout(0), [[:c4]]
+    assert_raises { T(:c4).dropout }
+    assert_raises { T(:c4).dropout(0) }
+    assert_raises { T(:c4).dropout(-1) }
+    assert_raises { T(:c4).dropout(1, 0) }
+    assert_raises { T(:c4).dropout("nope") }
+
     assert_grid T(:c4).dropout(1), [[]]
 
     t = T([:a1, :b2, :c3, :d4])
@@ -418,12 +423,30 @@ class TrackGridTest < Test::Unit::TestCase
     assert_grid t.dropout(3), [[:a1], [:b2], [], [:d4]]
     assert_grid t.dropout(4), [[:a1], [:b2], [:c3], []]
     assert_grid t.dropout(5), [[:a1], [:b2], [:c3], [:d4]]
+    assert_grid t.dropout(10), [[:a1], [:b2], [:c3], [:d4]]
 
     t = T([:a1, :r, :b2, :r, :r, :c3])
     assert_grid t.dropout(1, skip_empty: true), [[], [], [], [], [], []]
     assert_grid t.dropout(2, skip_empty: true), [[:a1], [], [], [], [], [:c3]]
     assert_grid t.dropout(3, skip_empty: true), [[:a1], [], [:b2], [], [], []]
     assert_grid t.dropout(4, skip_empty: true), [[:a1], [], [:b2], [], [], [:c3]]
+
+    # Multiple gaps
+    t = T([:a1] * 12)
+    assert_grid t.dropout(1, 3), [[], [:a1], [:a1], [], [], [:a1], [:a1], [], [], [:a1], [:a1], []]
+    assert_grid t.dropout(2, 4), [[:a1], [], [:a1], [:a1], [:a1], [], [:a1], [], [:a1], [:a1], [:a1], []]
+    assert_grid t.dropout(2, 3, 4), [[:a1], [], [:a1], [:a1], [], [:a1], [:a1], [:a1], [], [:a1], [], [:a1]]
+
+    t = T([:a1, :r] * 6)
+    assert_grid t.dropout(1, 3, skip_empty: true),
+      [
+        [], [],    # drop (1), rest
+        [:a1], [], # keep (3), rest
+        [:a1], [], # keep (3), rest
+        [], [],    # drop (3), rest
+        [], [],    # drop (1), rest
+        [:a1], []  # keep (3), rest
+      ]
   end
 
   def test_rand_dropout
