@@ -189,6 +189,18 @@ class TrackStepTest < Test::Unit::TestCase
     end
   end
 
+  def test_prob
+    t = T([:c1, S(:c2, prob: 0.5), [S(:c3, prob: Prob.one_in(3)), :c4]])
+
+    assert_steps_attr t.clear_prob, :prob, nil
+    assert_steps_attr t.prob(Prob.every_other), :prob, Prob.every_other
+    assert_steps_attr t.prob(0.5), :prob, Prob.chance(0.5)
+
+    p = Prob.one_in(5)
+    u = t.prob(p, overwrite: false)
+    assert_grid u, [[S(:c1, prob: p)], [S(:c2, prob: 0.5)], [S(:c3, prob: Prob.one_in(3)), S(:c4, prob: p)]]
+  end
+
   def test_fill
     t = T([:c1, [S(:c2, prob: 0.5), S(:c3, prob: Prob.fill)], S(:c4, prob: Prob.one_in(3))])
 

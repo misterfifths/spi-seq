@@ -914,6 +914,28 @@ class TrackBase
 
   alias set_filled_slot replace_filled_slot
 
+  # Returns a new track where every step has the given probability, which may be
+  # any of the possible types accepted by StepBase's initializer. If
+  # `overwrite` is false, steps that already have a probability are unchanged.
+  def with_prob(p, overwrite: true)
+    mutate_each_step do |step|
+      if step.prob.nil? || overwrite
+        step.with_prob(p)
+      else
+        step
+      end
+    end
+  end
+
+  alias prob with_prob
+
+  # Returns a new track with the probabilities removed from each step.
+  def without_prob
+    mutate_each_step { |step| step.without_prob }
+  end
+
+  alias clear_prob without_prob
+
   # Returns a new track where every step has the `fill` probability. Or, if the
   # argument is false, a new track where all steps with the `fill` probability
   # have their probability cleared (steps with other probabilities are
