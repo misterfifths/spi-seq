@@ -5,6 +5,7 @@ require_relative "math/easings"
 
 require_relative "theory/arp"
 require_relative "theory/chord"
+require_relative "theory/euclid"
 require_relative "theory/interval"
 require_relative "theory/midinote"
 require_relative "theory/notelength"
