@@ -741,7 +741,7 @@ class TrackBase
   # counting slots. For instance, `t.drop_every(3, skip_empty: true)` will clear
   # every 3rd slot that contains at least one step; empty slots will be ignored.
   def drop_every(*gaps, skip_empty: false)
-    t, _ = extract_every(*gaps, skip_empty: skip_empty)
+    t, = extract_every(*gaps, skip_empty: skip_empty)
     t
   end
 
@@ -759,7 +759,7 @@ class TrackBase
   # If `skip_empty` is true, empty slots (rests) are not considered when
   # counting slots.
   def drop_x_of_y(x, y, skip_empty: false)
-    t, _ = extract_x_of_y(x, y, skip_empty: skip_empty)
+    t, = extract_x_of_y(x, y, skip_empty: skip_empty)
     t
   end
 
@@ -915,7 +915,7 @@ class TrackBase
   # counting slots.
   def extract_x_of_y(x, y, skip_empty: false)
     raise ArgumentError, "x and y must be integers" unless x.is_a?(Integer) && y.is_a?(Integer)
-    raise ArgumentError, "x and y must be > 0" unless x > 0 and y > 0
+    raise ArgumentError, "x and y must be > 0" unless x > 0 && y > 0
     raise ArgumentError, "x must be <= y" unless x <= y
 
     i = 0
