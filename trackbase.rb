@@ -800,6 +800,8 @@ class TrackBase
 
   # Returns a new track with the given steps appended to slot `idx`.
   def append_slot(idx, new_steps)
+    raise IndexError, "index #{idx} is past the end of the grid" if idx >= @grid.length
+
     new_slot = @grid[idx] + self.class.slotify(new_steps)
     new_grid = @grid.dup
     new_grid[idx] = new_slot
