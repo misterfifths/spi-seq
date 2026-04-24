@@ -30,9 +30,6 @@ module ExtApi
       # tie into Sonic Pi's seed functionality.
       :rand, :rand_i, :choose, :one_in,
 
-      # Music theory
-      :spread,
-
       # Internal synth playback
       :play, :kill,
 

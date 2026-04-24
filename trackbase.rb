@@ -3,6 +3,7 @@
 require_relative "extapi"
 require_relative "prob"
 require_relative "step"
+require_relative "theory/euclid"
 require_relative "theory/notelength"
 
 
@@ -118,7 +119,7 @@ class TrackBase
   # but the slots cycle across repetitions, so that every given slot is played
   # and the overall track is a perfect loop.
   def self.euclid(gridish, pulses, length, invert: false, rotate: 0, cycle: true, full_cycle: false, granularity: NoteLength::Eighth, timescale: 1)
-    hits = ExtApi.spread(pulses, length).to_a
+    hits = Object.send(:euclid, pulses, length)
     hits.rotate!(rotate) if rotate != 0
     hits.map! { |hit| !hit } if invert
 
