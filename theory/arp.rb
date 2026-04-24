@@ -27,8 +27,9 @@ module Arp
   # order from lowest to highest.
   # If extra_octaves is specified, the result will contain copies of the notes
   # in the notes array shifted by each offset in extra_octaves. extra_octaves
-  # applies before any spread. Notes it adds will appear at the end of the
-  # result, before notes from the spread.
+  # applies before any spread. If direction is :order, notes it adds will appear
+  # at the end of the result, before notes from the spread. Like spread,
+  # extra_octaves will not add duplicate notes.
   def self.arpeggiate(notes, direction, spread: 0, extra_octaves: [])
     orig_notes = notes
     # NOTE: notes might be a Sonic Pi ring, which doesn't have everything from
@@ -43,7 +44,8 @@ module Arp
     # TODO: where should this apply in relation to spread?
     extra_octaves.each do |octave_shift|
       orig_notes.each do |n|
-        notes << MIDINote.new(n).up(octave_shift)
+        new_note = MIDINote.new(n).up(octave_shift)
+        notes << new_note unless notes.include?(new_note)
       end
     end
 
