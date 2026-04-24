@@ -52,15 +52,21 @@ module Arp
     end
 
     if spread > 0
-      # take the spread lowest notes and add a note an octave up. do not
+      # Take at most spread lowest notes and add a note an octave up. Do not
       # duplicate notes, and do not effect the sorting of the original array.
-      # notes added from spread go at the end, in case we're playing in order.
+      # Notes added from spread go at the end, in case we're playing in order.
+      # Notes added from a spread are eligible to be spread themselves.
       sorted_notes = notes.sort
-      # TODO: spread should take into account notes added from itself
-      spread = [spread, sorted_notes.length].min
-      spread.times do |i|
+      i = 0
+      while spread > 0 && i < sorted_notes.length
         new_note = sorted_notes[i].up
-        notes << new_note unless notes.include?(new_note)
+        i += 1
+        next if notes.include?(new_note)
+
+        notes << new_note
+        sorted_notes << new_note
+        sorted_notes.sort!
+        spread -= 1
       end
     end
 
