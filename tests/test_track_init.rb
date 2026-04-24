@@ -75,6 +75,7 @@ class TrackInitTest < Test::Unit::TestCase
     assert_grid T([:c4, :c4]).clear, [[], []]
     assert_grid T([[:c4, :d4]]).clear, [[]]
     assert_grid Track.rest(3).clear, [[], [], []]
+    assert_gt T(:c4, granularity: :whole, timescale: 2).clear, :whole, 2
   end
 
   def test_dupe_notes

@@ -554,7 +554,7 @@ class TrackBase
   # Returns a new track with the same length as this one, but with all slots
   # cleared (i.e., rests).
   def clear
-    Track.rest(@grid.length)
+    mutate(grid: [[]] * @grid.length)
   end
 
   # Returns a new track with all empty slots (rests) removed from the beginning
