@@ -8,12 +8,14 @@ require_relative "../theory/arp"
 # TODO: missing spread & extra_octaves tests
 
 class ArpTest < Test::Unit::TestCase
-  def assert_arp(notes, order, result)
-    assert_equal arp(notes, order), result
+  def assert_arp(notes, order, result, **kwargs)
+    assert_equal arp(notes, order, **kwargs), result
   end
 
-  def test_objects
+  def test_args
     arp([:c5, 60, "d1"], :up).each { |n| assert_instance_of MIDINote, n }
+
+    assert_raises { arp([:c4], :nope) }
   end
 
   def test_order
@@ -80,5 +82,56 @@ class ArpTest < Test::Unit::TestCase
     assert_arp ns.take(3), :valley, %i[d3 c0 a1]
     assert_arp ns.take(2), :valley, %i[a1 c0]
     assert_arp ns.take(1), :valley, %i[a1]
+  end
+
+  def test_random
+    ns = %i[a1 c0 d3 a0]
+
+    srand 1234
+    # Inexplicably, Array.shuffle does nothing immediately after an srand?
+    assert_arp ns, :random, ns
+    assert_arp ns, :random, %i[c0 d3 a0 a1]
+    assert_arp ns, :random, %i[a1 d3 a0 c0]
+  end
+
+  def test_extra_octaves
+    ns = %i[a2 a1 c1 b1]
+
+    assert_arp ns, :up, %i[c1 a1 b1 a2], extra_octaves: [0]  # shouldn't duplicate
+    assert_arp ns, :up, %i[c1 a1 b1 c2 a2 b2 a3], extra_octaves: [1]
+    assert_arp ns, :up, %i[c0 a0 b0 c1 a1 b1 a2], extra_octaves: [-1]
+    assert_arp ns, :up, %i[c0 a0 b0 c1 a1 b1 a2 c3 a3 b3 a4], extra_octaves: [-1, 2]
+
+    # Notes should be added at the end if we're using :order (but there should
+    # still be no duplicates)
+    assert_arp ns, :order, %i[a2 a1 c1 b1 a3 c2 b2], extra_octaves: [1]
+  end
+
+  def test_spread
+    ns = %i[a1 b2 a3]
+
+    assert_arp ns, :up, %i[a1 a2 b2 a3], spread: 1
+    assert_arp ns, :order, %i[a1 b2 a3 a2 b3], spread: 2
+
+    # spread > length of notes
+    assert_arp %i[a1], :order, %i[a1 a2 a3 a4], spread: 3
+
+    # no duplicates, and notes from spread should themselves be eligible for
+    # spread, if needed
+    assert_arp ns, :order, %i[a1 b2 a3 a2 b3 a4], spread: 3
+    assert_arp ns, :order, %i[a1 b2 a3 a2 b3 a4 b4], spread: 4
+    assert_arp ns, :order, %i[a1 b2 a3 a2 b3 a4 b4 a5], spread: 5
+    assert_arp ns, :up, %i[a1 a2 b2 a3 b3 a4 b4 a5], spread: 5
+
+    # extra_octaves should apply before spread
+    assert_arp ns, :order, %i[a1 b2 a3 a2 b3 a4 b4], extra_octaves: [1], spread: 1
+    assert_arp ns, :up, %i[a1 a2 b2 a3 b3 a4 b4], extra_octaves: [1], spread: 1
+
+    # notes from spreading are chosen from the next lowest note and added in
+    # increasing order, regardless of the order of the original notes
+    ns = %i[c5 c3 c1]
+    assert_arp ns, :order, %i[c5 c3 c1 c2], spread: 1
+    assert_arp ns, :order, %i[c5 c3 c1 c2 c4], spread: 2
+    assert_arp ns, :order, %i[c5 c3 c1 c2 c4 c6], spread: 3
   end
 end
