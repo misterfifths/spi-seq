@@ -553,6 +553,21 @@ class TrackGridTest < Test::Unit::TestCase
     assert_extract(t, [[:a1], [:b2, :b3], []], [[], [], [:c3]]) { |_, _, idx| idx == 2 }
   end
 
+  def assert_extract_slots(track, a_grid, b_grid, &block)
+    assert_extract(track, a_grid, b_grid, :extract_slots, &block)
+  end
+
+  def test_extract_slots
+    t = T([:a1, [:b2, :b3], :c3])
+
+    assert_extract_slots(t, [[], [], []], [[:a1], [:b2, :b3], [:c3]]) { |_| true }
+    assert_extract_slots(t, [[:a1], [:b2, :b3], [:c3]], [[], [], []]) { |_| false }
+    assert_extract_slots(t, [[:a1], [:b2, :b3], [:c3]], [[], [], []]) { |_, _| false }
+
+    assert_extract_slots(t, [[], [:b2, :b3], []], [[:a1], [], [:c3]]) { |slot| slot.length == 1 }
+    assert_extract_slots(t, [[:a1], [:b2, :b3], []], [[], [], [:c3]]) { |_, idx| idx == 2 }
+  end
+
   def assert_extract_every(track, n, a_grid, b_grid)
     assert_extract(track, a_grid, b_grid, :extract_every, n)
   end

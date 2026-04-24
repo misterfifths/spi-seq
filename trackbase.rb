@@ -861,7 +861,7 @@ class TrackBase
   # As an example, consider a Track with slots [:c2, :d2, :e2, :f2]. If the
   # block returns true for odd indices, the returned tracks will have slots
   # [:c2, rest, :e2, rest] and [rest, :d2, rest, :f2], respectively.
-  def extract(&block)
+  def extract_steps(&block)
     raise "Block must take 1-3 arguments" if block.arity == 0 || block.arity > 3
 
     grid1 = []
@@ -889,11 +889,39 @@ class TrackBase
     [mutate(grid: grid1), mutate(grid: grid2)]
   end
 
+  alias extract extract_steps
+
+  # The slot equivalent of extract_steps; returns two tracks, the first of which
+  # contains slots for which the block returns false, and the second ones for
+  # which the block returns true. Both tracks will have the same length; slots
+  # that are not selected into a particular track will be rests. The block must
+  # take 0 - 2 arguments, the first of which is the slot itself and the second
+  # the index of the slot.
+  def extract_slots(&block)
+    raise ArgumentError, "block must take <= 2 arguments" unless block.arity <= 2
+
+    grid1 = []
+    grid2 = []
+
+    @grid.each_with_index do |slot, i|
+      args = [slot, i].take(block.arity)
+      if block.call(*args)
+        grid1 << []
+        grid2 << slot
+      else
+        grid1 << slot
+        grid2 << []
+      end
+    end
+
+    [mutate(grid: grid1), mutate(grid: grid2)]
+  end
+
   # Returns two tracks by extracting the steps in every `n`th slot. The first
   # returned track will have steps in all the slots that are not every `n`th,
   # and the second will have steps in every `n`th slot.
   def extract_every(n)
-    extract { |_, _, i| i % n == n - 1 }
+    extract_slots { |_, i| i % n == n - 1 }
   end
 
   # Considers the track in groups of `y` slots and returns two tracks: the first
@@ -905,7 +933,7 @@ class TrackBase
     raise ArgumentError, "x and y must be > 0" unless x > 0 and y > 0
     raise ArgumentError, "x must be <= y" unless x <= y
 
-    extract { |_, _, i| i % y == x - 1 }
+    extract_slots { |_, i| i % y == x - 1 }
   end
 
   alias grouped_extract extract_x_of_y
