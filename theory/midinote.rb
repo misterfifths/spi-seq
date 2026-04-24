@@ -352,7 +352,9 @@ class MIDINote < Numeric
   # Returns true if the given value represents a rest. nil, :r, and :rest are
   # considered rests.
   def self.rest?(val)
-    val.nil? || val == :r || val == :rest
+    return true if val.nil?
+    return false unless val.is_a?(Symbol)
+    [:r, :rest].include?(val)
   end
 end
 
