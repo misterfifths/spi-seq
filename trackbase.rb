@@ -710,11 +710,17 @@ class TrackBase
 
   alias [] slice
 
+  private def sample_enum(e, n)
+    # Sonic Pi overrides Array.sample with a version that returns a single
+    # value, not an array. Reimplement it.
+    e.to_a.shuffle.take(n)
+  end
+
   # Returns a new track consisting of `n` random slots from this track's grid.
   # The relative order of the slots is maintained.
   def sample(n)
     # TODO: does this use spi's rng?
-    idxs = (0...@grid.length).to_a.sample(n).sort
+    idxs = sample_enum(0...@grid.length, n).sort
     mutate(grid: @grid.values_at(*idxs))
   end
 
@@ -722,7 +728,7 @@ class TrackBase
   # Only picks from filled slots; rests are not considered. The relative order
   # of the slots is maintained.
   def sample_filled_slots(n)
-    idxs = indexes_of_filled_slots.sample(n).sort
+    idxs = sample_enum(indexes_of_filled_slots, n).sort
     mutate(grid: @grid.values_at(*idxs))
   end
 

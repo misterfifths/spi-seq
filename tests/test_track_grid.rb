@@ -396,20 +396,22 @@ class TrackGridTest < Test::Unit::TestCase
     assert_grid T(:c4).sample(1), [[:c4]]
     assert_grid T(:c4).sample(2), [[:c4]]
 
-    srand 1234
-    t = T([:a1, :b2, :r, :c3, :d4])
-    assert_grid t.sample(5), [[:a1], [:b2], [], [:c3], [:d4]]
-    assert_grid t.sample(4), [[:a1], [], [:c3], [:d4]]
-    assert_grid t.sample(3), [[:b2], [], [:d4]]
-    assert_grid t.sample(2), [[], [:c3]]
-    assert_grid t.sample(1), [[:c3]]
+    unless ExtApi.in_sonic_pi?  # Not testing Sonic Pi's randomness
+      srand 1234
+      t = T([:a1, :b2, :r, :c3, :d4])
+      assert_grid t.sample(5), [[:a1], [:b2], [], [:c3], [:d4]]
+      assert_grid t.sample(4), [[:a1], [:b2], [], [:c3]]
+      assert_grid t.sample(3), [[:a1], [], [:d4]]
+      assert_grid t.sample(2), [[:b2], [:d4]]
+      assert_grid t.sample(1), [[:b2]]
 
-    srand 3456
-    assert_grid t.sample_filled(5), [[:a1], [:b2], [:c3], [:d4]]
-    assert_grid t.sample_filled(4), [[:a1], [:b2], [:c3], [:d4]]
-    assert_grid t.sample_filled(3), [[:a1], [:c3], [:d4]]
-    assert_grid t.sample_filled(2), [[:b2], [:c3]]
-    assert_grid t.sample_filled(1), [[:a1]]
+      srand 789
+      assert_grid t.sample_filled(5), [[:a1], [:b2], [:c3], [:d4]]
+      assert_grid t.sample_filled(4), [[:a1], [:b2], [:c3], [:d4]]
+      assert_grid t.sample_filled(3), [[:a1], [:b2], [:d4]]
+      assert_grid t.sample_filled(2), [[:b2], [:c3]]
+      assert_grid t.sample_filled(1), [[:c3]]
+    end
   end
 
   def test_drop_every
