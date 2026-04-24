@@ -252,10 +252,12 @@ class TrackGridTest < Test::Unit::TestCase
   def test_shuffle
     assert_grid T(:c4).shuffle, [[:c4]]
 
-    srand 1234
-    # Inexplicably, Array.shuffle does nothing immediately after an srand?
-    assert_grid T([:a1, :b2, :c3, :d4]).shuffle, [[:a1], [:b2], [:c3], [:d4]]
-    assert_grid T([:a1, :b2, :c3, :d4]).shuffle, [[:b2], [:c3], [:d4], [:a1]]
+    unless ExtApi.in_sonic_pi?  # Not testing Sonic Pi's randomness
+      srand 1234
+      # Inexplicably, Array.shuffle does nothing immediately after an srand?
+      assert_grid T([:a1, :b2, :c3, :d4]).shuffle, [[:a1], [:b2], [:c3], [:d4]]
+      assert_grid T([:a1, :b2, :c3, :d4]).shuffle, [[:b2], [:c3], [:d4], [:a1]]
+    end
   end
 
   def test_shuffle_filled_slots
@@ -264,11 +266,13 @@ class TrackGridTest < Test::Unit::TestCase
     assert_grid Track.rest(2).shuffle_filled, [[], []]
 
     t = T([:a1, :r, :r, :b2, [:c3, :d4]])
-    srand 1234
-    # Inexplicably, Array.shuffle does nothing immediately after an srand?
-    assert_grid t.shuffle_filled, [[:a1], [], [], [:b2], [:c3, :d4]]
-    assert_grid t.shuffle_filled, [[:b2], [], [], [:c3, :d4], [:a1]]
-    assert_grid t.shuffle_filled, [[:c3, :d4], [], [], [:b2], [:a1]]
+    unless ExtApi.in_sonic_pi?  # Not testing Sonic Pi's randomness
+      srand 1234
+      # Inexplicably, Array.shuffle does nothing immediately after an srand?
+      assert_grid t.shuffle_filled, [[:a1], [], [], [:b2], [:c3, :d4]]
+      assert_grid t.shuffle_filled, [[:b2], [], [], [:c3, :d4], [:a1]]
+      assert_grid t.shuffle_filled, [[:c3, :d4], [], [], [:b2], [:a1]]
+    end
   end
 
   def test_rotate
@@ -487,8 +491,10 @@ class TrackGridTest < Test::Unit::TestCase
     assert_grid t.rdropout(1), [[], [], [], []]
     assert_grid t.rdropout(0), [[:a1], [:b2], [:c3], [:d4]]
 
-    srand 1234
-    assert_grid t.rdropout, [[], [:b2], [], [:d4]]
+    unless ExtApi.in_sonic_pi?  # Not testing Sonic Pi's randomness
+      srand 1234
+      assert_grid t.rdropout, [[], [:b2], [], [:d4]]
+    end
   end
 
   def test_replace_slot

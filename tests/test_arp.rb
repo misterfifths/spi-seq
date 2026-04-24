@@ -87,11 +87,13 @@ class ArpTest < Test::Unit::TestCase
   def test_random
     ns = %i[a1 c0 d3 a0]
 
-    srand 1234
-    # Inexplicably, Array.shuffle does nothing immediately after an srand?
-    assert_arp ns, :random, ns
-    assert_arp ns, :random, %i[c0 d3 a0 a1]
-    assert_arp ns, :random, %i[a1 d3 a0 c0]
+    unless ExtApi.in_sonic_pi?  # Not testing Sonic Pi's randomness
+      srand 1234
+      # Inexplicably, Array.shuffle does nothing immediately after an srand?
+      assert_arp ns, :random, ns
+      assert_arp ns, :random, %i[c0 d3 a0 a1]
+      assert_arp ns, :random, %i[a1 d3 a0 c0]
+    end
   end
 
   def test_extra_octaves

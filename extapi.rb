@@ -55,6 +55,10 @@ module ExtApi
       end
     end
 
+    def in_sonic_pi?
+      !@spi.nil?
+    end
+
     begin
       Object.const_get("SonicPi::Core::SPVector")
 
