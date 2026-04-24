@@ -582,8 +582,8 @@ class TrackGridTest < Test::Unit::TestCase
     assert_extract_every t, 4, [[:a1], [:b2, :b3], [:c3]], [[], [], []]
   end
 
-  def assert_gextract(t, x, y, grid1, grid2)
-    t1, t2 = t.gextract(x, y)
+  def assert_gextract(t, x, y, grid1, grid2, skip_empty: false)
+    t1, t2 = t.gextract(x, y, skip_empty: skip_empty)
     assert_grid t1, grid1
     assert_grid t2, grid2
   end
@@ -617,6 +617,19 @@ class TrackGridTest < Test::Unit::TestCase
     assert_gextract t, 2, 15,
                     [[:a1], []] + [[:a1]] * 10,
                     [[], [:a1]] + [[]] * 10
+
+    t = T([:a1, :r] * 6)
+    assert_gextract t, 2, 3,
+      [
+        [:a1], [],
+        [], [],
+        [:a1], []
+      ] * 2,
+      [
+        [], [],
+        [:a1], [],
+        [], []
+      ] * 2, skip_empty: true
   end
 
   def assert_extract_note(track, note, a_grid, b_grid)

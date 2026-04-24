@@ -787,23 +787,8 @@ class TrackBase
   # If `skip_empty` is true, empty slots (rests) are not considered when
   # counting slots.
   def drop_x_of_y(x, y, skip_empty: false)
-    raise ArgumentError, "x and y must be integers" unless x.is_a?(Integer) && y.is_a?(Integer)
-    raise ArgumentError, "x and y must be > 0" unless x > 0 and y > 0
-    raise ArgumentError, "x must be <= y" unless x <= y
-
-    # This is equivalent to dropping indexes i where i % y == x - 1.
-    i = 0
-    new_grid = @grid.map do |slot|
-      if skip_empty && slot.empty?
-        slot
-      else
-        new_slot = i % y == x - 1 ? [] : slot
-        i += 1
-        new_slot
-      end
-    end
-
-    mutate(grid: new_grid)
+    t, _ = extract_x_of_y(x, y, skip_empty: skip_empty)
+    t
   end
 
   alias grouped_drop drop_x_of_y
@@ -928,12 +913,22 @@ class TrackBase
   # with steps in slots that are not in the `x`th slot within each each group,
   # and the second with those that are. See the documentation for the similar
   # `drop_x_of_y` for examples and restrictions on the values of the arguments.
-  def extract_x_of_y(x, y)
+  #
+  # If `skip_empty` is true, empty slots (rests) are not considered when
+  # counting slots.
+  def extract_x_of_y(x, y, skip_empty: false)
     raise ArgumentError, "x and y must be integers" unless x.is_a?(Integer) && y.is_a?(Integer)
     raise ArgumentError, "x and y must be > 0" unless x > 0 and y > 0
     raise ArgumentError, "x must be <= y" unless x <= y
 
-    extract_slots { |_, i| i % y == x - 1 }
+    i = 0
+    extract_slots do |slot|
+      next false if skip_empty && slot.empty?
+
+      extract_this = i % y == x - 1
+      i += 1
+      extract_this
+    end
   end
 
   alias grouped_extract extract_x_of_y
