@@ -31,7 +31,8 @@ module Arp
   # at the end of the result, before notes from the spread. Like spread,
   # extra_octaves will not add duplicate notes.
   def self.arpeggiate(notes, direction, spread: 0, extra_octaves: [])
-    orig_notes = notes
+    return [] if notes.empty?
+
     # NOTE: notes might be a Sonic Pi ring, which doesn't have everything from
     # Enumerable, so we need to call `to_a` on it. But it gets weirder - the
     # objects returned by `chord` are really tricky. It returns a ring wrapping
@@ -40,16 +41,17 @@ module Arp
     # kind of broken - in-place mutations like `map!` and `sort!` don't modify
     # them! So we explicitly call to_a twice here.
     notes = notes.to_a.to_a.dup.map! { |n| MIDINote.new(n) }  # rubocop:disable Lint/RedundantTypeConversion
+    orig_notes = notes.dup
 
     # TODO: where should this apply in relation to spread?
     extra_octaves.each do |octave_shift|
       orig_notes.each do |n|
-        new_note = MIDINote.new(n).up(octave_shift)
+        new_note = n.up(octave_shift)
         notes << new_note unless notes.include?(new_note)
       end
     end
 
-    if spread > 0 && !notes.empty?
+    if spread > 0
       # take the spread lowest notes and add a note an octave up. do not
       # duplicate notes, and do not effect the sorting of the original array.
       # notes added from spread go at the end, in case we're playing in order.
