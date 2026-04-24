@@ -5,7 +5,7 @@ require_relative "test_helper"
 require_relative "../track"
 require_relative "track_test_helpers"
 
-# TODO: Test arp and euclid initializers.
+# TODO: Test arp initializer.
 
 # Test simple Track initialization, Track.new and Track.rest.
 class TrackInitTest < Test::Unit::TestCase
@@ -195,5 +195,49 @@ class TrackInitTest < Test::Unit::TestCase
       [:c3], [], [],
       [:d4], [], []
     ]
+  end
+
+  def test_euclid
+    assert_raises { Track.euclid([:c4], "nope", 2) }
+    assert_raises { Track.euclid([:c4], 2, "nope") }
+    assert_raises { Track.euclid([:c4], 2, 3, rotate: "nope") }
+
+    assert_raises { Track.euclid([:c4], -1, 2) }
+    assert_raises { Track.euclid([:c4], 2, -1) }
+
+    assert_raises { Track.euclid([], 3, 4) }
+
+    # We should gridify a single stepish thing.
+    assert_grid Track.euclid(:c4, 2, 2), [[:c4], [:c4]]
+
+    assert_grid Track.euclid([:a1], 3, 4), [[:a1], [], [:a1], [:a1]]
+    assert_grid Track.euclid([:a1, :b2], 3, 4), [[:a1], [], [:b2], [:a1]]
+    assert_grid Track.euclid([:a1, [:b2, :c3]], 3, 4), [[:a1], [], [:b2, :c3], [:a1]]
+
+    assert_grid Track.euclid([:a1, :b2], 3, 4, rotate: 1), [[], [:a1], [:b2], [:a1]]
+    assert_grid Track.euclid([:a1, :b2], 3, 4, rotate: 2), [[:a1], [:b2], [:a1], []]
+
+    assert_grid Track.euclid([:a1], 3, 4, invert: true), [[], [:a1], [], []]
+    assert_grid Track.euclid([:a1], 3, 4, invert: true, rotate: 1), [[:a1], [], [], []]
+
+    assert_grid Track.euclid([:a1, :b2, :c3, :d4], 3, 4), [[:a1], [], [:b2], [:c3]]
+    assert_grid Track.euclid([:a1, :b2, :c3, :d4], 3, 4, cycle: false), [[:a1], [], [:c3], [:d4]]
+    assert_grid Track.euclid([:a1, :b2, :c3, :d4], 3, 4, full_cycle: true), [
+      [:a1], [], [:b2], [:c3],
+      [:d4], [], [:a1], [:b2],
+      [:c3], [], [:d4], [:a1],
+      [:b2], [], [:c3], [:d4]
+    ]
+    # full_cycle always implies cycle
+    assert_grid Track.euclid([:a1, :b2, :c3, :d4], 3, 4, cycle: false, full_cycle: true), [
+      [:a1], [], [:b2], [:c3],
+      [:d4], [], [:a1], [:b2],
+      [:c3], [], [:d4], [:a1],
+      [:b2], [], [:c3], [:d4]
+    ]
+
+    assert_gt Track.euclid([:c4], 3, 4, granularity: :whole), :whole, 1
+    assert_gt Track.euclid([:c4], 3, 4, timescale: 2), :eighth, 2
+    assert_gt Track.euclid([:c4], 3, 4, granularity: :half, timescale: 2), :half, 2
   end
 end

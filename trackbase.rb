@@ -120,10 +120,13 @@ class TrackBase
   # and the overall track is a perfect loop.
   def self.euclid(gridish, pulses, length, invert: false, rotate: 0, cycle: true, full_cycle: false, granularity: NoteLength::Eighth, timescale: 1)
     hits = Object.send(:euclid, pulses, length)
+    # TODO: this is a different notion of rotation than that of ::euclid. Should
+    # we standardize it?
     hits.rotate!(rotate) if rotate != 0
     hits.map! { |hit| !hit } if invert
 
     gridish = gridify(gridish)
+    raise ArgumentError, "you must provide at least one slot" if gridish.empty?
 
     # If we're doing a full cycle, we may need multiple copies of the Euclidean
     # pattern to complete a perfect loop. If we're spreading n slots over p
