@@ -114,7 +114,7 @@ def cc_mutable_live_loop(loop_name, cc:, port: nil, channel: nil, start_muted: f
                        port: port, channel: channel) do |incoming_cc, cc_val|
     next if incoming_cc != cc
     muted = cc_val == 0
-    ExtApi.puts("[cc mute control] CC #{cc} = #{cc_val} -> #{muted ? '' : 'un'}muting live loop #{loop_name}")
+    log("CC #{cc} = #{cc_val} -> #{muted ? '' : 'un'}muting live loop #{loop_name}", "cc_mute_control")
     mute_live_loop(loop_name, muted)
   end
 
@@ -122,7 +122,7 @@ def cc_mutable_live_loop(loop_name, cc:, port: nil, channel: nil, start_muted: f
   # the loop (i.e., not a restart of the same sketch).
   unless LiveLoopTracker.live_loop_is_running(loop_name)
     default_cc_val = start_muted ? 0 : 127
-    ExtApi.puts "[cc mute control] sending default CC #{cc} value #{default_cc_val} for live loop #{loop_name}"
+    log("[cc mute control] sending default CC #{cc} value #{default_cc_val} for live loop #{loop_name}", "cc_mute_control")
     ExtApi.midi_cc(cc, default_cc_val, port: port, channel: channel)
   end
 

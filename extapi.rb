@@ -120,3 +120,11 @@ module ExtApiStubs
     end
   end
 end
+
+def log(msg, channel = "spi-seq")
+  ExtApi.puts("[#{channel}] #{msg}")
+end
+
+def warn(msg, channel = "spi-seq")
+  log("warning: #{msg}", channel)
+end

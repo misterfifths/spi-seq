@@ -50,8 +50,8 @@ class CCPlayer < PlayerBase
     end
 
     if @debug
-      ExtApi.puts "@ slot=#{i} cycle=#{@cycle} fill=#{@fill}"
-      ExtApi.puts "new steps: [#{step_debug_strings.join(', ')}]"
+      log("@ slot=#{i} cycle=#{@cycle} fill=#{@fill}", "ccplayer")
+      log("new steps: [#{step_debug_strings.join(', ')}]", "ccplayer")
     end
   end
 end

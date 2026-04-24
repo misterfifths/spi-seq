@@ -103,7 +103,7 @@ module TrackRecorder
 
     if final_gate > 0
       if (start_slot + tied_steps) >= slots.length
-        ExtApi.puts("warning: dropping a note that would go past the end of the track")
+        warn("dropping a note that would go past the end of the track", "recorder")
       else
         slots[start_slot + tied_steps] << Step.new(note, vel: velocity, gate: final_gate)
       end
@@ -196,7 +196,7 @@ module TrackRecorder
       note_end = duration if note_end > duration
 
       if note_end <= note_start
-        ExtApi.puts("warning: timeline event ends before it starts or has 0 duration; ignoring")
+        warn("timeline event ends before it starts or has 0 duration; ignoring", "recorder")
         next
       end
 
@@ -272,13 +272,13 @@ module TrackRecorder
         next if cc_channel != "*" && cue_channel != cc_channel
 
         if recording
-          ExtApi.puts("ending recording @ #{cue_time}")
+          log("ending recording @ #{cue_time}", "recorder")
 
           recording = false
           end_time = cue_time
           break
         else
-          ExtApi.puts("starting recording @ #{cue_time}")
+          log("starting recording @ #{cue_time}", "recorder")
 
           recording = true
           start_time = cue_time
@@ -297,10 +297,10 @@ module TrackRecorder
           if active_event.nil?
             in_progress_timeline_events[note] = [note, cue_time, -1, vel]
           else
-            ExtApi.puts("got a note on for #{note}, but it's already on")
+            warn("got a note on for #{note}, but it's already on", "recorder")
           end
         elsif active_event.nil?
-          ExtApi.puts("got a note off for #{note}, but we didn't see it come on")
+          warn("got a note off for #{note}, but we didn't see it come on", "recorder")
         else
           active_event[2] = cue_time
           timeline << active_event
