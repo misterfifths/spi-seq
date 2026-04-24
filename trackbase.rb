@@ -741,36 +741,8 @@ class TrackBase
   # counting slots. For instance, `t.drop_every(3, skip_empty: true)` will clear
   # every 3rd slot that contains at least one step; empty slots will be ignored.
   def drop_every(*gaps, skip_empty: false)
-    raise ArgumentError, "you must pass at least one argument" if gaps.empty?
-    gaps.map! { |n| Integer.try_convert(n) }
-    raise ArgumentError, "all arguments must be convertible to integers" if gaps.any? { |n| n.nil? }
-    raise ArgumentError, "all arguments must be > 0" if gaps.any? { |n| n <= 0 }
-
-    # e.g., drop every 3:
-    # keep  | 0 1 - 3 4 - 6 7 - 9
-    # drop  |     2     5     8
-    # i % 3 | 0 1 2 0 1 2 0 1 2 0
-
-    gap_idx = 0
-    kept_slots = 0
-    new_grid = @grid.map do |slot|
-      if skip_empty && slot.empty?
-        slot
-      else
-        gap = gaps[gap_idx % gaps.length]
-        if kept_slots % gap == gap - 1
-          # We're clearing this slot; move on to the next gap and reset count
-          kept_slots = 0
-          gap_idx += 1
-          []
-        else
-          kept_slots += 1
-          slot
-        end
-      end
-    end
-
-    mutate(grid: new_grid)
+    t, _ = extract_every(*gaps, skip_empty: skip_empty)
+    t
   end
 
   alias dropout drop_every
@@ -902,11 +874,36 @@ class TrackBase
     [mutate(grid: grid1), mutate(grid: grid2)]
   end
 
-  # Returns two tracks by extracting the steps in every `n`th slot. The first
-  # returned track will have steps in all the slots that are not every `n`th,
-  # and the second will have steps in every `n`th slot.
-  def extract_every(n)
-    extract_slots { |_, i| i % n == n - 1 }
+  # Returns a new track by removing all steps in certain slots. The duration of
+  # the track does not change; the emptied slots simply become rests. See the
+  # documentation of the related `drop_every` for more details.
+  def extract_every(*gaps, skip_empty: false)
+    raise ArgumentError, "you must pass at least one argument" if gaps.empty?
+    gaps.map! { |n| Integer.try_convert(n) }
+    raise ArgumentError, "all arguments must be convertible to integers" if gaps.any? { |n| n.nil? }
+    raise ArgumentError, "all arguments must be > 0" if gaps.any? { |n| n <= 0 }
+
+    # e.g., drop every 3:
+    # keep  | 0 1 - 3 4 - 6 7 - 9
+    # drop  |     2     5     8
+    # i % 3 | 0 1 2 0 1 2 0 1 2 0
+
+    gap_idx = 0
+    kept_slots = 0
+    extract_slots do |slot|
+      next false if skip_empty && slot.empty?
+
+      gap = gaps[gap_idx % gaps.length]
+      if kept_slots % gap == gap - 1
+        # We're extracting this slot; move on to the next gap and reset count
+        kept_slots = 0
+        gap_idx += 1
+        true
+      else
+        kept_slots += 1
+        false
+      end
+    end
   end
 
   # Considers the track in groups of `y` slots and returns two tracks: the first

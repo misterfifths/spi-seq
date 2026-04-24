@@ -531,8 +531,8 @@ class TrackGridTest < Test::Unit::TestCase
     end
   end
 
-  def assert_extract(track, a_grid, b_grid, method = :extract, *args, &block)
-    a, b = track.send(method, *args, &block)
+  def assert_extract(track, a_grid, b_grid, method = :extract, *args, **kwargs, &block)
+    a, b = track.send(method, *args, **kwargs, &block)
     assert_grid a, a_grid
     assert_grid b, b_grid
   end
@@ -568,8 +568,9 @@ class TrackGridTest < Test::Unit::TestCase
     assert_extract_slots(t, [[:a1], [:b2, :b3], []], [[], [], [:c3]]) { |_, idx| idx == 2 }
   end
 
-  def assert_extract_every(track, n, a_grid, b_grid)
-    assert_extract(track, a_grid, b_grid, :extract_every, n)
+  def assert_extract_every(track, ns, a_grid, b_grid, skip_empty: false)
+    ns = [ns] unless ns.is_a?(Enumerable)
+    assert_extract(track, a_grid, b_grid, :extract_every, *ns, skip_empty: skip_empty)
   end
 
   def test_extract_every
@@ -580,6 +581,37 @@ class TrackGridTest < Test::Unit::TestCase
     assert_extract_every t, 2, [[:a1], [], [:c3]], [[], [:b2, :b3], []]
     assert_extract_every t, 3, [[:a1], [:b2, :b3], []], [[], [], [:c3]]
     assert_extract_every t, 4, [[:a1], [:b2, :b3], [:c3]], [[], [], []]
+
+    # Multiple gaps
+    t = T([:a1] * 12)
+    assert_extract_every t, [1, 3],
+      [[], [:a1], [:a1], [], [], [:a1], [:a1], [], [], [:a1], [:a1], []],
+      [[:a1], [], [], [:a1], [:a1], [], [], [:a1], [:a1], [], [], [:a1]]
+    assert_extract_every t, [2, 4],
+      [[:a1], [], [:a1], [:a1], [:a1], [], [:a1], [], [:a1], [:a1], [:a1], []],
+      [[], [:a1], [], [], [], [:a1], [], [:a1], [], [], [], [:a1]]
+    assert_extract_every t, [2, 3, 4],
+      [[:a1], [], [:a1], [:a1], [], [:a1], [:a1], [:a1], [], [:a1], [], [:a1]],
+      [[], [:a1], [], [], [:a1], [], [], [], [:a1], [], [:a1], []]
+
+    t = T([:a1, :r] * 6)
+    assert_extract_every t, [1, 3],
+      [
+        [], [],    # drop (1), rest
+        [:a1], [], # keep (3), rest
+        [:a1], [], # keep (3), rest
+        [], [],    # drop (3), rest
+        [], [],    # drop (1), rest
+        [:a1], []  # keep (3), rest
+      ],
+      [
+        [:a1], [],
+        [], [],
+        [], [],
+        [:a1], [],
+        [:a1], [],
+        [], []
+      ], skip_empty: true
   end
 
   def assert_gextract(t, x, y, grid1, grid2, skip_empty: false)
