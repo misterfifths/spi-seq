@@ -210,9 +210,7 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
     end
 
     if res.is_a?(TrackBase)
-      if (res.is_a?(Track) && player.is_a?(CCPlayer)) || (res.is_a?(CCTrack) && player.is_a?(Player))
-        raise TypeError, "cannot switch track live loop #{loop_name} between track types"
-      end
+      raise TypeError, "cannot switch track live loop #{loop_name} between track types" if (res.is_a?(Track) && player.is_a?(CCPlayer)) || (res.is_a?(CCTrack) && player.is_a?(Player))
 
       log("#{loop_name}: swapping track on cycle #{player.cycle}", "track_live_loop") if debug
       player.swap_track(res)

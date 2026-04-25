@@ -814,9 +814,7 @@ class Track < TrackBase
     position = ExtApi.rand_i(3) if random_pos
 
     # Massage the voice argument indices if needed
-    if voices.is_a?(Array)
-      voices = voices.map { |i| 3 - i }
-    end
+    voices = voices.map { |i| 3 - i } if voices.is_a?(Array)
 
     @grid.each do |slot|
       if slot.empty?

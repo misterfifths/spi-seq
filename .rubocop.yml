@@ -24,9 +24,6 @@ Style/StringLiterals:
 Style/ConditionalAssignment:
   Enabled: false
 
-Style/IfUnlessModifier:
-  Enabled: false
-
 Style/TernaryParentheses:
   Enabled: false
 

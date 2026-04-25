@@ -86,9 +86,7 @@ class MIDINote < Numeric
     # integer. If it was a float, it is not the canonical representation of that
     # note symbol, and we should only cache it against instance.to_f (which will
     # also be the cache_key in that case).
-    if instance.number.is_a?(Integer)
-      @note_cache[instance.to_s] = instance
-    end
+    @note_cache[instance.to_s] = instance if instance.number.is_a?(Integer)
 
     instance
   end

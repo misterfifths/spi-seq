@@ -231,9 +231,7 @@ class Scale
   end
 
   def repr
-    if @tonic.octave == -2 && @num_octaves == 12 && @clamp_to_midi
-      return "Scale.full_scale(:#{@tonic.pitch_class}, :#{@name})"
-    end
+    return "Scale.full_scale(:#{@tonic.pitch_class}, :#{@name})" if @tonic.octave == -2 && @num_octaves == 12 && @clamp_to_midi
 
     ctor_args = {}
     ctor_args[:num_octaves] = @num_octaves.to_s unless @num_octaves == 1
