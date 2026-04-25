@@ -34,7 +34,7 @@ Style/SymbolProc:
   Enabled: false
 
 Style/PreferredHashMethods:
-  Enabled: false
+  EnforcedStyle: verbose
 
 Style/GuardClause:
   Enabled: false
