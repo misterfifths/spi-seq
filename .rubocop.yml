@@ -19,10 +19,7 @@ Style/AccessModifierDeclarations:
   Enabled: false
 
 Style/StringLiterals:
-  Enabled: false
-
-Style/QuotedSymbols:
-  Enabled: false
+  EnforcedStyle: double_quotes
 
 Style/ConditionalAssignment:
   Enabled: false
