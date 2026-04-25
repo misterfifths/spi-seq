@@ -356,7 +356,7 @@ class Track < TrackBase
     steps = @granularity.steps_to(new_granularity)
     new_track = self
     steps.times do
-      new_track = new_granularity < @granularity ? new_track.expand : new_track.condense
+      new_track = (new_granularity < @granularity) ? new_track.expand : new_track.condense
     end
 
     new_track

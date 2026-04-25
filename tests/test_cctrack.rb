@@ -84,14 +84,14 @@ class CCTrackTest < Test::Unit::TestCase
     # Multiple steps -> a slot with those elements
     cct = t.to_cc do |slot, _|
       next [] if slot.empty?
-      slot[0].note.pitch_class == :c ? [a, b] : c
+      (slot[0].note.pitch_class == :c) ? [a, b] : c
     end
     assert_grid cct, [[a, b], [], [c], [a, b]]
 
     # Gridish -> expanded into multiple slots
     cct = t.to_cc do |slot, _|
       next [] if slot.empty?
-      slot[0].note.pitch_class == :c ? [[a], [b, d]] : c
+      (slot[0].note.pitch_class == :c) ? [[a], [b, d]] : c
     end
     assert_grid cct, [[a], [b, d], [], [c], [a], [b, d]]
   end
@@ -112,7 +112,7 @@ class CCTrackTest < Test::Unit::TestCase
     # Multiple numbers -> expanded into multiple slots
     cct = t.to_simple_cc(5) do |slot, _|
       next [] if slot.empty?
-      slot[0].note.pitch_class == :c ? [1, 2] : 3
+      (slot[0].note.pitch_class == :c) ? [1, 2] : 3
     end
     assert_grid cct, [[a], [b], [], [c], [a], [b]]
   end

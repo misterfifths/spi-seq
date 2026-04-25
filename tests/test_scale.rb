@@ -66,8 +66,8 @@ class ScaleTest < Test::Unit::TestCase
     ].each do |degree, rel_tonic, note|
       assert_equal sc.degree(degree, relative_tonic: rel_tonic), note
       assert_equal sc.degree_of(note, relative_tonic: rel_tonic), degree
-      assert_equal sc.note_at_step(rel_tonic, degree > 0 ? degree - 1 : degree), note
-      assert_equal sc.steps_between(rel_tonic, note), degree > 0 ? degree - 1 : degree
+      assert_equal sc.note_at_step(rel_tonic, (degree > 0) ? degree - 1 : degree), note
+      assert_equal sc.steps_between(rel_tonic, note), (degree > 0) ? degree - 1 : degree
     end
 
     assert_raises { sc.degree(1, relative_tonic: :d6) }

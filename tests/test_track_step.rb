@@ -26,22 +26,22 @@ class TrackStepTest < Test::Unit::TestCase
     assert_mutate_steps(t, [[:f9], [:f9], [:f9]]) { |_, _, _| :f9 }
 
     [nil, :r, :rest].each do |rest|
-      assert_mutate_steps(t, [[:a1], [:b2], [:d4]]) { |s| s.note == :c3 ? rest : s }
-      assert_mutate_steps(t, [[], [:b2, :c3], [:d4]]) { |s| s.note.pitch_class == :a ? rest : s }
+      assert_mutate_steps(t, [[:a1], [:b2], [:d4]]) { |s| (s.note == :c3) ? rest : s }
+      assert_mutate_steps(t, [[], [:b2, :c3], [:d4]]) { |s| (s.note.pitch_class == :a) ? rest : s }
     end
 
     assert_mutate_steps(t, [[:f1], [:f2, :f3], [:f4]]) { |s| s.with_note(s.note.with_pitch_class(:f)) }
 
-    assert_mutate_steps(t, [[:a1], [], [:d4]]) { |s, i| i == 1 ? nil : s }
+    assert_mutate_steps(t, [[:a1], [], [:d4]]) { |s, i| (i == 1) ? nil : s }
 
     # rubocop:disable Lint/FloatComparison
-    assert_mutate_steps(t, [[:f9], [:b2, :c3], [:d4]]) { |s, _, pct| pct == 0 ? [:f9] : s }
-    assert_mutate_steps(t, [[:a1], [:f9], [:d4]]) { |s, _, pct| pct == 0.5 ? [:f9] : s }
-    assert_mutate_steps(t, [[:a1], [:b2, :c3], [:f9]]) { |s, _, pct| pct == 1 ? [:f9] : s }
+    assert_mutate_steps(t, [[:f9], [:b2, :c3], [:d4]]) { |s, _, pct| (pct == 0) ? [:f9] : s }
+    assert_mutate_steps(t, [[:a1], [:f9], [:d4]]) { |s, _, pct| (pct == 0.5) ? [:f9] : s }
+    assert_mutate_steps(t, [[:a1], [:b2, :c3], [:f9]]) { |s, _, pct| (pct == 1) ? [:f9] : s }
     # rubocop:enable Lint/FloatComparison
 
     # Returning more than one step from the block.
-    assert_mutate_steps(t, [[:a1], [:f8, :f9], [:d4]]) { |s, i| i == 1 ? [:f8, :f9] : s }
+    assert_mutate_steps(t, [[:a1], [:f8, :f9], [:d4]]) { |s, i| (i == 1) ? [:f8, :f9] : s }
   end
 
   def assert_mutate_in_slot(track, i, grid, &block)
