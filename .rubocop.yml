@@ -3,6 +3,12 @@ AllCops:
   Exclude:
     - 'scratch/*.rb'
 
+Style/RedundantException:
+  Enabled: false
+
+Style/ImplicitRuntimeError:
+  Enabled: true
+
 Style/NumericPredicate:
   Enabled: false
 

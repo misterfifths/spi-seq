@@ -66,10 +66,10 @@ class TrackBase
   # `gridish` must resolve to a grid with at least one slot.
   def initialize(gridish, granularity: NoteLength::Eighth, timescale: 1)
     @grid = self.class.gridify(gridish)
-    raise "A Track's grid must have at least one slot" if @grid.empty?
+    raise ArgumentError, "A Track's grid must have at least one slot" if @grid.empty?
     @granularity = NoteLength.new(granularity)
 
-    raise "Timescale must be a number greater than 0" unless timescale.is_a?(Numeric) && timescale > 0
+    raise RangeError, "Timescale must be a number greater than 0" unless timescale.is_a?(Numeric) && timescale > 0
     @timescale = timescale
   end
 
@@ -279,7 +279,7 @@ class TrackBase
   #   empty array.
   # - An array of slots, which will all be added in place of the yielded slot
   def mutate_each_slot(&block)
-    raise "Block must take 1-3 arguments" if block.arity == 0 || block.arity > 3
+    raise ArgumentError, "Block must take 1-3 arguments" if block.arity == 0 || block.arity > 3
 
     new_grid = []
     @grid.each_with_index do |slot, i|
@@ -504,7 +504,7 @@ class TrackBase
   # result in a track with three slots: [[:a, :b], [:b, :c], [:c, :d]].
   # Raises an error if `n` is greater than the length of the track.
   def each_cons(n, flatten: true)
-    raise "n=#{n} is greater than the length of the track (#{@grid.length})" if n > @grid.length
+    raise IndexError, "n=#{n} is greater than the length of the track (#{@grid.length})" if n > @grid.length
 
     new_grid = @grid.each_cons(n).to_a
     if flatten
@@ -790,7 +790,7 @@ class TrackBase
   # Returns a new track with the steps in slot `idx` replaced with the given
   # steps.
   def replace_slot(idx, new_steps)
-    raise "Index #{idx} is beyond the length of the track (#{@grid.length})" if idx >= @grid.length
+    raise IndexError, "Index #{idx} is beyond the length of the track (#{@grid.length})" if idx >= @grid.length
     new_grid = @grid.dup
     new_grid[idx] = new_steps  # This will get slotified by the initializer.
     mutate(grid: new_grid)
@@ -831,7 +831,7 @@ class TrackBase
   # block returns true for odd indices, the returned tracks will have slots
   # [:c2, rest, :e2, rest] and [rest, :d2, rest, :f2], respectively.
   def extract_steps(&block)
-    raise "Block must take 1-3 arguments" if block.arity == 0 || block.arity > 3
+    raise ArgumentError, "Block must take 1-3 arguments" if block.arity == 0 || block.arity > 3
 
     grid1 = []
     grid2 = []
@@ -892,8 +892,8 @@ class TrackBase
   def extract_every(*gaps, skip_empty: false)
     raise ArgumentError, "you must pass at least one argument" if gaps.empty?
     gaps.map! { |n| Integer.try_convert(n) }
-    raise ArgumentError, "all arguments must be convertible to integers" if gaps.any? { |n| n.nil? }
-    raise ArgumentError, "all arguments must be > 0" if gaps.any? { |n| n <= 0 }
+    raise TypeError, "all arguments must be convertible to integers" if gaps.any? { |n| n.nil? }
+    raise RangeError, "all arguments must be > 0" if gaps.any? { |n| n <= 0 }
 
     # e.g., drop every 3:
     # keep  | 0 1 - 3 4 - 6 7 - 9
@@ -926,9 +926,9 @@ class TrackBase
   # If `skip_empty` is true, empty slots (rests) are not considered when
   # counting slots.
   def extract_x_of_y(x, y, skip_empty: false)
-    raise ArgumentError, "x and y must be integers" unless x.is_a?(Integer) && y.is_a?(Integer)
-    raise ArgumentError, "x and y must be > 0" unless x > 0 && y > 0
-    raise ArgumentError, "x must be <= y" unless x <= y
+    raise TypeError, "x and y must be integers" unless x.is_a?(Integer) && y.is_a?(Integer)
+    raise RangeError, "x and y must be > 0" unless x > 0 && y > 0
+    raise RangeError, "x must be <= y" unless x <= y
 
     i = 0
     extract_slots do |slot|
@@ -962,7 +962,7 @@ class TrackBase
   # - An array of steps, which will all be added in place of the yielded step to
   #   the corresponding slot of the yielded step.
   def mutate_each_step(&block)
-    raise "Block must take 1-3 arguments" if block.arity == 0 || block.arity > 3
+    raise ArgumentError, "Block must take 1-3 arguments" if block.arity == 0 || block.arity > 3
 
     new_grid = @grid.map.with_index do |slot, i|
       if i == 0
@@ -1002,7 +1002,7 @@ class TrackBase
   # Note that if the slot at the given index is empty, the block will not be
   # called and no changes will be made.
   def mutate_steps_in_slot(idx, &block)
-    raise "Block must take 1 argument" if block.arity != 1
+    raise ArgumentError, "Block must take 1 argument" if block.arity != 1
 
     new_slot = @grid[idx].map { |step| block.call(step) }.flatten
     set_slot(idx, new_slot)
@@ -1096,7 +1096,7 @@ class TrackBase
   # convenient for users. E.g. symbols or strings may be converted to MIDI note
   # Steps.
   def self.stepify(_)
-    raise "subclasses must implement stepify"
+    raise RuntimeError, "subclasses must implement stepify"
   end
 
   # Attempts to convert its argument to a grid slot (i.e. an array of steps).
@@ -1108,7 +1108,7 @@ class TrackBase
   #
   # The result must be frozen.
   def self.slotify(_)
-    raise "subclasses must implement slotify"
+    raise RuntimeError, "subclasses must implement slotify"
   end
 
   # Attempts to convert its argument to a grid (a 2d array of steps).
@@ -1118,7 +1118,7 @@ class TrackBase
   #
   # The result must be frozen.
   def self.gridify(_)
-    raise "subclasses must implement gridify"
+    raise RuntimeError, "subclasses must implement gridify"
   end
 
 
@@ -1166,7 +1166,7 @@ class TrackBase
     ctor_kwargs.each_key do |kwarg|
       us = send(kwarg)
       them = other_track.send(kwarg)
-      raise "incompatible tracks: #{kwarg} #{us} != #{them}" unless us == them
+      raise ArgumentError, "incompatible tracks: #{kwarg} #{us} != #{them}" unless us == them
     end
   end
 

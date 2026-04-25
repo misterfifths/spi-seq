@@ -35,7 +35,7 @@ class CCStep < StepBase
   def initialize(cc, value, prob: nil,
                  accum_delta: 0, accum_max: 12, accum_min: 0, accum_mode: :wrap, accum_prob: nil)
     @cc = cc.to_i
-    raise ArgumentError, "CC numbers must be between 0 and 127, inclusive" if @cc < 0 || @cc > 127
+    raise RangeError, "CC numbers must be between 0 and 127, inclusive" if @cc < 0 || @cc > 127
 
     @value = value.to_i
     if @value < 0

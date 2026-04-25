@@ -139,7 +139,7 @@ class Interval < Numeric
       raise ArgumentError, "the number and size arguments are mutually exclusive" unless size.nil?
 
       number = number.to_i
-      raise ArgumentError, "interval number must be > 0" unless number > 0
+      raise RangeError, "interval number must be > 0" unless number > 0
 
       # Pick perfect/major if quality was omitted.
       if quality.nil?
@@ -201,7 +201,7 @@ class Interval < Numeric
     super()
 
     @size = size.to_i
-    raise ArgumentError, "interval size must be > 0" if @size < 0
+    raise RangeError, "interval size must be > 0" if @size < 0
 
     num_octaves = @size / 12
     intra_octave_semitones = @size % 12

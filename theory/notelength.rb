@@ -20,7 +20,7 @@ class NoteLength
     when Numeric
       from_number(length)
     else
-      raise "Invalid note length #{f}"
+      raise TypeError, "Invalid note length #{f}"
     end
 
     @cache[length] = instance
@@ -48,7 +48,7 @@ class NoteLength
     when 1/16.0
       SixtyFourth
     else
-      raise "Invalid note length #{f}"
+      raise RangeError, "Invalid note length #{f}"
     end
   end
   private_class_method :from_number
@@ -102,7 +102,7 @@ class NoteLength
       @next_longer = :thirty_second
       @next_shorter = nil
     else
-      raise "Invalid note length symbol #{sym}"
+      raise ArgumentError, "Invalid note length symbol #{sym}"
     end
   end
 
@@ -110,7 +110,7 @@ class NoteLength
   # quarter note length returns an eighth. It is an error to attempt to halve
   # a sixty-fourth note.
   def halve
-    raise "No supported note length shorter than #{self}" if @next_shorter.nil?
+    raise ArgumentError, "No supported note length shorter than #{self}" if @next_shorter.nil?
     NoteLength.new(@next_shorter)
   end
 
@@ -118,7 +118,7 @@ class NoteLength
   # quarter note length returns a half. It is an error to attempt to double a
   # whole note.
   def double
-    raise "No supported note length longer than #{self}" if @next_longer.nil?
+    raise ArgumentError, "No supported note length longer than #{self}" if @next_longer.nil?
     NoteLength.new(@next_longer)
   end
 

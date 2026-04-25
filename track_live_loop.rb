@@ -122,13 +122,13 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
                     cc: nil, fill_cc: nil, cc_port: nil, cc_channel: nil,
                     send_cycle_cues: true, debug: false,
                     init: nil, **kwargs, &block)
-  raise "Block must take 0 - 5 arguments" if !block.nil? && block.arity > 5
+  raise ArgumentError, "Block must take 0 - 5 arguments" if !block.nil? && block.arity > 5
 
-  raise "If no track is provided, a block must be" if track.nil? && block.nil?
+  raise ArgumentError, "If no track is provided, a block must be" if track.nil? && block.nil?
 
   track ||= Track.rest
 
-  raise "The fade parameters cannot be used with CCTracks" if track.is_a?(CCTrack) && (fade_in || fade_out)
+  raise ArgumentError, "The fade parameters cannot be used with CCTracks" if track.is_a?(CCTrack) && (fade_in || fade_out)
 
   player = case track
   when Track
@@ -146,7 +146,7 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
   # of the new live loop, below.
   old_player = LiveLoopTracker.live_loop_var_get(loop_name, :__player)
 
-  raise "cannot switch track live loop #{loop_name} between track types" unless old_player.nil? || player.is_a?(old_player.class)
+  raise TypeError, "cannot switch track live loop #{loop_name} between track types" unless old_player.nil? || player.is_a?(old_player.class)
 
 
   ### Resolve default arguments
@@ -211,7 +211,7 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
 
     if res.is_a?(TrackBase)
       if (res.is_a?(Track) && player.is_a?(CCPlayer)) || (res.is_a?(CCTrack) && player.is_a?(Player))
-        raise "cannot switch track live loop #{loop_name} between track types"
+        raise TypeError, "cannot switch track live loop #{loop_name} between track types"
       end
 
       log("#{loop_name}: swapping track on cycle #{player.cycle}", "track_live_loop") if debug

@@ -41,7 +41,7 @@ class CCTrack < TrackBase
       when Numeric
         CCStep.new(cc_number, slot)
       else
-        raise ArgumentError, "slots must be numbers, CCSteps, or rests"
+        raise TypeError, "slots must be numbers, CCSteps, or rests"
       end
     end
 
@@ -52,8 +52,8 @@ class CCTrack < TrackBase
   ### Mutators
 
   def add_curve(cc_number, start_val, end_val, curve, slot_start_idx, slot_end_idx)
-    raise RangeError, "slot start is >= slot end" if slot_start_idx >= slot_end_idx
-    raise RangeError, "slot range is beyond the grid" if slot_start_idx < 0 || slot_end_idx >= @grid.length
+    raise IndexError, "slot start is >= slot end" if slot_start_idx >= slot_end_idx
+    raise IndexError, "slot range is beyond the grid" if slot_start_idx < 0 || slot_end_idx >= @grid.length
 
     new_grid = mutable_grid_dup
 
@@ -81,13 +81,13 @@ class CCTrack < TrackBase
   # - It is an error to pass a rest (as defined by `MIDINote.rest?`) to this
   #   function.
   def self.stepify(x)
-    raise "A rest cannot be converted to a step" if MIDINote.rest?(x)
+    raise ArgumentError, "A rest cannot be converted to a step" if MIDINote.rest?(x)
 
     case x
     when CCStep
       x
     else
-      raise "Not a valid value for a CCStep: #{x.inspect}"
+      raise TypeError, "Not a valid value for a CCStep: #{x.inspect}"
     end
   end
 
@@ -135,7 +135,7 @@ class CCTrack < TrackBase
       raw_slot = x.to_a.reject { |s| MIDINote.rest?(s) }.map { |s| stepify(s) }
       dedupe_slot(raw_slot).freeze
     else
-      raise "Not a valid value for a slot: #{x.inspect}"
+      raise TypeError, "Not a valid value for a slot: #{x.inspect}"
     end
   end
 
@@ -154,7 +154,7 @@ class CCTrack < TrackBase
       # See the note in ExtApi about why we need to explicitly call to_a here.
       x.to_a.map { |s| slotify(s) }.freeze
     else
-      raise "Not a valid value for a grid: #{x.inspect}"
+      raise TypeError, "Not a valid value for a grid: #{x.inspect}"
     end
   end
 end

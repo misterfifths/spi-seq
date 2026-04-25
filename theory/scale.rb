@@ -170,7 +170,7 @@ class Scale
     raise ArgumentError, "scale does not contain #{relative_tonic}" if tonic_idx.nil?
 
     i = tonic_idx + steps
-    raise ArgumentError, "scale does not contain a note #{n} steps from #{relative_tonic}" if i < 0 || i >= @notes.length
+    raise RangeError, "scale does not contain a note #{n} steps from #{relative_tonic}" if i < 0 || i >= @notes.length
     @notes[i]
   end
 
@@ -183,7 +183,7 @@ class Scale
   # tonic of the scale. A degree of -1 is taken to be one note below the tonic
   # on the scale.
   def degree(n, relative_tonic: nil)
-    raise ArgumentError, "degree 0 is undefined" if n == 0
+    raise RangeError, "degree 0 is undefined" if n == 0
 
     steps = n
     steps -= 1 if steps > 0

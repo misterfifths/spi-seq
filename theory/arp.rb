@@ -105,7 +105,7 @@ module Arp
     when Arp::Order
       # nothing to do
     else
-      raise "Unknown arpeggiator direction #{direction}"
+      raise ArgumentError, "Unknown arpeggiator direction #{direction}"
     end
 
     notes

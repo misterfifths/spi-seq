@@ -107,7 +107,7 @@ class Track < TrackBase
       grid = notes.map { |n| [Step.new(n)] }
       new(grid, granularity: granularity, timescale: timescale)
     else
-      raise "pulses and length must both be nil or both be integers" if length.nil?
+      raise TypeError, "pulses and length must both be nil or both be integers" if length.nil?
       euclid(notes, pulses, length, rotate: rotate, full_cycle: full_cycle, granularity: granularity, timescale: timescale)
     end
   end
@@ -120,7 +120,7 @@ class Track < TrackBase
       grid = notes.map { |n| [Step.new(n)] }
       new(grid, granularity: granularity, timescale: timescale)
     else
-      raise "pulses and length must both be nil or both be integers" if length.nil?
+      raise TypeError, "pulses and length must both be nil or both be integers" if length.nil?
       euclid(notes, pulses, length, full_cycle: true, granularity: granularity, timescale: timescale)
     end
   end
@@ -238,7 +238,7 @@ class Track < TrackBase
   # Track with 16th-note granularity. A Step that had a gate of 90% would become
   # two Steps in back-to-back slots, one a tie and the following with 80% gate.
   def expand
-    raise "Cannot expand past 64th-note granularity" if @granularity == NoteLength::SixtyFourth
+    raise RangeError, "Cannot expand past 64th-note granularity" if @granularity == NoteLength::SixtyFourth
 
     # Gameplan: each slot in the grid will expand to two slots. Consider each
     # slot individually. Each Step in that slot may expand to either one Step,
@@ -292,7 +292,7 @@ class Track < TrackBase
   # expand. Steps with short gates and those starting on off-beats may be
   # completely absent from the result.
   def condense
-    raise "Cannot condense past whole-note granularity" if @granularity == NoteLength::Whole
+    raise RangeError, "Cannot condense past whole-note granularity" if @granularity == NoteLength::Whole
 
     # Gameplan: each pair of slots in the grid will collapse into one slot in a
     # new grid. In each pair, find the total gate of any given Step by checking
@@ -426,7 +426,7 @@ class Track < TrackBase
   # `max` is provided, the other defaults to the respective endpoint of the
   # range 0-1.
   def with_gate_curve(curve_func, min: nil, max: nil)
-    raise "Curve function must be a callable that takes 1-2 arguments" if !curve_func.respond_to?(:call) || curve_func.arity == 0 || curve_func.arity > 2
+    raise TypeError, "Curve function must be a callable that takes 1-2 arguments" if !curve_func.respond_to?(:call) || curve_func.arity == 0 || curve_func.arity > 2
 
     if !min.nil? || !max.nil?
       min = 0 if min.nil?
@@ -487,7 +487,7 @@ class Track < TrackBase
   # range of the curve function (0 - 127 if `zero_to_one` is false, otherwise
   # 0 - 1).
   def with_vel_curve(curve_func, zero_to_one: false, min: nil, max: nil)
-    raise "Curve function must be a callable that takes 1-2 arguments" if !curve_func.respond_to?(:call) || curve_func.arity == 0 || curve_func.arity > 2
+    raise TypeError, "Curve function must be a callable that takes 1-2 arguments" if !curve_func.respond_to?(:call) || curve_func.arity == 0 || curve_func.arity > 2
 
     if !min.nil? || !max.nil?
       min = 0 if min.nil?
@@ -630,7 +630,7 @@ class Track < TrackBase
   # long as `starting_slot_idx + new_steps.length` is not greater than the
   # length of the track.
   protected def set_run(starting_slot_idx, orig_steps, new_steps)
-    raise "replacement steps are past the end of the track" if starting_slot_idx + new_steps.length > @grid.length
+    raise IndexError, "replacement steps are past the end of the track" if starting_slot_idx + new_steps.length > @grid.length
 
     new_grid = mutable_grid_dup
 
@@ -799,15 +799,15 @@ class Track < TrackBase
   #   is empty.
   private def iter_harmonized_slots(tonic, scale_name, position:, voices: nil)
     # This is an artificial but pretty sensible limitation.
-    raise 'Only a mono track can be harmonized' unless mono?
+    raise ArgumentError, "Only a mono track can be harmonized" unless mono?
 
-    raise "position must be 0, 1, 2, or :rand" unless position == :rand || (position >= 0 && position < 3)
+    raise RangeError, "position must be 0, 1, 2, or :rand" unless position == :rand || (position >= 0 && position < 3)
     if voices.is_a?(Numeric)
-      raise "If voices is an integer, it must be 1, 2, or 3" unless [1, 2, 3].contain?(voices)
+      raise RangeError, "If voices is an integer, it must be 1, 2, or 3" unless [1, 2, 3].contain?(voices)
     elsif voices.is_a?(Array)
-      raise "If voices is an array, all of its elements must be 1, 2, or 3" unless voices.all? { |v| [1, 2, 3].contain?(v) }
+      raise ArgumentError, "If voices is an array, all of its elements must be 1, 2, or 3" unless voices.all? { |v| [1, 2, 3].contain?(v) }
     elsif !voices.nil?
-      raise "voices must be an integer or an array"
+      raise TypeError, "voices must be an integer or an array"
     end
 
     random_pos = position == :rand
@@ -1046,7 +1046,7 @@ class Track < TrackBase
   #   result. Note that this is the same as returning an empty array.
   # - An array of slots, which will all be added to the result in order.
   def to_cc(&block)
-    raise "Block must take 1-3 arguments" if block.arity == 0 || block.arity > 3
+    raise ArgumentError, "Block must take 1-3 arguments" if block.arity == 0 || block.arity > 3
 
     new_grid = []
     @grid.each_with_index do |slot, i|
@@ -1101,7 +1101,7 @@ class Track < TrackBase
   # - An array of numbers, each of which will be converted as above and added
   #   to individual slots in the result.
   def to_simple_cc(cc_number, &block)
-    raise "Block must take 1-3 arguments" if block.arity == 0 || block.arity > 3
+    raise ArgumentError, "Block must take 1-3 arguments" if block.arity == 0 || block.arity > 3
 
     slots = []
     @grid.each_with_index do |slot, i|
@@ -1148,7 +1148,7 @@ class Track < TrackBase
   # `def_gate` and `def_vel` will be used for any Steps that need to be
   # constructed.
   def self.stepify(x, def_gate: 1.0, def_vel: 127)
-    raise "A rest cannot be converted to a Step" if MIDINote.rest?(x)
+    raise TypeError, "A rest cannot be converted to a Step" if MIDINote.rest?(x)
 
     case x
     when Step
@@ -1156,7 +1156,7 @@ class Track < TrackBase
     when Symbol, String, Numeric, MIDINote
       Step.new(x, gate: def_gate, vel: def_vel)
     else
-      raise "Not a valid value for a Step: #{x.inspect}"
+      raise TypeError, "Not a valid value for a Step: #{x.inspect}"
     end
   end
 
@@ -1213,7 +1213,7 @@ class Track < TrackBase
         raw_slot = x.to_a.reject { |s| MIDINote.rest?(s) }.map { |s| stepify(s, def_gate: def_gate, def_vel: def_vel) }
         dedupe_slot(raw_slot).freeze
       else
-        raise "Not a valid value for a slot: #{x.inspect}"
+        raise TypeError, "Not a valid value for a slot: #{x.inspect}"
       end
     end
   end
@@ -1246,7 +1246,7 @@ class Track < TrackBase
         # See the note in ExtApi about why we need to explicitly call to_a here.
         x.to_a.map { |s| slotify(s, def_gate: def_gate, def_vel: def_vel) }.freeze
       else
-        raise "Not a valid value for a grid: #{x.inspect}"
+        raise TypeError, "Not a valid value for a grid: #{x.inspect}"
       end
     end
   end

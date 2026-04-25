@@ -58,7 +58,7 @@ end
 # take 1 or 2 arguments. The first is the number of the CC and the second, if
 # the block takes it, is the value for that CC (0 - 127).
 def cc_watcher_live_loop(loop_name, port: nil, channel: nil, &block)
-  raise 'block must take 1 - 2 arguments' if block.arity == 0 || block.arity > 2
+  raise ArgumentError, "block must take 1 - 2 arguments" if block.arity == 0 || block.arity > 2
 
   port, channel = __resolve_cc_port_and_channel(port, channel)
   cue_path = "/midi:#{port}:#{channel}/control_change"

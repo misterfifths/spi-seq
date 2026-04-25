@@ -89,8 +89,8 @@ class VoicedChord
     @voicing = voicing.to_sym
 
     # Inversions apply before voicing.
-    raise ArgumentError, "inversion must be >= 0" unless @inversion >= 0
-    raise ArgumentError, "chord only has #{chord.intervals.length - 1} inversions" if @inversion >= chord.intervals.length
+    raise RangeError, "inversion must be >= 0" unless @inversion >= 0
+    raise RangeError, "chord only has #{chord.intervals.length - 1} inversions" if @inversion >= chord.intervals.length
     if @inversion > 0
       intervals = chord.intervals.dup
       shifted_intervals = intervals.shift(@inversion).map! { |i| i + 12 }

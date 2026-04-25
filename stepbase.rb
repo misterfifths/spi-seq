@@ -65,8 +65,8 @@ class StepBase
                  accum_delta: 0, accum_max: 12, accum_min: 0, accum_mode: :wrap, accum_prob: nil)
     @prob = probify(prob)
 
-    raise ArgumentError, "accum_min must be <= 0" unless accum_min <= 0
-    raise ArgumentError, "accum_delta must be between accum_min and accum_max" if accum_delta < accum_min || accum_delta > accum_max
+    raise RangeError, "accum_min must be <= 0" unless accum_min <= 0
+    raise RangeError, "accum_delta must be between accum_min and accum_max" if accum_delta < accum_min || accum_delta > accum_max
     @accum_delta = accum_delta
     @accum_max = accum_max
     @accum_min = accum_min

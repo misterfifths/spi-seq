@@ -151,7 +151,7 @@ class Prob
   end
 
   def repr
-    raise "cannot get code representation of probability #{self}" if @repr.nil?
+    raise ArgumentError, "cannot get code representation of probability #{self}" if @repr.nil?
     "Prob.#{@repr}"
   end
 
@@ -162,7 +162,7 @@ class Prob
     if callable.respond_to?(:call) && callable.respond_to?(:arity) && callable.arity <= 5
       @callable = callable
     else
-      raise "Invalid probability predicate: must be a callable that takes <= 5 arguments"
+      raise ArgumentError, "Invalid probability predicate: must be a callable that takes <= 5 arguments"
     end
 
     @desc = desc

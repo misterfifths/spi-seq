@@ -15,8 +15,8 @@
 # This is the analog to Sonic Pi's `spread` function, though note that it may
 # not return hits in the exact order that Sonic Pi does.
 def euclid(pulses, length, rotate: 0)
-  raise ArgumentError, "all arguments must be integers" unless pulses.is_a?(Integer) && length.is_a?(Integer) && rotate.is_a?(Integer)
-  raise ArgumentError, "all arguments must be >= 0" unless pulses >= 0 && length >= 0 && rotate >= 0
+  raise TypeError, "all arguments must be integers" unless pulses.is_a?(Integer) && length.is_a?(Integer) && rotate.is_a?(Integer)
+  raise RangeError, "all arguments must be >= 0" unless pulses >= 0 && length >= 0 && rotate >= 0
 
   # Rotation is meaningless in these cases
   return [] if length == 0

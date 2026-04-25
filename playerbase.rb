@@ -141,7 +141,7 @@ class PlayerBase
   # the step with as much information as it can provide about the current state
   # of playback.
   def step_accum_should_trigger?(_step, _slot_idx)
-    raise "subclasses must implement step_accum_should_trigger?"
+    raise RuntimeError, "subclasses must implement step_accum_should_trigger?"
   end
 
   # Updates the accumulation state of the given Step, which is assumed to be
@@ -226,7 +226,7 @@ class PlayerBase
   # have come from slot `i - 1`. In fact they may not even be from this track,
   # if the track was swapped.
   def play_slot(_i)
-    raise "subclasses must implement play_slot"
+    raise RuntimeError, "subclasses must implement play_slot"
   end
 
   # End all ongoing steps. Subclasses that manage steps that linger for a

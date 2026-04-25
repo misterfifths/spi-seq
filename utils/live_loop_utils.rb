@@ -74,7 +74,7 @@ end
 # Any additional named arguments (e.g. sync: or init:) to this function are
 # passed verbatim to the internal live_loop.
 def mutable_live_loop(loop_name, start_muted: false, **kwargs, &block)
-  raise "Block must take 1 or 2 arguments" if block.arity == 0 || block.arity > 2
+  raise ArgumentError, "Block must take 1 or 2 arguments" if block.arity == 0 || block.arity > 2
 
   key = mute_key(loop_name)
 

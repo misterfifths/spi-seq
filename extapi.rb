@@ -14,7 +14,7 @@
 # This method must be global (otherwise `self` will evaluate to the module that
 # contains it).
 def init_spi_seq
-  raise "init_spi_seq must be called from the global scope" unless is_a?(SonicPi::Runtime)
+  raise RuntimeError, "init_spi_seq must be called from the global scope" unless is_a?(SonicPi::Runtime)
   ExtApi.instance_variable_set(:@spi, self)
 rescue NameError
   ExtApi.instance_variable_set(:@spi, nil)

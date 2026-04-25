@@ -48,7 +48,7 @@ class MIDINote < Numeric
   # the argument is returned as-is).
   def self.new(note)
     return note if note.is_a?(MIDINote)
-    raise "Cannot convert a rest to a MIDINote" if rest?(note)
+    raise TypeError, "Cannot convert a rest to a MIDINote" if rest?(note)
 
     @note_cache ||= {}
 
@@ -106,7 +106,7 @@ class MIDINote < Numeric
       @sym = :"#{@pitch_class}#{@octave}"
     when Symbol, String
       match = NOTE_REGEX.match(note.to_s.downcase)
-      raise "Invalid note name #{note}" if match.nil?
+      raise ArgumentError, "Invalid note name #{note}" if match.nil?
 
       @octave = match[:octave].empty? ? 4 : match[:octave].to_i
       @pitch_class = match[:pitch_class].to_sym
@@ -120,7 +120,7 @@ class MIDINote < Numeric
       @number = 12 + @octave * 12 + name_idx  # 12 is c0
       @sym = :"#{@pitch_class}#{@octave}"
     else
-      raise "Invalid note value #{note}"
+      raise TypeError, "Invalid note value #{note}"
     end
   end
 
@@ -231,7 +231,7 @@ class MIDINote < Numeric
     when 2
       [n - 9, n - 5, n - 2, n]
     else
-      raise "position must be between 0-2 inclusive"
+      raise RangeError, "position must be between 0-2 inclusive"
     end
 
     # Avoid tritones
@@ -345,7 +345,7 @@ class MIDINote < Numeric
     return true if note.is_a?(Numeric) || note.is_a?(MIDINote)
 
     match = NOTE_REGEX.match(note.to_s)
-    raise "Invalid note symbol #{note}" if match.nil?
+    raise ArgumentError, "Invalid note symbol #{note}" if match.nil?
     !match[:octave].empty?
   end
 
