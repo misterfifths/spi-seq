@@ -96,8 +96,18 @@ def mutable_live_loop(loop_name, start_muted: false, **kwargs, &block)
   ll
 end
 
+# Sets the default MIDI port and channel that CC mutable live loops (including
+# `track_live_loop` and `cc_track_live_loop`) will use when monitoring for
+# control messages (e.g. the CC to use for muting, and in the live loops,
+# `fill_cc`).
 def use_cc_control_defaults(port: nil, channel: nil)
   ExtApi.set(:__cc_control_defaults, { port: port, channel: channel })
+end
+
+# Returns the current CC control defaults as set by use_cc_control_defaults, or
+# an empty hash if no defaults have been set.
+def current_cc_control_defaults
+  ExtApi.get(:__cc_control_defaults) || {}
 end
 
 # Starts a new live_loop that can be muted by a MIDI CC message with the given

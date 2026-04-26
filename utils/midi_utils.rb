@@ -33,7 +33,7 @@ def __resolve_cc_port_and_channel(port, channel)
   # TODO: it would be good to fall back to defaults here, but it's a little
   # tricky - we do need actual port and channel strings so we can construct
   # the name of the control_change event we want to sync to.
-  defaults = ExtApi.get(:__cc_control_defaults) || {}
+  defaults = current_cc_control_defaults
   port = defaults[:port] || "*" if port.nil?
   channel = defaults[:channel] || "*" if channel.nil?
   [port, channel]
