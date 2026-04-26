@@ -150,7 +150,7 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
 
 
   ### Resolve default arguments
-  player_defaults = ExtApi.get(:__player_defaults) || {}
+  player_defaults = current_player_defaults
 
   fill_cc = player_defaults[:fill_cc] if fill_cc.nil?
   if fill_cc

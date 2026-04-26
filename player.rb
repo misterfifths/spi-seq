@@ -32,6 +32,12 @@ def use_player_defaults(midi: nil, sync: :__dummy_sync_sentinel, start_muted: ni
   ExtApi.set(:__player_defaults, defaults)
 end
 
+# Returns the current player defaults as set by use_player_defaults, or an empty
+# hash if no defaults have been set.
+def current_player_defaults
+  ExtApi.get(:__player_defaults) || {}
+end
+
 
 # TODO: probably special-case Steps with a 0 gate
 # TODO: probably `sleep` should reset @prev_steps?
@@ -100,9 +106,8 @@ class Player < PlayerBase
 
 
   def resolve_midi_arg(midi)
-    defaults = ExtApi.get(:__player_defaults) || {}
-    midi = defaults[:midi] || false if midi.nil?
-    midi
+    return midi unless midi.nil?
+    current_player_defaults[:midi] || false
   end
 
   # Returns the effective note for the given Step (which must be from @track!)
