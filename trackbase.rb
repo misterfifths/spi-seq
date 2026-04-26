@@ -18,6 +18,12 @@ def use_track_defaults(strict_track_merging:)
   ExtApi.set(:__track_defaults, { strict_track_merging: strict_track_merging })
 end
 
+# Returns the current track defaults as set by use_track_defaults, or an empty
+# hash if no defaults have been set.
+def current_track_defaults
+  ExtApi.get(:__track_defaults) || {}
+end
+
 
 # TrackBase represents an abstract "grid" of steps. Do not make instances of
 # TrackBase directly; instead use one of its subclasses that specialize for the
@@ -1156,8 +1162,7 @@ class TrackBase
   end
 
   def strict_track_merging?
-    defaults = ExtApi.get(:__track_defaults) || {}
-    defaults[:strict_track_merging] || false
+    current_track_defaults[:strict_track_merging] || false
   end
 
   def assert_compatible_track(other_track)
