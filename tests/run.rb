@@ -15,9 +15,10 @@ require_relative "test_track_step"
 require_relative "test_track_regrain"
 require_relative "test_trackrecorder"
 require_relative "test_cctrack"
+require_relative "test_euclid"
 require_relative "test_interval"
 require_relative "test_scale"
-require_relative "test_euclid"
+require_relative "test_player"
 
 if ExtApi.in_sonic_pi?
   # To run the tests from inside Sonic Pi, call `init_spi_seq`, then require
