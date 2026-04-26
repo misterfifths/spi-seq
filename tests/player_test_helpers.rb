@@ -4,6 +4,7 @@ require "forwardable"
 require_relative "test_helper"
 require_relative "player_extapi_stubs"
 require_relative "../player"
+require_relative "../ccplayer"
 
 module PlayerTestHelpers
   extend Forwardable
@@ -13,7 +14,11 @@ module PlayerTestHelpers
     :use_midi_defaults
 
   def player(track, port: nil, channel: nil)
-    Player.new(track, midi: true, port: port, channel: channel)
+    if track.is_a?(Track)
+      Player.new(track, midi: true, port: port, channel: channel)
+    else
+      CCPlayer.new(track, port: port, channel: channel)
+    end
   end
 
   # Returns the events from executing the block, optionally resetting vt. All
@@ -38,63 +43,92 @@ module PlayerTestHelpers
     es
   end
 
+  def _event_shorthand_is_cc(shorthand)
+    shorthand.first.is_a?(Integer)
+  end
+
   def _find_event_idxs_for_shorthand(raw_events, shorthand, tol = 0.001)
-    note, on_time, off_time, vel, port, channel = *shorthand
-    on_event_idx = raw_events.index do |ev|
-      ev_type = ev[:type]
-      ev_t = ev[:t]
-      ev_note = ev[:note]
-      ev_vel = ev[:vel]
-      ev_port = ev[:port]
-      ev_channel = ev[:channel]
-
-      next false unless ev_type == :midi_note_on
-      next false unless (ev_t - on_time).abs < tol
-      next false unless ev_note == note
-      next false unless vel.nil? || ev_vel == vel
-      next false unless port.nil? || ev_port == port
-      next false unless channel.nil? || ev_channel == channel
-      true
-    end
-
-    off_event_idx = nil
-    unless off_time.nil?
-      off_event_idx = raw_events.index do |ev|
+    if _event_shorthand_is_cc(shorthand)
+      # We're looking for a CC event.
+      cc_num, val, time, port, channel = *shorthand
+      event_idx = raw_events.index do |ev|
         ev_type = ev[:type]
         ev_t = ev[:t]
-        ev_note = ev[:note]
+        ev_num = ev[:num]
+        ev_val = ev[:val]
         ev_port = ev[:port]
         ev_channel = ev[:channel]
 
-        next false unless ev_type == :midi_note_off
-        next false unless (ev_t - off_time).abs < tol
-        next false unless ev_note == note
+        next false unless ev_type == :midi_cc
+        next false unless (ev_t - time).abs < tol
+        next false unless ev_num == cc_num
+        next false unless ev_val == val
         next false unless port.nil? || ev_port == port
         next false unless channel.nil? || ev_channel == channel
         true
       end
+
+      [event_idx, nil]
+    else
+      # We're looking for note on and (possibly) off events.
+      note, on_time, off_time, vel, port, channel = *shorthand
+      on_event_idx = raw_events.index do |ev|
+        ev_type = ev[:type]
+        ev_t = ev[:t]
+        ev_note = ev[:note]
+        ev_vel = ev[:vel]
+        ev_port = ev[:port]
+        ev_channel = ev[:channel]
+
+        next false unless ev_type == :midi_note_on
+        next false unless (ev_t - on_time).abs < tol
+        next false unless ev_note == note
+        next false unless vel.nil? || ev_vel == vel
+        next false unless port.nil? || ev_port == port
+        next false unless channel.nil? || ev_channel == channel
+        true
+      end
+
+      off_event_idx = nil
+      unless off_time.nil?
+        off_event_idx = raw_events.index do |ev|
+          ev_type = ev[:type]
+          ev_t = ev[:t]
+          ev_note = ev[:note]
+          ev_port = ev[:port]
+          ev_channel = ev[:channel]
+
+          next false unless ev_type == :midi_note_off
+          next false unless (ev_t - off_time).abs < tol
+          next false unless ev_note == note
+          next false unless port.nil? || ev_port == port
+          next false unless channel.nil? || ev_channel == channel
+          true
+        end
+      end
+
+      [on_event_idx, off_event_idx]
     end
-
-    [on_event_idx, off_event_idx]
-  end
-
-  def _assert_shorthand_event(raw_events, shorthand)
-    _, _, off_time, = *shorthand
-    on_event_idx, off_event_idx = _find_event_idxs_for_shorthand(raw_events, shorthand)
-    refute_nil on_event_idx, "no corresponding midi_on event for #{shorthand.inspect}\nevents:\n#{raw_events.inspect}"
-    refute_nil off_event_idx, "no corresponding midi_off event for #{shorthand.inspect}\nevents:\n#{raw_events.inspect}" unless off_time.nil?
-
-    [on_event_idx, off_event_idx]
   end
 
   def assert_events(raw_events, shorthands)
     raw_events = raw_events.dup
     shorthands.each do |shorthand|
-      on_event_idx, off_event_idx = _assert_shorthand_event(raw_events, shorthand)
+      if _event_shorthand_is_cc(shorthand)
+        event_idx, = _find_event_idxs_for_shorthand(raw_events, shorthand)
+        refute_nil event_idx, "no corresponding midi_cc event for #{shorthand.inspect}\nevents:\n#{raw_events.inspect}"
 
-      # Delete in reverse order
-      raw_events.delete_at(off_event_idx) unless off_event_idx.nil?
-      raw_events.delete_at(on_event_idx)
+        raw_events.delete_at(event_idx)
+      else
+        _, _, off_time = *shorthand
+        on_event_idx, off_event_idx = _find_event_idxs_for_shorthand(raw_events, shorthand)
+        refute_nil on_event_idx, "no corresponding midi_note_on event for #{shorthand.inspect}\nevents:\n#{raw_events.inspect}"
+        refute_nil off_event_idx, "no corresponding midi_note_off event for #{shorthand.inspect}\nevents:\n#{raw_events.inspect}" unless off_time.nil?
+
+        # Delete in reverse order
+        raw_events.delete_at(off_event_idx) unless off_event_idx.nil?
+        raw_events.delete_at(on_event_idx)
+      end
     end
 
     assert_empty raw_events, "unexpected extra events: #{raw_events.inspect}"

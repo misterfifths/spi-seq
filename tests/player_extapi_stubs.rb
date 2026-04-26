@@ -158,5 +158,10 @@ module ExtApi
       note = MIDINote.new(note)
       @events << {type: :midi_note_off, t: vt, note: note, port: port, channel: channel}
     end
+
+    def midi_cc(number, val, port: nil, channel: nil)
+      port, channel = resolve_midi_dest(port, channel)
+      @events << {type: :midi_cc, t: vt, num: number, val: val, port: port, channel: channel}
+    end
   end
 end
