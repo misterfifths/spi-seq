@@ -48,24 +48,24 @@ class PlayerTest < Test::Unit::TestCase
 
     # Basics of duration & ties
     assert_playback_events T(:c4), [[:c4, 0, nil]]  # No off event since this is tied.
-    assert_playback_events T([:c4, :r], granularity: :quarter), [[:c4, 0, 1]]
-    assert_playback_events T([S(:c4, gate: 0.5)], granularity: :quarter), [[:c4, 0, 0.5]]
-    assert_playback_events T([:c4, S(:c4, gate: 0.25)], granularity: :quarter), [[:c4, 0, 1.25]]
+    assert_playback_events qT([:c4, :r]), [[:c4, 0, 1]]
+    assert_playback_events qT([S(:c4, gate: 0.5)]), [[:c4, 0, 0.5]]
+    assert_playback_events qT([:c4, S(:c4, gate: 0.25)]), [[:c4, 0, 1.25]]
 
     # Multiple steps per slot
-    assert_playback_events T([[:c4, :d4], :r], granularity: :quarter), [
+    assert_playback_events qT([[:c4, :d4], :r]), [
       [:c4, 0, 1],
       [:d4, 0, 1]
     ]
-    assert_playback_events T([[:c4, :d4], :d4], granularity: :quarter), [
+    assert_playback_events qT([[:c4, :d4], :d4]), [
       [:c4, 0, 1],
       [:d4, 0, nil]
     ]
-    assert_playback_events T([[:c4, :d4], S(:d4, gate: 0.3)], granularity: :quarter), [
+    assert_playback_events qT([[:c4, :d4], S(:d4, gate: 0.3)]), [
       [:c4, 0, 1],
       [:d4, 0, 1.3]
     ]
-    assert_playback_events T([[:c4], [:c4, :d4]], granularity: :quarter), [
+    assert_playback_events qT([[:c4], [:c4, :d4]]), [
       [:c4, 0, nil],
       [:d4, 1, nil]
     ]
@@ -104,7 +104,7 @@ class PlayerTest < Test::Unit::TestCase
     assert_playback_events T(S(:c4, vel: 64)), [[:c4, 0, nil, 64]]
 
     # Velocity changes over the lifespan of a tied note are ignored.
-    assert_playback_events T([S(:c4, vel: 98), S(:c4, vel: 64), :r], granularity: :quarter), [
+    assert_playback_events qT([S(:c4, vel: 98), S(:c4, vel: 64), :r]), [
       [:c4, 0, 2, 98]
     ]
   end
@@ -146,7 +146,7 @@ class PlayerTest < Test::Unit::TestCase
     cmaj = Scale.full_scale(:c, :major)
 
     # Notes should snap to the scale at play time.
-    assert_playback_events T([:c4, :cs3, :ds3, :f3, :as3], granularity: :quarter, scale: cmaj), [
+    assert_playback_events qT([:c4, :cs3, :ds3, :f3, :as3], scale: cmaj), [
       [:c4, 0, 1],
       [:d3, 1, 2],
       [:e3, 2, 3],
@@ -155,22 +155,22 @@ class PlayerTest < Test::Unit::TestCase
     ]
 
     # Snapped notes should tie into their unsnapped version.
-    assert_playback_events T([:d3, :cs3, :r], granularity: :quarter, scale: cmaj), [
+    assert_playback_events qT([:d3, :cs3, :r], scale: cmaj), [
       [:d3, 0, 2]
     ]
-    assert_playback_events T([:cs3, :d3, :r], granularity: :quarter, scale: cmaj), [
+    assert_playback_events qT([:cs3, :d3, :r], scale: cmaj), [
       [:d3, 0, 2]
     ]
-    assert_playback_events T([:cs3, S(:d3, gate: 0.25), :r], granularity: :quarter, scale: cmaj), [
+    assert_playback_events qT([:cs3, S(:d3, gate: 0.25), :r], scale: cmaj), [
       [:d3, 0, 1.25]
     ]
-    assert_playback_events T([:cs3, :d3], granularity: :quarter, scale: cmaj), [
+    assert_playback_events qT([:cs3, :d3], scale: cmaj), [
       [:d3, 0, nil]
     ]
 
     # If snapping results in duplicate notes, the one with the longest gate
     # should win.
-    assert_playback_events T([[S(:d3, gate: 0.5), S(:cs3, gate: 0.75)]], granularity: :quarter, scale: cmaj), [
+    assert_playback_events qT([[S(:d3, gate: 0.5), S(:cs3, gate: 0.75)]], scale: cmaj), [
       [:d3, 0, 0.75]
     ]
 
@@ -181,7 +181,7 @@ class PlayerTest < Test::Unit::TestCase
   def test_swap_track
     use_bpm 60
 
-    p = player(T(:c4, granularity: :quarter))
+    p = player(qT(:c4))
     es = events do
       p.play
       p.play
@@ -194,7 +194,7 @@ class PlayerTest < Test::Unit::TestCase
       assert_equal p.cycle, 3
 
       # This should tie to the previous track
-      p.swap_track(T(S(:d4, gate: 0.5), granularity: :quarter), reset_cycle: true)
+      p.swap_track(qT(S(:d4, gate: 0.5)), reset_cycle: true)
       assert_equal p.cycle, 0
       p.play
       assert_equal p.cycle, 1
@@ -218,10 +218,10 @@ class PlayerTest < Test::Unit::TestCase
 
     # Swapping between scales
     cmaj = Scale.full_scale(:c, :major)
-    p = player(T(:cs4, granularity: :quarter, scale: cmaj))
+    p = player(qT(:cs4, scale: cmaj))
     es = events do
       p.play
-      p.swap_track(T(:cs4, granularity: :quarter))
+      p.swap_track(qT(:cs4))
       p.play
     end
     assert_events es, [
@@ -230,10 +230,10 @@ class PlayerTest < Test::Unit::TestCase
     ]
 
     # sleep should function on the new track
-    p = player(T(:c4, granularity: :quarter))
+    p = player(qT(:c4))
     es = events do
       p.play
-      p.swap_track(T([:d4, :e4], granularity: :quarter))
+      p.swap_track(qT([:d4, :e4]))
       p.sleep
     end
     assert_in_delta secs_per_beat(3), vt
@@ -244,7 +244,7 @@ class PlayerTest < Test::Unit::TestCase
     use_bpm 60
 
     # stop should terminate held ties and reset cycle
-    p = player(T(:c4, granularity: :quarter))
+    p = player(qT(:c4))
     es = events do
       p.play
       p.play
@@ -275,7 +275,7 @@ class PlayerTest < Test::Unit::TestCase
 
     # A tie at the end of a track should be terminated when that track loops if
     # it's not continued in the first slot.
-    assert_playback_events T([:r, :c4], granularity: :quarter), [
+    assert_playback_events qT([:r, :c4]), [
       [:c4, 1, 2],
       [:c4, 3, 4],
       [:c4, 5, nil]
@@ -283,14 +283,14 @@ class PlayerTest < Test::Unit::TestCase
 
     # Final ties should continue seamlessly into the same note if it's present
     # at the beginning of the track.
-    assert_playback_events T([S(:c4, gate: 0.5), :c4], granularity: :quarter), [
+    assert_playback_events qT([S(:c4, gate: 0.5), :c4]), [
       [:c4, 0, 0.5],  # first note
       [:c4, 1, 2.5],  # final tie, looping back to the first note, then ending
       [:c4, 3, 4.5],  # final tie again, looping again
       [:c4, 5, nil]   # final tie, held
     ], play_count: 3
 
-    assert_playback_events T([:c4, :r, :c4], granularity: :quarter), [
+    assert_playback_events qT([:c4, :r, :c4]), [
       [:c4, 0, 1],  # first note
       [:c4, 2, 4],  # final tie, looping back to the first note, then ending
       [:c4, 5, 7],  # final tie, looping again
@@ -298,7 +298,7 @@ class PlayerTest < Test::Unit::TestCase
     ], play_count: 3
 
     # Final ties should loop seamlessly if they are continued.
-    assert_playback_events T([:c4, :c4], granularity: :quarter), [
+    assert_playback_events qT([:c4, :c4]), [
       [:c4, 0, nil]
     ], play_count: 5
   end
