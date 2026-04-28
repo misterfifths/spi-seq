@@ -36,10 +36,11 @@ module PlayerTestHelpers
 
   # Returns the events from a single playback of the given track, and asserts
   # that playback took the correct duration. Resets vt.
-  def playback_events(track, play_count: 1, port: nil, channel: nil)
+  def playback_events(track, play_count: 1, fill: false, port: nil, channel: nil)
     es = nil
     assert_duration(track.beat_length / track.timescale * play_count) do
       player = player(track, port: port, channel: channel)
+      player.fill = fill
       es = events do
         play_count.times { player.play }
       end
@@ -138,9 +139,9 @@ module PlayerTestHelpers
     assert_empty raw_events, "unexpected extra events: #{raw_events.inspect}"
   end
 
-  def assert_playback_events(track, shorthands, play_count: 1, reset_vt: true, port: nil, channel: nil)
+  def assert_playback_events(track, shorthands, play_count: 1, fill: false, reset_vt: true, port: nil, channel: nil)
     self.reset_vt if reset_vt
-    events = playback_events(track, play_count: play_count, port: port, channel: channel)
+    events = playback_events(track, play_count: play_count, fill: fill, port: port, channel: channel)
     assert_events(events, shorthands)
   end
 
