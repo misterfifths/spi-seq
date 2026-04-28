@@ -12,6 +12,10 @@ require_relative "../ccplayer"
 class CCPlayerTest < Test::Unit::TestCase
   include PlayerTestHelpers
 
+  def setup
+    use_bpm 60
+  end
+
   A = CC(1, 11)
   B = CC(2, 12)
   C = CC(3, 13)
@@ -41,8 +45,6 @@ class CCPlayerTest < Test::Unit::TestCase
   end
 
   def test_basics
-    use_bpm 60
-
     # Correct basic start times
     assert_playback_events CCT(A), [a_at(0)]
     assert_playback_events CCT([A, B]), [a_at(0), b_at(0.5)]

@@ -10,10 +10,13 @@ require_relative "../prob"
 class ProbTest < Test::Unit::TestCase
   include PlayerTestHelpers
 
+  def setup
+    use_bpm 60
+  end
+
   def test_chance
     return if ExtApi.in_sonic_pi?  # Not testing Sonic Pi's randomness
 
-    use_bpm 60
     srand 143131231
 
     assert_playback_events qT([[:a1, S(:b2, prob: Prob.chance(0.5))]]), [
@@ -35,7 +38,6 @@ class ProbTest < Test::Unit::TestCase
   def test_one_in
     return if ExtApi.in_sonic_pi?  # Not testing Sonic Pi's randomness
 
-    use_bpm 60
     srand 2
 
     assert_playback_events qT([[:a1, S(:b2, prob: Prob.one_in(2))]]), [
@@ -55,8 +57,6 @@ class ProbTest < Test::Unit::TestCase
   end
 
   def test_x_of_y
-    use_bpm 60
-
     assert_playback_events qT([[S(:a1, gate: 0.5), S(:b2, gate: 0.5, prob: Prob.x_of_y(1, 2))]]), [
       [:a1, 0, 0.5],
       [:b2, 0, 0.5],
@@ -113,8 +113,6 @@ class ProbTest < Test::Unit::TestCase
   end
 
   def test_not_x_of_y
-    use_bpm 60
-
     assert_playback_events qT([[S(:a1, gate: 0.5), S(:b2, gate: 0.5, prob: Prob.not_x_of_y(1, 2))]]), [
       [:a1, 0, 0.5],
 
@@ -162,8 +160,6 @@ class ProbTest < Test::Unit::TestCase
   end
 
   def test_every
-    use_bpm 60
-
     es = [
       [:a1, 0, 0.5],
       [:b2, 0, 0.5],
@@ -203,8 +199,6 @@ class ProbTest < Test::Unit::TestCase
   end
 
   def test_first
-    use_bpm 60
-
     assert_playback_events qT([[S(:a1, gate: 0.5), S(:b2, gate: 0.5, prob: Prob.first)]]), [
       [:a1, 0, 0.5],
       [:b2, 0, 0.5],
@@ -231,8 +225,6 @@ class ProbTest < Test::Unit::TestCase
   end
 
   def test_pre
-    use_bpm 60
-
     assert_playback_events qT([:a1, S(:b2, prob: Prob.pre)]), [
       [:a1, 0, 1],
       [:b2, 1, 2],
@@ -308,8 +300,6 @@ class ProbTest < Test::Unit::TestCase
   end
 
   def test_pre_same_note
-    use_bpm 60
-
     assert_playback_events qT([:c4, S(:c4, prob: Prob.pre_same_note)]), [
       [:c4, 0, nil]
     ], play_count: 2
@@ -365,8 +355,6 @@ class ProbTest < Test::Unit::TestCase
   end
 
   def test_fill
-    use_bpm 60
-
     assert_playback_events qT([S(:a1, gate: 0.5), S(:b2, gate: 0.5, prob: Prob.fill)]), [
       [:a1, 0, 0.5],
       [:a1, 2, 2.5]
@@ -408,8 +396,6 @@ class ProbTest < Test::Unit::TestCase
   end
 
   def test_custom
-    use_bpm 60
-
     # All the other probabilities exercise this functionality, so this is just
     # a spot check.
 

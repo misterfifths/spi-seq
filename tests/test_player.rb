@@ -10,6 +10,10 @@ require_relative "../theory/scale"
 class PlayerTest < Test::Unit::TestCase
   include PlayerTestHelpers
 
+  def setup
+    use_bpm 60
+  end
+
   def assert_sleep(track)
     # Sleeping should not issue any MIDI events and should last the duration of
     # the track.
@@ -22,8 +26,6 @@ class PlayerTest < Test::Unit::TestCase
   end
 
   def test_sleep
-    use_bpm 60
-
     assert_sleep T(:c4, granularity: :quarter)
     assert_sleep T(:c4)
     assert_sleep T([:c4, :d4])
@@ -44,8 +46,6 @@ class PlayerTest < Test::Unit::TestCase
   end
 
   def test_basics
-    use_bpm 60
-
     # Basics of duration & ties
     assert_playback_events T(:c4), [[:c4, 0, nil]]  # No off event since this is tied.
     assert_playback_events qT([:c4, :r]), [[:c4, 0, 1]]
@@ -98,8 +98,6 @@ class PlayerTest < Test::Unit::TestCase
   end
 
   def test_vel
-    use_bpm 60
-
     assert_playback_events T(:c4), [[:c4, 0, nil, 127]]
     assert_playback_events T(S(:c4, vel: 64)), [[:c4, 0, nil, 64]]
 
@@ -141,8 +139,6 @@ class PlayerTest < Test::Unit::TestCase
   end
 
   def test_scale
-    use_bpm 60
-
     cmaj = Scale.full_scale(:c, :major)
 
     # Notes should snap to the scale at play time.
@@ -179,8 +175,6 @@ class PlayerTest < Test::Unit::TestCase
   end
 
   def test_swap_track
-    use_bpm 60
-
     p = player(qT(:c4))
     es = events do
       p.play
@@ -241,8 +235,6 @@ class PlayerTest < Test::Unit::TestCase
   end
 
   def test_stop
-    use_bpm 60
-
     # stop should terminate held ties and reset cycle
     p = player(qT(:c4))
     es = events do
@@ -271,8 +263,6 @@ class PlayerTest < Test::Unit::TestCase
   end
 
   def test_final_ties_in_loop
-    use_bpm 60
-
     # A tie at the end of a track should be terminated when that track loops if
     # it's not continued in the first slot.
     assert_playback_events qT([:r, :c4]), [
