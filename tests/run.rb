@@ -21,6 +21,7 @@ require_relative "test_scale"
 require_relative "test_ccplayer"
 require_relative "test_player"
 require_relative "test_prob"
+require_relative "test_accum"
 
 if ExtApi.in_sonic_pi?
   # To run the tests from inside Sonic Pi, call `init_spi_seq`, then require

@@ -1,0 +1,132 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative "test_helper"
+require_relative "player_extapi_stubs"
+require_relative "player_test_helpers"
+require_relative "../player"
+require_relative "../ccplayer"
+
+class AccumTest < Test::Unit::TestCase
+  include PlayerTestHelpers
+
+  # min, max, delta, mode
+  # its own prob (just basics)
+  # interaction with step prob (and also if it has both probs)
+  # make sure it works as expected on CC tracks
+
+  def setup
+    use_bpm 60
+  end
+
+  # Asserts that playing a standard track will result in sequential events with
+  # the given set of deltas from the starting note.
+  def assert_std_accum(delta, deltas:, min: 0, max: 12, mode: :wrap, prob: nil, **kwargs)
+    expected_events = deltas.map.with_index { |d, i| [N(:c4) + d, i, i + 0.5] }
+
+    assert_playback_events(qT(S(:c4, gate: 0.5).accum(delta, min: min, max: max, mode: mode, prob: prob)),
+                           expected_events,
+                           **kwargs)
+  end
+
+  def test_freeze_mode
+    # should freeze at the max delta
+    assert_std_accum 1, max: 3, mode: :freeze, play_count: 6, deltas: [0, 1, 2, 3, 3, 3]
+    assert_std_accum 1, max: 1, mode: :freeze, play_count: 5, deltas: [0, 1, 1, 1, 1]
+
+    # even if the delta would jump way past it
+    assert_std_accum 12, max: 13, mode: :freeze, play_count: 4, deltas: [0, 12, 13, 13]
+
+    # shouldn't step below min
+    assert_std_accum -1, min: -3, mode: :freeze, play_count: 6, deltas: [0, -1, -2, -3, -3, -3]
+    assert_std_accum -1, min: -1, mode: :freeze, play_count: 4, deltas: [0, -1, -1, -1]
+    assert_std_accum -12, min: -13, mode: :freeze, play_count: 4, deltas: [0, -12, -13, -13]
+  end
+
+  def test_wrap
+    assert_std_accum 1, max: 1, mode: :wrap, play_count: 5, deltas: [0, 1, 0, 1, 0]
+
+    # 0 1 2 3 4->0 1 2
+    assert_std_accum 1, max: 3, mode: :wrap, play_count: 7, deltas: [0, 1, 2, 3, 0, 1, 2]
+
+    # 0 3 6->1 4 7->2 5->0
+    assert_std_accum 3, max: 4, mode: :wrap, play_count: 6, deltas: [0, 3, 1, 4, 2, 0]
+
+    # 0 -3 -6->4 1 -2 -5 -8->2
+    assert_std_accum -3, min: -5, max: 4, mode: :wrap, play_count: 7, deltas: [0, -3, 4, 1, -2, -5, 2]
+
+    # 0 -1 -2 -3->0 -1
+    assert_std_accum -1, min: -2, max: 0, mode: :wrap, play_count: 5, deltas: [0, -1, -2, 0, -1]
+  end
+
+  def test_reverse
+    assert_std_accum 1, max: 1, mode: :reverse, play_count: 5, deltas: [0, 1, 0, 1, 0]
+
+    assert_std_accum 1, max: 3, mode: :reverse, play_count: 7, deltas: [0, 1, 2, 3, 2, 1, 0]
+
+    assert_std_accum 1, min: -2, max: 1, mode: :reverse, play_count: 7, deltas: [0, 1, 0, -1, -2, -1, 0]
+
+    # 0 5 0 -5 -10->-5 0 5
+    assert_std_accum 5, min: -7, max: 5, mode: :reverse, play_count: 7, deltas: [0, 5, 0, -5, -5, 0, 5]
+
+    # 0 3 6->3 0 -3 0 3
+    assert_std_accum 3, min: -3, max: 4, mode: :reverse, play_count: 7, deltas: [0, 3, 3, 0, -3, 0, 3]
+
+    # 0 3 6->3 0 3 6->3 0
+    assert_std_accum 3, min: 0, max: 4, mode: :reverse, play_count: 7, deltas: [0, 3, 3, 0, 3, 3, 0]
+
+    # 0 3 6->3 0 -3->-2 1 4
+    assert_std_accum 3, min: -2, max: 4, mode: :reverse, play_count: 7, deltas: [0, 3, 3, 0, -2, 1, 4]
+  end
+
+  def test_prob
+    # accum shouldn't trigger if the step itself doesn't
+    assert_playback_events qT(S(:c4, gate: 0.5, prob: Prob.every_other).accum(1, max: 2, mode: :freeze)), [
+      [:c4, 0, 0.5],
+      # skipped in cycle 2
+      [:cs4, 2, 2.5],
+      # skipped
+      [:d4, 4, 4.5],
+      # skipped, now accum is at its max
+      [:d4, 6, 6.5],
+      # skipped
+      [:d4, 8, 8.5]
+    ], play_count: 9
+
+    # accum shouldn't trigger if the accum prob doesn't
+    assert_playback_events qT(S(:c4, gate: 0.5).accum(1, max: 2, mode: :freeze, prob: Prob.every_other)), [
+      [:c4, 0, 0.5],
+      [:c4, 1, 1.5],
+      [:cs4, 2, 2.5],
+      [:cs4, 3, 3.5],
+      [:d4, 4, 4.5],
+      [:d4, 5, 5.5],
+      [:d4, 6, 6.5],  # maxed out
+      [:d4, 7, 7.5]
+    ], play_count: 8
+
+    # accum and step probs should stack
+    assert_playback_events qT(S(:c4, gate: 0.5, prob: Prob.not_first).accum(1, max: 3, mode: :freeze, prob: Prob.every_other)), [
+      # skipped
+      [:c4, 1, 1.5],  # first time for this step; accum will never trigger
+      [:cs4, 2, 2.5], # this is an every other cycle; accum triggers
+      [:cs4, 3, 3.5],
+      [:d4, 4, 4.5],
+      [:d4, 5, 5.5],
+      [:ds4, 6, 6.5],  # maxed out
+      [:ds4, 7, 7.5],
+      [:ds4, 8, 8.5]
+    ], play_count: 9
+  end
+
+  def test_cctrack
+    # Accumulation applies to the value of CCSteps.
+    assert_playback_events CCTrack.new([CC(64, 5).accum(1, max: 3, mode: :freeze)], granularity: :quarter), [
+      [64, 5, 0],
+      [64, 6, 1],
+      [64, 7, 2],
+      [64, 8, 3],
+      [64, 8, 4]
+    ], play_count: 5
+  end
+end
