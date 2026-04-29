@@ -175,7 +175,10 @@ class PlayerBase
         # do not change the delta and wait for the next accumulation to take the
         # first step in the right direction.
         data[:direction] *= -1
-        delta += data[:direction] * step.accum_delta if delta < step.accum_min
+        if delta < step.accum_min
+          overage = step.accum_min - delta - 1
+          delta = step.accum_min + overage
+        end
       when :wrap
         # Again, only actually start wrapping if we already stepped below the
         # min. The next accumulation will take delta below the min and handle
@@ -193,7 +196,10 @@ class PlayerBase
         delta = step.accum_max
       when :reverse
         data[:direction] *= -1
-        delta += data[:direction] * step.accum_delta if delta > step.accum_max
+        if delta > step.accum_max
+          overage = delta - step.accum_max - 1
+          delta = step.accum_max - overage
+        end
       when :wrap
         if delta > step.accum_max
           overage = delta - step.accum_max - 1
