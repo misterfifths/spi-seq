@@ -52,10 +52,17 @@ class StepBase
   #     - :wrap - The accumulation will wrap around to the other extreme min or
   #       max. For example, if `accum_max` is 12 and an addition of
   #       `accum_delta` would result in an accumulation of 14, :wrap mode will
-  #       convert that into an accumulation of `accum_min` + 2.
+  #       convert that into an accumulation of `accum_min` + 1.
   #     - :reverse - When an extreme is reached, the value of `accum_delta` is
   #       effectively negated, so that the accumulation begins moving in the
-  #       opposite direction.
+  #       opposite direction. If the accumulation oversteps an extreme, that
+  #       overage is accounted for before beginning to reverse. For instance, if
+  #       `accum_max` is 12 and `accum_delta` is 3, which would result in an
+  #       accumulation of 15, two things happen. First, the delta is internally
+  #       negated such that the next accumulation will subtract it instead of
+  #       add. Second, the overage of 3 (2 inclusive) is subtracted from
+  #       `accum_max`, resulting in a final accumulation of 10. The next time
+  #       the accumulation triggers, the result will be 7.
   # - `accum_prob`: A callable lambda/proc that determines whether accumulation
   #   will trigger when the Step does. This has the same possible values as
   #   `prob` described above. Note that accumulation will only potentially
