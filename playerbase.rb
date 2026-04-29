@@ -183,7 +183,7 @@ class PlayerBase
         if delta < step.accum_min
           # We know accum_min <= accum_delta <= accum_max, so we don't need to
           # worry about modding to get the overage here; we can just subtract.
-          overage = step.accum_min - delta
+          overage = step.accum_min - delta - 1
           delta = step.accum_max - overage
         end
       end
@@ -196,7 +196,7 @@ class PlayerBase
         delta += data[:direction] * step.accum_delta if delta > step.accum_max
       when :wrap
         if delta > step.accum_max
-          overage = delta - step.accum_max
+          overage = delta - step.accum_max - 1
           delta = step.accum_min + overage
         end
       end
