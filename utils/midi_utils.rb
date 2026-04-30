@@ -102,3 +102,18 @@ def midi_uber_stop(*args, **kwargs)
 end
 
 alias midi_panic midi_uber_stop
+
+# Registers a hook with `on_stop` that will call `midi_panic` when playback in
+# Sonic Pi is stopped or when the application exits. Note that you should
+# probably call this in an `on_cold_run` block so that you do not register
+# multiple hooks if the sketch is run multiple times.
+#
+# Takes the same arguments as `midi_panic`, with the addition of `quiet`, which
+# controls whether Sonic Pi's MIDI logging is enabled during the hook.
+def midi_panic_on_stop(*args, quiet: true, **kwargs)
+  on_stop do
+    ExtApi.with_midi_logging(!quiet) do
+      midi_panic(*args, **kwargs)
+    end
+  end
+end

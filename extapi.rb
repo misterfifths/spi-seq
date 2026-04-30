@@ -42,6 +42,7 @@ module ExtApi
       :midi_all_notes_off, :midi_sound_off,
       :midi_clock_beat,
       :current_midi_defaults,
+      :with_midi_logging,
 
       # BPM
       :current_bpm, :with_bpm_mul,
