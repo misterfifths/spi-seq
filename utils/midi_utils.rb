@@ -100,3 +100,5 @@ def midi_uber_stop(*args, **kwargs)
     uber_stop.call(**kwargs)
   end
 end
+
+alias midi_panic midi_uber_stop
