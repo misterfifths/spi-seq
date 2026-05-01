@@ -19,7 +19,7 @@ class VoicedChord
 
   # each gets us all of Enumerable. The others are common methods on Array that
   # aren't in Enumerable.
-  def_delegators :@notes, :each, :[], :slice, :length, :size, :last, :to_a, :to_ary, :values_at
+  def_delegators :@notes, :each, :[], :slice, :length, :size, :last, :to_a, :to_ary, :values_at, :empty?
 
 
   VOICING_DEFS = {
