@@ -2,6 +2,7 @@ AllCops:
   NewCops: enable
   Exclude:
     - 'scratch/*.rb'
+    - 'examples/*.rb'
 
 Style/GlobalVars:
   Exclude:

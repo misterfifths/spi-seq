@@ -4,6 +4,8 @@ This is a library for creating, manipulating, and playing back sequenced tracks 
 
 ## Installation
 
+You will of course need to install [Sonic Pi](https://sonic-pi.net/).
+
 Clone or download this repository somewhere on your computer. Then, in a Sonic Pi workspace, `require` the `core.rb` file, which loads all the components of spi-seq, and call the `init_spi_seq` method. For example, if you downloaded the code to your home directory:
 
 ```ruby
@@ -11,11 +13,13 @@ require "~/spi-seq/core"
 init_spi_seq
 ```
 
+Read on for an introduction to using the library, or see the [examples](examples).
+
 ## Whirlwind tour
 
 ### Meant for MIDI
 
-I should mention this up front: spi-seq is very much intended to control synths over MIDI. It *can* use Sonic Pi's built-in synthesis, but it is a subpar experience compared to MIDI. This is largely because there is no way to indefinitely hold a Sonic Pi note and later gracefully release it, which means that tied notes from spi-seq will end abruptly, and probably click. If that's not a dealbreaker, please continue!
+I should mention this up front: spi-seq is very much intended to control synths over MIDI. It *can* use Sonic Pi's built-in synthesis, but that is a subpar experience compared to MIDI. This is largely because there is no way to indefinitely hold a Sonic Pi note and later gracefully release it, which means that tied notes from spi-seq will end abruptly, and probably click. If that's not a dealbreaker, please continue!
 
 ### The basics
 
@@ -57,7 +61,7 @@ t = T([:c4, :e4, :f4, :c5])
 track_live_loop :my_first_track, t
 ```
 
-*Note:* Unlike the normal `live_loop`, `track_live_loop` does not require a block. Instead, it automatically makes a block that controls an internal `Player` instance to play the track you provide. You *can* pass it a block, but it has special powers and slightly different rules; we'll get to that later.
+*Note:* Unlike the normal `live_loop`, `track_live_loop` does not require a block. Instead, it automatically makes a block that controls an internal `Player` instance to play the track you provide. You *can* pass it a block, but it has special powers and slightly different rules; we'll get to that [later](#track_live_loop-blocks).
 
 As mentioned earlier, spi-seq is really much better when used to control MIDI devices, so let's play back over a specific MIDI channel instead of using Sonic Pi's built-in synthesis. We'll probably also want a MIDI clock pulse, which playback should sync to. And maybe we want to adjust the BPM as well (spi-seq respects the Sonic Pi BPM). All together:
 
@@ -84,12 +88,22 @@ track_live_loop :my_first_track, t
 
 You can set the `midi`, `sync`, `port`, and `channel` values on an individual `track_live_loop` call as well, so you can easily target different devices. It's often handy to set the defaults with the above functions though.
 
+Also, since you'll be using `track_live_loop` a lot, there is an alias for it: `tll`.
+
+See the [Everyday Use](#everyday-use) section for an example of a template you might start using for spi-seq sketches.
+
 ### More on `Track`s
 
-The duration of each slot in a track is specified by the track's `granularity`, which is expressed in traditional note length terms. That is, quarter note granularity means that each slot will last for one beat (where the BPM is defined by Sonic Pi). The default granularity for a track is an eighth note, so each slot lasts for half a beat. You can specify the granularity at track construction time, using symbols for the names:
+The duration of each slot in a track is specified by the track's `granularity`, which is expressed in traditional note length terms. For instance, quarter-note granularity means that each slot will last for one beat (where the BPM is defined by Sonic Pi). The default granularity for a track is an eighth note, so each slot lasts for half a beat. You can specify the granularity at track construction time, using symbols for the names:
 
 ```ruby
 T([:d4, :e5], granularity: :whole)
+```
+
+If you would like to rest for a particular slot, you can use `:r` instead of a note. For instance, this track is the same as the above, except there is a rest (lasting a whole note) between the other two notes:
+
+```ruby
+T([:d4, :r, :e5], granularity: :whole)
 ```
 
 Aside from the standard initializer, there are many other ways to create new tracks. For instance, you can arpeggiate notes in a variety of patterns with `Track.arp` (here, using Sonic Pi's built-in `chord` method):
@@ -100,7 +114,7 @@ Track.arp(chord(:fs4, :major9), :thumb)
 
 That will create a track that arpeggiates the notes in an F#4 major 9th chord, playing the lowest note in the chord between each other note (a so-called "thumb" pattern).
 
-There is also `Track.euclid`, which spreads notes out using [Euclidean rhythms](https://en.wikipedia.org/wiki/Euclidean_rhythm) (see also Sonic Pi's `spread` function). This call generates a 16-slot track where 11 of the slots are filled in a Euclidean rhythm, cycling through the given notes:
+Another interesting initializer is `Track.euclid`, which spreads notes out using [Euclidean rhythms](https://en.wikipedia.org/wiki/Euclidean_rhythm) (see also Sonic Pi's `spread` function). This call generates a 16-slot track where 11 of the slots are filled in a Euclidean rhythm, cycling through the given notes:
 
 ```ruby
 Track.euclid([:a3, :b3, :c3], 11, 16)
@@ -108,10 +122,15 @@ Track.euclid([:a3, :b3, :c3], 11, 16)
 
 ### More on `Step`s
 
-If you want to play more than one note simultaneously, group those notes together when passing them to the initializer:
+If you want to play more than one note simultaneously (e.g., to play a chord), group those notes together in an array when passing them to the initializer:
 
 ```ruby
-T([ [:c4, :c3], :e4, [:f4, :f3], :c5 ])
+T([
+  [:c4, :c3],
+  :e4,
+  [:f4, :f3],
+  :c5
+])
 ```
 
 In that track, the C4 and C3 will be played together (they share a slot), then the E4, then the F4 and F3 together, then the C5.
@@ -119,16 +138,31 @@ In that track, the C4 and C3 will be played together (they share a slot), then t
 You'll notice that we haven't manually created any `Step` objects yet; we've just been providing raw notes inside of slots. That's because the `Track` initializer will make `Step`s out of notes for us, using some defaults for attributes like the velocity and gate. However, if you want to specify those parameters, you can pass a `Step` to the `Track` initializer instead of a note. `Step.new` is aliased to just `S` for convenience. Here's a track where the notes have increasingly shorter gates, and the second note has a low velocity:
 
 ```ruby
-T([ :a2, S(:c4, vel: 20, gate: 0.75), S(:d4, gate: 0.5), S(:e4, gate: 0.25) ])
+T([
+  :a2,
+  S(:c4, vel: 20, gate: 0.75)
+  S(:d4, gate: 0.5),
+  S(:e4, gate: 0.25)
+])
 ```
 
-The default velocity for a step is 127, and the default gate is 1.0 (tied). Tied notes are continued without release if they also appear in the following step. For instance, in this track, the :c4 is held for the first three slots, terminating 25% of the way through the third:
+The default velocity for a step is 127, and the default gate is the maximum, 1.0, which is a tie. Tied notes are continued without release if they would also play in the next slot. For instance, in this track, the :c4 is held for the first three slots, terminating 25% of the way through the third:
 
 ```ruby
-T([ S(:c4, gate: 1), [S(:c4, gate: 1), S(:c2, gate: 0.5)], S(:c4, gate: 0.25), S(:c2, gate: 0.75) ])
+T([
+  S(:c4, gate: 1),
+  [S(:c4, gate: 1), S(:c2, gate: 0.5)],
+  S(:c4, gate: 0.25),
+  S(:c2, gate: 0.75)
+])
 
 # or, equivalently, since a gate of 1 is the default:
-T([ :c4, [:c4, S(:c2, gate: 0.5)], S(:c4, gate: 0.25), S(:c2, gate: 0.75) ])
+T([
+  :c4,
+  [:c4, S(:c2, gate: 0.5)],
+  S(:c4, gate: 0.25),
+  S(:c2, gate: 0.75)
+])
 ```
 
 ### Step probabilities
@@ -138,22 +172,68 @@ By giving a `Step` a *probability*, you can control the conditions under which t
 The simplest way to express a probability is to pass a floating point number as the `prob` parameter to `Step.new` (aliased to `S`). That specifies the chance that the note will play, with 1.0 meaning a 100% chance. For instance, the C4 in this track only has a 25% chance of playing on any given loop; there is a 75% chance that slot will be just a rest instead:
 
 ```ruby
-t = T([:e4, S(:c4, prob: 0.25), :g3])
+t = T([
+  :e4,
+  S(:c4, prob: 0.25),
+  :g3
+])
 ```
 
 More elaborate probabilities are part of the `Prob` class. For instance, the `every` probability will trigger the given note every nth cycle. Here, the C4 will only play every 3rd loop; on other loops that slot will just be a rest:
 
 ```ruby
-t = T([:e4, S(:c4, prob: Prob.every(3)), :g3])
+t = T([
+  :e4,
+  S(:c4, prob: Prob.every(3)),
+  :g3
+])
 ```
 
-Check out the `Prob` documentation for more elaborate options. You can specify that a step should only trigger on the first loop of a track, or only if the previous slot was a rest, and so on. There is also a special probability called `fill` which we'll discuss later.
+Check out the `Prob` documentation for more elaborate options. You can specify that a step should only trigger on the first loop of a track, or only if the previous slot was a rest, and so on. There is also a special probability called `fill` which we'll discuss [later](#fill-mode).
+
+### Step Accumulation
+
+While probabilities control whether a `Step` triggers at all, *accumulation* can change the note a step plays each time it is triggered. For instance, using accumulation, you can make a step that automatically plays a note several semitones higher each time. Accumulation is controlled by a number of parameters:
+
+- *delta* is the number of semitones to adjust the step's note each time it is triggered.
+- *min* and *max* define the acceptable range of semitone adjustment from accumulation.
+- *mode* specifies the behavior when the overall accumulation reaches the min or max values. It can be one of `:freeze` (which holds at the extreme that was reached), `:wrap` (which wraps around to the opposite extreme), or `:reverse` (which bounces between the extremes).
+
+You can most easily apply accumulation to a `Step` with the `accum` method, which takes the delta and keyword arguments for each of the other parameters described above. For example, consider this track:
+
+```ruby
+t = T([
+  S(:c4).accum(1, max: 12, mode: :freeze)
+])
+```
+
+When that track is played, the first loop will play a C4. In the next loop, the accumulation will take effect and it will play a C#4 - a note one semitone higher (the `delta` being 1). The next loop will play a D4, and so on for 12 cycles until it plays a C5 (12 semitones of accumulation). At that point, since the maximum accumulation has been reached and the mode is `:freeze`, all further cycles of the track will also play a C5.
+
+The accumulation delta can be negative. Consider this track:
+
+```ruby
+t = T([
+  S(:c4).accum(-12, min: -24, max: 24, mode: :reverse)
+])
+```
+
+That will play a C4, then a C3 and a C2, then, since that's the minimum accumulation of -24 and the mode is `:reverse`, the delta is effectively negated and the following cycle will play a C3. Then a C4 again, a C5, and a C6. The C6 is the max accumulation, so the delta is negated again and the following cycle will play a C5, and so on.
+
+Note that accumulation can have its own probability, independent of the step to which it belongs. For instance, take this track:
+
+```ruby
+t = T([
+  S(:c4).accum(7, max: 21, prob: Prob.every_other)
+])
+```
+
+The accumulation of 7 semitones will only trigger on every other playback of the track, so the first two cycles will play a C4, the next two will play a G4, and so on.
 
 ### Manipulating `Track`s
 
-One thing that greatly effects how you'll interact with them: `Track` objects are immutable. All the methods that manipulate them return new `Track` instances, rather than changing the one on which they are called.
-
 Much of the power of spi-seq lies in its track mutation methods. Let's take a look at some of them. In these examples, I'm omitting most boilerplate and the `track_live_loop` calls for playback.
+
+One thing that greatly effects how you'll interact with them: **`Track` objects are immutable**. All the methods that manipulate them return new `Track` instances, rather than changing the one on which they are called.
 
 You can transpose all notes in a track some number of semitones with `transpose`. You can merge the slots in two tracks with the `|` operator. So here's how you might construct a track that plays the notes in a C3 major 9th chord, together with those same notes down a fifth:
 
@@ -247,9 +327,9 @@ However, you can pass your own block to `track_live_loop`, which has some specia
 
 - Blocks should not `sleep` or `sync`, unlike `live_loop` blocks. The internal block will do that for you to ensure proper timing when playing back the track you provide. If you do `sleep` or `sync`, it will result in gaps between cycles of your track.
 - If your block returns a `Track` instance, that track will be played instead of the track you provided as an argument to `track_live_loop`. In fact, if you provide a block that returns a `Track`, there may not be a reason to pass a track to `track_live_loop` at all. This is valid.
-- The block can receive a number of arguments. See the documentation for all of them. For now we'll just look at `cycle`, which is the number of times the track has looped. It is 0 when the track starts and increments each time the block is executed.
+- The block can receive a number of arguments. See the documentation for all of them. For now we'll just look at `cycle`, which is the number of times the track has looped. It is 0 when the track starts and increments each time the track plays.
 
-Returning a `Track` from your block is very powerful. It allows you to mutate the track you're playing back each cycle. For example, let's say we wanted to transpose a track 1 semitone every loop (up to 7 semitones), and perhaps have the gate of its steps slowly increase each cycle. Using the `cycle` parameter, we can adjust our track accordingly in the block:
+Returning a `Track` from your block is very powerful. It allows you to mutate the track you're playing each cycle. For example, let's say we wanted to transpose a track 1 semitone every loop (up to 7 semitones), and perhaps have the gate of its steps slowly increase each cycle. Using the `cycle` parameter, we can adjust our track accordingly in the block:
 
 ```ruby
 t = Track.arp(chord(:c3, :major9), :thumb)
@@ -320,14 +400,126 @@ At any point during playback, a `Player` may be put in *fill mode*. In that stat
 
 The true power of fill is that it can be controlled by a MIDI CC, just like muting. Pass the `fill_cc` parameter to `track_live_loop` to specify the CC value that should toggle fill mode. Like the muting `cc` parameter, the MIDI device that will be monitored for `fill_cc` is specified with `cc_port` and `cc_channel`. And like muting, a CC value of 0 turns fill off and any other value turns it on. Fill is always off by default.
 
-Unlike muting, *fill mode takes effect immediately*. That is, steps with the fill probability will immediately start being triggering after fill is set; you do not need to wait for another cycle of playback.
+Unlike muting, *fill mode takes effect immediately*. That is, steps with the fill probability will immediately start triggering after fill is set; you do not need to wait for another cycle of playback.
 
 Here's an example where an E2 is only triggered in fill mode. The `track_live_loop` is configured to watch CC 111 for fill.
 
 ```ruby
-t = T([:c4, [:e4, S(:e2, prob: Prob.fill)], :g4])
+t = T([
+  :c4,
+  [:e4, S(:e2, prob: Prob.fill)],
+  :g4
+])
 
 track_live_loop :t, t, fill_cc: 111
 ```
 
 There is also a `not_fill` probability, which specifies that a step should only trigger when fill is off. And, there is a `fill` method on `Track` that gives all steps the `fill` probability, which may be useful when assembling tracks by merging them.
+
+### Sequencing CCs
+
+So far we've only seen `Track`s and `Step`s, which both deal with sequencing notes. spi-seq can also sequence MIDI CCs using the `CCTrack` class. `CCTrack` shares the same structure and many methods with `Track`, but instead of note-based `Step`s, it contains `CCStep`s, which consist of a CC number and a value. The initializers `CCTrack.new` and `CCStep.new` are aliased to `CCT` and `CC` respectively. Constructing and using a `CCTrack` should look rather familiar:
+
+```ruby
+t = CCT([
+  CC(10, 1),
+  CC(10, 25),
+  :r,
+  CC(15, 3)
+], granularity: :half)
+
+track_live_loop :my_cc_track, t
+```
+
+That builds a track with four slots that sends CC 10 with a value of 1, then 25, then rests, and then sends CC 15 with a value of 3. You play back `CCTrack`s with `track_live_loop`, just like normal `Tracks`.
+
+Many of the means for manipulating `Track`s are also available for `CCTrack`s; if the method doesn't deal directly with note properties (like `transpose` or `gate`), it's probably available on `CCTrack`. To name just a few, `zip`, `dropout`, and the `|` operator are all at your disposal. `CCStep`s can have probabilities and even accumulation - `CCStep` accumulation works just like that on `Step`, but applies deltas to the value of the CC message instead of semitone offsets of the note.
+
+The `CCTrack.simple` class method provides a concise way to construct a track that consists entirely of values for the same CC number. The `add_curve` method lets you add steps for a CC number with values along a curve. And if you want to generate a `CCTrack` with steps that correspond to notes in a `Track`, the `to_cc` and `to_simple_cc` methods on `Track` provide ways to map between the two.
+
+
+## Recording tracks
+
+As you've hopefully seen, spi-seq has rich tools for constructing `Track`s programmatically. However, it can still be tedious to create tracks for more organic melodies. To help with that, the `TrackRecorder` module records and quantizes incoming MIDI note events and creates a `Track` object for you.
+
+To use it, first set a BPM that is the same you intend to use when playing back the resulting track. The BPM determines how to map between real-world seconds and slots in a track, so it's important that it is the same between recording and playback.
+
+Then, call `TrackRecorder.record`. That method takes many arguments, the most important of which are:
+
+- `cc`: Recording is started and stopped via this MIDI CC. The value sent for the CC is ignored; any message with this number will do. By default the CC is listened for on the device specified with `use_cc_control_defaults`, or all devices if none was set.
+- `port` and `channel`: The MIDI device to listen to for note events. Defaults to the device specified by `use_midi_defaults`, or all devices if none was set.
+- `granularity`: The granularity of the resulting `Track` (e.g. `:sixteenth`, `:eighth`, etc.). A shorter granularity means that the timing of incoming MIDI notes can be represented more precisely, which may or may not be desirable.
+- `trim_start` and `trim_end`: If these are true, rests from the respective end of the track will be removed.
+- `ignore_vel`: By default, the velocity of incoming events is recorded in the `Step`s in the track. If this is true, all steps will have the default velocity of 127.
+
+`TrackRecorder.record` returns a `Track`, but how do you save that track for future use or editing? The easiest way is to call `copy_repr` on the it, which will put a Ruby representation of the track on your clipboard. You can also print the track's Ruby representation in Sonic Pi with `puts track.repr`.
+
+Here's an example use of `TrackRecorder`:
+
+```ruby
+use_bpm 95
+
+require "~/spi-seq/core"
+init_spi_seq
+
+t = TrackRecorder.record(cc: 119,
+                         granularity: :sixteenth,
+                         trim_start: true, trim_end: false,
+                         ignore_vel: true)
+t.copy_repr
+```
+
+
+## Everyday use
+
+### A template
+
+I recommend writing a small template for a new sketch and keeping it handy. Here is roughly the template I use:
+
+```ruby
+use_bpm 120
+use_midi_logging false
+use_debug false
+
+require "~/spi-seq/core"
+init_spi_seq
+
+uf = {port: "arturia_microfreak", channel: 7}
+mf = {port: "minifreak_midi", channel: 8}
+
+use_midi_defaults(**mf)
+use_cc_control_defaults(port: "iphone")
+use_player_defaults(midi: true, sync: :midi_clock)
+
+on_cold_run do
+  midi_panic(port: "*", channel: "*")
+  midi_panic_on_stop(port: "*", channel: "*")
+  midi_clock_live_loop(port: "*")
+end
+```
+
+Some of that should be familiar, but let me explain:
+
+- The MIDI device hashes (here `uf` for Microfreak and `mf` for Minifreak) are handy because you can use them to target playback by passing them directly to `track_live_loop` like this: `track_live_loop :some_track, some_track, **uf`. You can also pass them to `use_midi_defaults`, as seen here, which is a built-in Sonic Pi method that spi-seq also honors for playback with `track_live_loop`.
+- We've seen `use_cc_control_defaults` and `use_player_defaults` before; they control default options for `Player`s and `track_live_loop`. I use the TouchOSC app on my phone as a MIDI controller, so I've set that as the default CC control device.
+- `on_cold_run` is a helper provided by spi-seq that will execute its block only when a Sonic Pi sketch is started after having been stopped; it will not run if you restart a sketch. It's a handy place to do things like start the MIDI clock loop, and in this case send a MIDI stop and all notes off message to all devices (`midi_panic`). `midi_panic_on_stop` sets up a hook that will also do a `midi_panic` when playback is stopped in Sonic Pi, or when the app quits, to avoid stuck notes.
+
+### Live coding
+
+Of course, spi-seq plays well with Sonic Pi's live coding features. You can safely re-run a sketch using spi-seq; your existing `track_live_loops` will finish and changes will take effect on the next loop. There are a few things you should be aware of though.
+
+If you add a new `track_live_loop` and re-run your sketch, that loop will start the next time its `sync` source fires. If you're using MIDI output, that is likely the MIDI clock, which means the loop will start almost immediately. That is probably not what you want! You probably intended for the track to start playback when some other track finishes a loop. Luckily, since `track_live_loops` are just `live_loops` under the hood, all you need to do is provide an explicit `sync` parameter for your loop, with the name of the loop you'd like it to start with.
+
+Stopping existing live loops is always a little tricky in Sonic Pi. If you're using [the mute functionality](#muting-tracks), you may not ever need to do this. Otherwise, if you don't think you'll be starting the loop again, you can just change (or add) a `track_live_loop`'s block to call the `stop` function. But if you want to temporarily silence a loop and bring it back later, one hack is to replace the track the loop is playing with the result of calling `clear` on that track. That method returns a track that has the same length as the track it's called on, but consists entirely of rests. That will essentially "park" the `track_live_loop`, and if you want to bring the track back, you can just remove the `.clear`. For instance, if you were playing a track like this:
+
+```ruby
+tll :my_track, my_track
+```
+
+and decided you wanted to temporarily silence it, you could change code to this an re-run the sketch:
+
+```ruby
+tll :my_track, my_track.clear
+```
+
+To restore the track, remove `.clear` and re-run.
