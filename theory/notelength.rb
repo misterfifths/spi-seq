@@ -6,7 +6,7 @@ class NoteLength
   # - A symbol for the name of a length, e.g. :whole or :thirty_second.
   # - A number that represents the fraction of a beat for the note length, e.g.
   #   0.5 for eighth notes, or 4 for whole notes.
-  def self.new(length, *aliases)
+  def self.new(length)
     return length if length.is_a?(NoteLength)
 
     @cache ||= {}
@@ -26,7 +26,6 @@ class NoteLength
     @cache[length] = instance
     @cache[instance.to_sym] = instance
     @cache[instance.to_f] = instance
-    aliases.each { |a| @cache[a] = instance }
 
     instance
   end
@@ -53,7 +52,7 @@ class NoteLength
   end
   private_class_method :from_number
 
-  def initialize(sym)
+  private def initialize(sym)
     @sym = sym
 
     case sym
@@ -186,8 +185,12 @@ class NoteLength
   Quarter = new(:quarter)
   Eighth = new(:eighth)
   Sixteenth = new(:sixteenth)
-  ThirtySecond = new(:thirty_second, :thirtysecond)
-  SixtyFourth = new(:sixty_fourth, :sixtyfourth)
+  ThirtySecond = new(:thirty_second)
+  SixtyFourth = new(:sixty_fourth)
+
+  # Aliases to prime the cache
+  new(:thirtysecond)
+  new(:sixtyfourth)
 
 
   protected
