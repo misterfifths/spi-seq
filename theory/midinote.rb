@@ -201,44 +201,6 @@ class MIDINote < Numeric
   end
 
 
-  ### Auto-harmonize
-
-  # Returns an array of note symbols that represent a 4-part harmony for the
-  # give note in the given scale and tonic. position must be 0, 1, or 2, and
-  # determines which of the three possible harmonies is returned. The returned
-  # array will be sorted from low to high, and the given note itself will be
-  # the final element of the array. If note is not in the scale, returns a
-  # single-element array containing just note.
-  # This is based on an article by Neil Bickford:
-  # https://www.gathering4gardner.org/g4g14gift/G4G14-NeilBickford-AlgorithmsForMusicalHarmonization.pdf
-  # which in turn references a paper by Donald Knuth.
-  def harmonize(tonic, scale_name, position: 0)
-    scale = Scale.full_scale(tonic, scale_name)
-
-    begin
-      n = scale.steps_between(tonic, self)
-    rescue ArgumentError
-      return [self]
-    end
-
-    degrees = case position
-    when 0
-      [n - 11, n - 4, n - 2, n]
-    when 1
-      [n - 7, n - 5, n - 3, n]
-    when 2
-      [n - 9, n - 5, n - 2, n]
-    else
-      raise RangeError, "position must be between 0-2 inclusive"
-    end
-
-    # Avoid tritones
-    degrees[0] -= 2 if degrees[0] % 7 == 6
-
-    degrees.map { |d| scale.note_at_step(tonic, d) }
-  end
-
-
   ### Ruby magic methods and Numeric implementation
 
   def to_i

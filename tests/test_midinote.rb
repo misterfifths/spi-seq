@@ -4,8 +4,6 @@
 require_relative "test_helper"
 require_relative "../theory/midinote"
 
-# TODO: missing tests for harmonize.
-
 class MIDINoteTest < Test::Unit::TestCase
   def self.startup
     # Attempt some cache poisoning (this should not get cached as the canonical

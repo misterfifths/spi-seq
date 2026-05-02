@@ -5,8 +5,6 @@ require_relative "test_helper"
 require_relative "../track"
 require_relative "track_test_helpers"
 
-# TODO: missing tests for harmonize, split_harmonize.
-
 # Test Track's step manipulation methods.
 # This is mostly things that deal with individual steps in the Track, rather
 # than the track or slots as a whole.
