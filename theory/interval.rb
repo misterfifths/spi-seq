@@ -26,7 +26,7 @@
 # - Other numbers, which will be treated as a number of semitones.
 # - Symbols or strings, which will be treated as abbreviated interval names.
 class Interval < Numeric
-  attr_accessor :number, :quality, :size, :octave_span, :simple_interval
+  attr_reader :number, :quality, :size, :octave_span, :simple_interval
   alias semitones size
 
   # semitones -> { quality -> number }
