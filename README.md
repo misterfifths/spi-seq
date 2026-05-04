@@ -510,16 +510,6 @@ Of course, spi-seq plays well with Sonic Pi's live coding features. You can safe
 
 If you add a new `track_live_loop` and re-run your sketch, that loop will start the next time its `sync` source fires. If you're using MIDI output, that is likely the MIDI clock, which means the loop will start almost immediately. That is probably not what you want! You probably intended for the track to start playback when some other track finishes a loop. Luckily, since `track_live_loops` are just `live_loops` under the hood, all you need to do is provide an explicit `sync` parameter for your loop, with the name of the loop you'd like it to start with.
 
-Stopping existing live loops is always a little tricky in Sonic Pi. If you're using [the mute functionality](#muting-tracks), you may not ever need to do this. Otherwise, if you don't think you'll be starting the loop again, you can just change (or add) a `track_live_loop`'s block to call the `stop` function. But if you want to temporarily silence a loop and bring it back later, one hack is to replace the track the loop is playing with the result of calling `clear` on that track. That method returns a track that has the same length as the track it's called on, but consists entirely of rests. That will essentially "park" the `track_live_loop`, and if you want to bring the track back, you can just remove the `.clear`. For instance, if you were playing a track like this:
+Stopping existing live loops is always a little tricky in Sonic Pi. It's probably easiest to use the loop [muting functionality](#muting-tracks), which will silence playback of a track. The `cc` parameter to `track_live_loop` will watch for a MIDI CC to control muting. Or, you can add a call to `mute_live_loop(:loop_name)` (or `unmute_live_loop`) in your sketch and re-run it. Once muted, the track will stop playing once its current cycle completes.
 
-```ruby
-tll :my_track, my_track
-```
-
-and decided you wanted to temporarily silence it, you could change code to this an re-run the sketch:
-
-```ruby
-tll :my_track, my_track.clear
-```
-
-To restore the track, remove `.clear` and re-run.
+Otherwise, if you don't think you'll be starting the loop again, you can just change (or add) a `track_live_loop`'s block to call Sonic Pi's `stop` function.
