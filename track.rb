@@ -221,9 +221,8 @@ class Track < TrackBase
     track
   end
 
-  # An alias for `isorhythm`.
-  def self.iso(*args, **kwargs)
-    isorhythm(*args, **kwargs)
+  class << self
+    alias iso isorhythm
   end
 
 
