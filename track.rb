@@ -248,7 +248,7 @@ class Track < TrackBase
     # If the total gate is less than 1, the Step remains as one (longer) step in
     # the first of the new slots.
 
-    def expand_step(step)
+    expand_step = lambda do |step|
       step1_prob = step.prob
       total_gate = step.gate * 2.0
       if total_gate > 1  # TODO: tolerance?
@@ -270,7 +270,7 @@ class Track < TrackBase
     @grid.each do |slot|
       new_slots = [[], []]
       slot.each do |step|
-        step1, step2 = expand_step(step)
+        step1, step2 = expand_step.call(step)
         new_slots[0] << step1
         new_slots[1] << step2 unless step2.nil?
       end
@@ -303,7 +303,7 @@ class Track < TrackBase
     # Condense two Steps for the same note into one. The Steps are passed in-
     # order as they appear in the Track. One or the other may be nil, but not
     # both. May return nil if the steps condense to nothing.
-    def condense_steps(step1, step2)
+    condense_steps = lambda do |step1, step2|
       # The Oxi seems to discard anything that begins on the second slot when
       # condensing.
       return nil if step1.nil?
@@ -321,14 +321,14 @@ class Track < TrackBase
 
     # Condense the Steps from one or two slots into one new slot. The second
     # slot will be nil for the last slot in a Track with an odd number of slots.
-    def condense_slots(slot1, slot2 = nil)
+    condense_slots = lambda do |slot1, slot2 = nil|
       steps_by_note = Hash.new { |h, k| h[k] = [nil, nil] }
       slot1.each { |step| steps_by_note[step.note][0] = step }
       slot2&.each { |step| steps_by_note[step.note][1] = step }
 
       new_slot = []
       steps_by_note.each_value do |steps|
-        condensed_step = condense_steps(*steps)
+        condensed_step = condense_steps.call(*steps)
         new_slot << condensed_step unless condensed_step.nil?
       end
 
@@ -337,7 +337,7 @@ class Track < TrackBase
 
     new_grid = []
     @grid.each_slice(2) do |slot_chunk|
-      new_grid << condense_slots(*slot_chunk)
+      new_grid << condense_slots.call(*slot_chunk)
     end
 
     mutate(grid: new_grid, granularity: @granularity.double)
