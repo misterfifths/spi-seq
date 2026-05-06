@@ -4,23 +4,21 @@ require_relative "extapi"
 require_relative "playerbase"
 require_relative "track"
 
+# @!group Playback and live loops
 
-# Set global default player and track_live_loop behaviors. Only explicitly
+# Set global default {Player} and {track_live_loop} behaviors. Only explicitly
 # specified parameters are changed.
-# - `midi`: Specifies the default value for the `midi` parameter of Player's
-#   initializer, used when that parameter is not explicitly passed. May be
-#   overridden on a per-Player basis by specifying the parameter. Default:
-#   false.
-# - `sync`: Specifies the default value for the `sync` parameter of
-#   `track_live_loop`. May be overridden by specifying the parameter manually
-#   in the call to `track_live_loop`. Passing nil as the `sync` parameter to
-#   this function unsets a previous default. Default: nil (no sync).
-# - `start_muted`: Specifies the default value for the `start_muted` parameter
-#   of `track_live_loop`. May be overridden by specifying the parameter manually
-#   in the call to `track_live_loop`. Default: false.
-# - `fill_cc`: Specifies the default value for the `fill_cc` parameter of
-#   `track_live_loop`. May be overridden by specifying the parameter manually in
-#   the call to `track_live_loop`. Default: nil (no fill CC).
+# @param midi [Boolean, nil] The default value for the `midi` parameter of
+#   {Player#initialize} and by extension {track_live_loop}. Default: false.
+# @param sync [Symbol, nil] The default value for the `sync` parameter of
+#   {track_live_loop}. Passing nil to this function unsets a previous default.
+#   Default: nil (no sync).
+# @param start_muted [Boolean, nil]: The default value for the `start_muted`
+#   parameter of {track_live_loop} Default: false.
+# @param fill_cc [Integer, nil]: The default value for the `fill_cc` parameter
+#   of `track_live_loop`. Default: nil (no fill CC).
+# @return [void]
+# @see current_player_defaults
 def use_player_defaults(midi: nil, sync: :__dummy_sync_sentinel, start_muted: nil, fill_cc: nil)
   # `set` hashes become SPMaps, apparently, so we need to call to_h on this.
   defaults = ExtApi.get(:__player_defaults).to_h
@@ -32,39 +30,57 @@ def use_player_defaults(midi: nil, sync: :__dummy_sync_sentinel, start_muted: ni
   ExtApi.set(:__player_defaults, defaults)
 end
 
-# Returns the current player defaults as set by use_player_defaults, or an empty
-# hash if no defaults have been set.
+# Returns the current player defaults as set by {use_player_defaults}, or an
+# empty hash if no defaults have been set.
+# @return [Hash{Symbol => Object}]
 def current_player_defaults
   ExtApi.get(:__player_defaults) || {}
 end
+
+# @!endgroup
 
 
 # TODO: probably special-case Steps with a 0 gate
 # TODO: probably `sleep` should reset @prev_steps?
 
 
-# A Player plays back Tracks by triggering the Tracks' Steps' notes over MIDI or
-# via Sonic Pi's internal synthesis.
+# A Player plays a {Track} by sending its {Step}s' notes over MIDI or playing
+# them with Sonic Pi's internal synthesis.
 #
 # Generally you will not make instances of Player directly, and instead use
-# `track_live_loop`, which will create and manage a Player for you.
+# {track_live_loop}, which will create and manage a Player for you.
+#
+# In the unlikely scenario that you want to manually drive a Player, see the
+# {PlayerBase} documentation for details.
 class Player < PlayerBase
-  attr_reader :midi, :channel, :port
+  # Whether this player should send MIDI note events for {Step}s, or use Sonic
+  # Pi's internal synthesis instead.
+  # @return [Boolean]
+  attr_reader :midi
+
+  # The MIDI channel to use when this player sends events. Only relevant if
+  # {#midi} is true.
+  # @return [Integer, String, nil]
+  attr_reader :channel
+
+  # The MIDI port to use when this player sends events. Only relevant if {#midi}
+  # is true.
+  # @return [String, nil]
+  attr_reader :port
 
   # Constructs a Player.
   #
-  # `midi` is a boolean that determines whether playback will happen via MIDI
-  # or Sonic Pi's internal synthesis. If it is not provided, it falls back to
-  # the global default set by `use_player_defaults`, or false if that was not
-  # set.
-  #
-  # `channel` and `port` specify the MIDI device to use when `midi` is true. If
-  # they are not provided, they fall back to the global default set by
-  # Sonic Pi's `use_midi_defaults`, or to all channels and ports if those were
-  # not set.
-  #
-  # If `debug` is true, detailed information about the starting and stopping of
-  # steps will be printed.
+  # @param track [Track] The initial value for {#track}.
+  # @param midi [Boolean, nil] Whether playback will happen via MIDI or Sonic
+  #   Pi's internal synthesis. If nil, the global default set by
+  #   {use_player_defaults} will be used, or false if that was not set.
+  # @param channel [Integer, String, nil] The MIDI channel to use when `midi` is
+  #   true. If nil, falls back to the global default set by Sonic Pi's
+  #   `use_midi_defaults`, or to all channels (i.e. "*") if that was not set.
+  # @param port [String, nil] The MIDI device to use when `midi` is true. If
+  #   nil, falls back in the same manner as `channel`.
+  # @param debug [Boolean] If true, the player will log detailed information
+  #   about its state during playback.
   def initialize(track, midi: nil, channel: nil, port: nil, debug: false)
     @midi = resolve_midi_arg(midi)
     @channel = channel
@@ -83,6 +99,7 @@ class Player < PlayerBase
     super(track, debug: debug)
   end
 
+  # (see PlayerBase#stop)
   def stop
     super
 
@@ -90,6 +107,7 @@ class Player < PlayerBase
     @notes_for_prev_steps = {}
   end
 
+  # @private
   def inherit_state(other)
     super
 

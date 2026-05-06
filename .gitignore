@@ -1,2 +1,4 @@
 scratch/
 coverage/
+.yardoc/
+docs/

@@ -15,13 +15,22 @@ require_relative "utils/misc_utils"
 # file. Forcing a call to something like this is the best I've come up with.
 # This method must be global (otherwise `self` will evaluate to the module that
 # contains it).
+
+# @!group Initialization
+# Initializes spi-seq. This must be called before attempting to use any other
+# functionality. You must call this at the top level of a sketch; you cannot
+# call it inside a function or from a module. It is safe to call it multiple
+# times, e.g. when you re-run a sketch.
+# @return [void]
 def init_spi_seq
   raise RuntimeError, "init_spi_seq must be called from the global scope" unless is_a?(SonicPi::Runtime)
   ExtApi.instance_variable_set(:@spi, self)
 rescue NameError
   ExtApi.instance_variable_set(:@spi, nil)
 end
+# @!endgroup
 
+# @private
 module ExtApi
   class << self
     [
@@ -125,6 +134,7 @@ begin
 rescue NameError  # rubocop:disable Lint/SuppressedException
 end
 
+# @private
 module ExtApiStubs
   class << self
     def puts(s)
@@ -168,10 +178,12 @@ module ExtApiStubs
   end
 end
 
+# @private
 def log(msg, channel = "spi-seq")
   ExtApi.puts("[#{channel}] #{msg}")
 end
 
+# @private
 def warn(msg, channel = "spi-seq")
   log("warning: #{msg}", channel)
 end

@@ -13,36 +13,55 @@ require_relative "trackbase"
 
 
 # PlayerBase contains the core functionality for playing back tracks (i.e,
-# subclasses of TrackBase). Do not make instances of PlayerBase directly;
-# instead use one of its subclasses like Player, which handles note-based
-# Track instances. But even then, it is unlikely you will make players directly,
-# and instead use `track_live_loop`, which will create and manage an appropriate
-# player for you.
+# subclasses of {TrackBase}). Do not make instances of PlayerBase directly.
+# Instead use one of its subclasses: {Player} which handles note-based
+# {Track}s, or {CCPlayer} which handles {CCTrack}s. But even then, it is
+# unlikely you will make explicitly make a player. Instead use
+# {track_live_loop}, which will create and manage an appropriate player for you.
 #
 # If you do want to manually drive a player, the most relevant methods are
-# `play`, `stop`, and `sleep`. Note that playback is strictly cycle-based; the
-# `play` method will play an entire cycle of the track before it returns. You
-# can use `swap_track` between cycles to seamlessly switch to another track.
+# {#play}, {#stop}, and {#sleep}. Note that playback is strictly cycle-based;
+# the `play` method will play an entire cycle of the track before it returns.
+# You can use {#swap_track} between cycles to seamlessly switch to another
+# track.
 #
-# The `cycle` attribute is the number of times the track has played. It begins
-# at 0 and is incremented at the end of every `play` call. By default,
-# `swap_track` does not reset the cycle.
+# The {#cycle} attribute tracks the number of times the track has played. It
+# begins at 0 and is incremented at the end of every {#play} call. A call to
+# {#sleep} does not increment `cycle`.
 #
-# The `fill` attribute controls whether steps with the 'fill' probability are
-# played. It may be changed at any point, even mid-cycle, and will take effect
-# when the next slot is played.
+# The {#fill} attribute controls whether steps with the {Prob.fill}
+# {StepBase#prob probability} are played. It may be changed at any point, even
+# mid-cycle, and will take effect when the next slot is played. When using a
+# {track_live_loop} for playback, you can assign a MIDI CC that will toggle
+# fill mode with the `fill_cc` parameter.
 #
-# Notes for subclasses:
-# - You must implement `play_slot` and `step_accum_should_trigger?`
-# - If you have additional internal state, you should override `stop` to clear
-#   it and `inherit_state` to propagate it to new player instances.
+# @abstract Subclasses must implement `play_slot` and
+#   `step_accum_should_trigger?`. If the subclass has additional internal state,
+#   it should override `stop` to clear it and `inherit_state` to propagate it
+#   to new player instances.
 class PlayerBase
-  attr_reader :track, :cycle
+  # The track that will be used when {#play} and {#sleep} are called. You may
+  # swap to a new track between cycles of playback with {#swap_track}.
+  # @return [TrackBase]
+  attr_reader :track
+
+  # The number of times this player has played a track. Incremented at the end
+  # of every call to {#play}. Reset by {#stop}, and optionally by {#swap_track}.
+  # A call to {#sleep} does not increment the cycle.
+  # @return [Integer]
+  attr_reader :cycle
+
+  # Whether the player is in fill mode. In fill mode steps with a
+  # {StepBase#prob probability} of {Prob.fill} will trigger, and those with
+  # {Prob.not_fill} will not. Fill mode can be toggled at any point during
+  # playback and will take effect when the next slot is played.
+  # @return [Boolean]
   attr_accessor :fill
 
-  # Creates a new PlayerBase that will play the given track (an instance of a
-  # subclass of TrackBase). If `debug` is true, detailed information about the
-  # starting and stopping of steps will be printed.
+  # Creates a new PlayerBase that will play the given track.
+  # @param track [TrackBase] The initial value for {#track}.
+  # @param debug [Boolean] If true, the player will log detailed information
+  #   about its state during playback.
   def initialize(track, debug: false)
     @track = track
     @debug = debug
@@ -52,9 +71,11 @@ class PlayerBase
     stop
   end
 
-  # Stops playback of the track. Intended to be called between cycles of the
-  # track. Ends all ongoing steps and resets internal state like `cycle` and
-  # accumulation state.
+  # Cleans up after a track has been played via {#play}. Intended to be used
+  # when the player is no longer necessary or if you want to restart it with a
+  # clean slate. Ends all ongoing steps and resets the internal state, like
+  # `cycle` and accumulation values.
+  # @return [void]
   def stop
     end_all_steps
     @cycle = 0
@@ -62,8 +83,13 @@ class PlayerBase
   end
 
   # Plays one cycle of the track. This method plays all slots in the track and
-  # sleeps (i.e. Sonic Pi's `sleep`) for the full `beat_length` of the track.
-  # The `cycle` is incremented just before this method returns.
+  # sleeps (i.e. Sonic Pi's `sleep`) for the full {TrackBase#beat_length length}
+  # of the track. It honors the track's {TrackBase#timescale timescale} by
+  # internally applying a BPM multiplier.
+  #
+  # The {#cycle} is incremented just before this method returns.
+  #
+  # @return [void]
   def play
     ExtApi.with_bpm_mul(@track.timescale) do
       @track.num_slots.times do |i|
@@ -78,7 +104,8 @@ class PlayerBase
   end
 
   # Sleeps (i.e. Sonic Pi's `sleep`) for the duration of the track. All ongoing
-  # steps are stopped.
+  # steps are stopped. The {#cycle} is not incremented.
+  # @return [void]
   def sleep
     end_all_steps
     ExtApi.with_bpm_mul(@track.timescale) do
@@ -86,14 +113,21 @@ class PlayerBase
     end
   end
 
-  # Swap out the track this player plays for `new_track`. Resets the cycle count
-  # to 0 if `reset_cycle` is true.
+  # Swap out the track this player plays.
   #
-  # This is intended to be called between calls to `play` or `sleep`. The new
-  # track will take effect on the next `play` or `sleep`, beginning from slot 0.
+  # This is intended to be called between calls to {#play} or {#sleep}. The new
+  # track will take effect on the next `play` or `sleep`, beginning with its
+  # first slot.
   #
   # The set of currently playing steps is not reset; the transition to the new
-  # track will seamlessly continue any ongoing steps.
+  # track will seamlessly continue any ongoing steps. For instance, when using
+  # a {Player}, if the prior track ended in a tied C4 and the new track begins
+  # with a C4, that note will continue without interruption.
+  #
+  # @param new_track [TrackBase] The track to use on the next call to {#play} or
+  #   {#sleep}.
+  # @param reset_cycle [Boolean] If true, resets {#cycle} to 0.
+  # @return [void]
   def swap_track(new_track, reset_cycle: false)
     @track = new_track
     @cycle = 0 if reset_cycle
@@ -107,6 +141,8 @@ class PlayerBase
   #
   # Subclasses should override this to propagate any extra internal state from
   # `other` to this player.
+  #
+  # @private
   def inherit_state(other)
     @cycle = other.cycle
     @fill = other.fill

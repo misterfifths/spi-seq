@@ -6,31 +6,99 @@ require_relative "theory/midinote"  # Only for `rest?`
 require_relative "theory/notelength"
 require_relative "trackbase"
 
-
-# An alias for `CCTrack.new`.
+# @!group Steps and tracks
+# An alias for {TrackBase#initialize CCTrack.new}.
+# @return [CCTrack]
 def CCT(*args, **kwargs)
   CCTrack.new(*args, **kwargs)
 end
+# @!endgroup
 
 
-# A CCTrack deals with a grid whose slots contain CCSteps. CCStep instances
-# represent MIDI CC events, consisting of a CC number and a value. See the
-# TrackBase documentation for details on grids, slots, and the basic inherited
-# functionality.
+# A CCTrack deals with a grid whose slots contain {CCStep}s. CCStep instances
+# represent MIDI CC events, consisting of a {CCStep#number CC number} and a
+# {CCStep#value value}. When a CCTrack is played with a {CCPlayer} or a
+# {track_live_loop}, MIDI CC messages are sent corresponding to the steps.
+#
+# Note that **tracks are immutable**. The mutation methods provided here, like
+# {#add_curve}, return new CCTracks that have all the same attributes as the
+# receiver (e.g. {#timescale} and {#granularity}), with just the described
+# change. That includes the steps in its grid, unless the method explicitly
+# modifies those.
+#
+# This class inherits much of its functionality from {TrackBase}. See its
+# documentation for the basics of the grid, slots, and mutation methods.
 class CCTrack < TrackBase
   ### Initializers
 
+  # Constructs a CCTrack with the given grid and attributes. `gridish` will be
+  # converted into a proper grid, an array of "slots". A slot is itself an
+  # array of {CCStep}s, which all trigger simultaneously for a duration of the
+  # `granularity`. A slot may be empty to represent a rest.
+  #
+  # `gridish` may be:
+  # - A single "stepish" value: a {CCStep} or a rest (nil, `:r`, `:rest`). Such
+  #   values will result in a track with one slot containing that step (or a
+  #   rest). For example:
+  #     CCT(CC(127, 5))  # grid is [[CC(127, 5)]]
+  #     CCT(:r)  # grid is [[]]
+  # - A 1-dimensional array, either empty or containing "stepish" values. This
+  #   will result in a track with one slot per element in the array, each of
+  #   which contains the "stepish" value. For example:
+  #     CCT([CC(127, 5), :r, CC(127, 10)])  # grid is [ [CC(127, 5)], [], [CC(127, 10)] ]
+  #     CCT([])  # grid is [[]]
+  # - An array that contains arrays of "stepish" values, or some mix of such
+  #   arrays and single "stepish" values. Subarrays will be grouped into a
+  #   single slot, and the standalone "stepish" values will be converted to
+  #   single-step slots. For example:
+  #     CCT([CC(127, 5), :r, [CC(127, 10), CC(5, 6)]])
+  #     # grid is [ [CC(127, 5)], [], [CC(127, 10), CC(5, 6)] ]
+  #
+  # In the end, the grid conversion should be relatively natural. You can pass a
+  # single value to get a single-slot track. Or, if you pass an array, single
+  # values will get their own slot and values grouped into a subarray will share
+  # a slot.
+  #
+  # Tracks must have at least one slot, though that slot may be empty (a rest).
+  #
+  # A single slot cannot contain more than one step with the same {CCStep#number
+  # number}. If that would happen, the step with the highest {CCStep#value
+  # value} is chosen, and the other colliding steps are discarded.
+  #
+  # @param gridish [Array<Array<CCStep>, CCStep, nil, :r, :rest>, CCStep, nil,
+  #   :r, :rest] Defines the grid for the new track; see above.
+  # @param granularity [NoteLength, Number, Symbol] The {#granularity} for the
+  #   new track. Can be a {NoteLength} or a value understood by
+  #   {NoteLength.new}.
+  # @param timescale [Number] The {#timescale} for the new track.
+  def initialize(gridish, granularity: NoteLength::Eighth, timescale: 1)
+    # Overridden purely to provide documentation.
+    super
+  end
+
   # Creates a new CCTrack where all steps target one CC number, `cc_number`.
   #
-  # `slots` is an array which specifies how to construct the CCSteps in the
+  # `slots` is an array which specifies how to construct the {CCStep}s in the
   # resulting track; each element of `slots` will correspond to a step in its
-  # own slot. `slots` elements can be:
-  # - Value numbers, which will be combined with `cc_number` to make CCSteps.
-  # - CCStep instances, which will be passed through verbatim.
-  # - Rests (see `MIDINote.rest?`), which will result in an empty slot.
+  # own slot. Each element of `slots` can be:
+  # - An integer, which is used as the {CCStep#value value} in a {CCStep} with
+  #   {CCStep#number number} `cc_number`.
+  # - A {CCStep} instance, which will be passed through verbatim.
+  # - A rest (see {MIDINote.rest?}), which will result in an empty slot.
   #
-  # The `granularity` and `timescale` arguments are as specified in the default
-  # initializer.
+  # @example
+  #   CCTrack.simple(56, [1, 2, :r, CC(100, 5), 3])
+  #   # is equivalent to
+  #   CCTrack.new([CC(56, 1), CC(56, 2), :r, CC(100, 5), CC(56, 3)])
+  #
+  # @param cc_number [Integer] The CC number that all slots in the resulting
+  #   track will target.
+  # @param slots [Array<Integer, CCStep, Symbol, nil>] Defines the contents
+  #   of the slots in the resulting track. See above.
+  # @param granularity [NoteLength, Number, Symbol] The {#granularity
+  #   granularity} for the new track.
+  # @param timescale [Number] The {#timescale timescale} for the new track.
+  # @return [CCTrack]
   def self.simple(cc_number, slots, granularity: NoteLength::Eighth, timescale: 1)
     slots = slots.map do |slot|
       next :r if MIDINote.rest?(slot)
@@ -51,6 +119,36 @@ class CCTrack < TrackBase
 
   ### Mutators
 
+  # Returns a new track, adding {CCStep}s whose value varies along a curve.
+  #
+  # @example
+  #   t = CCTrack.rest(8)
+  #   t = t.add_curve(10, 0, 50, Curves::UpLinear, 1, 6)
+  #   # t is now equivalent to
+  #   CCTrack.new([:r, CC(10, 0), CC(10, 10), CC(10, 20),
+  #                CC(10, 30), CC(10, 40), CC(10, 50), :r])
+  #
+  # @param cc_number [Integer] The {CCStep#number number} for the new CCSteps.
+  # @param start_val [Integer] The starting {CCStep#value value} for the new
+  #   steps. This can be greater than `end_val` if the values should decrease
+  #   over time.
+  # @param end_val [Integer] The ending {CCStep#value value} for the new steps.
+  #   This can be less than `start_val` if the values should decrease over time.
+  # @param curve [#call] A lambda or proc that defines the curve. It will be
+  #   called with a single floating point value between 0 - 1 (the percent
+  #   through the curve) and should return a value between 0 - 1. For this
+  #   function to act as expected, it should return 0 for an input of 0, and 1
+  #   for an input of 1. See the {Curves} and {Easings} modules for a number of
+  #   prebuilt options.
+  # @param slot_start_idx [Integer] The index of the first slot where a step
+  #   will be added. This must be a valid index for the track's {#grid grid},
+  #   and must be < `slot_end_idx`.
+  # @param slot_end_idx [Integer] The index of the final slot where a step
+  #   will be added. This must be a valid index for the track's {#grid grid},
+  #   and must be > `slot_start_idx`.
+  # @return [CCTrack]
+  # @see Curves
+  # @see Easings
   def add_curve(cc_number, start_val, end_val, curve, slot_start_idx, slot_end_idx)
     raise IndexError, "slot start is >= slot end" if slot_start_idx >= slot_end_idx
     raise IndexError, "slot range is beyond the grid" if slot_start_idx < 0 || slot_end_idx >= @grid.length
@@ -80,6 +178,7 @@ class CCTrack < TrackBase
   # - CCSteps are passed through verbatim.
   # - It is an error to pass a rest (as defined by `MIDINote.rest?`) to this
   #   function.
+  # @private
   def self.stepify(x)
     raise ArgumentError, "A rest cannot be converted to a step" if MIDINote.rest?(x)
 
@@ -125,6 +224,7 @@ class CCTrack < TrackBase
   #   3. If more than one of the resulting CCSteps has the same CC number, a
   #      warning is printed, and only the CCStep with the highest value is
   #      chosen.
+  # @private
   def self.slotify(x)
     if MIDINote.rest?(x)
       [].freeze
@@ -145,6 +245,7 @@ class CCTrack < TrackBase
   # - A single CCStep becomes a grid with one slot containing that CCStep.
   # - Array-like arguments are converted by passing each element through
   #   `slotify`.
+  # @private
   def self.gridify(x)
     if MIDINote.rest?(x)
       [[].freeze].freeze

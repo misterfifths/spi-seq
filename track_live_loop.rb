@@ -9,113 +9,116 @@ require_relative "track"
 require_relative "utils/live_loop_utils"
 require_relative "utils/misc_utils"
 
+# @!group Playback and live loops
 
-# Create a live_loop that plays the given track.
+# Creates a `live_loop` that plays a track.
 #
-# This method accepts Track and CCTrack instances and internally creates and
-# controls an appropriate player instance (a Player or CCPlayer, respectively).
-# Certain options are only valid for one track type; see the details below.
+# This method accepts {Track} and {CCTrack} instances and will create and
+# control an appropriate {Player} or {CCPlayer}, respectively. Certain options
+# are only valid for one track type; those are called out below.
 #
 # The `track` argument may be nil (the default), in which case the live loop
-# will play a single-slot rest Track. This is useful if the method is called
-# with a block that returns a track. See below for details on the block and its
-# arguments.
+# will play a single-slot {Track} containing just a rest. This is useful if
+# track_live_loop is called with a block that returns a track; see below for
+# details.
 #
-# Takes largely same arguments as `cc_mutable_live_loop`, with the exception
-# that `cc` may be nil (the default), in which case the live_loop is not mutable
-# by CCs. The MIDI port and channel arguments are split into `port`, `channel`
-# and `cc_port`, `cc_channel`. The unprefixed ones control which device the
-# internal player instance will target for playback. The `cc_`-prefixed ones are
-# passed to `cc_mutable_live_loop` to specify the device whose CC messages will
-# be monitored for muting. They also specify the device to monitor for fill
-# changes (see `fill_cc`).
+# Each iteration of the live loop will either {PlayerBase#play play} a cycle of
+# the track, or, if the loop is currently muted, {PlayerBase#sleep sleep} for
+# its duration. That means that muting takes effect only after a full cycle of
+# the track completes. track_live_loops can be muted via MIDI CCs (the `cc`
+# argument) or with the {mute_live_loop} function.
 #
-# The live_loop responds to muting by calling `sleep` on the internal Player for
-# muted cycles of playback, rather than `play`. Note that means that muting
-# takes effect after the current playback cycle completes, not immediately.
+# The internal player can be put into {PlayerBase#fill fill mode} via a MIDI CC
+# if the `fill_cc` argument is provided. Unlike muting, changes to fill mode
+# take effect immediately.
 #
-# If `fade_in` is true, the track fades in linearly (see `Track.fade_in`)
-# whenever it transitions from muted to unmuted. `fade_in` may also have the
-# value :quad, in which case the track is faded in with `fade_in_quad`.
+# Any additional named arguments (e.g. `delay` or `seed`) to this function are
+# used verbatim when creating the internal `live_loop`. If a `sync` parameter is
+# not specified, the default from {use_player_defaults} is used, if there is
+# one. You can explicitly use no sync by passing a nil value for `sync`.
 #
-# If `fade_out` is true, the track fades out linearly (see `Track.fade_out`)
-# when it transitions from unmuted to muted. NOTE: This happens *after* the
-# track transitions to muted. That is, tracks that are set to fade out will
-# actually play for one additional cycle after they become muted, during which
-# they will fade out. Like `fade_in`, `fade_out` may also have the value :quad.
+# ### The block
 #
-# `fade_in` and `fade_out` are only applicable when a Track instance is passed;
-# it is an error to set them for CCTracks.
-#
-# If `fill_cc` is provided, a CC message with that number will control whether
-# the player is in fill mode. A value of 0 turns off fill, and any other value
-# turns it on. Unlike muting, fill takes effect immediately, not at the start
-# of a new cycle. The device to watch for CC messages for fill is specified by
-# `cc_channel` and `cc_port`, which default to the global values set via a call
-# to `use_cc_control_defaults` (or to all ports and channels if that was not
-# set).
-#
-# If `send_cycle_cues` is true, immediately before the live_loop plays a cycle
-# of the track, it sends a cue with the name `<loop_name>_cycle` and a single
-# value, the number of the cycle iteration that's about to play. Cycle cues are
-# not sent while the track is muted.
-#
-# If `midi` is true and a Track instance is passed, that track will play back
-# over MIDI, rather than Sonic Pi's internal synthesis. The `channel` and `port`
-# arguments determine what device will be used for playback. `midi` is only
-# applicable when a Track is passed; it is ignored for CCTracks because they
-# only function over MIDI. If the `midi` argument is omitted, the default value
-# from `use_player_defaults` is used (or false if that was not set). If
-# `channel` or `port` is omitted, the default value from Sonic Pi's
-# `use_midi_defaults` method is used (or all channels and ports if that was
-# not set).
-#
-# A block may be provided, in which case it is called before each cycle is
-# played. The block may take 0 - 5 arguments, which are as follows. The block
-# may also accept keyword arguments by the names given below.
-# 1. the cycle number that the player is about to play (keyword: `cycle`)
-# 2. the track that's currently playing (keyword: `track`)
-# 3. whether the track is muted (keyword: `muted`)
-# 4. whether the track was muted in the previous loop. This argument is true on
-#    cycle 0. (keyword: `was_muted`)
-# 5. the normal optional live_loop argument (keyword: `arg`)
+# A block may be provided, in which case it is called before each cycle of
+# playback. The block may accept any of the following keyword arguments:
+# - `cycle` (Integer): The current {PlayerBase#cycle cycle} of the internal
+#   player.
+# - `track` ({Track} or {CCTrack}): The internal player's current track.
+# - `muted` (Boolean): Whether the loop is muted.
+# - `was_muted` (Boolean): Whether the track was muted in the previous loop.
+#   This argument is true the first time the block executes.
+# - `arg`: The usual argument for a `live_loop` - the value of the `init`
+#   argument on the first iteration, and the return of the prior execution of
+#   the block afterwards.
 #
 # The internal block that plays the track will sleep, so a user-provided block
-# does not need to call `sleep` or `sync`, unlike normal live_loop blocks.
+# does not need to call `sleep` or `sync`, unlike normal `live_loop` blocks.
 # If it does sync or sleep, it may cause delays between cycles of the track.
 #
-# If the block returns a value, it is fed back in the next iteration as the
-# fifth argument (`arg`).
-#
-# If the block returns a TrackBase instance (i.e. a Track or CCTrack), the
-# internal Player instance used by the live loop will swap to that track. The
-# swap takes effect immediately; the current iteration of the live_loop will
-# play the new track. The cycle count on the player will not be reset to 0.
+# If the block returns a {Track} or {CCTrack}, the internal player instance
+# will swap to that track. The swap takes effect immediately; the new track will
+# play as soon as it is returned. The {PlayerBase#cycle cycle} will not reset to
+# 0 when a track is swapped in this way.
 #
 # It is an error for the block to attempt to switch between types of tracks.
-# For example, the block cannot return a CCTrack when the initial call to
-# `track_live_loop` was given a Track.
+# For example, the block cannot return a {CCTrack} when the initial call to
+# `track_live_loop` was given a {Track}.
 #
-# Note: a nil `track` results in playback of a Track, not a CCTrack. So it is
-# invalid for a block to return a CCTrack when this method is not passed a
-# track, because that would constitute a switch in track type. For that reason,
-# it is recommended to use `cc_track_live_loop` when playing back CCTracks, as
-# that method uses a single-slot rest CCTrack in that case instead. That method
-# is otherwise identical to this one.
+# Note: a nil `track` argument results in playback of a Track, not a CCTrack. So
+# it is invalid for a block to return a CCTrack when this method is not passed a
+# track, because that would constitute a switch in track type. If you find
+# yourself in that situation, you can use {cc_track_live_loop}, as that method
+# uses a single-slot rest {CCTrack} instead but is otherwise identical to this
+# one.
 #
-# Any additional named arguments (e.g. delay: or seed:) to this function are
-# passed verbatim to the internal live_loop.
-#
-# If a `sync` parameter is not specified, the default from `use_player_defaults`
-# is used, if there is one. You can explicitly use no sync by passing a nil
-# value for the sync parameter.
-#
-# If the `start_muted` parameter is not specified, the default from
-# `use_player_defaults` is used.
-#
-# If `debug` is true, details about muting, unmuting, and fill state will be
-# logged, as well as any information that comes from setting `debug` to true
-# on the internal player instance.
+# @param loop_name [Symbol] The name of the live loop.
+# @param track [Track, CCTrack] The track that this loop will play, or nil to
+#   play a single-slot {Track} containing only a rest (in which case you will
+#   almost certainly want to provide a block).
+# @param start_muted [Boolean] The initial mute state of the loop. If nil, uses
+#   the global default set by {use_player_defaults}, or false if that was not
+#   set.
+# @param fade_in [Boolean, :quad] If true, the track fades in linearly (via
+#   velocity; see {Track#fade_in}) whenever the loop transitions from muted to
+#   unmuted. Pass `:quad` to fade the track in with {Track#fade_in_quad}. It is
+#   an error to pass any value other than false if `track` is a {CCTrack}.
+# @param fade_out [Boolean, :quad] If out, the track fades out linearly (via
+#   velocity; see {Track#fade_out}) whenever the loop transitions from unmuted
+#   to muted. Pass `:quad` to fade the track out with {Track#fade_out_quad}. It
+#   is an error to pass any value other than false if `track` is a {CCTrack}.
+#   NOTE: The playback of the faded track happens *after* the loop becomes
+#   muted. That is, tracks that are set to fade out will actually play for one
+#   additional cycle after the loop is muted, during which they will fade out.
+# @param midi [Boolean] If true, the track will play over MIDI rather than
+#   Sonic Pi's internal synthesis. This argument is ignored for {CCTrack}s,
+#   since they only function over MIDI. If nil, the global default from
+#   {use_player_defaults} is used, or false if that was not set.
+# @param port [String, nil] The MIDI device to use when `midi` is true. If
+#   nil, If nil, falls back to the global default set by Sonic Pi's
+#   `use_midi_defaults`, or to all ports (i.e. "*") if that was not set.
+# @param channel [Integer, String, nil] The MIDI channel to use when `midi` is
+#   true. If nil, falls back in the same manner as `port`.
+# @param cc [Integer] The CC number to monitor to control muting of the loop.
+#   A value of 0 for this CC will mute the loop; any other value will unmute.
+# @param fill_cc [Integer] The CC number to monitor to control {PlayerBase#fill
+#   fill mode} on the internal player. A value of 0 for this CC will turn off
+#   fill; any other value will turn it on.
+# @param cc_port [String, nil] The MIDI port to monitor for CC messages, if
+#   either `cc` or `fill_cc` are set. If nil, falls back to the global default
+#   set with {use_cc_control_defaults} or all ports (i.e. "*") if no default was
+#   set.
+# @param cc_channel [Integer, String, nil] The MIDI channel to monitor for CC
+#   messages. If nil, falls back in the same manner as `cc_port`.
+# @param send_cycle_cues [Boolean] If true, sends sends a cue immediately before
+#   each cycle of play with the name `<loop_name>_cycle` and a single value,
+#   the {PlayerBase#cycle cycle} that's about to play. Cycle cues are not sent
+#   while the loop is muted.
+# @param debug [Boolean] If true, details about muting, unmuting, and fill state
+#   will be logged, as well as any debug information from the internal player.
+# @param init [Object] The initial value to pass to the `arg` parameter of the
+#   block.
+# @yield See the potential parameters to the block above.
+# @return [void]
 def track_live_loop(loop_name, track = nil, start_muted: nil,
                     fade_in: false, fade_out: false,
                     midi: nil, port: nil, channel: nil,
@@ -204,7 +207,7 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
       args = [player.cycle, player.track, muted, was_muted, arg].take(block.arity)
 
       block_kwargs = { cycle: player.cycle, track: player.track, muted: muted, was_muted: was_muted, arg: arg }
-      block_kwargs = filter_kwargs_for_proc(block, block_kwargs)
+      block_kwargs = __filter_kwargs_for_proc(block, block_kwargs)
 
       res = block.call(*args, **block_kwargs)
     end
@@ -269,10 +272,14 @@ end
 alias tll track_live_loop
 
 
-# This method is identical to `track_live_loop` except when the `track`
-# parameter is nil. In that case, this method plays a single-slot rest CCTrack,
-# rather than a Track. That allows the block of this method to return a CCTrack
-# without causing an error.
+# This method is identical to {track_live_loop} except that it plays a dummy
+# {CCTrack} (rather than a {Track}) when the `track` parameter is nil. That
+# allows the block of this method to return a CCTrack without causing an error.
+#
+# If you are passing a {CCTrack} as the `track` parameter (rather than nil),
+# you can just use {track_live_loop} to play CCTracks.
+#
+# @return [void]
 def cc_track_live_loop(loop_name, track = nil, **kwargs)
   track_live_loop(loop_name, track || CCTrack.rest, **kwargs)
 end

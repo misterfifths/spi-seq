@@ -4,38 +4,58 @@ require "forwardable"
 require_relative "interval"
 require_relative "voicedchord"
 
-
-# Returns a VoicedChord for a named chord on the given root note, using a
-# particular voicing style and inversion. A shortcut for creating a Chord and
-# immediately voicing it.
+# @!group Music theory
+# Returns a {VoicedChord} for a named chord on the given root note, using a
+# particular voicing style and inversion. A shortcut for creating a {Chord} and
+# immediately {Chord#voice voicing} it.
+# @param root [MIDINote, String, Symbol, Integer] The root note of the chord.
+# @param name [Symbol, String] The name of the chord, a value accepted by
+#   {Chord.new}.
+# @param voicing [Symbol, String] The voicing style to use, a value accepted by
+#   {VoicedChord#initialize}.
+# @param invert [Integer] The number of inversions to apply to the chord before
+#   voicing it.
+# @return [VoicedChord]
+# @see Chord.new
+# @see VoicedChord#initialize
+# @see Chord#voice
 def C(root, name, voicing = :closed, invert: 0)
   Chord.new(name).voice(root, voicing, invert: invert)
 end
+# @!endgroup
 
 
-# A grouping of Intervals that represents a chord. Enumerable over its
-# Intervals (i.e., the `intervals` attribute), which will always be sorted
-# ascending and will contain no duplicates.
+# A grouping of Intervals that represents a chord.
+#
+# Sonic Pi already provides a class called `Chord`, so this class is aliased to
+# {Ch}. Alternativey, you can use the {C} function to create and voice a chord
+# in one shot.
+#
+# Enumerable over its {#intervals}, and has most of the read-only methods of
+# Array.
 #
 # Note that this class only represents the intervals; it does not track a root
 # note or inversions. Instances can be concretely expressed (i.e., converted to
-# actual MIDINotes) on a particular root note with the `voice` method, or by
-# creating a VoicedChord. Inversions also happen at voice-time.
+# actual {MIDINote}s) on a particular root note with the {#voice} method, or by
+# creating a {VoicedChord}. Inversions also happen at voice-time.
 #
-# This class is immutable. The various mutation methods it provides (e.g. `flat`
-# or `sus4`) return new Chord instances with different intervals.
-#
-# You can add intervals to a Chord with `add` or the `+` operator. This likewise
-# returns a new Chord.
+# **Chord objects are immutable.** The various mutation methods it provides
+# (e.g. {#flat}, {#sus4}, {#add}) return new Chord instances with different
+# intervals.
 class Chord
   include Enumerable
   extend Forwardable
 
+  # The {Interval}s this chord represents. These will always be sorted ascending
+  # by {Interval#size size} and will contain no duplicates.
+  # @return [Array<Interval>]
   attr_reader :intervals
 
   # each gets us all of Enumerable. The others are common methods on Array that
   # aren't in Enumerable.
-  def_delegators :@intervals, :each, :[], :slice, :length, :size, :last, :to_a, :to_ary, :values_at, :empty?
+  def_delegators :@intervals,
+                 :each, :[], :slice, :length, :size, :last, :to_a, :to_ary,
+                 :values_at, :empty?
 
 
   ABBREV_DEFS = {
@@ -107,6 +127,60 @@ class Chord
   private_constant :ABBREV_DEFS
 
   # Blow ABBREV_DEFS up into a 1-d map from names.
+
+  # A hash of the chord names supported by this class. The keys of this hash
+  # are valid values to pass to {#initialize}.
+  #
+  # Valid chord names:
+  # - `maj`: Major triad
+  # - `maj6`: Major 6th
+  # - `maj7`: Major 7th
+  # - `maj9`: Major 9th
+  # - `maj11`: Major 11th
+  # - `maj13`: Major 13th
+  # - `min`: Minor triad
+  # - `min6`: Minor 6th
+  # - `min7`: Minor 7th
+  # - `min9`: Minor 9th
+  # - `min11`: Minor 11th
+  # - `min13`: Minor 13th
+  # - `mM7`: Minor/major 7th
+  # - `mM9`: Minor/major 9th
+  # - `mM11`: Minor/major 11th
+  # - `mM13`: Minor/major 13th
+  # - `aug`: Augmented triad
+  # - `aug6`: Augmented 6th (German)
+  # - `fr6`: Augmented 6th (French)
+  # - `it6`: Augmented 6th (Italian)
+  # - `aug7`: Augmented 7th
+  # - `aug9`: Augmented 9th
+  # - `aug11`: Augmented 11th
+  # - `aug13`: Augmented 13th
+  # - `augM7`: Augmented major 7th
+  # - `augM9`: Augmented major 9th
+  # - `augM11`: Augmented major 11th
+  # - `augM13`: Augmented major 13th
+  # - `dim`: Diminished triad
+  # - `dim7`: Diminished 7th
+  # - `dim9`: Diminished 9th
+  # - `dim11`: Diminished 11th
+  # - `dim13`: Diminished 13th
+  # - `halfdim7`: Half-diminished 7th
+  # - `halfdim9`: Half-diminished 9th
+  # - `halfdim11`: Half-diminished 11th
+  # - `halfdim13`: Half-diminished 13th
+  # - `dom`: Dominant triad
+  # - `dompar`: Dominant parallel triad
+  # - `dom7`: Dominant 7th
+  # - `dom9`: Dominant 9th
+  # - `dom11`: Dominant 11th
+  # - `dom13`: Dominant 13th
+  # - `power`: Power chord (root + fifth)
+  # - `power2`: Power chord spanning two octaves
+  #
+  # Note that there are aliases for many of the above names; print the result
+  # of `Chord::ABBREVS.keys` to see all possible names. This class understands
+  # all of the same chord names as Sonic Pi's `chord` function and more.
   ABBREVS = {}  # rubocop:disable Style/MutableConstant
   ABBREV_DEFS.each do |names, val|
     names.each { |name| ABBREVS[name] = val }
@@ -114,16 +188,22 @@ class Chord
   ABBREVS.freeze
 
 
-  # Creates a new Chord. Takes two options for an argument:
-  # 1. An abbreviated name of a chord, as found in the keys of the ABBREVS hash.
-  # 2. An Enumerable of Intervals, symbols, strings, or numbers that represent
-  #    the intervals that define the chord. Symbols and strings must be valid
-  #    abbreviated names of intervals. Numbers will be converted to integers and
-  #    interpreted as major or perfect interval numbers (e.g. 5 will become a
-  #    perfect fifth).
+  # Creates a new Chord. The argument may be one of two things:
+  # 1. An abbreviated name of a chord (Symbol or String) as found in the keys of
+  #    the {.ABBREVS} hash. This class understands all of the same chord names
+  #    as Sonic Pi's `chord` function and more.
+  # 2. An array of {Interval}s, symbols, strings, or numbers that represent the
+  #    intervals that define the chord. Non-Interval values must be things
+  #    understood by {Interval.new}; they will be passed to it for conversion.
+  #
+  # To create and immediately {#voice voice} a chord, you can use the {C}
+  # helper function.
   #
   # Note that you can also create Chords using the class methods named after
-  # common chords, such as `major_triad` or `dom_ninth`.
+  # common chords, such as {.major_triad} or {.dom_ninth}.
+  # @param intervals_or_name [Symbol, String, Array<Interval, Symbol, String,
+  #   Integer>]
+  # @return [Chord]
   def self.new(intervals_or_name)
     if intervals_or_name.is_a?(Symbol) || intervals_or_name.is_a?(String)
       abbrev_val = ABBREVS[intervals_or_name.to_sym]
@@ -136,7 +216,7 @@ class Chord
     super
   end
 
-  def initialize(intervals)
+  private def initialize(intervals)
     @intervals = intervals.to_a.dup.map! do |i|
       case i
       when Interval
@@ -153,19 +233,32 @@ class Chord
   end
 
 
-  # Creates a new VoicedChord on a root note, using the given voicing style and
-  # inversion.
+  # Creates a new {VoicedChord} from this chord.
+  # @param root [MIDINote, String, Symbol, Integer] The root note upon which to
+  #   voice the chord. Must be a {MIDINote} or something understood by
+  #   {MIDINote.new}.
+  # @param voicing [Symbol] The voicing style to use. See
+  #   {VoicedChord#initialize} for potential values.
+  # @param invert [Integer] How many times to invert the chord's intervals
+  #   before applying the `voicing`.
+  # @return [VoicedChord]
+  # @see VoicedChord#initialize
+  # @see C
   def voice(root, voicing = :closed, invert: 0)
     VoicedChord.new(self, root, voicing, inversion: invert)
   end
 
 
   # Returns a new Chord with the given interval(s) added. The argument must be:
-  # 1. Another Chord, whose intervals will all be added.
-  # 2. A symbol or string, which is taken as an abbreviated name of an Interval.
-  # 3. A number, which is taken as the number of a major or perfect Interval.
-  # 4. An enumerable of symbols, strings, or numbers, each element of which will
-  #    be treated as in cases 2 and 3.
+  # 1. An {Interval}.
+  # 2. Another Chord, whose intervals will all be added.
+  # 3. A symbol or string, which is taken as an abbreviated name of an
+  #    {Interval}. See {Interval.new} for details on abbreviated interval names.
+  # 4. A number, which is taken as the number of a major or perfect {Interval}.
+  # 5. An enumerable of Intervals, symbols, strings, or numbers, each element of
+  #    which will be treated as in cases 2 - 5.
+  # @param other
+  # @return [Chord]
   def append(other)
     if other.is_a?(Chord)
       other = other.intervals
@@ -195,11 +288,13 @@ class Chord
 
   # Returns a new Chord with the given interval removed. The argument must be
   # one of:
-  # 1. An Interval instance.
+  # 1. An {Interval} instance.
   # 2. A String or Symbol, which must be the abbreviated name of an Interval.
   # 3. A number, which is taken as the number of a major or perfect Interval.
   #
   # Raises an ArgumentError if the chord does not contain the given interval.
+  # @param interval [Interval, String, Symbol, Integer]
+  # @return [Chord]
   def remove(interval)
     interval = Interval.new(number: interval) if interval.is_a?(Numeric) && !interval.is_a?(Interval)
     i = @intervals.find_index(interval)
@@ -215,6 +310,9 @@ class Chord
   # Returns a new chord with the (major or minor) third replaced by the given
   # interval. Raises an ArgumentError if the chord has no third, or if it has
   # both a major and a minor third.
+  # @param replacement [Interval, String, Symbol, Integer] The replacement
+  #   {Interval}, or a value understood by {Interval.new}.
+  # @return [Chord]
   private def suspend(replacement)
     maj3_idx = @intervals.find_index(:M3)
     min3_idx = @intervals.find_index(:m3)
@@ -231,6 +329,7 @@ class Chord
   # Returns a new chord with the (major or minor) third replaced with a perfect
   # fourth. Raises an ArgumentError if the chord has no third, or if it has
   # both a major and a minor third.
+  # @return [Chord]
   def sus4
     suspend(:P4)
   end
@@ -240,6 +339,7 @@ class Chord
   # Returns a new chord with the (major or minor) third replaced with a major
   # second. Raises an ArgumentError if the chord has no third, or if it has
   # both a major and a minor third.
+  # @return [Chord]
   def sus2
     suspend(:M2)
   end
@@ -247,6 +347,7 @@ class Chord
   # Returns a new chord with the (major or minor) third replaced with a major
   # fourth, and an added major ninth. Raises an ArgumentError if the chord has
   # no third, or if it has both a major and a minor third.
+  # @return [Chord]
   def sus9
     sus4 + :M9
   end
@@ -272,6 +373,9 @@ class Chord
   # 3. A number, which is taken as the number of a major or perfect Interval.
   #
   # Raises an ArgumentError if the chord does not contain the given interval.
+  #
+  # @param interval [Interval, String, Symbol, Integer]
+  # @return [Chord]
   def flat(interval)
     with_altered_interval(interval, -1)
   end
@@ -283,12 +387,16 @@ class Chord
   # 3. A number, which is taken as the number of a major or perfect Interval.
   #
   # Raises an ArgumentError if the chord does not contain the given interval.
+  #
+  # @param interval [Interval, String, Symbol, Integer]
+  # @return [Chord]
   def sharp(interval)
     with_altered_interval(interval, 1)
   end
 
   # Returns a new Chord with the major third flattened to a minor. Raises an
   # ArgumentError if the chord does not contain a major third.
+  # @return [Chord]
   def flat_three
     flat(3)
   end
@@ -297,6 +405,7 @@ class Chord
 
   # Returns a new Chord with the perfect fifth flattened to a diminished fifth.
   # Raises an ArgumentError if the chord does not contain a perfect fifth.
+  # @return [Chord]
   def flat_five
     flat(5)
   end
@@ -305,6 +414,7 @@ class Chord
 
   # Returns a new Chord with the major ninth flattened to a minor. Raises an
   # ArgumentError if the chord does not contain a major ninth.
+  # @return [Chord]
   def flat_nine
     flat(9)
   end
@@ -313,6 +423,7 @@ class Chord
 
   # Returns a new Chord with the major third sharpened to an augmented third.
   # Raises an ArgumentError if the chord does not contain a major third.
+  # @return [Chord]
   def sharp_three
     sharp(3)
   end
@@ -321,6 +432,7 @@ class Chord
 
   # Returns a new Chord with the perfect fifth sharpened to an augmented fifth.
   # Raises an ArgumentError if the chord does not contain a perfect fifth.
+  # @return [Chord]
   def sharp_five
     sharp(5)
   end
@@ -329,6 +441,7 @@ class Chord
 
   # Returns a new Chord with the major ninth sharpened to an augmented ninth.
   # Raises an ArgumentError if the chord does not contain a major ninth.
+  # @return [Chord]
   def sharp_nine
     sharp(9)
   end
@@ -336,80 +449,115 @@ class Chord
   alias sharp9 sharp_nine
 
 
+  # Returns a major triad chord.
+  # @return [Chord]
   def self.major_triad
     new(%i[P1 M3 P5])
   end
 
+  # Returns a major 6th chord.
+  # @return [Chord]
   def self.major_sixth
     major_triad + :M6
   end
 
+  # Returns a major 7th chord.
+  # @return [Chord]
   def self.major_seventh
     major_triad + :M7
   end
 
+  # Returns a major 9th chord.
+  # @return [Chord]
   def self.major_ninth
     major_seventh + :M9
   end
 
+  # Returns a major 11th chord.
+  # @return [Chord]
   def self.major_eleventh
     major_ninth + :P11
   end
 
+  # Returns a major 13th chord.
+  # @return [Chord]
   def self.major_thirteenth
     major_eleventh + :M13
   end
 
 
+  # Returns a minor triad chord.
+  # @return [Chord]
   def self.minor_triad
     new(%i[P1 m3 P5])
   end
 
+  # Returns a minor 6th chord.
+  # @return [Chord]
   def self.minor_sixth
     minor_triad + :M6
   end
 
+  # Returns a minor 7th chord.
+  # @return [Chord]
   def self.minor_seventh
     minor_triad + :m7
   end
 
+  # Returns a minor 9th chord.
+  # @return [Chord]
   def self.minor_ninth
     minor_seventh + :M9
   end
 
+  # Returns a minor 11th chord.
+  # @return [Chord]
   def self.minor_eleventh
     minor_ninth + :P11
   end
 
+  # Returns a minor 13th chord.
+  # @return [Chord]
   def self.minor_thirteenth
     minor_eleventh + :M13
   end
 
 
+  # Returns a minor/major 7th chord.
+  # @return [Chord]
   def self.minor_major_seventh
     major_seventh.flat_three
   end
 
+  # Returns a minor/major 9th chord.
+  # @return [Chord]
   def self.minor_major_ninth
     major_ninth.flat_three
   end
 
+  # Returns a minor/major 11th chord.
+  # @return [Chord]
   def self.minor_major_eleventh
     major_eleventh.flat_three
   end
 
+  # Returns a minor/major 13th chord.
+  # @return [Chord]
   def self.minor_major_thirteenth
     major_thirteenth.flat_three
   end
 
 
+  # Returns an augmented triad chord.
+  # @return [Chord]
   def self.aug_triad
     new(%i[P1 M3 A5])
   end
 
-  # Returns a new Chord representing an augmented sixth. The argument specifies
-  # the desired variation and may be one of :ger (the default), :fr, or :it for
-  # the German, French, or Italian versions, respectively.
+  # Returns an augmented sixth chord.
+  # @param variation [:ger, :fr, :it] The desired variation of the 6th, either
+  #   German, French, or Italian.
+  # @return [Chord]
   def self.aug_sixth(variation = :ger)
     case variation
     when :ger
@@ -423,108 +571,158 @@ class Chord
     end
   end
 
+  # Returns an augmented 7th chord.
+  # @return [Chord]
   def self.aug_seventh
     aug_triad + :m7
   end
 
+  # Returns an augmented 9th chord.
+  # @return [Chord]
   def self.aug_ninth
     aug_seventh + :M9
   end
 
+  # Returns an augmented 11th chord.
+  # @return [Chord]
   def self.aug_eleventh
     aug_ninth + :P11
   end
 
+  # Returns an augmented 13th chord.
+  # @return [Chord]
   def self.aug_thirteenth
     aug_eleventh + :M13
   end
 
 
+  # Returns an augmented major 7th chord.
+  # @return [Chord]
   def self.aug_major_seventh
     major_seventh.sharp_five
   end
 
+  # Returns an augmented major 9th chord.
+  # @return [Chord]
   def self.aug_major_ninth
     major_ninth.sharp_five
   end
 
+  # Returns an augmented major 11th chord.
+  # @return [Chord]
   def self.aug_major_eleventh
     major_eleventh.sharp_five
   end
 
+  # Returns an augmented major 13th chord.
+  # @return [Chord]
   def self.aug_major_thirteenth
     major_thirteenth.sharp_five
   end
 
 
+  # Returns a diminished triad chord.
+  # @return [Chord]
   def self.dim_triad
     new(%i[P1 m3 d5])
   end
 
+  # Returns a diminished 6th chord.
+  # @return [Chord]
   def self.dim_sixth
     dim_triad + :m6
   end
 
+  # Returns a diminished 7th chord.
+  # @return [Chord]
   def self.dim_seventh
     dim_triad + :d7
   end
 
+  # Returns a diminished 9th chord.
+  # @return [Chord]
   def self.dim_ninth
     dim_seventh + :M9
   end
 
+  # Returns a diminished 11th chord.
+  # @return [Chord]
   def self.dim_eleventh
     dim_ninth + :P11
   end
 
+  # Returns a diminished 13th chord.
+  # @return [Chord]
   def self.dim_thirteenth
     dim_eleventh + :M13
   end
 
 
+  # Returns a half-diminished seventh chord.
+  # @return [Chord]
   def self.halfdim_seventh
     minor_seventh.flat_five
   end
 
+  # Returns a half-diminished 9th chord.
+  # @return [Chord]
   def self.halfdim_ninth
     minor_ninth.flat_five
   end
 
+  # Returns a half-diminished 11th chord.
+  # @return [Chord]
   def self.halfdim_eleventh
     minor_eleventh.flat_five
   end
 
+  # Returns a half-diminished 13th chord.
+  # @return [Chord]
   def self.halfdim_thirteenth
     minor_thirteenth.flat_five
   end
 
 
+  # Returns a dominant triad chord.
+  # @return [Chord]
   def self.dom_triad
     major_triad
   end
 
+  # Returns a dominant parallel triad chord.
+  # @return [Chord]
   def self.dom_parallel
     dom_triad.flat_three
   end
 
+  # Returns a dominant 7th chord.
+  # @return [Chord]
   def self.dom_seventh
     dom_triad + :m7
   end
 
+  # Returns a dominant 9th chord.
+  # @return [Chord]
   def self.dom_ninth
     dom_seventh + :M9
   end
 
+  # Returns a dominant 11th chord.
+  # @return [Chord]
   def self.dom_eleventh
     dom_ninth + :P11
   end
 
+  # Returns a dominant 13th chord.
+  # @return [Chord]
   def self.dom_thirteenth
     dom_eleventh + :M13
   end
 
 
-  # Returns a new fifth or "power" chord spanning the given number of octaves.
+  # Returns fifth or "power" chord spanning the given number of octaves.
+  # @param count [Integer]
+  # @return [Chord]
   def self.fifth(count = 1)
     intervals = [:P1]
     count.times { |i| intervals.append(Interval.new(size: 7 * (i + 1))) }
@@ -532,11 +730,14 @@ class Chord
   end
 
 
+  # Returns a string representation of the chord.
+  # @return [String]
   def to_s
     "<Chord #{@intervals}>"
   end
 end
 
 
-# SonicPi has a Chord class which takes precedence in the environment. Pity.
+# An alias for the {Chord} class since Sonic Pi already has a class with that
+# name.
 Ch = Chord

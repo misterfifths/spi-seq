@@ -6,20 +6,44 @@ require_relative "interval"
 require_relative "midinote"
 
 
-# A Chord that has been voiced on a particular root note in a particular style
-# and inversion. Most easily created with the `voice` method on a Chord.
-# Enumerable over its MIDINotes.
+# A {Chord} that has been voiced on a particular root note in a particular style
+# and inversion. Most easily created with {Chord#voice} or the global {C}
+# helper.
 #
-# Voicing styles apply after the chord's intervals are inverted.
+# Enumerable over its {#notes}, and has most of the read-only methods of Array.
+#
+# VoicedChord instances are immutable.
 class VoicedChord
   include Enumerable
   extend Forwardable
 
-  attr_reader :chord, :root, :inversion, :voicing, :notes
+  # The {Chord} that this instance voices.
+  # @return [Chord]
+  attr_reader :chord
+
+  # The root note upon which this instance voices {#chord}.
+  # @return [MIDINote]
+  attr_reader :root
+
+  # The number of inversions applied to {#chord}'s intervals before applying a
+  # voicing style.
+  # @return [Integer]
+  attr_reader :inversion
+
+  # The name of the voicing style applied to {#chord} after inversion. One of
+  # the keys of the {VOICINGS} hash.
+  # @return [Symbol]
+  attr_reader :voicing
+
+  # The notes resulting from inverting and voicing {#chord}.
+  # @return [Array<MIDINote>]
+  attr_reader :notes
 
   # each gets us all of Enumerable. The others are common methods on Array that
   # aren't in Enumerable.
-  def_delegators :@notes, :each, :[], :slice, :length, :size, :last, :to_a, :to_ary, :values_at, :empty?
+  def_delegators :@notes,
+                 :each, :[], :slice, :length, :size, :last, :to_a, :to_ary,
+                 :values_at, :empty?
 
 
   VOICING_DEFS = {
@@ -66,6 +90,42 @@ class VoicedChord
   private_constant :VOICING_DEFS
 
   # Blow VOICING_DEFS up into a 1-d map from names.
+
+  # A hash of the voicing styles supported by this class. The keys of this hash
+  # are the valid values to pass to {#initialize}.
+  #
+  # Valid voicing styles:
+  # - `:closed`: The simplest voicing: uses the intervals in the chord as-is.
+  # - `:rootless`: The same as closed voicing, but omits the root note.
+  # - `:shell`: Only the root, thirds, and seventh intervals are included.
+  # - `:drop2`: Applies a closed voicing, then drops the 2nd highest note in the
+  #   result an octave.
+  # - `:drop3`: Same as drop2, but drops the third highest note.
+  # - `:drop23`: Combines drop2 and drop3.
+  # - `:drop24`: drop2, and also drops the 4th highest note.
+  # - `:drop34`: drop3, and also drops the 4th highest note.
+  # - `:drop4`: Like drop2, but only drops the 4th highest note.
+  # - `:double_root`: Applies a closed voicing, then adds a note that is an
+  #   octave below the root note.
+  # - `:double_root_up`: Like double_root, but adds the root note an octave up.
+  # - `:double_bass`: Applies a closed voicing, then adds a note that is an
+  #   octave below the lowest note in the result. This will be identical to
+  #   double_root unless there is an inversion.
+  # - `:double_bass_up`: Like double_bass, but adds the new note an octave up.
+  # - `:double3`: Applies a closed voicing, then, if there is a third in the
+  #   chord, adds a note that is an octave below that.
+  # - `:double3_up`: Same as double 3, but adds the new note an octave up.
+  # - `:double5`: Same as double3, but looks for a fifth in the chord.
+  # - `:double5_up`: Same as double3_up, but looks for a fifth in the chord.
+  # - `:open`: Applies a closed voicing, then raises the second-lowest note an
+  #   octave.
+  # - `:open2`: Applies a closed voicing, then raises the lowest note an octave
+  #   and lowers the third lowest note an octave.
+  # - `:open3`: Applies a closed voicing, then lowers the second-lowest note an
+  #   octave.
+  #
+  # (Note that there are aliases for many of the above styles; print the result
+  # of `VoicedChord::VOICINGS.keys` to see all possible names.)
   VOICINGS = {}  # rubocop:disable Style/MutableConstant
   VOICING_DEFS.each do |names, val|
     names.each { |name| VOICINGS[name] = val }
@@ -78,10 +138,22 @@ class VoicedChord
   private_constant :SHELL_INTERVALS
 
 
-  # Creates a new VoicedChord instance for the given chord on a root note. The
-  # voicing argument must be the name of a voicing style, as found in the keys
-  # of the VOICINGS hash. inversion specifies how to invert the chord's
-  # intervals before applying the voicing.
+  # Creates a new VoicedChord instance.
+  #
+  # It is probably more convenient to create a {Chord} and call {Chord#voice
+  # voice} on it, rather than using this initializer. Or, to create and
+  # immediately voice a chord, you can use the {C} helper function.
+  #
+  # @param chord [Chord] The chord this instance will voice.
+  # @param root [MIDINote, String, Symbol, Integer] The root note upon which to
+  #   voice the chord. Must be a {MIDINote} or something understood by
+  #   {MIDINote.new}.
+  # @param voicing [Symbol] The voicing style to use. Valid values are the keys
+  #   of the {.VOICINGS} hash.
+  # @param inversion [Integer] How many times to invert `chord`'s intervals
+  #   before applying the `voicing`.
+  # @see Chord#voice
+  # @see C
   def initialize(chord, root, voicing = :closed, inversion: 0)
     @chord = chord
     @root = MIDINote.new(root)

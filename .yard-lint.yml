@@ -1,0 +1,16 @@
+AllValidators:
+  Exclude:
+    - 'scratch/*'
+    - 'tests/*'
+    - 'examples/*'
+
+  YardOptions: []
+
+Tags/InformalNotation:
+  Enabled: false
+
+Tags/Order:
+  Enabled: false
+
+Tags/TagTypePosition:
+  Enabled: false

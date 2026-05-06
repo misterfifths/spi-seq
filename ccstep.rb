@@ -2,36 +2,56 @@
 
 require_relative "stepbase"
 
-
-# An alias for `CCStep.new`.
+# @!group Steps and tracks
+# An alias for {CCStep#initialize CCStep.new}.
+# @return [CCStep]
 def CC(*args, **kwargs)
   CCStep.new(*args, **kwargs)
 end
+# @!endgroup
 
 
 # A CCStep represents a sequenceable MIDI CC event which can appear in slots in
-# the grid of a CCTrack. See the StepBase documentation for details about steps
-# in general, and their probability and accumulation mechanics.
+# the grid of a {CCTrack}. See the {StepBase} documentation for details about
+# steps in general, and their probability and accumulation mechanics.
+#
+# Accumulation on a CCStep applies an offset to the {#value} that will be sent
+# for the CC.
+#
+# Note that **CCSteps are immutable**. The mutation methods provided here, like
+# {#with_value}, return new CCSteps that have all the same attributes as the
+# receiver, with just the described change.
 class CCStep < StepBase
-  attr_reader :cc, :value
+  # The CC number for the event this step represents, 0 - 127 inclusive.
+  # @return [Integer]
+  attr_reader :cc
   alias cc_number cc
   alias number cc
   alias num cc
+
+  # The value to send for the {#cc} when this step triggers, subject to
+  # accumulation. The value is in 0 - 127, inclusive.
+  # @return [Integer]
+  attr_reader :value
   alias val value
 
 
   # Constructs a CCStep.
   #
-  # `cc` is the MIDI CC number which will be effected, 0 - 127 inclusive. It is
-  # an error to pass a value outside of that range.
+  # `CCStep.new` is aliased to {CC} for convenience.
   #
-  # `value` is the MIDI value to which the CC will be set, 0 - 127 inclusive.
-  # Values outside of that range will be clamped to the nearest extreme.
+  # Accumulation on a CCStep manifests as a shift in the {#value} by the
+  # accumulated number.
   #
-  # Additional parameters are as described in the StepBase initializer.
+  # You may find it more convenient to set the accumulation parameters after
+  # constructing a step with the {#accum} method.
   #
-  # Accumulation on a CCStep manifests as a shift in the CC value by the
-  # accumulated value.
+  # @param (see StepBase#initialize)
+  # @param cc [Integer] The CC number for this event; see {#cc}. It is an error
+  #   to pass a value outside of 0 - 127 inclusive.
+  # @param value [Integer] The value for the CC event (subject to accumulation).
+  #   Values outside of 0 - 127 (inclusive) will be clamped to the nearest
+  #   extreme.
   def initialize(cc, value, prob: nil,
                  accum_delta: 0, accum_max: 12, accum_min: 0, accum_mode: :wrap, accum_prob: nil)
     @cc = cc.to_i
@@ -48,6 +68,10 @@ class CCStep < StepBase
           accum_min: accum_min, accum_mode: accum_mode, accum_prob: accum_prob)
   end
 
+  # Returns a new CCStep with the given {#cc CC number}. It is an error to pass
+  # a value outside of 0 - 127 inclusive.
+  # @param new_cc [Integer]
+  # @return [CCStep]
   def with_cc(new_cc)
     mutate(cc: new_cc)
   end
@@ -56,14 +80,22 @@ class CCStep < StepBase
   alias with_number with_cc
   alias with_num with_cc
 
+  # Returns a new CCStep with the given {#value}. Values outside of 0 - 127
+  # will be clamped.
+  # @param new_value [Integer]
+  # @return [CCStep]
   def with_value(new_value)
     mutate(value: new_value)
   end
 
   alias with_val with_value
 
-  def shift_value(offset)
-    mutate(value: @value + offset)
+  # Returns a new CCStep with a value equal to {#value} plus `shift`. If the
+  # resulting value is outside of 0 - 127, it will be clamped.
+  # @param shift [Integer]
+  # @return [CCStep]
+  def shift_value(shift)
+    mutate(value: @value + shift)
   end
 
   alias shift_val shift_value

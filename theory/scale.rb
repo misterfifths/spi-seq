@@ -8,26 +8,61 @@ require_relative "midinote"
 # TODO: support interval-ish notation to `degree`, add back Arp.arp_degrees
 
 
-# Creates a new scale with the given name, starting on the given tonic, and
-# spanning a certain number of octaves. Shortcut for Scale.new.
-def SC(tonic, name, num_octaves: 1, clamp_to_midi: false)
-  Scale.new(tonic, name, num_octaves: num_octaves, clamp_to_midi: clamp_to_midi)
+# @!group Music theory
+# An alias for {Scale#initialize Scale.new}.
+# @return [Scale]
+def SC(*args, **kwargs)
+  Scale.new(*args, **kwargs)
 end
+# @!endgroup
 
 
-# A grouping of notes that represents some number of octaves of a scale,
-# starting on a particular root note. Enumerable over its notes.
+# A grouping of notes that represents some {#num_octaves number of octaves} of a
+# {#name scale}, starting on a particular {#tonic root note}. Enumerable over
+# its {#notes}, and has most of the read-only methods of Array.
+#
+# If you would like a scale that covers the full MIDI range, see {.full_scale}.
+# Such a scale is useful for, e.g., {Track#scale}.
+#
+# Scales are immutable.
+#
+# Sonic Pi already provides a class called `Scale`, so this class is aliased to
+# {Sc}. Alternatively, you can use the {SC} function as an alias for
+# {#initialize Scale.new}.
 class Scale
   include Enumerable
   extend Forwardable
 
-  attr_reader :name, :tonic, :num_octaves, :notes, :clamp_to_midi
+  # The name of the scale, one of the keys in {SCALES}.
+  # @return [Symbol]
+  attr_reader :name
+
+  # The root note of the scale.
+  # @return [MIDINote]
+  attr_reader :tonic
+
+  # The number of octaves included in this instance.
+  # @return [Integer]
+  attr_reader :num_octaves
+
+  # The notes of the scale held by this instance, consisting of {#num_octaves}
+  # octaves along the scale starting at {#tonic}.
+  # @return [Array<MIDINote>]
+  attr_reader :notes
+
+  # Whether the notes held by this instance are clamped to the MIDI range (0 -
+  # 127).
+  # @return [Boolean]
+  attr_reader :clamp_to_midi
 
   # each gets us all of Enumerable. The others are common methods on Array that
   # aren't in Enumerable.
-  def_delegators :@notes, :each, :[], :slice, :length, :size, :last, :to_a, :to_ary, :values_at, :empty?
+  def_delegators :@notes,
+                 :each, :[], :slice, :length, :size, :last, :to_a, :to_ary,
+                 :values_at, :empty?
 
-
+  # A hash of the scales supported by this class. The keys of this hash are the
+  # valid values to pass to {#initialize}.
   SCALES = lambda do
     # These scale definitions are taken from Overtone,
     # https://github.com/overtone/overtone
@@ -117,11 +152,19 @@ class Scale
   end.call
 
 
-  # Creates a new Scale with the given name, starting on the given tonic. The
-  # scale will span `num_octaves` many octaves. If `clamp_to_midi` is true,
-  # only notes in the MIDI range of 0 - 127 will be included in the Scale.
+  # Creates a new Scale.
   #
-  # Known scale names can be found as the keys in the SCALES hash.
+  # `Scale.new` is aliased to {SC} for convenience.
+  #
+  # @param tonic [MIDINote, String, Symbol, Integer] The root note of the scale.
+  #   A {MIDINote} or one of the values understood by {MIDINote.new}.
+  # @param name [Symbol, String] The name of the scale to use, one of the keys
+  #   of the {.SCALES} hash. This class understands all of the same scale names
+  #   as Sonic Pi's `scale` function and more.
+  # @param num_octaves [Integer] The resulting instance will have notes
+  #   belonging to this many octaves of the scale.
+  # @param clamp_to_midi [Boolean] If true, only notes in the MIDI range of 0 -
+  #   127 will be included.
   def initialize(tonic, name, num_octaves: 1, clamp_to_midi: false)
     @tonic = MIDINote.new(tonic)
     @name = name.to_sym
@@ -143,6 +186,12 @@ class Scale
 
   # Returns a Scale that covers the full set of MIDI notes (0-127) that belong
   # to the given scale with the given tonic.
+  # @param tonic [String, Symbol] The pitch class for the root note of the
+  #   scale, e.g. `:c`.
+  # @param scale_name [Symbol, String] The name of the scale to use, one of the
+  #   keys of the {.SCALES} hash.
+  # @return [Scale]
+  # @see Track#scale
   def self.full_scale(tonic, scale_name)
     @full_scale_cache ||= {}
 
@@ -165,6 +214,9 @@ class Scale
   # `relative_tonic`. Raises an ArgumentError if `relative_tonic` is not in the
   # scale or if the scale does not contain a note that is `steps` far away from
   # it.
+  # @param relative_tonic [MIDINote, String, Symbol, Integer]
+  # @param steps [Integer]
+  # @return [MIDINote]
   def note_at_step(relative_tonic, steps)
     tonic_idx = @notes.index(relative_tonic)
     raise ArgumentError, "scale does not contain #{relative_tonic}" if tonic_idx.nil?
@@ -182,6 +234,10 @@ class Scale
   # `n` may be negative, which can be useful if `relative_tonic` is not the
   # tonic of the scale. A degree of -1 is taken to be one note below the tonic
   # on the scale.
+  #
+  # @param n [Integer]
+  # @param relative_tonic [MIDINote, String, Symbol, Integer, nil]
+  # @return [MIDINote]
   def degree(n, relative_tonic: nil)
     raise RangeError, "degree 0 is undefined" if n == 0
 
@@ -192,6 +248,9 @@ class Scale
 
   # Returns the number of steps on the scale between the given notes. Raises an
   # ArgumentError if either note is not in the scale.
+  # @param relative_tonic [MIDINote, String, Symbol, Integer]
+  # @param note [MIDINote, String, Symbol, Integer]
+  # @return [Integer]
   def steps_between(relative_tonic, note)
     tonic_idx = @notes.index(relative_tonic)
     raise ArgumentError, "scale does not contain #{relative_tonic}" if tonic_idx.nil?
@@ -210,6 +269,10 @@ class Scale
   # Note that the returned value may be negative if `relative_tonic` is not the
   # tonic of the scale, and `note` falls before it. The note one below the tonic
   # has degree -1.
+  #
+  # @param note [MIDINote, String, Symbol, Integer]
+  # @param relative_tonic [MIDINote, String, Symbol, Integer, nil]
+  # @return [Integer]
   def degree_of(note, relative_tonic: nil)
     degree = steps_between(relative_tonic || @tonic, note)
     degree += 1 if degree >= 0
@@ -217,19 +280,24 @@ class Scale
   end
 
 
-  # Returns a new note, snapped upward to the nearest note in this scale. `note`
-  # must be a note representation of some sort (symbol, string, a MIDI note
-  # number, or a MIDINote).
+  # Snaps the given note upwards to the nearest note in this scale.
+  # @param note [MIDINote, String, Symbol, Integer] The {MIDINote} to snap, or
+  #   a value understood by {MIDINote.new}.
+  # @return [MIDINote]
+  # @see MIDINote#snap
   def snap(note)
     MIDINote.new(note).snap(self)
   end
 
-
+  # A string representation of this Scale.
+  # @return [String]
   def to_s
     clamp_str = @clamp_to_midi ? ", clamped" : ""
     "<Scale #{@tonic} #{@name}, #{@num_octaves} octaves#{clamp_str}>"
   end
 
+  # A string of the Ruby code representation of this scale.
+  # @return [String]
   def repr
     return "Scale.full_scale(:#{@tonic.pitch_class}, :#{@name})" if @tonic.octave == -2 && @num_octaves == 12 && @clamp_to_midi
 
@@ -247,5 +315,6 @@ class Scale
 end
 
 
-# SonicPi has a Scale class which takes precedence in the environment.
+# An alias for the {Scale} class since Sonic Pi already has a class with that
+# name.
 Sc = Scale

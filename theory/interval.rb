@@ -2,11 +2,11 @@
 
 # TODO: inversion?
 
-# An interval between two notes, represented both by its traditional number and
-# quality, and its size (i.e. the number of semitones).
+# An interval between two notes, represented both by its traditional {#number}
+# and {#quality}, and its {#size} (i.e. the number of semitones).
 #
 # Intervals are instances of Numeric, and their value is the number of semitones
-# they represent. That means you can add Intervals directly to MIDINotes to
+# they represent. That means you can add Intervals directly to {MIDINote}s to
 # obtain the note that is an interval away from another.
 #
 # Note that performing arithmetic on Intervals results in instances with a
@@ -16,18 +16,40 @@
 #
 # Intervals that span more than one octave (i.e. those with a number > 8, or
 # semitones > 12) are called compound. You can decompose such intervals into
-# a number of octaves (`octave_span`) and the simple interval they represent on
-# top of that number of octaves (`simple_interval`). When possible,
-# simple_interval will have the same quality as the compound interval it belongs
-# to.
+# a number of octaves ({#octave_span}) and the simple interval they represent on
+# top of that number of octaves ({#simple_interval}). When possible,
+# `simple_interval` will have the same quality as the compound interval it
+# belongs to.
 #
 # Intervals can be compared to:
 # - Other Interval instances
 # - Other numbers, which will be treated as a number of semitones.
 # - Symbols or strings, which will be treated as abbreviated interval names.
 class Interval < Numeric
-  attr_reader :number, :quality, :size, :octave_span, :simple_interval
+  # The traditional number for this interval.
+  # @return [Integer]
+  attr_reader :number
+
+  # The quality of this interval.
+  # @return [:perfect, :major, :minor, :aug, :dim]
+  attr_reader :quality
+
+  # The number of semitones represented by this interval.
+  # @return [Integer]
+  attr_reader :size
   alias semitones size
+
+  # The number of octaves this interval spans. Intervals that span more than one
+  # octave are compound.
+  # @return [Integer]
+  attr_reader :octave_span
+
+  # If this interval spans more than one octave, this is the interval that
+  # remains after those octaves. E.g. for a M10 interval, which is 16 semitones,
+  # this value is a M3, accounting for the 4 additional semitones after the
+  # octave. If this interval is not compound, this is just `self`.
+  # @return [Interval]
+  attr_reader :simple_interval
 
   # semitones -> { quality -> number }
   # Order in the value hashes is significant; when making an Interval via
@@ -103,24 +125,29 @@ class Interval < Numeric
 
   # Creates a new Interval. The arguments must be one of the following:
   # - A symbol or string, which is taken as the abbreviated name of an interval.
-  # - The number: keyword argument, optionally with quality:. This returns an
-  #   Interval with the given number and quality, or the default quality (major
-  #   or perfect) for that interval number if quality is omitted.
-  # - The size: keyword argument, optionally with quality:. size is the number
-  #   of semitones for the interval, and quality specifies how that size should
-  #   be interpreted (thus determining the interval number). If quality is
-  #   omitted, a default is chosen (major/minor/perfect when possible, or
-  #   diminished for a size of 6).
+  # - The `number` keyword argument, optionally with `quality`. This returns
+  #   an Interval with the given number and quality, or the default quality
+  #   (major or perfect) for that interval number if quality is omitted.
+  # - The `size` keyword argument, optionally with `quality`. `size` is the
+  #   number of semitones for the interval, and `quality` specifies how that
+  #   size should be interpreted (thus determining the interval number). If
+  #   `quality` is omitted, a default is chosen (major/minor/perfect when
+  #   possible, or diminished for a size of 6).
   #
   # It is an error to provide a keyword argument with a symbol/string, or to
-  # provide both the number: and size: keyword arguments simultaneously.
+  # provide both the `number` and `size` keyword arguments simultaneously.
   #
   # Interval abbreviations are a number preceded by d, m, M, P, or A for
   # diminished, minor, major, perfect and augmented, respectively.
   #
-  # If given, quality must be one of :major, :minor, :perfect, :aug, or :dim.
-  # Note that not every combination number/size and quality is valid - e.g.
-  # there is no such thing as a major 5th interval.
+  # If given, quality must be one of `:major`, `:minor`, `:perfect`, `:aug`, or
+  # `:dim`. Note that not every combination number/size and quality is valid -
+  # e.g. there is no such thing as a major 5th interval.
+  #
+  # @param number [Integer, nil]
+  # @param size [Integer, nil]
+  # @param quality [:perfect, :major, :minor, :aug, :dim, nil]
+  # @return [Interval]
   def self.new(*args, number: nil, size: nil, quality: nil)
     @name_cache ||= {}
     @size_cache ||= {}
@@ -197,7 +224,7 @@ class Interval < Numeric
     from_number(num, quality)
   end
 
-  def initialize(size:, quality: nil)
+  private def initialize(size:, quality: nil)
     super()
 
     @size = size.to_i
@@ -238,11 +265,12 @@ class Interval < Numeric
     end
   end
 
-  # Returns a new interval with the same size but some variation (diminished,
-  # minor, major/perfect, augmented) on the given number. For example, since
-  # a perfect 5th and a diminished 6th are both 5 semitones,
-  # Interval.new(:P5).as(6) will return a diminished 6.
+  # Returns a new interval with the same {#size} but as some quality of the
+  # given `number`. For example, since a perfect 5th and a diminished 6th are
+  # both 5 semitones, `Interval.new(:P5).as(6)` will return a diminished 6.
   # Returns nil if this conversion is not possible.
+  # @param number [Integer]
+  # @return [Interval, nil]
   def as(number)
     return self if @number == number
 
@@ -256,39 +284,52 @@ class Interval < Numeric
     Interval.new(number: number, quality: new_qual)
   end
 
-  # Returns true if this interval can be expressed as some variation
-  # (diminished, minor, major/perfect, augmented) on the given number. A
-  # shortcut that checks if `as(number)` is not nil.
+  # Returns true if this interval can be expressed as some quality of `number`.
+  # A shortcut that checks if `as(number)` is not nil.
+  # @param number [Integer]
+  # @return [Boolean]
+  # @see #as
   def expressible_as(number)
     !as(number).nil?
   end
 
-  # Returns true if this interval is compound, i.e. its number is greater than 8
-  # or its size is greater than 12.
+  # Returns true if this interval is compound, i.e. its {#number} is greater
+  # than 8 or its {#size} is greater than 12.
+  # @return [Boolean]
   def compound?
     # The two cases are really only necessary because d9 and A8 are weird
     # outliers; otherwise either would do.
     @number > 8 || @size > 12
   end
 
+  # Returns true if this interval has perfect {#quality}.
+  # @return [Boolean]
   def perfect?
     @quality == :perfect
   end
 
+  # Returns true if this interval has major {#quality}.
+  # @return [Boolean]
   def major?
     @quality == :major
   end
 
+  # Returns true if this interval has minor {#quality}.
+  # @return [Boolean]
   def minor?
     @quality == :minor
   end
 
+  # Returns true if this interval has augmented {#quality}.
+  # @return [Boolean]
   def augmented?
     @quality == :aug
   end
 
   alias aug? augmented?
 
+  # Returns true if this interval has diminished {#quality}.
+  # @return [Boolean]
   def diminished?
     @quality == :dim
   end
@@ -298,10 +339,14 @@ class Interval < Numeric
 
   ### Ruby magic methods and Numeric implementation
 
+  # Returns the interval's {#size}.
+  # @return [Integer]
   def to_i
     @size
   end
 
+  # Returns the interval's {#size} as a floating point number.
+  # @return [Float]
   def to_f
     @size.to_f
   end
@@ -321,64 +366,97 @@ class Interval < Numeric
     end
   end
 
+  # Compares this Interval to another value, which should be an Interval, an
+  # interval abbreviation symbol or string understood by {.new}, or a number,
+  # which will be compared with this interval's {#size}.
+  # @param other [Interval, String, Symbol, Integer]
+  # @return [Boolean]
   def <(other)
     delegate_comp(:<, other)
   end
 
+  # (see #<)
   def <=(other)
     delegate_comp(:<=, other)
   end
 
+  # (see #<)
   def >(other)
     delegate_comp(:>, other)
   end
 
+  # (see #<)
   def >=(other)
     delegate_comp(:>=, other)
   end
 
+  # (see #<)
   def <=>(other)
     delegate_comp(:<=>, other)
   end
 
+  # (see #<)
   def ==(other)
     delegate_comp(:==, other)
   end
 
   alias eql? ==
 
+  # @private
   def hash
     @sym.hash
   end
 
+  # @private
   def coerce(other)
     [Interval.new(size: other), self]
   end
 
+  # Returns a new Interval by adding `other` many semitones to this one's
+  # {#size}.
+  # @param other [Integer]
+  # @return [Interval]
   def +(other)
     Interval.new(size: @size + other.to_f)
   end
 
+  # Returns a new Interval by subtracting `other` many semitones from this one's
+  # {#size}.
+  # @param other [Integer]
+  # @return [Interval]
   def -(other)
     Interval.new(size: @size - other.to_f)
   end
 
+  # Returns a new Interval by multiplying this one's {#size} by `other`.
+  # @param other [Integer]
+  # @return [Interval]
   def *(other)
     Interval.new(size: @size * other.to_f)
   end
 
+  # Returns a new Interval by dividing this one's {#size} by `other`.
+  # @param other [Integer]
+  # @return [Interval]
   def /(other)
     Interval.new(size: @size / other.to_f)
   end
 
+  # The string representation of this interval, in the abbreviated format
+  # described by {.new}.
+  # @return [String]
   def to_s
     @sym.to_s
   end
 
+  # @private
   def inspect
     "<Interval #{@sym}, #{@size} semitones>"
   end
 
+  # A symbol representation of this interval, in the abbreviated format
+  # described by {.new}.
+  # @return [Symbol]
   def to_sym
     @sym
   end

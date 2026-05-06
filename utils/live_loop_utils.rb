@@ -3,7 +3,10 @@
 require "weakref"
 require_relative "../extapi"
 
+# @!group Playback and live loops
+
 # Helpers to track running live_loops and associate values with them.
+# @private
 module LiveLoopTracker
   # Record the live loop with `name` as being associated with `thread` (which is
   # the return value of `live_loop`). You must call this after creating a live
@@ -44,39 +47,59 @@ end
 
 
 # Returns the Time State key that can be used to control muting of a mutable
-# live_loop created by that family of functions.
-def mute_key(loop_name)
+# `live_loop` created by that family of functions.
+# @private
+def __mute_key(loop_name)
   :"__live_loop_#{loop_name}_muted"
 end
 
-# Mutes the given live_loop, assuming it was created by one of the functions in
-# the mutable_live_loop family. Note that muting is not instantaneous; see the
-# description of mutable_live_loop for details.
+# Mutes or unmutes the given `live_loop`, assuming it was created by
+# {mutable_live_loop}, {cc_mutable_live_loop}, or {track_live_loop}. Note that
+# muting is not instantaneous; see the description of {mutable_live_loop} for
+# details.
+# @param loop_name [Symbol] The name of the target live loop.
+# @param mute [Boolean] Whether to mute or unmute the loop.
+# @return [void]
+# @see unmute_live_loop
 def mute_live_loop(loop_name, mute=true)
-  ExtApi.set(mute_key(loop_name), mute)
+  ExtApi.set(__mute_key(loop_name), mute)
 end
 
-# Unmutes the given live_loop - alias for mute_live_loop(loop_name, false).
+# Unmutes the given mutable `live_loop`. An alias passing false to
+# {mute_live_loop}.
+# @param loop_name [Symbol] The name of the target live loop.
+# @return [void]
 def unmute_live_loop(loop_name)
   mute_live_loop(loop_name, false)
 end
 
-# Starts a new live_loop that can be muted by setting the Time State key given
-# by the mute_key function to true. What 'mute' means must be implemented by the
-# given block; this function merely manages the muted state and informs the
-# block of it. The arguments to the block differ from a normal live_loop. It may
-# take 1 or 2 arguments:
-# - first argument: a boolean representing whether the live_loop is muted.
-# - second argument: the normal argument for a live_loop (optional)
-# Note that muting is not instantaneous. The live_loop block is only made aware
-# of muting the next time it executes, via its first argument. This way, muting
+# Starts a new `live_loop` that can be muted with {mute_live_loop}. What "mute"
+# means must be implemented by the given block; this function merely manages the
+# muted state and informs the block of it.
+#
+# Any additional named arguments (e.g. `sync` or `init`) to this function are
+# passed verbatim to the internal `live_loop`.
+#
+# Note that the arguments passed to the block differe from a normal `live_loop`.
+# Namely, the first argument is a boolean indicating whether the loop is muted.
+#
+# Note that muting is not instantaneous. The block is only made aware of the
+# muted status the next time it executes, via its first argument. So, muting
 # will happen only between cycles of a loop, not in the middle of one.
-# Any additional named arguments (e.g. sync: or init:) to this function are
-# passed verbatim to the internal live_loop.
+#
+# @param loop_name [Symbol] The name of the live loop.
+# @param start_muted [Boolean] The initial state of the muted flag.
+# @yieldparam muted [Boolean] Whether the loop is muted.
+# @yieldparam arg [Object] (optional) The usual argument for a `live_loop`: the
+#   value of the `init` argument on the first iteration, and the return of the
+#   prior execution of the block afterwards.
+# @return [void]
+# @see cc_mutable_live_loop
+# @see track_live_loop
 def mutable_live_loop(loop_name, start_muted: false, **kwargs, &block)
   raise ArgumentError, "Block must take 1 or 2 arguments" if block.arity == 0 || block.arity > 2
 
-  key = mute_key(loop_name)
+  key = __mute_key(loop_name)
 
   # Only apply start_muted if this is a fresh definition of the loop (i.e, not a
   # restart of the same sketch).
@@ -96,29 +119,48 @@ def mutable_live_loop(loop_name, start_muted: false, **kwargs, &block)
   ll
 end
 
-# Sets the default MIDI port and channel that CC mutable live loops (including
-# `track_live_loop` and `cc_track_live_loop`) will use when monitoring for
-# control messages (e.g. the CC to use for muting, and in the live loops,
-# `fill_cc`).
+# Set global default MIDI parameters to use when watching for incoming CC
+# messages. Such events are used to control various features, such as muting
+# live loops (e.g. those made from {cc_mutable_live_loop} and
+# {track_live_loop}), toggling fill mode in {track_live_loop}, and controlling
+# recording in {TrackRecorder.record}.
+# @param channel [Integer, String, nil] The default MIDI channel to watch for
+#   CC events. If nil, defaults to all channels (i.e. "*").
+# @param port [String, nil] The MIDI device to watch for CC events. If nil, also
+#   falls back to "*".
+# @return [void]
+# @see current_cc_control_defaults
 def use_cc_control_defaults(port: nil, channel: nil)
   ExtApi.set(:__cc_control_defaults, { port: port, channel: channel })
 end
 
-# Returns the current CC control defaults as set by use_cc_control_defaults, or
-# an empty hash if no defaults have been set.
+# Returns the current CC control defaults as set by {use_cc_control_defaults},
+# or an empty hash if no defaults have been set.
+# @return [Hash{Symbol => Object}]
 def current_cc_control_defaults
   ExtApi.get(:__cc_control_defaults) || {}
 end
 
-# Starts a new live_loop that can be muted by a MIDI CC message with the given
-# CC number. A value of 0 for the CC will mute, and any other value will unmute.
-# What 'mute' means must be implemented by the given block; this function merely
-# manages the muted state and informs the block of it. The arguments to the
-# block are as described in mutable_live_loop.
-# Note that unlike usual MIDI port/channel arguments, these must be single
-# strings that refer to either a single port/channel, or '*' as a wildcard.
-# Any additional named arguments (e.g. sync: or init:) to this function are
-# passed verbatim to the internal live_loop.
+# Starts a new `live_loop` that can be muted by a MIDI CC message. A value of 0
+# for the CC will mute, and any other value will unmute. What "mute" means must
+# be implemented by the given block; this function merely manages the muted
+# state and informs the block of it.
+#
+# Any additional named arguments (e.g. `sync` or `init`) to this function are
+# passed verbatim to the internal `live_loop`.
+#
+# @param (see mutable_live_loop)
+# @param cc [Integer] The CC number to monitor to control muting of the loop.
+# @param channel [Integer, String, nil] The MIDI channel to watch for CC
+#   messages. If nil, falls back to the global default set by
+#   {use_cc_control_defaults}, or to all channels (i.e. "*") if that was not
+#   set.
+# @param port [String, nil] The MIDI device to monitor. If nil, falls back in
+#   the same manner as `channel`.
+# @yieldparam (see mutable_live_loop)
+# @return [void]
+# @see mutable_live_loop
+# @see track_live_loop
 def cc_mutable_live_loop(loop_name, cc:, port: nil, channel: nil, start_muted: false, **kwargs, &block)
   cc_watcher_live_loop(:"__#{loop_name}_cc_mute_watcher",
                        port: port, channel: channel) do |incoming_cc, cc_val|

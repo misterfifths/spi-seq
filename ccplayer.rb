@@ -4,11 +4,32 @@ require_relative "cctrack"
 require_relative "extapi"
 require_relative "playerbase"
 
-
+# A CCPlayer plays a {CCTrack} by sending its {CCStep}s' CC messages over MIDI.
+#
+# Generally you will not make instances of CCPlayer directly, and instead use
+# {track_live_loop}, which will create and manage a CCPlayer for you.
+#
+# In the unlikely scenario that you want to manually drive a CCPlayer, see the
+# {PlayerBase} documentation for details.
 class CCPlayer < PlayerBase
-  attr_reader :channel, :port
+  # The MIDI channel to use when this player sends events.
+  # @return [Integer, String, nil]
+  attr_reader :channel
 
+  # The MIDI port to use when this player sends events.
+  # @return [String, nil]
+  attr_reader :port
 
+  # Constructs a Player.
+  #
+  # @param track [CCTrack] The initial value for {#track}.
+  # @param channel [Integer, String, nil] The MIDI channel to use during
+  #   playback. If nil, falls back to the global default set by Sonic Pi's
+  #   `use_midi_defaults`, or to all channels (i.e. "*") if that was not set.
+  # @param port [String, nil] The MIDI device to use. If nil, falls back in the
+  #   same manner as `channel`.
+  # @param debug [Boolean] If true, the player will log detailed information
+  #   about its state during playback.
   def initialize(track, channel: nil, port: nil, debug: false)
     @channel = channel
     @port = port

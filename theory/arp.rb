@@ -2,34 +2,144 @@
 
 require_relative "midinote"
 
+# @!group Music theory
+# An alias for {Arp.arpeggiate}.
+# @return [Array<MIDINote>]
+def arp(*args, **kwargs)
+  Arp.arpeggiate(*args, **kwargs)
+end
+# @!endgroup
+
+# A simple arpeggiator. See {.arpeggiate} for details.
 module Arp
+  # An arpeggiation direction that returns notes in increasing order. For
+  # example:
+  #   arp([:c4, :e4, :d4], :up)
+  #   # returns [:c4, :d4, :e4]
   Up = :up
+
+  # An arpeggiation direction that returns notes in decreasing order. For
+  # example:
+  #   arp([:c4, :e4, :d4], :down)
+  #   # returns [:e4, :d4, :c4]
   Down = :down
+
+  # An arpeggiation direction that returns notes in increasing order, then in
+  # reverse. The middle note is not repeated, nor is the final note. For
+  # example:
+  #   arp([:c4, :e4, :d4], :updown)
+  #   # returns [:c4, :d4, :e4, :d4]
   UpDown = :updown
+
+  # An arpeggiation direction that returns notes in the same order as {.UpDown},
+  # but with each note doubled. The middle note is not repeated, nor is the
+  # final note. For example:
+  #   arp([:c4, :e4, :d4], :twouptwodown)
+  #   # returns [:c4, :c4, :d4, :d4, :e4, :e4, :d4, :d4]
   TwoUpTwoDown = :twouptwodown
+
+  # An arpeggiation direction that returns notes in alternating order, working
+  # inward from opposite edges of the input. For example:
+  #   arp([:a1, :b2, :c3, :d4, :e5], :alternin)
+  #   # returns [:a1, :e5, :b2, :d4, :c3]
   AlternIn = :alternin
+
+  # An arpeggiation direction that returns notes in alternating order, working
+  # outward from the middle of the input. For example:
+  #   arp([:a1, :b2, :c3, :d4, :e5], :alternout)
+  #   # returns [:c3, :b2, :d4, :a1, :e5]
   AlternOut = :alternout
+
+  # An arpeggiation direction that returns notes in alternating order, first
+  # inward like {.AlternIn}, then outward like {.AlternOut}, but not repeating
+  # the middle note. For example:
+  #   arp([:a1, :b2, :c3, :d4, :e5], :alterninout)
+  #   # returns [:a1, :e5, :b2, :d4, :c3, :b2, :d4, :a1, :e5]
   AlternInOut = :alterninout
+
+  # An arpeggiation direction that returns notes in ascending order, but with
+  # the highest note in every other position. The high note is not doubled at
+  # the end. For example:
+  #   arp([:c4, :e4, :d4, :c5], :pinky)
+  #   # returns [:c4, :c5, :d4, :c5, :e4, :c5]
   Pinky = :pinky
+
+  # An arpeggiation direction that returns notes in ascending order, but with
+  # the lowest note in every other position. The low note is not doubled at the
+  # beginning. For example:
+  #   arp([:c4, :e4, :d4, :c5], :thumb)
+  #   # returns [:d4, :c4, :e4, :c4, :c5, :c4]
   Thumb = :thumb
+
+  # An arpeggiation direction that returns notes in an order that climbs to the
+  # highest note and then descends. The notes are sorted ascending, then every
+  # other note is chosen to walk toward the highest note, then the remaining
+  # notes appear in descending order. For example:
+  #   arp([:c1, :c3, :c2, :c4, :c5], :peak)
+  #   # returns [:c1, :c3, :c5, :c4, :c2]
   Peak = :peak
+
+  # An arpeggiation direction that returns notes in an order that descends from
+  # the highest note and then ascends. The highest note appears first, then
+  # every other note descending to the lowest, then the remaining notes in
+  # ascending order. For example:
+  #   arp([:c1, :c3, :c2, :c4, :c5], :valley)
+  #   # returns [:c5, :c3, :c1, :c2, :c4]
   Valley = :valley
+
+  # An arpeggiation direction that returns notes in a random order.
   Random = :random
+
+  # An arpeggiation direction that does not reorder notes; they will be
+  # returned as passed to {.arpeggiate}. This is not particularly useful on its
+  # own, but may be together with `spread` or `extra_octaves`, which add extra
+  # notes to the input.
   Order = :order
 
-  # Returns an array of MIDINotes by arpeggiating the given array of notes.
-  # direction should be one of the constants in the Arp module.
-  # If spread is n > 0, the result will have a note added an octave above each
-  # of the the n lowest notes. If the spread creates duplicate notes (e.g.
-  # spread=1 with [:e3, :e4], which would result in two :e4s), the duplicates
-  # will not be added to the result. If an arp with a spread > 0 is played in
-  # Arp::Order direction, the notes from the spread will appear at the end, in
-  # order from lowest to highest.
-  # If extra_octaves is specified, the result will contain copies of the notes
-  # in the notes array shifted by each offset in extra_octaves. extra_octaves
-  # applies before any spread. If direction is :order, notes it adds will appear
-  # at the end of the result, before notes from the spread. Like spread,
-  # extra_octaves will not add duplicate notes.
+  # Returns an array of {MIDINote}s by arpeggiating the given array of notes.
+  # See the documentation on the constants in this class for details on the
+  # possible `direction`s.
+  #
+  # This method is aliased to {arp} for convenience.
+  #
+  # If `spread` is > 0, the result will have a note added an octave above each
+  # of the the `spread` lowest notes. If this operation creates duplicate notes
+  # (e.g. `spread`=1 with `[:e3, :e4]`, which would result in two E4s), the
+  # duplicates will not be added to the result. In the {.Order :order}
+  # direction, the notes from the `spread` will appear at the end, in order from
+  # lowest to highest.
+  #
+  # If `extra_octaves` is specified, the result will contain copies of the notes
+  # in the `notes` array shifted by each offset in `extra_octaves`. This
+  # addition applies before any `spread`. If the direction is {.Order :order},
+  # notes added this way will appear at the end of the result, before notes from
+  # the `spread`. Like `spread`, `extra_octaves` will not add duplicate notes.
+  #
+  # @example
+  #   arp([:a1, :b1], :down, extra_octaves: [-1, 2])
+  #   # The notes from [:a1, :b1], shifted down an octave and up 2 octaves,
+  #   # are added before applying the direction Arp::Down
+  #   # returns [:b3, :a3, :b1, :a1, :b0, :a0]
+  #
+  # @example
+  #   arp([:b1, :a1, :c1, :d1], :up, spread: 3)
+  #   # Before applying the direction Arp::Up, the three lowest notes
+  #   # (:c1, :d1, :a1) are added to the pool, shifted up an octave.
+  #   # returns [:c1, :d1, :a1, :b1, :c2, :d2, :a2]
+  #
+  # @param notes [Array<MIDINote, Symbol, String, Integer>] The notes to
+  #   arpeggiate; an array of {MIDINote}s or any value accepted by
+  #   {MIDINote.new}.
+  # @param direction [Symbol] One of the direction symbols defined on Arp, e.g.
+  #   {.Pinky :pinky} or {.UpDown :updown}. Note that you can pass the symbol
+  #   directly rather than referencing the constant on this module.
+  # @param spread [Integer] Adds notes an octave above some number of the lowest
+  #   notes in the result. See above for details.
+  # @param extra_octaves [Array<Integer>] Adds a copy of the incoming notes
+  #   shifted by some number of octaves before arpeggiating. See above for
+  #   details.
+  # @return [Array<MIDINote>] The arpeggiated notes.
+  # @see Track.arp
   def self.arpeggiate(notes, direction, spread: 0, extra_octaves: [])
     return [] if notes.empty?
 
@@ -214,8 +324,4 @@ module Arp
   end
 
   private_class_method :peak_indexes
-end
-
-def arp(*args, **kwargs)
-  Arp.arpeggiate(*args, **kwargs)
 end

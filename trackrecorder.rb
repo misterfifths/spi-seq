@@ -7,6 +7,8 @@ require_relative "theory/midinote"
 require_relative "extapi"
 require_relative "utils/midi_utils"
 
+# Utilities for recording {Track}s from incoming MIDI events. See {.record} for
+# details.
 module TrackRecorder
   private_class_method def self.float_lt(a, b, threshold = 0.01)
     (a - b) < threshold
@@ -146,6 +148,8 @@ module TrackRecorder
   # If for any reason the resulting track would be empty (e.g., if start_time
   # and end_time are both nil and there are no events in the timeline), this
   # function returns nil.
+  #
+  # @private
   def self.timeline_to_track(timeline,
                              bpm: nil, granularity: NoteLength::Eighth,
                              start_time: nil, end_time: nil,
@@ -319,47 +323,66 @@ module TrackRecorder
     [start_time, end_time, timeline]
   end
 
-  # Records incoming MIDI notes on a given port and channel (either of which
-  # may be wildcards) and creates a Track by quantizing those notes to a grid.
+  # Records incoming MIDI notes and creates a {Track} by quantizing those notes
+  # to a grid.
   #
-  # Recording is stopped and started by a MIDI CC (the cc argument) on cc_port
-  # and cc_channel, either of which may be wildcards. The value of the CC
-  # message is ignored.
+  # Recording is stopped and started by a MIDI CC (the `cc` argument). The value
+  # of the CC message is ignored. Any notes that are still on when recording is
+  # stopped by the CC are treated as if they ended at the same time that the CC
+  # was received.
   #
-  # Any notes that are still on when recording is stopped by the CC are treated
-  # as if they ended at the same time that the CC was received.
-  #
-  # If any of the CC port/channel or the port/channel for notes is nil, the
-  # default is used, or a wildcard if no default is set. Set the default CC
-  # options for spi-seq with use_cc_control_defaults, and the defaults for MIDI
-  # notes with Sonic Pi's built-in use_midi_defaults.
-  #
-  # bpm is the beats per minute at which the track is to be played back, and
-  # granularity is the slot granularity for the resulting track. Together these
-  # two determine the duration of a slot in the track, and thus control how to
-  # map between wall-clock seconds and steps in the track. Granularity can be a
-  # NoteLength instance or any of the values accepted by NoteLength.new. If bpm
-  # is nil, the current Sonic Pi BPM is used.
+  # `bpm` is the beats per minute at which the track is to be played back, and
+  # `granularity` is the slot granularity for the resulting track. Together
+  # these two determine the duration of a slot in the track, and thus control
+  # how to map between wall-clock seconds and steps in the track. A shorter
+  # granularity - or a faster BPM - means that the timing of incoming MIDI notes
+  # can be represented more precisely, which may or may not be desirable.
   #
   # By default, the track will last for the duration that recording was enabled
   # via the CC; if there was silence at the beginning or end of recording, there
-  # will be rests on either end of the resulting track. If true, trim_start and
-  # trim_end will remove those rests from the corresponding ends of the track.
+  # will be rests on either end of the resulting track. If true, `trim_start`
+  # and `trim_end` will remove those rests from the corresponding ends of the
+  # track.
   #
-  # min_gate specifies the minimum gate for single notes in the track; if a
+  # If for any reason the resulting track would be empty (e.g. if no MIDI notes
+  # were observed while recording), this function returns nil.
+  #
+  # `min_gate` specifies the minimum gate for single notes in the track; if a
   # recorded MIDI event would translate to a single step with a gate less than
-  # min_gate, its duration is rounded up to min_gate instead. Also, if an event
-  # translates to a sequence of tied steps followed by one step with a partial
-  # gate, that final step will be dropped if its gate is less than min_gate. If
-  # quantize_gates is true, all gates are rounded up to the nearest multiple of
-  # min_gate.
+  # that value, its duration is rounded up to `min_gate` instead. Also, if an
+  # event translates to a sequence of tied steps followed by one step with a
+  # partial gate, that final step will be dropped if its gate is less than
+  # `min_gate`.
   #
-  # If ignore_vel is true, the recorded velocity of notes will be ignored and
-  # they will all be set to 127 in the resulting track.
-  #
-  # If for any reason the resulting track would be empty (e.g., if start_time
-  # and end_time are both nil and there are no events in the timeline), this
-  # function returns nil.
+  # @param cc [Integer] The MIDI CC number that will begin and end recording.
+  # @param cc_port [String, nil] The MIDI port to monitor for CC messages. If
+  #   nil, falls back to the global default set with {use_cc_control_defaults}
+  #   or all ports (i.e. "*") if no default was set.
+  # @param cc_channel [Integer, String, nil] The MIDI channel to monitor for CC
+  #   messages. If nil, falls back in the same manner as `cc_port`.
+  # @param port [String, nil] The MIDI port to monitor for notes. If nil, falls
+  #   back to the global default set with Sonic Pi's `use_midi_defaults`, or
+  #   all ports (i.e. "*") if no default was set.
+  # @param channel [Integer, String, nil] The MIDI channel to monitor for notes.
+  #   If nil, falls back in the same manner as `port`.
+  # @param bpm [Integer, nil] The BPM to use when mapping between real-world
+  #   seconds and slots in the resulting track. If nil, uses the current Sonic
+  #   Pi BPM.
+  # @param granularity [Symbol, Number, NoteLength] The granularity of the
+  #   resulting track. Can be a {NoteLength} or a value understood by
+  #   {NoteLength.new}.
+  # @param trim_start [Boolean] Whether to remove rests from the beginning of
+  #   the returned track.
+  # @param trim_end [Boolean] Whether to remove rests from the end of the
+  #   returned track.
+  # @param min_gate [Number] The minimum gate for a {Step} in the track. See
+  #   above for details.
+  # @param quantize_gates [Boolean] If true, gates will be snapped upwards to
+  #   the nearest multiple of `min_gate`.
+  # @param ignore_vel [Boolean] If true, the velocity of incoming MIDI notes
+  #   will be ignored and all steps in the track will have the default velocity
+  #   of 127.
+  # @return [Track, nil]
   def self.record(cc:, cc_port: nil, cc_channel: nil,
                   port: nil, channel: nil,
                   bpm: nil, granularity: NoteLength::Eighth,
