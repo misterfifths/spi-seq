@@ -112,19 +112,6 @@ class Track < TrackBase
     end
   end
 
-  # Constructs a track that arpeggiates the given degrees of the tonic note in
-  # the given scale. Other arguments are as specified in arp.
-  def self.arp_degrees(tonic, degrees, direction = Arp::Order, scale: :major, spread: 0, extra_octaves: [], pulses: nil, length: nil, granularity: NoteLength::Eighth, timescale: 1)
-    notes = Arp.arp_degrees(tonic, degrees, direction, scale: scale, spread: spread, extra_octaves: extra_octaves)
-    if pulses.nil?
-      grid = notes.map { |n| [Step.new(n)] }
-      new(grid, granularity: granularity, timescale: timescale)
-    else
-      raise TypeError, "pulses and length must both be nil or both be integers" if length.nil?
-      euclid(notes, pulses, length, full_cycle: true, granularity: granularity, timescale: timescale)
-    end
-  end
-
   # Construct an isorhythmic Track. See https://en.wikipedia.org/wiki/Isorhythm.
   # To use classical terms, `gates` defines the talea and `notes` the color.
   #
