@@ -2,6 +2,14 @@
 
 This is a library for creating, manipulating, and playing back sequenced tracks in [Sonic Pi](https://sonic-pi.net/). It is heavily inspired by the capabilities of the [Oxi One sequencer](https://oxiinstruments.com/oxi-one/).
 
+Read on for an introduction, or see the [documentation](https://misterfifths.github.io/spi-seq).
+
+## What can it do?
+
+spi-seq allows you to quickly construct and manipulate tracks, starting with simple chords or arpeggios, then play them back over MIDI. You can mute and unmute (or even add) tracks on the fly; the library plays nice with all of Sonic Pi's live coding tools.
+
+Under the name [Full Empty](https://soundcloud.com/full-empty-214000746), with the aid of a few hardware synthesizers, I've made quite a few tracks with spi-seq. Some personal favorites are ["2-18-26"](https://soundcloud.com/full-empty-214000746/2-8-26) and ["F00F Redux"](https://soundcloud.com/full-empty-214000746/f00f-redux). The source for the melody of the latter is in [the examples](examples/f00f.rb).
+
 ## Installation
 
 You will of course need to install [Sonic Pi](https://sonic-pi.net/).
@@ -13,7 +21,7 @@ require "~/spi-seq/core"
 init_spi_seq
 ```
 
-Read on for an introduction to using the library, or see the [examples](examples).
+Read on for an introduction to using the library, or see the [examples](examples) or [documentation](https://misterfifths.github.io/spi-seq).
 
 ## Whirlwind tour
 
