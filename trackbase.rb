@@ -935,38 +935,38 @@ class TrackBase
 
   alias shuffle_filled shuffle_filled_slots
 
-  # Returns a new track with the slots in this track rotated to the right by the
-  # given amount. The track duration is maintained; slots will be wrapped around
-  # to the beginning of the grid as needed.
-  #
-  # @example
-  #   T([:a1, :b1, :c1, :d1]).rotate(2)
-  #   # is equivalent to
-  #   T([:c1, :d1, :a1, :b1])
-  #
-  # @param rightward_shift [Integer]
-  # @return [TrackBase]
-  # @see #shl
-  def rotate(rightward_shift = 1)
-    mutate(grid: @grid.rotate(-rightward_shift))
-  end
-
-  alias right rotate
-  alias rshift rotate
-  alias shr rotate
-
-  # Returns a new track with the slots in the grid rotated to the left by the
+  # Returns a new track with the slots in this track rotated to the left by the
   # given amount. The track duration is maintained; slots will be wrapped around
   # to the end of the grid as needed.
+  #
+  # @example
+  #   T([:a1, :b1, :c1, :d1, :e1]).rotate(2)
+  #   # is equivalent to
+  #   T([:c1, :d1, :e1, :a1, :b1])
+  #
   # @param leftward_shift [Integer]
   # @return [TrackBase]
-  # @see #right
-  def left(leftward_shift = 1)
-    rotate(-leftward_shift)
+  # @see #shr
+  def rotate(leftward_shift = 1)
+    mutate(grid: @grid.rotate(leftward_shift))
   end
 
-  alias lshift left
-  alias shl left
+  alias left rotate
+  alias lshift rotate
+  alias shl rotate
+
+  # Returns a new track with the slots in the grid rotated to the right by the
+  # given amount. The track duration is maintained; slots will be wrapped around
+  # to the end of the grid as needed.
+  # @param rightward_shift [Integer]
+  # @return [TrackBase]
+  # @see #left
+  def right(rightward_shift = 1)
+    rotate(-rightward_shift)
+  end
+
+  alias rshift right
+  alias shr right
 
   # Returns a new track by adding `num_rests` many empty slots (rests) to the
   # beginning of the track.
