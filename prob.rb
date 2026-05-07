@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "utils/misc_utils"
+
 # Prob represents a predicate that determines whether or not a step will trigger
 # when its slot in a track is played back (see {StepBase#prob}). Steps can have
 # an additional Prob that controls whether their accumulation should apply,
@@ -19,23 +21,23 @@
 # represent notes. The documentation will call out such cases.
 class Prob
   # Make a Prob with a custom trigger probability predicate defined by a lambda
-  # or proc. The predicate must take between 0 and 5 arguments inclusive. It
-  # will be called with a number of arguments based on that arity:
+  # or proc. The predicate may take some number of keyword arguments, described
+  # below. None of the arguments are mandatory.
   #
-  # 1. The {PlayerBase#cycle cycle number} of playback in the player.
-  # 2. A boolean indicating whether {PlayerBase#fill fill mode} is active in the
+  # - `cycle` (Integer): The {PlayerBase#cycle cycle number} of playback in the player.
+  # - `fill` (Boolean): Whether {PlayerBase#fill fill mode} is active in the
   #    player.
-  # 3. The step whose probability is being evaluated. The type of the step
-  #    varies depending on the track being played: it will be a {Step} for
-  #    {Track}s and a {CCStep} for {CCTrack}s.
-  # 4. If the step belongs to a {Track} (and is thus an instance of {Step}),
-  #    the resolved {MIDINote} that the Step would play if it triggers,
-  #    accounting for any accumulation and the track's {Track#scale scale}. If
-  #    the step is a CCStep, this argument is nil.
-  # 5. If the step belongs to a {Track} (and is thus an instance of {Step}), an
-  #    array of {MIDINote}s that were played in the slot immediately prior to
-  #    the current one. If the step is a {CCStep}, this argument is an empty
-  #    array.
+  # - `step` ({StepBase}): The step whose probability is being evaluated. The
+  #    type of the step varies depending on the track being played: it will be a
+  #    {Step} for {Track}s and a {CCStep} for {CCTrack}s.
+  # - `note` ({MIDINote}): If the step belongs to a {Track} (and is thus an
+  #    instance of {Step}), the resolved note that the Step would play if it
+  #    triggers, accounting for any accumulation and the track's {Track#scale
+  #    scale}. If the step is a CCStep, this argument is nil.
+  # - `prev_notes` (Array<{MIDINote}>): If the step belongs to a {Track} (and is
+  #    thus an instance of {Step}), an array of the notes that were played in
+  #    the slot immediately prior to the current one. If the step is a {CCStep},
+  #    this argument is an empty array.
   #
   # The predicate should return true if the step should trigger.
   #
@@ -68,7 +70,7 @@ class Prob
   # @param [Integer] y
   # @return [Prob]
   def self.x_of_y(x, y)
-    new(->(cycle) { cycle % y == x - 1 }, "#{x}|#{y}", "x_of_y(#{x}, #{y})")
+    new(->(cycle:) { cycle % y == x - 1 }, "#{x}|#{y}", "x_of_y(#{x}, #{y})")
   end
 
   # Returns a Prob that will trigger the step every other {PlayerBase#cycle
@@ -97,7 +99,7 @@ class Prob
   # @param [Integer] y
   # @return [Prob]
   def self.not_x_of_y(x, y)
-    new(->(cycle) { cycle % y != x - 1 }, "!#{x}|#{y}", "not_x_of_y(#{x}, #{y})")
+    new(->(cycle:) { cycle % y != x - 1 }, "!#{x}|#{y}", "not_x_of_y(#{x}, #{y})")
   end
 
   # Returns a Prob that will trigger the step only on the first
@@ -105,14 +107,14 @@ class Prob
   # @return [Prob]
   # @see .not_first
   def self.first
-    @first_inst ||= new(->(cycle) { cycle == 0 }, "first", "first")
+    @first_inst ||= new(->(cycle:) { cycle == 0 }, "first", "first")
   end
 
   # Returns a Prob that will trigger the step on every {PlayerBase#cycle cycle}
   # of playback except the first. This is the inverse of {.first}.
   # @return [Prob]
   def self.not_first
-    @not_first_inst ||= new(->(cycle) { cycle != 0 }, "!first", "not_first")
+    @not_first_inst ||= new(->(cycle:) { cycle != 0 }, "!first", "not_first")
   end
 
   # Returns a Prob that will trigger the step if any step triggered in the
@@ -123,7 +125,7 @@ class Prob
   #
   # @return [Prob]
   def self.pre
-    @pre_inst ||= new(->(_, _, _, _, prev_notes) { !prev_notes.empty? }, "pre", "pre")
+    @pre_inst ||= new(->(prev_notes:) { !prev_notes.empty? }, "pre", "pre")
   end
 
   # Returns a Prob that will trigger the step if no step triggered in the
@@ -134,7 +136,7 @@ class Prob
   #
   # @return [Prob]
   def self.not_pre
-    @not_pre_inst ||= new(->(_, _, _, _, prev_notes) { prev_notes.empty? }, "!pre", "not_pre")
+    @not_pre_inst ||= new(->(prev_notes:) { prev_notes.empty? }, "!pre", "not_pre")
   end
 
   # Returns a Prob that will trigger the step if a step triggered in the
@@ -145,7 +147,7 @@ class Prob
   #
   # @return [Prob]
   def self.pre_same_note
-    pred = ->(_, _, _, effective_note, prev_notes) { prev_notes.include?(effective_note) }
+    pred = ->(note:, prev_notes:) { prev_notes.include?(note) }
     @pre_same_note_inst ||= new(pred, "pre same note", "pre_same_note")
   end
 
@@ -158,7 +160,7 @@ class Prob
   #
   # @return [Prob]
   def self.not_pre_same_note
-    pred = ->(_, _, _, effective_note, prev_notes) { !prev_notes.include?(effective_note) }
+    pred = ->(note:, prev_notes:) { !prev_notes.include?(note) }
     @not_pre_same_inst ||= new(pred, "!pre same note", "not_pre_same_note")
   end
 
@@ -167,7 +169,7 @@ class Prob
   # @return [Prob]
   # @see .not_fill
   def self.fill
-    @fill_inst ||= new(->(_, fill) { fill }, "fill", "fill")
+    @fill_inst ||= new(->(fill:) { fill }, "fill", "fill")
   end
 
   # Returns a Prob that will trigger the step if the {PlayerBase#fill fill
@@ -175,7 +177,7 @@ class Prob
   # {.fill}.
   # return [Prob]
   def self.not_fill
-    @not_fill_inst ||= new(->(_, fill) { !fill }, "!fill", "not_fill")
+    @not_fill_inst ||= new(->(fill:) { !fill }, "!fill", "not_fill")
   end
 
   # Evaluates the probability predicate, accounting for:
@@ -189,8 +191,9 @@ class Prob
   #   this should be the empty array.
   # @private
   def should_trigger?(cycle, fill, step, effective_note, prev_notes)
-    args = [cycle, fill, step, effective_note, prev_notes].take(@callable.arity)
-    @callable.call(*args)
+    kwargs = {cycle: cycle, fill: fill, step: step, note: effective_note, prev_notes: prev_notes}
+    kwargs = __filter_kwargs_for_proc(@callable, kwargs)
+    @callable.call(**kwargs)
   end
 
   # Returns a human-readable description of the Prob.

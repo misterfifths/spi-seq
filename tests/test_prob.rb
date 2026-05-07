@@ -399,7 +399,7 @@ class ProbTest < Test::Unit::TestCase
     # All the other probabilities exercise this functionality, so this is just
     # a spot check.
 
-    pred = ->(cycle, fill) { cycle == 1 || fill }
+    pred = ->(cycle:, fill:) { cycle == 1 || fill }
     t = qT([:a1, S(:b2, prob: Prob.custom(pred))])
     assert_playback_events t, [
       [:a1, 0, 1],
