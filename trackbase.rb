@@ -110,6 +110,7 @@ class TrackBase
   #
   # @return [Array<Array<StepBase>>]
   attr_reader :grid
+  alias slots grid
 
 
   ### @!group Initializers
