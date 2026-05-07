@@ -144,9 +144,30 @@ class Scale
       purvi:              [1, 3, 2, 1, 1, 3, 1],
       chinese:            [4, 2, 1, 4, 1],
       lydian_minor:       [2, 2, 2, 1, 1, 2, 2]
-    }.freeze
+    }
+
+    {
+      maj: :major,
+      hex_maj6: :hex_major6,
+      hex_maj7: :hex_major7,
+      min_pentatonic: :minor_pentatonic,
+      maj_pentatonic: :major_pentatonic,
+      harmonic_min: :harmonic_minor,
+      melodic_min_asc: :melodic_minor_asc,
+      hungarian_min: :hungarian_minor,
+      neapolitan_maj: :neapolitan_major,
+      locrian_maj: :locrian_major,
+      neapolitan_min: :neapolitan_minor,
+      harmonic_maj: :harmonic_major,
+      melodic_min_desc: :melodic_minor_desc,
+      romanian_min: :romanian_minor,
+      melodic_min: :melodic_minor,
+      melodic_maj: :melodic_major,
+      lydian_min: :lydian_minor
+    }.each { |alias_name, name| scales[alias_name] = scales[name] }
 
     scales.each_value { |steps| steps.freeze }
+    scales.freeze
 
     scales
   end.call
