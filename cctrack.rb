@@ -116,6 +116,41 @@ class CCTrack < TrackBase
     new(slots, granularity: granularity, timescale: timescale)
   end
 
+  # Creates a track containing {CCStep}s for the given number whose value varies
+  # along a curve.
+  #
+  # This is a helper that makes a new track and adds steps to it using
+  # {#add_curve}.
+  #
+  # @example
+  #   CCTrack.curve(127, 50, 80, Curves::UpLinear, 8)
+  #   # is equivalent to
+  #   CCT([CC(127, 50), CC(127, 54), CC(127, 58), CC(127, 62),
+  #        CC(127, 67), CC(127, 71), CC(127, 75), CC(127, 80)])
+  #
+  # @param cc_number [Integer] The {CCStep#number number} for the new CCSteps.
+  # @param start_val [Integer] The starting {CCStep#value value} for the new
+  #   steps. This can be greater than `end_val` if the values should decrease
+  #   over time.
+  # @param end_val [Integer] The ending {CCStep#value value} for the new steps.
+  #   This can be less than `start_val` if the values should decrease over time.
+  # @param curve [#call] A lambda or proc that defines the curve. It will be
+  #   called with a single floating point value between 0 - 1 (the percent
+  #   through the curve) and should return a value between 0 - 1. For this
+  #   function to act as expected, it should return 0 for an input of 0, and 1
+  #   for an input of 1. See the {Curves} and {Easings} modules for a number of
+  #   prebuilt options.
+  # @param length [Integer] The length of the new track. Steps along the curve
+  #   will be added to every step in the track.
+  # @return [CCTrack]
+  # @see Curves
+  # @see Easings
+  # @see #add_curve
+  def self.curve(cc_number, start_val, end_val, curve, length)
+    t = CCTrack.rest(length)
+    t.add_curve(cc_number, start_val, end_val, curve, 0, length - 1)
+  end
+
 
   ### Mutators
 
@@ -149,6 +184,7 @@ class CCTrack < TrackBase
   # @return [CCTrack]
   # @see Curves
   # @see Easings
+  # @see .curve
   def add_curve(cc_number, start_val, end_val, curve, slot_start_idx, slot_end_idx)
     raise IndexError, "slot start is >= slot end" if slot_start_idx >= slot_end_idx
     raise IndexError, "slot range is beyond the grid" if slot_start_idx < 0 || slot_end_idx >= @grid.length

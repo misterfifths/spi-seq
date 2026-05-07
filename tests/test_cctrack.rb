@@ -141,4 +141,15 @@ class CCTrackTest < Test::Unit::TestCase
       [CC(2, 0)]
     ]
   end
+
+  def test_curve
+    # curve should function like add_curve over the whole track
+    t = CCTrack.curve(127, 50, 80, Curves::UpLinear, 8)
+    u = CCTrack.rest(8).add_curve(127, 50, 80, Curves::UpLinear, 0, 7)
+    assert_grid t, u.grid
+
+    t = CCTrack.curve(127, 0, 100, Curves::UpDown2Sine, 16)
+    u = CCTrack.rest(16).add_curve(127, 0, 100, Curves::UpDown2Sine, 0, 15)
+    assert_grid t, u.grid
+  end
 end
