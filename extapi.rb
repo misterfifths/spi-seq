@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "utils/misc_utils"
-
 # The goal here is to keep track of direct calls into SonicPi's library, with
 # the long-term plan of allowing (at least some of) the code to run outside of
 # that environment.
@@ -98,40 +96,6 @@ module ExtApi
       end
     end
   end
-end
-
-begin
-  Object.const_get("SonicPi::RuntimeMethods")
-
-  # TODO: This is a sin, but is the only way I find to catch hitting the stop
-  # button (or quitting) Sonic Pi. Trying to catch ThreadExit in a Sonic Pi
-  # thread doesn't work for whatever reason.
-  # See runtime.rb in the Sonic Pi source for what we're overriding here.
-  # https://github.com/sonic-pi-net/sonic-pi/blob/e3e305164d9b5c4e29caceed9fb60666fc7cbbb1/app/server/ruby/lib/sonicpi/runtime.rb#L549
-  module SonicPi
-    module RuntimeMethods
-      alias __orig_stop_jobs __stop_jobs
-      def __stop_jobs
-        __orig_stop_jobs
-
-        if __any_stop_hooks?
-          __info("Running stop hooks...")
-          # We need to hop into a Sonic Pi thread context so its builtins will
-          # work. __in_thread seems preferable but I couldn't get it to work,
-          # so __spider_eval it is. It does seem to run the code in a relatively
-          # fresh context though, since it's not a child thread of the sketch.
-          # Global settings like `use_midi_logging` are lost.
-          __clear_stop_hook_event
-          __spider_eval("__run_stop_hooks")
-          unless __wait_for_stop_hooks(timeout: 1)
-            __info("Stop hooks timed out! Killing them...")
-            __orig_stop_jobs
-          end
-        end
-      end
-    end
-  end
-rescue NameError  # rubocop:disable Lint/SuppressedException
 end
 
 # @private

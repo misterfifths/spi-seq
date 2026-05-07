@@ -14,6 +14,7 @@ require_relative "theory/scale"
 require_relative "utils/live_loop_utils"
 require_relative "utils/midi_utils"
 require_relative "utils/misc_utils"
+require_relative "utils/stop_hooks"
 
 require_relative "prob"
 

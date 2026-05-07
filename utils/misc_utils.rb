@@ -36,58 +36,6 @@ def one_time_init(key = :default)
   end
 end
 
-$__STOP_HOOKS = []
-$__STOP_HOOKS_QUEUE = Thread::Queue.new
-
-# Registers a block to execute when Sonic Pi's execution is stopped or when
-# quitting the application. Note that the work you do in the block should be
-# very quick! The maximum total time allotted for all stop hooks to complete is
-# 1 second.
-#
-# Also note that the code in the block is evaluated in a new context, so many
-# global Sonic Pi settings (e.g. `use_midi_defaults`) will not be set.
-#
-# @return [void]
-# @yield
-def on_stop(&block)
-  $__STOP_HOOKS << block
-end
-
-# Returns true if any hooks have been registered with `on_stop`.
-# This is called from a non-Sonic Pi thread; things in ExtApi won't work.
-# @private
-def __any_stop_hooks?
-  !$__STOP_HOOKS.empty?
-end
-
-# Resets the event used for detecting when all stop hooks have completed. Call
-# this before `__run_stop_hooks` and `__wait_for_stop_hooks`.
-# This is called from a non-Sonic Pi thread; things in ExtApi won't work.
-# @private
-def __clear_stop_hook_event
-  $__STOP_HOOKS_QUEUE.clear
-end
-
-# Waits for all stop hooks (as triggered by `__run_stop_hooks`) to complete, or
-# for the timeout to elapse. Returns true if the hooks completed before the
-# timeout.
-# This is called from a non-Sonic Pi thread; things in ExtApi won't work.
-# @private
-def __wait_for_stop_hooks(timeout: 1)
-  !$__STOP_HOOKS_QUEUE.pop(timeout: timeout).nil?
-end
-
-# Runs all stop hooks, clears the list of hooks, and triggers the event that
-# will wake a thread waiting on `__wait_for_stop_hooks`.
-# This is called from a Sonic Pi thread.
-# @private
-def __run_stop_hooks
-  $__STOP_HOOKS_QUEUE.clear
-  $__STOP_HOOKS.each { |b| b.call }
-  $__STOP_HOOKS.clear
-  $__STOP_HOOKS_QUEUE << true
-end
-
 # Given a proc and a hash of keyword arguments, returns a new hash containing
 # only the members of the hash that are valid keyword arguments for the proc.
 # If the proc takes a double-star **kwargs argument, the hash is not filtered.
