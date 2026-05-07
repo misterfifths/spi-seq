@@ -205,6 +205,7 @@ class MIDINote < Numeric
   end
 
   alias shift_tone transpose
+  alias t transpose
 
   # Returns a new note in the same octave but with the given pitch class, which
   # should be a string or symbol of the sort accepted by {.new}.

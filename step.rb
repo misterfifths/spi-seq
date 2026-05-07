@@ -168,6 +168,23 @@ class Step < StepBase
     with_note(@note.shift_octave(shift))
   end
 
+  # Returns a new Step with the same pitch class as {#note} but with its octave
+  # shifted up by the given amount. This is equivalent to {#shift_octave}.
+  # @param shift [Integer]
+  # @return [Step]
+  def up(shift = 1)
+    shift_octave(shift)
+  end
+
+  # Returns a new Step with the same pitch class as {#note} but with its octave
+  # shifted down by the given amount. This is equivalent to {#shift_octave} with
+  # the negation of its argument.
+  # @param shift [Integer]
+  # @return [Step]
+  def down(shift = 1)
+    shift_octave(-shift)
+  end
+
   # Returns a new Step with {#note} offset by the given number of semitones.
   # @param shift [Integer]
   # @return [Step]
@@ -176,6 +193,7 @@ class Step < StepBase
   end
 
   alias shift_tone transpose
+  alias t transpose
 
   # The velocity of this step, as a fraction between 0 and 1.
   # @return [Number]
