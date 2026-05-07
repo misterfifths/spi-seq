@@ -301,38 +301,7 @@ class Track < TrackBase
 
   ## @!group Granularity manipulation
 
-  # Creates a new Track with double the {#granularity granularity} and number of
-  # slots. The length of each {Step} is doubled to keep the Track sounding
-  # roughly the same, which may entail turning a single step into two tied ones.
-  #
-  # This is the opposite of {#condense}.
-  #
-  # If a step has a {Step#prob probability} and expands into two steps in the
-  # new track, only the second will inherit the probability of the original
-  # step.
-  #
-  # It is an error to attempt to expand a track with 64th-note granularity.
-  #
-  # @example
-  #   t = T([S(:a1, gate: 0.25),
-  #          S(:b1, gate: 0.5),
-  #          S(:c1, gate: 0.75),
-  #          :d1], granularity: :eighth)
-  #   u = t.expand
-  #   # u is equivalent to
-  #   T([S(:a1, gate: 0.5), :r,
-  #      :b1, :r,
-  #      :c1, S(:c1, gate: 0.5),
-  #      :d1, :d1], granularity: :sixteenth)
-  #   # There are now twice as many slots and the granularity has doubled. But
-  #   # to keep things sounding the same, the gates on all steps have also
-  #   # doubled, which in some cases resulted a single step expanding to a tie.
-  #
-  # @return [Track]
-  # @see #with_granularity
-  # @see #condense
-  # @see #regrain
-  def expand
+  private def expand_once
     raise RangeError, "Cannot expand past 64th-note granularity" if @granularity == NoteLength::SixtyFourth
 
     # Gameplan: each slot in the grid will expand to two slots. Consider each
@@ -376,39 +345,49 @@ class Track < TrackBase
     mutate(grid: new_grid, granularity: @granularity.halve)
   end
 
-  # Creates a new Track with half the {#granularity granularity} and number of
-  # slots. Steps and ties have their lengths halved to keep the track sounding
-  # roughly the same.
+  # Creates a new Track with double the {#granularity granularity} and number of
+  # slots. The length of each {Step} is doubled to keep the Track sounding
+  # roughly the same, which may entail turning a single step into two tied ones.
   #
-  # This is the opposite of {#expand}, though note that this operation is
-  # significantly lossier. Steps with short gates and those starting on
-  # off-beats may be completely absent from the result.
+  # This is the opposite of {#condense}.
   #
-  # If a tied pair of steps has a {Step#prob probability}, only the probability
-  # of the first step will be present in the condensed step.
+  # If a step has a {Step#prob probability} and expands into two steps in the
+  # new track, only the second will inherit the probability of the original
+  # step.
   #
-  # It is an error to attempt to condense a track with whole-note granularity.
+  # It is an error to attempt to expand a track with 64th-note granularity.
   #
   # @example
-  #   t = T([S(:a1, gate: 0.5), :r,
-  #          :b1, :r,
-  #          :c1, S(:c1, gate: 0.5),
-  #          :d1, :d1], granularity: :sixteenth)
-  #   u = t.condense
+  #   t = T([S(:a1, gate: 0.25),
+  #          S(:b1, gate: 0.5),
+  #          S(:c1, gate: 0.75),
+  #          :d1], granularity: :eighth)
+  #   u = t.expand
   #   # u is equivalent to
-  #   T([S(:a1, gate: 0.25),
-  #      S(:b1, gate: 0.5),
-  #      S(:c1, gate: 0.75),
-  #      :d1], granularity: :eighth)
-  #   # The number of slots and granularity have both been halved, but so has
-  #   # the gate of each step or pair of tied steps. In some cases that resulted
-  #   # in two tied steps becoming one.
+  #   T([S(:a1, gate: 0.5), :r,
+  #      :b1, :r,
+  #      :c1, S(:c1, gate: 0.5),
+  #      :d1, :d1], granularity: :sixteenth)
+  #   # There are now twice as many slots and the granularity has doubled. But
+  #   # to keep things sounding the same, the gates on all steps have also
+  #   # doubled, which in some cases resulted a single step expanding to a tie.
   #
+  # @param times [Integer] The number of times to repeat the expansion.
   # @return [Track]
   # @see #with_granularity
-  # @see #expand
+  # @see #condense
   # @see #regrain
-  def condense
+  def expand(times = 1)
+    t = self
+    while times > 0
+      t = t.send(:expand_once)
+      times -= 1
+    end
+
+    t
+  end
+
+  private def condense_once
     raise RangeError, "Cannot condense past whole-note granularity" if @granularity == NoteLength::Whole
 
     # Gameplan: each pair of slots in the grid will collapse into one slot in a
@@ -460,6 +439,50 @@ class Track < TrackBase
     mutate(grid: new_grid, granularity: @granularity.double)
   end
 
+  # Creates a new Track with half the {#granularity granularity} and number of
+  # slots. Steps and ties have their lengths halved to keep the track sounding
+  # roughly the same.
+  #
+  # This is the opposite of {#expand}, though note that this operation is
+  # significantly lossier. Steps with short gates and those starting on
+  # off-beats may be completely absent from the result.
+  #
+  # If a tied pair of steps has a {Step#prob probability}, only the probability
+  # of the first step will be present in the condensed step.
+  #
+  # It is an error to attempt to condense a track with whole-note granularity.
+  #
+  # @example
+  #   t = T([S(:a1, gate: 0.5), :r,
+  #          :b1, :r,
+  #          :c1, S(:c1, gate: 0.5),
+  #          :d1, :d1], granularity: :sixteenth)
+  #   u = t.condense
+  #   # u is equivalent to
+  #   T([S(:a1, gate: 0.25),
+  #      S(:b1, gate: 0.5),
+  #      S(:c1, gate: 0.75),
+  #      :d1], granularity: :eighth)
+  #   # The number of slots and granularity have both been halved, but so has
+  #   # the gate of each step or pair of tied steps. In some cases that resulted
+  #   # in two tied steps becoming one.
+  #
+  # @param times [Integer] The number of times to repeat the condensing
+  #   operation.
+  # @return [Track]
+  # @see #with_granularity
+  # @see #expand
+  # @see #regrain
+  def condense(times = 1)
+    t = self
+    while times > 0
+      t = t.send(:condense_once)
+      times -= 1
+    end
+
+    t
+  end
+
   # {#expand Expands} or {#condense condenses} the appropriate number of times
   # to return a new Track with the given {#granularity granularity}.
   #
@@ -482,16 +505,8 @@ class Track < TrackBase
 
     return self if @granularity == new_granularity
 
-    # NOTE: this is obviously very silly, but the alternative would be making
-    # expand and condense way more complicated, which is not worth it.
-
     steps = @granularity.steps_to(new_granularity)
-    new_track = self
-    steps.times do
-      new_track = (new_granularity < @granularity) ? new_track.expand : new_track.condense
-    end
-
-    new_track
+    (new_granularity < @granularity) ? expand(steps) : condense(steps)
   end
 
   alias regrain regranularize

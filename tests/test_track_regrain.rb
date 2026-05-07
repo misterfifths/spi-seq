@@ -10,9 +10,9 @@ class TrackRegrainTest < Test::Unit::TestCase
   include TrackTestHelpers
 
   def test_expand
-    t = T([S(:a1, gate: 0.25), S(:b1, gate: 0.5), S(:c1, gate: 0.75), :d1])
+    x = T([S(:a1, gate: 0.25), S(:b1, gate: 0.5), S(:c1, gate: 0.75), :d1])
 
-    t = t.expand
+    t = x.expand
     assert_gt t, NoteLength::Sixteenth, 1
     assert_grid t, [
       [S(:a1, gate: 0.5)], [],
@@ -29,9 +29,15 @@ class TrackRegrainTest < Test::Unit::TestCase
       [:c1], [:c1], [:c1], [],
       [:d1], [:d1], [:d1], [:d1]
     ]
+    oneshot = x.expand(2)
+    assert_grid t, oneshot.grid
+    assert_gt t, oneshot.granularity, oneshot.timescale
 
     t = t.expand
     assert_gt t, NoteLength::SixtyFourth, 1
+    oneshot = x.expand(3)
+    assert_grid t, oneshot.grid
+    assert_gt t, oneshot.granularity, oneshot.timescale
 
     assert_raises { t.expand }
 
@@ -47,12 +53,12 @@ class TrackRegrainTest < Test::Unit::TestCase
   end
 
   def test_condense
-    t = T([[:a1], [], [], [],
+    x = T([[:a1], [], [], [],
            [:b1], [:b1], [], [],
            [:c1], [:c1], [:c1], [],
            [:d1], [:d1], [:d1], [:d1]])
 
-    t = t.condense
+    t = x.condense
     assert_gt t, NoteLength::Quarter, 1
     assert_grid t, [
       [S(:a1, gate: 0.5)], [],
@@ -69,9 +75,15 @@ class TrackRegrainTest < Test::Unit::TestCase
       [S(:c1, gate: 0.75)],
       [:d1]
     ]
+    oneshot = x.condense(2)
+    assert_grid t, oneshot.grid
+    assert_gt t, oneshot.granularity, oneshot.timescale
 
     t = t.condense
     assert_gt t, NoteLength::Whole, 1
+    oneshot = x.condense(3)
+    assert_grid t, oneshot.grid
+    assert_gt t, oneshot.granularity, oneshot.timescale
 
     assert_raises { t.condense }
 
