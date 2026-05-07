@@ -228,6 +228,28 @@ receiver, with just the described change.</p>
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#down-instance_method" title="#down (instance method)">#<strong>down</strong>(shift = 1)  &#x21d2; Step </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new Step with the same pitch class as <span class='object_link'><a href="#note-instance_method" title="Step#note (method)">#note</a></span> but with its octave shifted down by the given amount.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(note, vel: 127, gate: 1.0, prob: nil, accum_delta: 0, accum_max: 12, accum_min: 0, accum_mode: :wrap, accum_prob: nil)  &#x21d2; Step </a>
     
 
@@ -366,7 +388,7 @@ receiver, with just the described change.</p>
     
 
     
-      (also: #shift_tone)
+      (also: #shift_tone, #t)
     
   </span>
   
@@ -379,6 +401,28 @@ receiver, with just the described change.</p>
 
   
     <span class="summary_desc"><div class='inline'><p>Returns a new Step with <span class='object_link'><a href="#note-instance_method" title="Step#note (method)">#note</a></span> offset by the given number of semitones.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#up-instance_method" title="#up (instance method)">#<strong>up</strong>(shift = 1)  &#x21d2; Step </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new Step with the same pitch class as <span class='object_link'><a href="#note-instance_method" title="Step#note (method)">#note</a></span> but with its octave shifted up by the given amount.</p></div></span>
   
 </li>
 
@@ -962,7 +1006,78 @@ into an <code>amp</code> value passed to <code>play</code>.</p>
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="shift_gate-instance_method">
+  <h3 class="signature first" id="down-instance_method">
+  
+    #<strong>down</strong>(shift = 1)  &#x21d2; <tt><span class='object_link'><a href="" title="Step (class)">Step</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a new Step with the same pitch class as <span class='object_link'><a href="#note-instance_method" title="Step#note (method)">#note</a></span> but with its octave
+shifted down by the given amount. This is equivalent to <span class='object_link'><a href="#shift_octave-instance_method" title="Step#shift_octave (method)">#shift_octave</a></span> with
+the negation of its argument.</p>
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>shift</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>1</tt>)</em>
+      
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="Step (class)">Step</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+184
+185
+186</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'step.rb', line 184</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_down'>down</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_shift_octave'>shift_octave</span><span class='lparen'>(</span><span class='op'>-</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="shift_gate-instance_method">
   
     #<strong>shift_gate</strong>(shift)  &#x21d2; <tt><span class='object_link'><a href="" title="Step (class)">Step</a></span></tt> 
   
@@ -1271,12 +1386,12 @@ the resulting velocity is outside of 0 - 127, it will be clamped.</p>
       <pre class="lines">
 
 
-189
-190
-191</pre>
+207
+208
+209</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 189</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 207</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_tied?'>tied?</span>
   <span class='ivar'>@gate</span> <span class='op'>==</span> <span class='float'>1.0</span>  <span class='comment'># rubocop:disable Lint/FloatComparison
@@ -1294,7 +1409,7 @@ the resulting velocity is outside of 0 - 127, it will be clamped.</p>
 
   
     <span class="aliases">Also known as:
-    <span class="names"><span id='shift_tone-instance_method'>shift_tone</span></span>
+    <span class="names"><span id='shift_tone-instance_method'>shift_tone</span>, <span id='t-instance_method'>t</span></span>
     </span>
   
 
@@ -1342,15 +1457,85 @@ the resulting velocity is outside of 0 - 127, it will be clamped.</p>
       <pre class="lines">
 
 
-174
-175
-176</pre>
+191
+192
+193</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 174</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 191</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_transpose'>transpose</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_with_note'>with_note</span><span class='lparen'>(</span><span class='ivar'>@note</span><span class='period'>.</span><span class='id identifier rubyid_transpose'>transpose</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="up-instance_method">
+  
+    #<strong>up</strong>(shift = 1)  &#x21d2; <tt><span class='object_link'><a href="" title="Step (class)">Step</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a new Step with the same pitch class as <span class='object_link'><a href="#note-instance_method" title="Step#note (method)">#note</a></span> but with its octave
+shifted up by the given amount. This is equivalent to <span class='object_link'><a href="#shift_octave-instance_method" title="Step#shift_octave (method)">#shift_octave</a></span>.</p>
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>shift</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>1</tt>)</em>
+      
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="Step (class)">Step</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+175
+176
+177</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'step.rb', line 175</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_up'>up</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_shift_octave'>shift_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1401,12 +1586,12 @@ the resulting velocity is outside of 0 - 127, it will be clamped.</p>
       <pre class="lines">
 
 
-183
-184
-185</pre>
+201
+202
+203</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 183</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 201</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_velf'>velf</span>
   <span class='ivar'>@vel</span> <span class='op'>/</span> <span class='float'>127.0</span>
