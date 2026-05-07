@@ -166,7 +166,7 @@ def cc_mutable_live_loop(loop_name, cc:, port: nil, channel: nil, start_muted: f
                        port: port, channel: channel) do |incoming_cc, cc_val|
     next if incoming_cc != cc
     muted = cc_val == 0
-    log("CC #{cc} = #{cc_val} -> #{muted ? '' : 'un'}muting live loop #{loop_name}", "cc_mute_control")
+    log("CC #{cc} = #{cc_val} -> #{'un' unless muted}muting live loop #{loop_name}", "cc_mute_control")
     mute_live_loop(loop_name, muted)
   end
 

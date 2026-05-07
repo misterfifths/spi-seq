@@ -54,6 +54,9 @@ Style/CommentAnnotation:
 Style/Documentation:
   Enabled: false
 
+Style/OneClassPerFile:
+  Enabled: false
+
 Lint/AmbiguousOperatorPrecedence:
   Enabled: false
 

@@ -162,7 +162,7 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
       next if incoming_cc != fill_cc
 
       player.fill = cc_val != 0
-      log("CC #{cc} = #{cc_val} -> #{player.fill ? '' : 'un'}setting fill for live loop #{loop_name}", "cc_fill_control")
+      log("CC #{cc} = #{cc_val} -> #{'un' unless player.fill}setting fill for live loop #{loop_name}", "cc_fill_control")
     end
 
     # Don't send a 0 fill CC for restarts of the same sketch.

@@ -274,7 +274,7 @@ class TrackStepTest < Test::Unit::TestCase
     curve_args = fade_in ? [min, max, start] : [max, min, start]
     curve_func = Curves.send(curve_name, *curve_args)
 
-    track_fn_name = :"fade_#{fade_in ? 'in' : 'out'}#{quad ? '_quad' : ''}"
+    track_fn_name = :"fade_#{fade_in ? 'in' : 'out'}#{'_quad' if quad}"
     track_fn_args = fade_in ? [min, max] : [max, min]
 
     t = t.send(track_fn_name, *track_fn_args, start: start)

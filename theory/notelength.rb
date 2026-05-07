@@ -41,6 +41,7 @@ class NoteLength
   end
 
   def self.from_number(f)
+    # rubocop:disable Lint/FloatComparison
     case f
     when 4.0
       Whole
@@ -59,6 +60,7 @@ class NoteLength
     else
       raise RangeError, "Invalid note length #{f}"
     end
+    # rubocop:enable Lint/FloatComparison
   end
   private_class_method :from_number
 
