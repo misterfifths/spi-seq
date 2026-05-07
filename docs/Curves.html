@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Module: Curves
+  
+    &mdash; spi-seq Documentation
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css">
+
+  <link rel="stylesheet" href="css/common.css" type="text/css">
+
+<script type="text/javascript">
+  pathId = "Curves";
+  relpath = '';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="main_progress" aria-hidden="true"></div>
+
+    <div class="nav_wrap">
+      <iframe id="nav" src="class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="_index.html">Index (C)</a> &raquo;
+    
+    
+    <span class="title">Curves</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Module: Curves
+  
+  
+  
+</h1>
+<div class="box_info">
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>math/curves.rb
+</dd>
+  </dl>
+  
+</div>
+
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    <p>Collects a number of curves suitable for changing a value over time. These may
+be useful for functions like <span class='object_link'><a href="Track.html#with_vel_curve-instance_method" title="Track#with_vel_curve (method)">Track#with_vel_curve</a></span>.</p>
+<p>All of the constants on this module share the following behaviors:</p>
+<ul>
+<li>Each can be called with a single numeric argument using <code>call</code> (like a Proc
+or lambda).</li>
+<li>For <code>t</code> in 0 - 1 inclusive, for each constant <code>f</code>, <code>f.call(t)</code> is in the
+range of 0 - 1 inclusive.</li>
+<li>For <code>t</code> outside of 0 - 1, <code>f.call(t)</code> is not an error but should be
+considered undefined.</li>
+</ul>
+<p>These curves differ from those in the <span class='object_link'><a href="Easings.html" title="Easings (module)">Easings</a></span> module in that their results
+do not always begin at 0 or end at 1. Some do the exact opposite, like
+<span class='object_link'><a href="#DownQuad-constant" title="Curves::DownQuad (constant)">DownQuad</a></span>. Others reach 1 in the middle and return to 0 at the end, like
+<span class='object_link'><a href="#UpDownSine-constant" title="Curves::UpDownSine (constant)">UpDownSine</a></span>. Still others follow different trajectories.</p>
+<p>To scale a curve so that its output covers a certain range, use <span class='object_link'><a href="#scale-class_method" title="Curves.scale (method)">Curves.scale</a></span>.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+  
+    <h2>
+      Constant Summary
+      <small><a href="#" class="constants_summary_toggle">collapse</a></small>
+    </h2>
+
+    <dl class="constants">
+      
+        <dt id="UpLinear-constant" class="">UpLinear =
+          <div class="docstring">
+  <div class="discussion">
+    <p>The identity function; linearly moves between 0 and 1.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_x'>x</span> <span class='rbrace'>}</span></pre></dd>
+      
+        <dt id="DownLinear-constant" class="">DownLinear =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A curve that linearly moves from 1 to 0.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='float'>1.0</span> <span class='op'>-</span> <span class='id identifier rubyid_x'>x</span> <span class='rbrace'>}</span></pre></dd>
+      
+        <dt id="DownUpLinear-constant" class="">DownUpLinear =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A curve that moves from 1 to 0 at the halfway point, then back to 1.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='lparen'>(</span><span class='float'>2.0</span> <span class='op'>*</span> <span class='id identifier rubyid_x'>x</span> <span class='op'>-</span> <span class='float'>1.0</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_abs'>abs</span> <span class='rbrace'>}</span></pre></dd>
+      
+        <dt id="UpDownLinear-constant" class="">UpDownLinear =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A curve that moves from 0 to 1 at the halfway point, then back to 0.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='float'>1.0</span> <span class='op'>-</span> <span class='lparen'>(</span><span class='float'>2.0</span> <span class='op'>*</span> <span class='id identifier rubyid_x'>x</span> <span class='op'>-</span> <span class='float'>1.0</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_abs'>abs</span> <span class='rbrace'>}</span></pre></dd>
+      
+        <dt id="UpQuad-constant" class="">UpQuad =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A curve that moves quadratically from 0 to 1.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_x'>x</span> <span class='op'>*</span> <span class='id identifier rubyid_x'>x</span> <span class='rbrace'>}</span></pre></dd>
+      
+        <dt id="DownQuad-constant" class="">DownQuad =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A curve that moves quadratically from 1 to 0.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span> <span class='op'>-</span> <span class='float'>1.0</span><span class='rparen'>)</span> <span class='op'>**</span> <span class='int'>2</span> <span class='rbrace'>}</span></pre></dd>
+      
+        <dt id="DownUpQuad-constant" class="">DownUpQuad =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A curve that moves quadratically from 1 to 0 at the halfway point, then back
+to 1.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='lparen'>(</span><span class='float'>2.0</span> <span class='op'>*</span> <span class='id identifier rubyid_x'>x</span> <span class='op'>-</span> <span class='float'>1.0</span><span class='rparen'>)</span> <span class='op'>**</span> <span class='int'>2</span> <span class='rbrace'>}</span></pre></dd>
+      
+        <dt id="UpDownQuad-constant" class="">UpDownQuad =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A curve that moves quadratically from 0 to 1 at the halfway point, then back
+to 0.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='float'>1.0</span> <span class='op'>-</span> <span class='lparen'>(</span><span class='float'>2.0</span> <span class='op'>*</span> <span class='id identifier rubyid_x'>x</span> <span class='op'>-</span> <span class='float'>1.0</span><span class='rparen'>)</span> <span class='op'>**</span> <span class='int'>2</span> <span class='rbrace'>}</span></pre></dd>
+      
+        <dt id="UpCubic-constant" class="">UpCubic =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A curve that moves cubically from 0 to 1. This is one arm of <code>x^3</code>; there is
+no leveling out in the middle.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_x'>x</span> <span class='op'>**</span> <span class='int'>3</span> <span class='rbrace'>}</span></pre></dd>
+      
+        <dt id="DownCubic-constant" class="">DownCubic =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A curve that moves cubically from 1 to 0. This is one arm of <code>x^3</code>; there is
+no leveling out in the middle.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='op'>-</span><span class='lparen'>(</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span> <span class='op'>-</span> <span class='float'>1.0</span><span class='rparen'>)</span> <span class='op'>**</span> <span class='int'>3</span><span class='rparen'>)</span> <span class='rbrace'>}</span></pre></dd>
+      
+        <dt id="UpFullCubic-constant" class="">UpFullCubic =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A curve that moves cubically from 0 to 1. This is the full cubic curve, and
+has a leveling in the middle.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='lparen'>(</span><span class='const'>Math</span><span class='period'>.</span><span class='id identifier rubyid_cbrt'>cbrt</span><span class='lparen'>(</span><span class='float'>4.0</span><span class='rparen'>)</span> <span class='op'>*</span> <span class='id identifier rubyid_x'>x</span> <span class='op'>-</span> <span class='const'>Math</span><span class='period'>.</span><span class='id identifier rubyid_cbrt'>cbrt</span><span class='lparen'>(</span><span class='float'>0.5</span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='op'>**</span> <span class='int'>3</span> <span class='op'>+</span> <span class='float'>0.5</span> <span class='rbrace'>}</span></pre></dd>
+      
+        <dt id="DownFullCubic-constant" class="">DownFullCubic =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A curve that moves cubically from 1 to 0. This is the full cubic curve, and
+has a leveling in the middle.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='lparen'>(</span><span class='const'>Math</span><span class='period'>.</span><span class='id identifier rubyid_cbrt'>cbrt</span><span class='lparen'>(</span><span class='float'>0.5</span><span class='rparen'>)</span> <span class='op'>-</span> <span class='const'>Math</span><span class='period'>.</span><span class='id identifier rubyid_cbrt'>cbrt</span><span class='lparen'>(</span><span class='float'>4.0</span><span class='rparen'>)</span> <span class='op'>*</span> <span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span> <span class='op'>**</span> <span class='int'>3</span> <span class='op'>+</span> <span class='float'>0.5</span> <span class='rbrace'>}</span></pre></dd>
+      
+        <dt id="DownSine-constant" class="">DownSine =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A curve that moves from 1 to 0 along a sine.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='const'>Math</span><span class='period'>.</span><span class='id identifier rubyid_cos'>cos</span><span class='lparen'>(</span><span class='const'>Math</span><span class='op'>::</span><span class='const'>PI</span> <span class='op'>*</span> <span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span> <span class='op'>/</span> <span class='float'>2.0</span> <span class='op'>+</span> <span class='float'>0.5</span> <span class='rbrace'>}</span></pre></dd>
+      
+        <dt id="UpSine-constant" class="">UpSine =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A curve that moves from 0 to 1 along a sine.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='op'>-</span><span class='const'>Math</span><span class='period'>.</span><span class='id identifier rubyid_cos'>cos</span><span class='lparen'>(</span><span class='const'>Math</span><span class='op'>::</span><span class='const'>PI</span> <span class='op'>*</span> <span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span> <span class='op'>/</span> <span class='float'>2.0</span> <span class='op'>+</span> <span class='float'>0.5</span> <span class='rbrace'>}</span></pre></dd>
+      
+        <dt id="DownUpSine-constant" class="">DownUpSine =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A curve that moves along a sine from 1 to 0 at the halfway point, then back
+to 1.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='const'>Math</span><span class='period'>.</span><span class='id identifier rubyid_cos'>cos</span><span class='lparen'>(</span><span class='float'>2.0</span> <span class='op'>*</span> <span class='const'>Math</span><span class='op'>::</span><span class='const'>PI</span> <span class='op'>*</span> <span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span> <span class='op'>/</span> <span class='float'>2.0</span> <span class='op'>+</span> <span class='float'>0.5</span> <span class='rbrace'>}</span></pre></dd>
+      
+        <dt id="UpDownSine-constant" class="">UpDownSine =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A curve that moves along a sine from 0 to 1 at the halfway point, then back
+to 0.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='op'>-</span><span class='const'>Math</span><span class='period'>.</span><span class='id identifier rubyid_cos'>cos</span><span class='lparen'>(</span><span class='float'>2.0</span> <span class='op'>*</span> <span class='const'>Math</span><span class='op'>::</span><span class='const'>PI</span> <span class='op'>*</span> <span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span> <span class='op'>/</span> <span class='float'>2.0</span> <span class='op'>+</span> <span class='float'>0.5</span> <span class='rbrace'>}</span></pre></dd>
+      
+        <dt id="DownUp2Sine-constant" class="">DownUp2Sine =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A curve that moves along a sine from 1 -&gt; 0 -&gt; 1 -&gt; 0.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='const'>Math</span><span class='period'>.</span><span class='id identifier rubyid_cos'>cos</span><span class='lparen'>(</span><span class='float'>3.0</span> <span class='op'>*</span> <span class='const'>Math</span><span class='op'>::</span><span class='const'>PI</span> <span class='op'>*</span> <span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span> <span class='op'>/</span> <span class='float'>2.0</span> <span class='op'>+</span> <span class='float'>0.5</span> <span class='rbrace'>}</span></pre></dd>
+      
+        <dt id="UpDown2Sine-constant" class="">UpDown2Sine =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A curve that moves along a sine from 0 -&gt; 1 -&gt; 0 -&gt; 1.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='op'>-</span><span class='const'>Math</span><span class='period'>.</span><span class='id identifier rubyid_cos'>cos</span><span class='lparen'>(</span><span class='float'>3.0</span> <span class='op'>*</span> <span class='const'>Math</span><span class='op'>::</span><span class='const'>PI</span> <span class='op'>*</span> <span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span> <span class='op'>/</span> <span class='float'>2.0</span> <span class='op'>+</span> <span class='float'>0.5</span> <span class='rbrace'>}</span></pre></dd>
+      
+        <dt id="DownUp3Sine-constant" class="">DownUp3Sine =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A curve that moves along a sine from 1 -&gt; 0 -&gt; 1 -&gt; 0 -&gt; 1.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='const'>Math</span><span class='period'>.</span><span class='id identifier rubyid_cos'>cos</span><span class='lparen'>(</span><span class='float'>4.0</span> <span class='op'>*</span> <span class='const'>Math</span><span class='op'>::</span><span class='const'>PI</span> <span class='op'>*</span> <span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span> <span class='op'>/</span> <span class='float'>2.0</span> <span class='op'>+</span> <span class='float'>0.5</span> <span class='rbrace'>}</span></pre></dd>
+      
+        <dt id="UpDown3Sine-constant" class="">UpDown3Sine =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A curve that moves along a sine from 0 -&gt; 1 -&gt; 0 -&gt; 1 -&gt; 0.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='op'>-</span><span class='const'>Math</span><span class='period'>.</span><span class='id identifier rubyid_cos'>cos</span><span class='lparen'>(</span><span class='float'>4.0</span> <span class='op'>*</span> <span class='const'>Math</span><span class='op'>::</span><span class='const'>PI</span> <span class='op'>*</span> <span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span> <span class='op'>/</span> <span class='float'>2.0</span> <span class='op'>+</span> <span class='float'>0.5</span> <span class='rbrace'>}</span></pre></dd>
+      
+    </dl>
+  
+
+
+
+
+
+
+
+  
+    <h2>
+      Class Method Summary
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#fade_in_linear-class_method" title="fade_in_linear (class method)">.<strong>fade_in_linear</strong>(min_value = 0.0, max_value = 1.0, ramp_up_start = 0.0)  &#x21d2; #call </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a lambda that increases linearly from <code>min_value</code> to <code>max_value</code> over the range of 0 to 1.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#fade_in_quad-class_method" title="fade_in_quad (class method)">.<strong>fade_in_quad</strong>(min_value = 0.0, max_value = 1.0, ramp_up_start = 0.0)  &#x21d2; #call </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The same as <span class='object_link'><a href="#fade_in_linear-class_method" title="Curves.fade_in_linear (method)">Curves.fade_in_linear</a></span>, but quadratically increases values.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#fade_out_linear-class_method" title="fade_out_linear (class method)">.<strong>fade_out_linear</strong>(max_value = 1.0, min_value = 0.0, ramp_down_start = 0.0)  &#x21d2; #call </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a function that decreases linearly from <code>max_value</code> to <code>min_value</code> over the range of 0 to 1.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#fade_out_quad-class_method" title="fade_out_quad (class method)">.<strong>fade_out_quad</strong>(max_value = 1.0, min_value = 0.0, ramp_down_start = 0.0)  &#x21d2; #call </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The same as <span class='object_link'><a href="#fade_out_linear-class_method" title="Curves.fade_out_linear (method)">Curves.fade_out_linear</a></span>, but quadratically decreases values.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#scale-class_method" title="scale (class method)">.<strong>scale</strong>(f, min, max, orig_min: 0, orig_max: 1)  &#x21d2; #call </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a curve that is the result of scaling another curve so that its values fall within a given range.</p></div></span>
+  
+</li>
+
+      
+    </ul>
+    
+  
+
+
+
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="fade_in_linear-class_method">
+  
+    .<strong>fade_in_linear</strong>(min_value = 0.0, max_value = 1.0, ramp_up_start = 0.0)  &#x21d2; <tt>#call</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a lambda that increases linearly from <code>min_value</code> to <code>max_value</code>
+over the range of 0 to 1. <code>ramp_up_start</code> determines at what input value the
+increase will begin; the function will return <code>min_value</code> for inputs below
+<code>ramp_up_start</code>, and then linearly increasing values between <code>min_value</code>
+and <code>max_value</code> for those after.</p>
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>min_value</span>
+      
+      
+        <span class='type'>(<tt>Number</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>0.0</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>max_value</span>
+      
+      
+        <span class='type'>(<tt>Number</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>1.0</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>ramp_up_start</span>
+      
+      
+        <span class='type'>(<tt>Number</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>0.0</tt>)</em>
+      
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>#call</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'math/curves.rb', line 103</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_fade_in_linear'>fade_in_linear</span><span class='lparen'>(</span><span class='id identifier rubyid_min_value'>min_value</span> <span class='op'>=</span> <span class='float'>0.0</span><span class='comma'>,</span> <span class='id identifier rubyid_max_value'>max_value</span> <span class='op'>=</span> <span class='float'>1.0</span><span class='comma'>,</span> <span class='id identifier rubyid_ramp_up_start'>ramp_up_start</span> <span class='op'>=</span> <span class='float'>0.0</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_min_value'>min_value</span> <span class='op'>=</span> <span class='id identifier rubyid_min_value'>min_value</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span>
+  <span class='id identifier rubyid_max_value'>max_value</span> <span class='op'>=</span> <span class='id identifier rubyid_max_value'>max_value</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span>
+  <span class='id identifier rubyid_ramp_up_start'>ramp_up_start</span> <span class='op'>=</span> <span class='id identifier rubyid_ramp_up_start'>ramp_up_start</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span>
+
+  <span class='id identifier rubyid_lambda'>lambda</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_x'>x</span><span class='op'>|</span>
+    <span class='kw'>return</span> <span class='id identifier rubyid_min_value'>min_value</span> <span class='kw'>if</span> <span class='id identifier rubyid_x'>x</span> <span class='op'>&lt;</span> <span class='id identifier rubyid_ramp_up_start'>ramp_up_start</span>
+    <span class='kw'>return</span> <span class='id identifier rubyid_max_value'>max_value</span> <span class='kw'>if</span> <span class='id identifier rubyid_x'>x</span> <span class='op'>&gt;=</span> <span class='int'>1</span>
+
+    <span class='comment'># We&#39;re going to go linearly from (ramp_up_start, min_value) to
+</span>    <span class='comment'># (1, max_value).
+</span>    <span class='id identifier rubyid_x1'>x1</span> <span class='op'>=</span> <span class='id identifier rubyid_ramp_up_start'>ramp_up_start</span>
+    <span class='id identifier rubyid_y1'>y1</span> <span class='op'>=</span> <span class='id identifier rubyid_min_value'>min_value</span>
+    <span class='id identifier rubyid_x2'>x2</span> <span class='op'>=</span> <span class='float'>1.0</span>
+    <span class='id identifier rubyid_y2'>y2</span> <span class='op'>=</span> <span class='id identifier rubyid_max_value'>max_value</span>
+
+    <span class='lparen'>(</span><span class='id identifier rubyid_y2'>y2</span> <span class='op'>-</span> <span class='id identifier rubyid_y1'>y1</span><span class='rparen'>)</span> <span class='op'>/</span> <span class='lparen'>(</span><span class='id identifier rubyid_x2'>x2</span> <span class='op'>-</span> <span class='id identifier rubyid_x1'>x1</span><span class='rparen'>)</span> <span class='op'>*</span> <span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span> <span class='op'>-</span> <span class='id identifier rubyid_x1'>x1</span><span class='rparen'>)</span> <span class='op'>+</span> <span class='id identifier rubyid_y1'>y1</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="fade_in_quad-class_method">
+  
+    .<strong>fade_in_quad</strong>(min_value = 0.0, max_value = 1.0, ramp_up_start = 0.0)  &#x21d2; <tt>#call</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The same as <span class='object_link'><a href="#fade_in_linear-class_method" title="Curves.fade_in_linear (method)">fade_in_linear</a></span>, but quadratically increases values.</p>
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>min_value</span>
+      
+      
+        <span class='type'>(<tt>Number</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>0.0</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>max_value</span>
+      
+      
+        <span class='type'>(<tt>Number</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>1.0</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>ramp_up_start</span>
+      
+      
+        <span class='type'>(<tt>Number</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>0.0</tt>)</em>
+      
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>#call</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'math/curves.rb', line 155</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_fade_in_quad'>fade_in_quad</span><span class='lparen'>(</span><span class='id identifier rubyid_min_value'>min_value</span> <span class='op'>=</span> <span class='float'>0.0</span><span class='comma'>,</span> <span class='id identifier rubyid_max_value'>max_value</span> <span class='op'>=</span> <span class='float'>1.0</span><span class='comma'>,</span> <span class='id identifier rubyid_ramp_up_start'>ramp_up_start</span> <span class='op'>=</span> <span class='float'>0.0</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_min_value'>min_value</span> <span class='op'>=</span> <span class='id identifier rubyid_min_value'>min_value</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span>
+  <span class='id identifier rubyid_max_value'>max_value</span> <span class='op'>=</span> <span class='id identifier rubyid_max_value'>max_value</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span>
+  <span class='id identifier rubyid_ramp_up_start'>ramp_up_start</span> <span class='op'>=</span> <span class='id identifier rubyid_ramp_up_start'>ramp_up_start</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span>
+
+  <span class='id identifier rubyid_lambda'>lambda</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_x'>x</span><span class='op'>|</span>
+    <span class='kw'>return</span> <span class='id identifier rubyid_min_value'>min_value</span> <span class='kw'>if</span> <span class='id identifier rubyid_x'>x</span> <span class='op'>&lt;</span> <span class='id identifier rubyid_ramp_up_start'>ramp_up_start</span>
+    <span class='kw'>return</span> <span class='id identifier rubyid_max_value'>max_value</span> <span class='kw'>if</span> <span class='id identifier rubyid_x'>x</span> <span class='op'>&gt;=</span> <span class='int'>1</span>
+
+    <span class='comment'># We want a quadratic with its minimum at (ramp_up_start, min_value) which
+</span>    <span class='comment'># intersects (1, max_value).
+</span>    <span class='comment'># More precisely, we&#39;re after y = (c(x - ramp_up_start))^2 + min_value for
+</span>    <span class='comment'># some c that makes it hit (1, max_value). Substituting those values and
+</span>    <span class='comment'># solving for c gives...
+</span>    <span class='id identifier rubyid_c'>c</span> <span class='op'>=</span> <span class='const'>Math</span><span class='period'>.</span><span class='id identifier rubyid_sqrt'>sqrt</span><span class='lparen'>(</span><span class='id identifier rubyid_max_value'>max_value</span> <span class='op'>-</span> <span class='id identifier rubyid_min_value'>min_value</span><span class='rparen'>)</span> <span class='op'>/</span> <span class='lparen'>(</span><span class='float'>1.0</span> <span class='op'>-</span> <span class='id identifier rubyid_ramp_up_start'>ramp_up_start</span><span class='rparen'>)</span>
+    <span class='lparen'>(</span><span class='id identifier rubyid_c'>c</span> <span class='op'>*</span> <span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span> <span class='op'>-</span> <span class='id identifier rubyid_ramp_up_start'>ramp_up_start</span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='op'>**</span> <span class='int'>2</span> <span class='op'>+</span> <span class='id identifier rubyid_min_value'>min_value</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="fade_out_linear-class_method">
+  
+    .<strong>fade_out_linear</strong>(max_value = 1.0, min_value = 0.0, ramp_down_start = 0.0)  &#x21d2; <tt>#call</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a function that decreases linearly from <code>max_value</code> to <code>min_value</code>
+over the range of 0 to 1. <code>ramp_down_start</code> determines at what input value
+the decrease will begin; the function will return <code>max_value</code> for inputs
+below <code>ramp_down_start</code>, and then linearly decreasing values between
+<code>max_value</code> and <code>min_value</code> for those after.</p>
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>min_value</span>
+      
+      
+        <span class='type'>(<tt>Number</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>0.0</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>max_value</span>
+      
+      
+        <span class='type'>(<tt>Number</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>1.0</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>ramp_down_start</span>
+      
+      
+        <span class='type'>(<tt>Number</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>0.0</tt>)</em>
+      
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>#call</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'math/curves.rb', line 132</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_fade_out_linear'>fade_out_linear</span><span class='lparen'>(</span><span class='id identifier rubyid_max_value'>max_value</span> <span class='op'>=</span> <span class='float'>1.0</span><span class='comma'>,</span> <span class='id identifier rubyid_min_value'>min_value</span> <span class='op'>=</span> <span class='float'>0.0</span><span class='comma'>,</span> <span class='id identifier rubyid_ramp_down_start'>ramp_down_start</span> <span class='op'>=</span> <span class='float'>0.0</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_max_value'>max_value</span> <span class='op'>=</span> <span class='id identifier rubyid_max_value'>max_value</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span>
+  <span class='id identifier rubyid_min_value'>min_value</span> <span class='op'>=</span> <span class='id identifier rubyid_min_value'>min_value</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span>
+  <span class='id identifier rubyid_ramp_down_start'>ramp_down_start</span> <span class='op'>=</span> <span class='id identifier rubyid_ramp_down_start'>ramp_down_start</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span>
+
+  <span class='id identifier rubyid_lambda'>lambda</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_x'>x</span><span class='op'>|</span>
+    <span class='kw'>return</span> <span class='id identifier rubyid_max_value'>max_value</span> <span class='kw'>if</span> <span class='id identifier rubyid_x'>x</span> <span class='op'>&lt;</span> <span class='id identifier rubyid_ramp_down_start'>ramp_down_start</span>
+    <span class='kw'>return</span> <span class='id identifier rubyid_min_value'>min_value</span> <span class='kw'>if</span> <span class='id identifier rubyid_x'>x</span> <span class='op'>&gt;=</span> <span class='int'>1</span>
+
+    <span class='comment'># We&#39;re going to go linearly from (ramp_down_start, max_value) to
+</span>    <span class='comment'># (1, min_value).
+</span>    <span class='id identifier rubyid_x1'>x1</span> <span class='op'>=</span> <span class='id identifier rubyid_ramp_down_start'>ramp_down_start</span>
+    <span class='id identifier rubyid_y1'>y1</span> <span class='op'>=</span> <span class='id identifier rubyid_max_value'>max_value</span>
+    <span class='id identifier rubyid_x2'>x2</span> <span class='op'>=</span> <span class='float'>1.0</span>
+    <span class='id identifier rubyid_y2'>y2</span> <span class='op'>=</span> <span class='id identifier rubyid_min_value'>min_value</span>
+
+    <span class='lparen'>(</span><span class='id identifier rubyid_y2'>y2</span> <span class='op'>-</span> <span class='id identifier rubyid_y1'>y1</span><span class='rparen'>)</span> <span class='op'>/</span> <span class='lparen'>(</span><span class='id identifier rubyid_x2'>x2</span> <span class='op'>-</span> <span class='id identifier rubyid_x1'>x1</span><span class='rparen'>)</span> <span class='op'>*</span> <span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span> <span class='op'>-</span> <span class='id identifier rubyid_x1'>x1</span><span class='rparen'>)</span> <span class='op'>+</span> <span class='id identifier rubyid_y1'>y1</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="fade_out_quad-class_method">
+  
+    .<strong>fade_out_quad</strong>(max_value = 1.0, min_value = 0.0, ramp_down_start = 0.0)  &#x21d2; <tt>#call</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The same as <span class='object_link'><a href="#fade_out_linear-class_method" title="Curves.fade_out_linear (method)">fade_out_linear</a></span>, but quadratically decreases values.</p>
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>min_value</span>
+      
+      
+        <span class='type'>(<tt>Number</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>0.0</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>max_value</span>
+      
+      
+        <span class='type'>(<tt>Number</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>1.0</tt>)</em>
+      
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>ramp_down_start</span>
+      
+      
+        <span class='type'>(<tt>Number</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>0.0</tt>)</em>
+      
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>#call</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'math/curves.rb', line 177</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_fade_out_quad'>fade_out_quad</span><span class='lparen'>(</span><span class='id identifier rubyid_max_value'>max_value</span> <span class='op'>=</span> <span class='float'>1.0</span><span class='comma'>,</span> <span class='id identifier rubyid_min_value'>min_value</span> <span class='op'>=</span> <span class='float'>0.0</span><span class='comma'>,</span> <span class='id identifier rubyid_ramp_down_start'>ramp_down_start</span> <span class='op'>=</span> <span class='float'>0.0</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_max_value'>max_value</span> <span class='op'>=</span> <span class='id identifier rubyid_max_value'>max_value</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span>
+  <span class='id identifier rubyid_min_value'>min_value</span> <span class='op'>=</span> <span class='id identifier rubyid_min_value'>min_value</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span>
+  <span class='id identifier rubyid_ramp_down_start'>ramp_down_start</span> <span class='op'>=</span> <span class='id identifier rubyid_ramp_down_start'>ramp_down_start</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span>
+
+  <span class='id identifier rubyid_lambda'>lambda</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_x'>x</span><span class='op'>|</span>
+    <span class='kw'>return</span> <span class='id identifier rubyid_max_value'>max_value</span> <span class='kw'>if</span> <span class='id identifier rubyid_x'>x</span> <span class='op'>&lt;</span> <span class='id identifier rubyid_ramp_down_start'>ramp_down_start</span>
+    <span class='kw'>return</span> <span class='id identifier rubyid_min_value'>min_value</span> <span class='kw'>if</span> <span class='id identifier rubyid_x'>x</span> <span class='op'>&gt;=</span> <span class='int'>1</span>
+
+    <span class='comment'># This is the same quadratic as fade_in_quad, just flipped and moved up
+</span>    <span class='comment'># so its maximum is at (ramp_down_start, max_value).
+</span>    <span class='id identifier rubyid_c'>c</span> <span class='op'>=</span> <span class='const'>Math</span><span class='period'>.</span><span class='id identifier rubyid_sqrt'>sqrt</span><span class='lparen'>(</span><span class='id identifier rubyid_max_value'>max_value</span> <span class='op'>-</span> <span class='id identifier rubyid_min_value'>min_value</span><span class='rparen'>)</span> <span class='op'>/</span> <span class='lparen'>(</span><span class='float'>1.0</span> <span class='op'>-</span> <span class='id identifier rubyid_ramp_down_start'>ramp_down_start</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_max_value'>max_value</span> <span class='op'>-</span> <span class='lparen'>(</span><span class='id identifier rubyid_c'>c</span> <span class='op'>*</span> <span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span> <span class='op'>-</span> <span class='id identifier rubyid_ramp_down_start'>ramp_down_start</span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='op'>**</span> <span class='int'>2</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="scale-class_method">
+  
+    .<strong>scale</strong>(f, min, max, orig_min: 0, orig_max: 1)  &#x21d2; <tt>#call</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a curve that is the result of scaling another curve so that its
+values fall within a given range.</p>
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>f</span>
+      
+      
+        <span class='type'>(<tt>#call</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The curve to scale, which should be callable with a single
+floating point argument.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>min</span>
+      
+      
+        <span class='type'>(<tt>Number</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The desired minimum for the scaled curve.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>max</span>
+      
+      
+        <span class='type'>(<tt>Number</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The desired maximum for the scaled curve.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>orig_min</span>
+      
+      
+        <span class='type'>(<tt>Number</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>0</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The minimum output of <code>f</code>, before scaling.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>orig_max</span>
+      
+      
+        <span class='type'>(<tt>Number</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>1</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The maximum output of <code>f</code>, before scaling.</p></div>
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>#call</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>A lambda that will call <code>f</code> and scale its output so that it
+falls between <code>min</code> and <code>max</code> inclusive.</p></div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+90
+91
+92</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'math/curves.rb', line 90</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_scale'>scale</span><span class='lparen'>(</span><span class='id identifier rubyid_f'>f</span><span class='comma'>,</span> <span class='id identifier rubyid_min'>min</span><span class='comma'>,</span> <span class='id identifier rubyid_max'>max</span><span class='comma'>,</span> <span class='label'>orig_min:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>orig_max:</span> <span class='int'>1</span><span class='rparen'>)</span>
+  <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_min'>min</span> <span class='op'>+</span> <span class='lparen'>(</span><span class='id identifier rubyid_max'>max</span> <span class='op'>-</span> <span class='id identifier rubyid_min'>min</span><span class='rparen'>)</span> <span class='op'>*</span> <span class='lparen'>(</span><span class='lparen'>(</span><span class='id identifier rubyid_f'>f</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='id identifier rubyid_x'>x</span><span class='rparen'>)</span> <span class='op'>-</span> <span class='id identifier rubyid_orig_min'>orig_min</span><span class='rparen'>)</span> <span class='op'>/</span> <span class='lparen'>(</span><span class='id identifier rubyid_orig_max'>orig_max</span> <span class='op'>-</span> <span class='id identifier rubyid_orig_min'>orig_min</span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+
+      
+    </div>
+  </body>
+</html>

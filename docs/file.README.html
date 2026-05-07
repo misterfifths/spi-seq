@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  File: README
+  
+    &mdash; spi-seq Documentation
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css">
+
+  <link rel="stylesheet" href="css/common.css" type="text/css">
+
+<script type="text/javascript">
+  pathId = "README";
+  relpath = '';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="main_progress" aria-hidden="true"></div>
+
+    <div class="nav_wrap">
+      <iframe id="nav" src="file_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="_index.html">Index</a> &raquo; 
+    <span class="title">File: README</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><div id='filecontents'><h1 id="spi_seq__A_sequencer_library_for_Sonic_Pi">spi-seq: A sequencer library for Sonic Pi</h1>
+<p>This is a library for creating, manipulating, and playing back sequenced tracks in <a href="https://sonic-pi.net/">Sonic Pi</a>. It is heavily inspired by the capabilities of the <a href="https://oxiinstruments.com/oxi-one/">Oxi One sequencer</a>.</p>
+<p>Read on for an introduction, or see the <a href="https://misterfifths.github.io/spi-seq">documentation</a>.</p>
+<h2 id="What_can_it_do_">What can it do?</h2>
+<p>spi-seq allows you to quickly construct and manipulate tracks, starting with simple chords or arpeggios, then play them back over MIDI. You can mute and unmute (or even add) tracks on the fly; the library plays nice with all of Sonic Pi's live coding tools.</p>
+<p>Under the name <a href="https://soundcloud.com/full-empty-214000746">Full Empty</a>, with the aid of a few hardware synthesizers, I've made quite a few tracks with spi-seq. Some personal favorites are <a href="https://soundcloud.com/full-empty-214000746/2-8-26">&quot;2-18-26&quot;</a> and <a href="https://soundcloud.com/full-empty-214000746/f00f-redux">&quot;F00F Redux&quot;</a>. The source for the melody of the latter is in <a href="examples/f00f.rb">the examples</a>.</p>
+<h2 id="Installation">Installation</h2>
+<p>You will of course need to install <a href="https://sonic-pi.net/">Sonic Pi</a>.</p>
+<p>Clone or download this repository somewhere on your computer. Then, in a Sonic Pi workspace, <code>require</code> the <code>core.rb</code> file, which loads all the components of spi-seq, and call the <code>init_spi_seq</code> method. For example, if you downloaded the code to your home directory:</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_require'>require</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>~/spi-seq/core</span><span class='tstring_end'>&quot;</span></span>
+<span class='id identifier rubyid_init_spi_seq'><span class='object_link'><a href="top-level-namespace.html#init_spi_seq-instance_method" title="#init_spi_seq (method)">init_spi_seq</a></span></span>
+</code></pre>
+<p>Read on for an introduction to using the library, or see the <a href="examples">examples</a> or <a href="https://misterfifths.github.io/spi-seq">documentation</a>.</p>
+<h2 id="Whirlwind_tour">Whirlwind tour</h2>
+<h3 id="Meant_for_MIDI">Meant for MIDI</h3>
+<p>I should mention this up front: spi-seq is very much intended to control synths over MIDI. It <em>can</em> use Sonic Pi's built-in synthesis, but that is a subpar experience compared to MIDI. This is largely because there is no way to indefinitely hold a Sonic Pi note and later gracefully release it, which means that tied notes from spi-seq will end abruptly, and probably click. If that's not a dealbreaker, please continue!</p>
+<h3 id="The_basics">The basics</h3>
+<p>The core object in spi-seq is a <code>Track</code>. A <code>Track</code> consists of slots, and each slot contains zero or more <code>Step</code>s. An empty slot represents a rest. A <code>Step</code> is a note plus some metadata (its gate, velocity, the probability it will trigger, etc.). For example:</p>
+<pre class="code ruby"><code class="ruby">Track ➘
+  +-------------------------------------------------------------------------------------------------+
+  | Granularity (the duration of a slot): 8th note                                                  |
+  |                                                                                                 |
+  | Slots (played sequentially) ➘                                                                   |
+  |   +----------------------------+ +----------------------------+ +----------------------------+  |
+  |   | Steps ➘                    | | Steps ➘                    | | Empty slot (a rest)        |  |
+  |   | (played simultaneously)    | | (played simultaneously)    | +----------------------------+  |
+  |   |   +--------------------+   | |   +--------------------+   |                                 |
+  |   |   | C2, gate 0.5,      |   | |   | E1, gate 0.25,     |   |                                 |
+  |   |   | velocity 127       |   | |   | velocity 127       |   |                                 |
+  |   |   +--------------------+   | |   +--------------------+   |                                 |
+  |   |   +--------------------+   | |   +--------------------+   |                                 |
+  |   |   | E2, gate 1 (tied), |   | |   | B3, gate 0.25,     |   |                                 |
+  |   |   | velocity 127       |   | |   | velocity 64,       |   |                                 |
+  |   |   +--------------------+   | |   | probability of     |   |                                 |
+  |   |   +--------------------+   | |   | triggering: 50%    |   |                                 |
+  |   |   | G2, gate 0.5,      |   | |   +--------------------+   |                                 |
+  |   |   | velocity 64        |   | +----------------------------+                                 |
+  |   |   +--------------------+   |                                                                |
+  |   +----------------------------+                                                                |
+  +-------------------------------------------------------------------------------------------------+
+</code></pre>
+<p>The power of spi-seq lies in its many tools to create, mutate, combine, and otherwise manipulate <code>Track</code>s and their <code>Step</code>s.</p>
+<p>A track is played back using a <code>Player</code>, which walks through the slots in a <code>Track</code>, one after another, and plays their <code>Step</code>s simultaneously for the correct duration. You will not usually create a <code>Player</code> manually, instead relying on <code>track_live_loop</code> to do it for you.</p>
+<p>The easiest way to create a <code>Track</code> is to use <code>Track.new</code>, which is also aliased to <code>T</code>. You can express the notes to play in a variety of ways, but the simplest is an array of symbols, strings, or MIDI note numbers. Here's a snippet that creates a simple progression of notes and loops it indefinitely:</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#T-instance_method" title="#T (method)">T</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:e4</span><span class='comma'>,</span> <span class='symbol'>:f4</span><span class='comma'>,</span> <span class='symbol'>:c5</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_track_live_loop'><span class='object_link'><a href="top-level-namespace.html#track_live_loop-instance_method" title="#track_live_loop (method)">track_live_loop</a></span></span> <span class='symbol'>:my_first_track</span><span class='comma'>,</span> <span class='id identifier rubyid_t'>t</span>
+</code></pre>
+<p><em>Note:</em> Unlike the normal <code>live_loop</code>, <code>track_live_loop</code> does not require a block. Instead, it automatically makes a block that controls an internal <code>Player</code> instance to play the track you provide. You <em>can</em> pass it a block, but it has special powers and slightly different rules; we'll get to that <a href="#track_live_loop-blocks">later</a>.</p>
+<p>As mentioned earlier, spi-seq is really much better when used to control MIDI devices, so let's play back over a specific MIDI channel instead of using Sonic Pi's built-in synthesis. We'll probably also want a MIDI clock pulse, which playback should sync to. And maybe we want to adjust the BPM as well (spi-seq respects the Sonic Pi BPM). All together:</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_use_bpm'>use_bpm</span> <span class='int'>140</span>
+
+<span class='comment'># This is a built-in Sonic Pi function, which spi-seq respects.
+</span><span class='id identifier rubyid_use_midi_defaults'>use_midi_defaults</span><span class='lparen'>(</span><span class='label'>port:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>my_midi_device</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='int'>1</span><span class='rparen'>)</span>
+
+<span class='comment'># Set default options for Players and track_live_loop. The
+</span><span class='comment'># :midi_clock live loop is defined by the midi_clock_live_loop call
+</span><span class='comment'># below.
+</span><span class='id identifier rubyid_use_player_defaults'><span class='object_link'><a href="top-level-namespace.html#use_player_defaults-instance_method" title="#use_player_defaults (method)">use_player_defaults</a></span></span><span class='lparen'>(</span><span class='label'>midi:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>sync:</span> <span class='symbol'>:midi_clock</span><span class='rparen'>)</span>
+
+<span class='comment'># Start a new live loop (named :midi_clock by default) that sends
+</span><span class='comment'># MIDI clock messages in time with the global BPM. Note that we
+</span><span class='comment'># used that name as the default sync source in user_player_defaults
+</span><span class='comment'># above.
+</span><span class='id identifier rubyid_midi_clock_live_loop'><span class='object_link'><a href="top-level-namespace.html#midi_clock_live_loop-instance_method" title="#midi_clock_live_loop (method)">midi_clock_live_loop</a></span></span>
+
+<span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#T-instance_method" title="#T (method)">T</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:e4</span><span class='comma'>,</span> <span class='symbol'>:f4</span><span class='comma'>,</span> <span class='symbol'>:c5</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_track_live_loop'><span class='object_link'><a href="top-level-namespace.html#track_live_loop-instance_method" title="#track_live_loop (method)">track_live_loop</a></span></span> <span class='symbol'>:my_first_track</span><span class='comma'>,</span> <span class='id identifier rubyid_t'>t</span>
+</code></pre>
+<p>You can set the <code>midi</code>, <code>sync</code>, <code>port</code>, and <code>channel</code> values on an individual <code>track_live_loop</code> call as well, so you can easily target different devices. It's often handy to set the defaults with the above functions though.</p>
+<p>Also, since you'll be using <code>track_live_loop</code> a lot, there is an alias for it: <code>tll</code>.</p>
+<p>See the <a href="#everyday-use">Everyday Use</a> section for an example of a template you might start using for spi-seq sketches.</p>
+<h3 id="More_on__Track_s">More on <code>Track</code>s</h3>
+<p>The duration of each slot in a track is specified by the track's <code>granularity</code>, which is expressed in traditional note length terms. For instance, quarter-note granularity means that each slot will last for one beat (where the BPM is defined by Sonic Pi). The default granularity for a track is an eighth note, so each slot lasts for half a beat. You can specify the granularity at track construction time, using symbols for the names:</p>
+<pre class="code ruby"><code class="ruby"><span class='const'><span class='object_link'><a href="top-level-namespace.html#T-instance_method" title="#T (method)">T</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:d4</span><span class='comma'>,</span> <span class='symbol'>:e5</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>granularity:</span> <span class='symbol'>:whole</span><span class='rparen'>)</span>
+</code></pre>
+<p>If you would like to rest for a particular slot, you can use <code>:r</code> instead of a note. For instance, this track is the same as the above, except there is a rest (lasting a whole note) between the other two notes:</p>
+<pre class="code ruby"><code class="ruby"><span class='const'><span class='object_link'><a href="top-level-namespace.html#T-instance_method" title="#T (method)">T</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:d4</span><span class='comma'>,</span> <span class='symbol'>:r</span><span class='comma'>,</span> <span class='symbol'>:e5</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>granularity:</span> <span class='symbol'>:whole</span><span class='rparen'>)</span>
+</code></pre>
+<p>Aside from the standard initializer, there are many other ways to create new tracks. For instance, you can arpeggiate notes in a variety of patterns with <code>Track.arp</code> (here, using Sonic Pi's built-in <code>chord</code> method):</p>
+<pre class="code ruby"><code class="ruby"><span class='const'><span class='object_link'><a href="Track.html" title="Track (class)">Track</a></span></span><span class='period'>.</span><span class='id identifier rubyid_arp'><span class='object_link'><a href="Track.html#arp-class_method" title="Track.arp (method)">arp</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_chord'>chord</span><span class='lparen'>(</span><span class='symbol'>:fs4</span><span class='comma'>,</span> <span class='symbol'>:major9</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='symbol'>:thumb</span><span class='rparen'>)</span>
+</code></pre>
+<p>That will create a track that arpeggiates the notes in an F#4 major 9th chord, playing the lowest note in the chord between each other note (a so-called &quot;thumb&quot; pattern).</p>
+<p>Another interesting initializer is <code>Track.euclid</code>, which spreads notes out using <a href="https://en.wikipedia.org/wiki/Euclidean_rhythm">Euclidean rhythms</a> (see also Sonic Pi's <code>spread</code> function). This call generates a 16-slot track where 11 of the slots are filled in a Euclidean rhythm, cycling through the given notes:</p>
+<pre class="code ruby"><code class="ruby"><span class='const'><span class='object_link'><a href="Track.html" title="Track (class)">Track</a></span></span><span class='period'>.</span><span class='id identifier rubyid_euclid'><span class='object_link'><a href="TrackBase.html#euclid-class_method" title="TrackBase.euclid (method)">euclid</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:a3</span><span class='comma'>,</span> <span class='symbol'>:b3</span><span class='comma'>,</span> <span class='symbol'>:c3</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='int'>11</span><span class='comma'>,</span> <span class='int'>16</span><span class='rparen'>)</span>
+</code></pre>
+<h3 id="More_on__Step_s">More on <code>Step</code>s</h3>
+<p>If you want to play more than one note simultaneously (e.g., to play a chord), group those notes together in an array when passing them to the initializer:</p>
+<pre class="code ruby"><code class="ruby"><span class='const'><span class='object_link'><a href="top-level-namespace.html#T-instance_method" title="#T (method)">T</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span>
+  <span class='lbracket'>[</span><span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:c3</span><span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='symbol'>:e4</span><span class='comma'>,</span>
+  <span class='lbracket'>[</span><span class='symbol'>:f4</span><span class='comma'>,</span> <span class='symbol'>:f3</span><span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='symbol'>:c5</span>
+<span class='rbracket'>]</span><span class='rparen'>)</span>
+</code></pre>
+<p>In that track, the C4 and C3 will be played together (they share a slot), then the E4, then the F4 and F3 together, then the C5.</p>
+<p>You'll notice that we haven't manually created any <code>Step</code> objects yet; we've just been providing raw notes inside of slots. That's because the <code>Track</code> initializer will make <code>Step</code>s out of notes for us, using some defaults for attributes like the velocity and gate. However, if you want to specify those parameters, you can pass a <code>Step</code> to the <code>Track</code> initializer instead of a note. <code>Step.new</code> is aliased to just <code>S</code> for convenience. Here's a track where the notes have increasingly shorter gates, and the second note has a low velocity:</p>
+<pre class="code ruby"><code class="ruby">T([
+  :a2,
+  S(:c4, vel: 20, gate: 0.75)
+  S(:d4, gate: 0.5),
+  S(:e4, gate: 0.25)
+])
+</code></pre>
+<p>The default velocity for a step is 127, and the default gate is the maximum, 1.0, which is a tie. Tied notes are continued without release if they would also play in the next slot. For instance, in this track, the :c4 is held for the first three slots, terminating 25% of the way through the third:</p>
+<pre class="code ruby"><code class="ruby"><span class='const'><span class='object_link'><a href="top-level-namespace.html#T-instance_method" title="#T (method)">T</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span>
+  <span class='const'><span class='object_link'><a href="top-level-namespace.html#S-instance_method" title="#S (method)">S</a></span></span><span class='lparen'>(</span><span class='symbol'>:c4</span><span class='comma'>,</span> <span class='label'>gate:</span> <span class='int'>1</span><span class='rparen'>)</span><span class='comma'>,</span>
+  <span class='lbracket'>[</span><span class='const'><span class='object_link'><a href="top-level-namespace.html#S-instance_method" title="#S (method)">S</a></span></span><span class='lparen'>(</span><span class='symbol'>:c4</span><span class='comma'>,</span> <span class='label'>gate:</span> <span class='int'>1</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#S-instance_method" title="#S (method)">S</a></span></span><span class='lparen'>(</span><span class='symbol'>:c2</span><span class='comma'>,</span> <span class='label'>gate:</span> <span class='float'>0.5</span><span class='rparen'>)</span><span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='const'><span class='object_link'><a href="top-level-namespace.html#S-instance_method" title="#S (method)">S</a></span></span><span class='lparen'>(</span><span class='symbol'>:c4</span><span class='comma'>,</span> <span class='label'>gate:</span> <span class='float'>0.25</span><span class='rparen'>)</span><span class='comma'>,</span>
+  <span class='const'><span class='object_link'><a href="top-level-namespace.html#S-instance_method" title="#S (method)">S</a></span></span><span class='lparen'>(</span><span class='symbol'>:c2</span><span class='comma'>,</span> <span class='label'>gate:</span> <span class='float'>0.75</span><span class='rparen'>)</span>
+<span class='rbracket'>]</span><span class='rparen'>)</span>
+
+<span class='comment'># or, equivalently, since a gate of 1 is the default:
+</span><span class='const'><span class='object_link'><a href="top-level-namespace.html#T-instance_method" title="#T (method)">T</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span>
+  <span class='symbol'>:c4</span><span class='comma'>,</span>
+  <span class='lbracket'>[</span><span class='symbol'>:c4</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#S-instance_method" title="#S (method)">S</a></span></span><span class='lparen'>(</span><span class='symbol'>:c2</span><span class='comma'>,</span> <span class='label'>gate:</span> <span class='float'>0.5</span><span class='rparen'>)</span><span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='const'><span class='object_link'><a href="top-level-namespace.html#S-instance_method" title="#S (method)">S</a></span></span><span class='lparen'>(</span><span class='symbol'>:c4</span><span class='comma'>,</span> <span class='label'>gate:</span> <span class='float'>0.25</span><span class='rparen'>)</span><span class='comma'>,</span>
+  <span class='const'><span class='object_link'><a href="top-level-namespace.html#S-instance_method" title="#S (method)">S</a></span></span><span class='lparen'>(</span><span class='symbol'>:c2</span><span class='comma'>,</span> <span class='label'>gate:</span> <span class='float'>0.75</span><span class='rparen'>)</span>
+<span class='rbracket'>]</span><span class='rparen'>)</span>
+</code></pre>
+<h3 id="Step_probabilities">Step probabilities</h3>
+<p>By giving a <code>Step</code> a <em>probability</em>, you can control the conditions under which that step will trigger during playback. There are a variety of built-in probability functions, and you can also write your own with a lambda.</p>
+<p>The simplest way to express a probability is to pass a floating point number as the <code>prob</code> parameter to <code>Step.new</code> (aliased to <code>S</code>). That specifies the chance that the note will play, with 1.0 meaning a 100% chance. For instance, the C4 in this track only has a 25% chance of playing on any given loop; there is a 75% chance that slot will be just a rest instead:</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#T-instance_method" title="#T (method)">T</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span>
+  <span class='symbol'>:e4</span><span class='comma'>,</span>
+  <span class='const'><span class='object_link'><a href="top-level-namespace.html#S-instance_method" title="#S (method)">S</a></span></span><span class='lparen'>(</span><span class='symbol'>:c4</span><span class='comma'>,</span> <span class='label'>prob:</span> <span class='float'>0.25</span><span class='rparen'>)</span><span class='comma'>,</span>
+  <span class='symbol'>:g3</span>
+<span class='rbracket'>]</span><span class='rparen'>)</span>
+</code></pre>
+<p>More elaborate probabilities are part of the <code>Prob</code> class. For instance, the <code>every</code> probability will trigger the given note every nth cycle. Here, the C4 will only play every 3rd loop; on other loops that slot will just be a rest:</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#T-instance_method" title="#T (method)">T</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span>
+  <span class='symbol'>:e4</span><span class='comma'>,</span>
+  <span class='const'><span class='object_link'><a href="top-level-namespace.html#S-instance_method" title="#S (method)">S</a></span></span><span class='lparen'>(</span><span class='symbol'>:c4</span><span class='comma'>,</span> <span class='label'>prob:</span> <span class='const'><span class='object_link'><a href="Prob.html" title="Prob (class)">Prob</a></span></span><span class='period'>.</span><span class='id identifier rubyid_every'><span class='object_link'><a href="Prob.html#every-class_method" title="Prob.every (method)">every</a></span></span><span class='lparen'>(</span><span class='int'>3</span><span class='rparen'>)</span><span class='rparen'>)</span><span class='comma'>,</span>
+  <span class='symbol'>:g3</span>
+<span class='rbracket'>]</span><span class='rparen'>)</span>
+</code></pre>
+<p>Check out the <code>Prob</code> documentation for more elaborate options. You can specify that a step should only trigger on the first loop of a track, or only if the previous slot was a rest, and so on. There is also a special probability called <code>fill</code> which we'll discuss <a href="#fill-mode">later</a>.</p>
+<h3 id="Step_Accumulation">Step Accumulation</h3>
+<p>While probabilities control whether a <code>Step</code> triggers at all, <em>accumulation</em> can change the note a step plays each time it is triggered. For instance, using accumulation, you can make a step that automatically plays a note several semitones higher each time. Accumulation is controlled by a number of parameters:</p>
+<ul>
+<li><em>delta</em> is the number of semitones to adjust the step's note each time it is triggered.</li>
+<li><em>min</em> and <em>max</em> define the acceptable range of semitone adjustment from accumulation.</li>
+<li><em>mode</em> specifies the behavior when the overall accumulation reaches the min or max values. It can be one of <code>:freeze</code> (which holds at the extreme that was reached), <code>:wrap</code> (which wraps around to the opposite extreme), or <code>:reverse</code> (which bounces between the extremes).</li>
+</ul>
+<p>You can most easily apply accumulation to a <code>Step</code> with the <code>accum</code> method, which takes the delta and keyword arguments for each of the other parameters described above. For example, consider this track:</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#T-instance_method" title="#T (method)">T</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span>
+  <span class='const'><span class='object_link'><a href="top-level-namespace.html#S-instance_method" title="#S (method)">S</a></span></span><span class='lparen'>(</span><span class='symbol'>:c4</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_accum'><span class='object_link'><a href="StepBase.html#accum-instance_method" title="StepBase#accum (method)">accum</a></span></span><span class='lparen'>(</span><span class='int'>1</span><span class='comma'>,</span> <span class='label'>max:</span> <span class='int'>12</span><span class='comma'>,</span> <span class='label'>mode:</span> <span class='symbol'>:freeze</span><span class='rparen'>)</span>
+<span class='rbracket'>]</span><span class='rparen'>)</span>
+</code></pre>
+<p>When that track is played, the first loop will play a C4. In the next loop, the accumulation will take effect and it will play a C#4 - a note one semitone higher (the <code>delta</code> being 1). The next loop will play a D4, and so on for 12 cycles until it plays a C5 (12 semitones of accumulation). At that point, since the maximum accumulation has been reached and the mode is <code>:freeze</code>, all further cycles of the track will also play a C5.</p>
+<p>The accumulation delta can be negative. Consider this track:</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#T-instance_method" title="#T (method)">T</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span>
+  <span class='const'><span class='object_link'><a href="top-level-namespace.html#S-instance_method" title="#S (method)">S</a></span></span><span class='lparen'>(</span><span class='symbol'>:c4</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_accum'><span class='object_link'><a href="StepBase.html#accum-instance_method" title="StepBase#accum (method)">accum</a></span></span><span class='lparen'>(</span><span class='op'>-</span><span class='int'>12</span><span class='comma'>,</span> <span class='label'>min:</span> <span class='op'>-</span><span class='int'>24</span><span class='comma'>,</span> <span class='label'>max:</span> <span class='int'>24</span><span class='comma'>,</span> <span class='label'>mode:</span> <span class='symbol'>:reverse</span><span class='rparen'>)</span>
+<span class='rbracket'>]</span><span class='rparen'>)</span>
+</code></pre>
+<p>That will play a C4, then a C3 and a C2, then, since that's the minimum accumulation of -24 and the mode is <code>:reverse</code>, the delta is effectively negated and the following cycle will play a C3. Then a C4 again, a C5, and a C6. The C6 is the max accumulation, so the delta is negated again and the following cycle will play a C5, and so on.</p>
+<p>Note that accumulation can have its own probability, independent of the step to which it belongs. For instance, take this track:</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#T-instance_method" title="#T (method)">T</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span>
+  <span class='const'><span class='object_link'><a href="top-level-namespace.html#S-instance_method" title="#S (method)">S</a></span></span><span class='lparen'>(</span><span class='symbol'>:c4</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_accum'><span class='object_link'><a href="StepBase.html#accum-instance_method" title="StepBase#accum (method)">accum</a></span></span><span class='lparen'>(</span><span class='int'>7</span><span class='comma'>,</span> <span class='label'>max:</span> <span class='int'>21</span><span class='comma'>,</span> <span class='label'>prob:</span> <span class='const'><span class='object_link'><a href="Prob.html" title="Prob (class)">Prob</a></span></span><span class='period'>.</span><span class='id identifier rubyid_every_other'><span class='object_link'><a href="Prob.html#every_other-class_method" title="Prob.every_other (method)">every_other</a></span></span><span class='rparen'>)</span>
+<span class='rbracket'>]</span><span class='rparen'>)</span>
+</code></pre>
+<p>The accumulation of 7 semitones will only trigger on every other playback of the track, so the first two cycles will play a C4, the next two will play a G4, and so on.</p>
+<h3 id="Manipulating__Track_s">Manipulating <code>Track</code>s</h3>
+<p>Much of the power of spi-seq lies in its track mutation methods. Let's take a look at some of them. In these examples, I'm omitting most boilerplate and the <code>track_live_loop</code> calls for playback.</p>
+<p>One thing that greatly effects how you'll interact with them: <strong><code>Track</code> objects are immutable</strong>. All the methods that manipulate them return new <code>Track</code> instances, rather than changing the one on which they are called.</p>
+<p>You can transpose all notes in a track some number of semitones with <code>transpose</code>. You can merge the slots in two tracks with the <code>|</code> operator. So here's how you might construct a track that plays the notes in a C3 major 9th chord, together with those same notes down a fifth:</p>
+<pre class="code ruby"><code class="ruby"><span class='comment'># Each note in the chord winds up in its own slot; this track has 5 slots.
+</span><span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#T-instance_method" title="#T (method)">T</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_chord'>chord</span><span class='lparen'>(</span><span class='symbol'>:c3</span><span class='comma'>,</span> <span class='symbol'>:major9</span><span class='rparen'>)</span><span class='rparen'>)</span>
+
+<span class='comment'># Remember, Tracks are immutable, so this transpose call returns a new
+</span><span class='comment'># track and won&#39;t change t!
+</span><span class='id identifier rubyid_t_transpose'>t_transpose</span> <span class='op'>=</span> <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_transpose'>transpose</span><span class='lparen'>(</span><span class='op'>-</span><span class='int'>7</span><span class='rparen'>)</span>
+
+<span class='comment'># Merge the slots of t and t_transpose together, so that we hear,
+</span><span class='comment'># sequentially, each note together with itself down a fifth.
+</span><span class='id identifier rubyid_together'>together</span> <span class='op'>=</span> <span class='id identifier rubyid_t'>t</span> <span class='op'>|</span> <span class='id identifier rubyid_t_transpose'>t_transpose</span>
+
+<span class='comment'># The final track is equivalent to this:
+</span><span class='comment'># T([ [:f2, :c3], [:a2, :e3], [:c3, :g3], [:e3, :b3], [:g3, :d4] ])
+</span></code></pre>
+<p>Or, more concisely:</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#T-instance_method" title="#T (method)">T</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_chord'>chord</span><span class='lparen'>(</span><span class='symbol'>:c3</span><span class='comma'>,</span> <span class='symbol'>:major9</span><span class='rparen'>)</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_t'>t</span> <span class='op'>|=</span> <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_transpose'>transpose</span><span class='lparen'>(</span><span class='op'>-</span><span class='int'>7</span><span class='rparen'>)</span>
+</code></pre>
+<p>Let's play those notes forward and then backward, without repeating the notes in the middle or at the end. <code>reverse</code> reverses a track, and <code>drop(n)</code> removes the first <code>n</code> slots from a track (defaulting to 1). <code>drop_last</code> is like <code>drop</code>, but removes slots from the end of a track. The <code>+</code> operator concatenates two tracks. So:</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#T-instance_method" title="#T (method)">T</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_chord'>chord</span><span class='lparen'>(</span><span class='symbol'>:c3</span><span class='comma'>,</span> <span class='symbol'>:major9</span><span class='rparen'>)</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_t'>t</span> <span class='op'>|=</span> <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_transpose'>transpose</span><span class='lparen'>(</span><span class='op'>-</span><span class='int'>7</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='id identifier rubyid_t'>t</span> <span class='op'>+</span> <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_reverse'>reverse</span><span class='period'>.</span><span class='id identifier rubyid_drop'>drop</span><span class='period'>.</span><span class='id identifier rubyid_drop_last'>drop_last</span>
+</code></pre>
+<p>The <code>reflect</code> method is actually shorthand for the <code>t + t.reverse.drop</code> pattern.</p>
+<p>Now let's alternate between those notes and the same ones shifted up an octave, so that we hear e.g. C3+F3 then C4+F4, and so on. The <code>up(n)</code> method transposes a track up <code>n</code> octaves (defaulting to 1). The <code>zip</code> function takes another track and interleaves the two tracks' steps. And for kicks, let's give the higher notes a shorter gate, using the <code>gate</code> method, which sets the gate on all steps in a track. We can do something like this:</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#T-instance_method" title="#T (method)">T</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_chord'>chord</span><span class='lparen'>(</span><span class='symbol'>:c3</span><span class='comma'>,</span> <span class='symbol'>:major9</span><span class='rparen'>)</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_t'>t</span> <span class='op'>|=</span> <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_transpose'>transpose</span><span class='lparen'>(</span><span class='op'>-</span><span class='int'>7</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_reflect'>reflect</span><span class='period'>.</span><span class='id identifier rubyid_drop_last'>drop_last</span>
+<span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_zip'>zip</span><span class='lparen'>(</span><span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_up'>up</span><span class='period'>.</span><span class='id identifier rubyid_gate'>gate</span><span class='lparen'>(</span><span class='float'>0.5</span><span class='rparen'>)</span><span class='rparen'>)</span>
+</code></pre>
+<p>If we had constructed that track manually with <code>Track.new</code>, it would look like this:</p>
+<pre class="code ruby"><code class="ruby">T([
+   [:f2, :c3], [S(:f3, gate: 0.5), S(:c4, gate: 0.5)],
+   [:a2, :e3], [S(:a3, gate: 0.5), S(:e4, gate: 0.5)],
+   [:c3, :g3], [S(:c4, gate: 0.5), S(:g4, gate: 0.5)],
+   ...,
+   [:c3, :g3], [S(:c4, gate: 0.5), S(:g4, gate: 0.5)],
+   [:a2, :e3], [S(:a3, gate: 0.5), S(:e4, gate: 0.5)]
+])
+</code></pre>
+<p>Note the alternating pairs generated by <code>zip</code>: each slot is followed by a slot with same notes up an octave with a shorter gate. Note also how the track is mirrored due to the concatenation with its reverse (via <code>reflect</code>) - the early A+E, C+G progression appears backwards at the end of the track. But the leading F+C pair is missing at the very end so that the track loops cleanly (that was the <code>drop_last</code>).</p>
+<p>We've barely scratched the surface, but already it's easy to assemble complicated tracks. Here's a nice melody using things you've seen so far and a few new tricks: the <code>*</code> operator concatenates a track with itself some number of times, and the <code>shl</code> method shifts a track's slots to the left, wrapping the first slots back around to the end. This is an intricate 64-step sequence, all constructed from simple manipulations of a minor 7th chord!</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#T-instance_method" title="#T (method)">T</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_chord'>chord</span><span class='lparen'>(</span><span class='symbol'>:d4</span><span class='comma'>,</span> <span class='symbol'>:minor7</span><span class='rparen'>)</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_gate'>gate</span><span class='lparen'>(</span><span class='float'>0.5</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_zip'>zip</span><span class='lparen'>(</span><span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_reverse'>reverse</span><span class='period'>.</span><span class='id identifier rubyid_gate'>gate</span><span class='lparen'>(</span><span class='float'>0.25</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_shl'>shl</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='id identifier rubyid_t'>t</span> <span class='op'>*</span> <span class='int'>2</span> <span class='op'>+</span> <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_transpose'>transpose</span><span class='lparen'>(</span><span class='int'>7</span><span class='rparen'>)</span> <span class='op'>*</span> <span class='int'>2</span>
+<span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_zip'>zip</span><span class='lparen'>(</span><span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_transpose'>transpose</span><span class='lparen'>(</span><span class='op'>-</span><span class='int'>7</span><span class='rparen'>)</span><span class='rparen'>)</span>
+</code></pre>
+<p>Just like normal <code>live_loop</code>s, you can have multiple <code>track_live_loops</code> running at the same time. So let's add a bass accompaniment to the above. We'll construct that from the melody track by shifting it down two octaves with <code>down</code> and, to add some rhythm, we'll turn every 3rd slot into a rest with <code>dropout</code>. Let's also make the bass notes have a longer gate than those in the melody.</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#T-instance_method" title="#T (method)">T</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_chord'>chord</span><span class='lparen'>(</span><span class='symbol'>:d4</span><span class='comma'>,</span> <span class='symbol'>:minor7</span><span class='rparen'>)</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_gate'>gate</span><span class='lparen'>(</span><span class='float'>0.5</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_zip'>zip</span><span class='lparen'>(</span><span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_rev'>rev</span><span class='period'>.</span><span class='id identifier rubyid_gate'>gate</span><span class='lparen'>(</span><span class='float'>0.25</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_shl'>shl</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='id identifier rubyid_t'>t</span> <span class='op'>*</span> <span class='int'>2</span> <span class='op'>+</span> <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_transpose'>transpose</span><span class='lparen'>(</span><span class='int'>7</span><span class='rparen'>)</span> <span class='op'>*</span> <span class='int'>2</span>
+<span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_zip'>zip</span><span class='lparen'>(</span><span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_transpose'>transpose</span><span class='lparen'>(</span><span class='op'>-</span><span class='int'>7</span><span class='rparen'>)</span><span class='rparen'>)</span>
+
+<span class='id identifier rubyid_track_live_loop'><span class='object_link'><a href="top-level-namespace.html#track_live_loop-instance_method" title="#track_live_loop (method)">track_live_loop</a></span></span> <span class='symbol'>:melody</span><span class='comma'>,</span> <span class='id identifier rubyid_t'>t</span>
+<span class='id identifier rubyid_track_live_loop'><span class='object_link'><a href="top-level-namespace.html#track_live_loop-instance_method" title="#track_live_loop (method)">track_live_loop</a></span></span> <span class='symbol'>:bass</span><span class='comma'>,</span> <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_down'>down</span><span class='lparen'>(</span><span class='int'>2</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_dropout'>dropout</span><span class='lparen'>(</span><span class='int'>3</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_gate'>gate</span><span class='lparen'>(</span><span class='float'>0.9</span><span class='rparen'>)</span>
+</code></pre>
+<p>With the <code>midi</code>, <code>port</code> and <code>channel</code> arguments, the <code>:bass</code> track could easily be sent to another MIDI target and play on a separate synth than the melody.</p>
+<p>There are many more ways to manipulate tracks. You can replace notes in a track based on some pattern (<code>sub_note</code>), adjust gate or velocity based on a curve (<code>gate_curve</code> and <code>vel_curve</code>), split a track into multiple tracks (<code>extract</code>, e.g.), do targeted manipulation of each step (<code>mutate_steps</code>), and more.</p>
+<h3 id="_track_live_loop__blocks"><code>track_live_loop</code> blocks</h3>
+<p>You have probably noticed that, unlike normal Sonic Pi <code>live_loop</code>s, <code>track_live_loop</code>s do not require a block. By default, they will construct their own that manages a <code>Player</code> instance to handle the track you provide.</p>
+<p>However, you can pass your own block to <code>track_live_loop</code>, which has some special rules and powers. Most importantly:</p>
+<ul>
+<li>Blocks should not <code>sleep</code> or <code>sync</code>, unlike <code>live_loop</code> blocks. The internal block will do that for you to ensure proper timing when playing back the track you provide. If you do <code>sleep</code> or <code>sync</code>, it will result in gaps between cycles of your track.</li>
+<li>If your block returns a <code>Track</code> instance, that track will be played instead of the track you provided as an argument to <code>track_live_loop</code>. In fact, if you provide a block that returns a <code>Track</code>, there may not be a reason to pass a track to <code>track_live_loop</code> at all. This is valid.</li>
+<li>The block can receive a number of arguments. See the documentation for all of them. For now we'll just look at <code>cycle</code>, which is the number of times the track has looped. It is 0 when the track starts and increments each time the track plays.</li>
+</ul>
+<p>Returning a <code>Track</code> from your block is very powerful. It allows you to mutate the track you're playing each cycle. For example, let's say we wanted to transpose a track 1 semitone every loop (up to 7 semitones), and perhaps have the gate of its steps slowly increase each cycle. Using the <code>cycle</code> parameter, we can adjust our track accordingly in the block:</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Track.html" title="Track (class)">Track</a></span></span><span class='period'>.</span><span class='id identifier rubyid_arp'><span class='object_link'><a href="Track.html#arp-class_method" title="Track.arp (method)">arp</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_chord'>chord</span><span class='lparen'>(</span><span class='symbol'>:c3</span><span class='comma'>,</span> <span class='symbol'>:major9</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='symbol'>:thumb</span><span class='rparen'>)</span>
+
+<span class='id identifier rubyid_track_live_loop'><span class='object_link'><a href="top-level-namespace.html#track_live_loop-instance_method" title="#track_live_loop (method)">track_live_loop</a></span></span> <span class='symbol'>:t</span> <span class='kw'>do</span> <span class='op'>|</span><span class='label'>cycle:</span><span class='op'>|</span>
+  <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_transpose'>transpose</span><span class='lparen'>(</span><span class='id identifier rubyid_cycle'>cycle</span> <span class='op'>%</span> <span class='int'>8</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_gate'>gate</span><span class='lparen'>(</span><span class='float'>0.1</span> <span class='op'>*</span> <span class='lparen'>(</span><span class='id identifier rubyid_cycle'>cycle</span> <span class='op'>+</span> <span class='int'>1</span><span class='rparen'>)</span><span class='rparen'>)</span>
+<span class='kw'>end</span>
+</code></pre>
+<p>Note that we did not need to pass <code>track_live_loop</code> a track up-front, since the block returns one. And since we mutate the track based on the <code>cycle</code>, it's different each loop.</p>
+<p>For another example, we could randomly rearrange the notes in our track each cycle, using the <code>shuffle</code> method:</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#T-instance_method" title="#T (method)">T</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_chord'>chord</span><span class='lparen'>(</span><span class='symbol'>:c3</span><span class='comma'>,</span> <span class='symbol'>:major13</span><span class='rparen'>)</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_gate'>gate</span><span class='lparen'>(</span><span class='float'>0.5</span><span class='rparen'>)</span>
+
+<span class='id identifier rubyid_track_live_loop'><span class='object_link'><a href="top-level-namespace.html#track_live_loop-instance_method" title="#track_live_loop (method)">track_live_loop</a></span></span> <span class='symbol'>:t</span> <span class='kw'>do</span>
+  <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_shuffle'>shuffle</span>
+<span class='kw'>end</span>
+</code></pre>
+<p>Here we did not need the <code>cycle</code> parameter, so we just omitted it from the block.</p>
+<h3 id="Muting_tracks">Muting tracks</h3>
+<p>Just as you might use live-coding to add or stop <code>live_loops</code>, you can do the same with <code>track_live_loop</code>s. However, <code>track_live_loop</code>s can also be muted or unmuted after a cycle by other means. In these examples, we'll look at MIDI CC control, but you can also manually handle muting with the <code>mute_live_loop</code> function.</p>
+<p>You can add the <code>cc</code> keyword parameter to a <code>track_live_loop</code> to specify that a CC should control whether it is muted. Sending a value of 0 for that CC will mute the track, and any other value will unmute it. Note that muting only takes effect <em>after a cycle of the track</em>; it will not abruptly make the track inaudible. Unmuting is the same; it will only happen in intervals of the track's duration, even though the track is not audible.</p>
+<p>By default, a <code>track_live_loop</code> with a <code>cc</code> parameter will listen for the CC you specify from any MIDI port and any MIDI channel. To specify a specific device, use the <code>cc_port</code> and <code>cc_channel</code> arguments or set a default with the <code>use_cc_control_defaults</code> method.</p>
+<p>Tracks start unmuted by default. You can use the <code>start_muted</code> parameter to change that (or <code>use_player_defaults</code> to set a global default).</p>
+<p>Here's an example with two tracks. The melody starts unmuted (and is not controllable by CCs). The bassline starts muted, and may be unmuted by sending any nonzero value for CC 110 from <code>my_midi_device</code> channel 1.</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_use_cc_control_defaults'><span class='object_link'><a href="top-level-namespace.html#use_cc_control_defaults-instance_method" title="#use_cc_control_defaults (method)">use_cc_control_defaults</a></span></span><span class='lparen'>(</span><span class='label'>port:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>my_midi_device</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='int'>1</span><span class='rparen'>)</span>
+
+<span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#T-instance_method" title="#T (method)">T</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_chord'>chord</span><span class='lparen'>(</span><span class='symbol'>:c3</span><span class='comma'>,</span> <span class='symbol'>:major13</span><span class='rparen'>)</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_gate'>gate</span><span class='lparen'>(</span><span class='float'>0.5</span><span class='rparen'>)</span>
+
+<span class='id identifier rubyid_track_live_loop'><span class='object_link'><a href="top-level-namespace.html#track_live_loop-instance_method" title="#track_live_loop (method)">track_live_loop</a></span></span> <span class='symbol'>:melody</span><span class='comma'>,</span> <span class='id identifier rubyid_t'>t</span>
+
+<span class='id identifier rubyid_bassline'>bassline</span> <span class='op'>=</span> <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_down'>down</span><span class='period'>.</span><span class='id identifier rubyid_transpose'>transpose</span><span class='lparen'>(</span><span class='op'>-</span><span class='int'>7</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_dropout'>dropout</span><span class='lparen'>(</span><span class='int'>4</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_track_live_loop'><span class='object_link'><a href="top-level-namespace.html#track_live_loop-instance_method" title="#track_live_loop (method)">track_live_loop</a></span></span> <span class='symbol'>:bassline</span><span class='comma'>,</span> <span class='id identifier rubyid_bassline'>bassline</span><span class='comma'>,</span> <span class='label'>cc:</span> <span class='int'>110</span><span class='comma'>,</span> <span class='label'>start_muted:</span> <span class='kw'>true</span>
+</code></pre>
+<h3 id="Fading_tracks_in_and_out">Fading tracks in and out</h3>
+<p>When a track is muted or unmuted, you may want it to gradually fade in or out via velocity. You might imagine how you could use a <code>track_live_loop</code> block to accomplish that: in the block you could adjust each step's velocity appropriately, and return the mutated track when needed. (In fact, there is a <code>vel_curve</code> method that will apply a curve to all steps' velocities.)</p>
+<p>However, fading a track in or out is common enough that there are parameters to <code>track_live_loop</code> that will do it automatically for you.</p>
+<p>To fade in a track when it is unmuted, pass the <code>fade_in</code> keyword parameter. Its value can either be <code>true</code>, which will fade the track in linearly, or <code>:quad</code>, which will fade it in quadratically. Fading out is likewise controlled with the <code>fade_out</code> parameter.</p>
+<p>From the above example, here's how we could specify that the bassline should fade in linearly and out quadratically:</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_track_live_loop'><span class='object_link'><a href="top-level-namespace.html#track_live_loop-instance_method" title="#track_live_loop (method)">track_live_loop</a></span></span> <span class='symbol'>:bassline</span><span class='comma'>,</span> <span class='id identifier rubyid_bassline'>bassline</span><span class='comma'>,</span> <span class='label'>fade_in:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>fade_out:</span> <span class='symbol'>:quad</span><span class='comma'>,</span> <span class='label'>cc:</span> <span class='int'>110</span><span class='comma'>,</span> <span class='label'>start_muted:</span> <span class='kw'>true</span>
+</code></pre>
+<p>Necessarily, fadeouts happen on the cycle <em>after</em> the track is muted. That is, when a track is set to fade out, it will play for one extra cycle after it's muted, during which it will fade out.</p>
+<p>Note that fades take effect by setting the velocity of steps in each slot to particular values along a curve. That means that if your track has a long granularity (e.g. whole notes) and relatively few slots, the fade will not be gradual at all. In that case you may want to look into the <code>expand</code> method to attempt to change the granularity of your track while keeping it sounding the same.</p>
+<h3 id="Fill_mode">Fill mode</h3>
+<p>At any point during playback, a <code>Player</code> may be put in <em>fill mode</em>. In that state (and only in that state) steps with the special <code>fill</code> probability will trigger.</p>
+<p>The true power of fill is that it can be controlled by a MIDI CC, just like muting. Pass the <code>fill_cc</code> parameter to <code>track_live_loop</code> to specify the CC value that should toggle fill mode. Like the muting <code>cc</code> parameter, the MIDI device that will be monitored for <code>fill_cc</code> is specified with <code>cc_port</code> and <code>cc_channel</code>. And like muting, a CC value of 0 turns fill off and any other value turns it on. Fill is always off by default.</p>
+<p>Unlike muting, <em>fill mode takes effect immediately</em>. That is, steps with the fill probability will immediately start triggering after fill is set; you do not need to wait for another cycle of playback.</p>
+<p>Here's an example where an E2 is only triggered in fill mode. The <code>track_live_loop</code> is configured to watch CC 111 for fill.</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#T-instance_method" title="#T (method)">T</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span>
+  <span class='symbol'>:c4</span><span class='comma'>,</span>
+  <span class='lbracket'>[</span><span class='symbol'>:e4</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#S-instance_method" title="#S (method)">S</a></span></span><span class='lparen'>(</span><span class='symbol'>:e2</span><span class='comma'>,</span> <span class='label'>prob:</span> <span class='const'><span class='object_link'><a href="Prob.html" title="Prob (class)">Prob</a></span></span><span class='period'>.</span><span class='id identifier rubyid_fill'><span class='object_link'><a href="Prob.html#fill-class_method" title="Prob.fill (method)">fill</a></span></span><span class='rparen'>)</span><span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='symbol'>:g4</span>
+<span class='rbracket'>]</span><span class='rparen'>)</span>
+
+<span class='id identifier rubyid_track_live_loop'><span class='object_link'><a href="top-level-namespace.html#track_live_loop-instance_method" title="#track_live_loop (method)">track_live_loop</a></span></span> <span class='symbol'>:t</span><span class='comma'>,</span> <span class='id identifier rubyid_t'>t</span><span class='comma'>,</span> <span class='label'>fill_cc:</span> <span class='int'>111</span>
+</code></pre>
+<p>There is also a <code>not_fill</code> probability, which specifies that a step should only trigger when fill is off. And, there is a <code>fill</code> method on <code>Track</code> that gives all steps the <code>fill</code> probability, which may be useful when assembling tracks by merging them.</p>
+<h3 id="Sequencing_CCs">Sequencing CCs</h3>
+<p>So far we've only seen <code>Track</code>s and <code>Step</code>s, which both deal with sequencing notes. spi-seq can also sequence MIDI CCs using the <code>CCTrack</code> class. <code>CCTrack</code> shares the same structure and many methods with <code>Track</code>, but instead of note-based <code>Step</code>s, it contains <code>CCStep</code>s, which consist of a CC number and a value. The initializers <code>CCTrack.new</code> and <code>CCStep.new</code> are aliased to <code>CCT</code> and <code>CC</code> respectively. Constructing and using a <code>CCTrack</code> should look rather familiar:</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#CCT-instance_method" title="#CCT (method)">CCT</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span>
+  <span class='const'><span class='object_link'><a href="top-level-namespace.html#CC-instance_method" title="#CC (method)">CC</a></span></span><span class='lparen'>(</span><span class='int'>10</span><span class='comma'>,</span> <span class='int'>1</span><span class='rparen'>)</span><span class='comma'>,</span>
+  <span class='const'><span class='object_link'><a href="top-level-namespace.html#CC-instance_method" title="#CC (method)">CC</a></span></span><span class='lparen'>(</span><span class='int'>10</span><span class='comma'>,</span> <span class='int'>25</span><span class='rparen'>)</span><span class='comma'>,</span>
+  <span class='symbol'>:r</span><span class='comma'>,</span>
+  <span class='const'><span class='object_link'><a href="top-level-namespace.html#CC-instance_method" title="#CC (method)">CC</a></span></span><span class='lparen'>(</span><span class='int'>15</span><span class='comma'>,</span> <span class='int'>3</span><span class='rparen'>)</span>
+<span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>granularity:</span> <span class='symbol'>:half</span><span class='rparen'>)</span>
+
+<span class='id identifier rubyid_track_live_loop'><span class='object_link'><a href="top-level-namespace.html#track_live_loop-instance_method" title="#track_live_loop (method)">track_live_loop</a></span></span> <span class='symbol'>:my_cc_track</span><span class='comma'>,</span> <span class='id identifier rubyid_t'>t</span>
+</code></pre>
+<p>That builds a track with four slots that sends CC 10 with a value of 1, then 25, then rests, and then sends CC 15 with a value of 3. You play back <code>CCTrack</code>s with <code>track_live_loop</code>, just like normal <code>Tracks</code>.</p>
+<p>Many of the means for manipulating <code>Track</code>s are also available for <code>CCTrack</code>s; if the method doesn't deal directly with note properties (like <code>transpose</code> or <code>gate</code>), it's probably available on <code>CCTrack</code>. To name just a few, <code>zip</code>, <code>dropout</code>, and the <code>|</code> operator are all at your disposal. <code>CCStep</code>s can have probabilities and even accumulation - <code>CCStep</code> accumulation works just like that on <code>Step</code>, but applies deltas to the value of the CC message instead of semitone offsets of the note.</p>
+<p>The <code>CCTrack.simple</code> class method provides a concise way to construct a track that consists entirely of values for the same CC number. The <code>add_curve</code> method lets you add steps for a CC number with values along a curve. And if you want to generate a <code>CCTrack</code> with steps that correspond to notes in a <code>Track</code>, the <code>to_cc</code> and <code>to_simple_cc</code> methods on <code>Track</code> provide ways to map between the two.</p>
+<h2 id="Recording_tracks">Recording tracks</h2>
+<p>As you've hopefully seen, spi-seq has rich tools for constructing <code>Track</code>s programmatically. However, it can still be tedious to create tracks for more organic melodies. To help with that, the <code>TrackRecorder</code> module records and quantizes incoming MIDI note events and creates a <code>Track</code> object for you.</p>
+<p>To use it, first set a BPM that is the same you intend to use when playing back the resulting track. The BPM determines how to map between real-world seconds and slots in a track, so it's important that it is the same between recording and playback.</p>
+<p>Then, call <code>TrackRecorder.record</code>. That method takes many arguments, the most important of which are:</p>
+<ul>
+<li><code>cc</code>: Recording is started and stopped via this MIDI CC. The value sent for the CC is ignored; any message with this number will do. By default the CC is listened for on the device specified with <code>use_cc_control_defaults</code>, or all devices if none was set.</li>
+<li><code>port</code> and <code>channel</code>: The MIDI device to listen to for note events. Defaults to the device specified by <code>use_midi_defaults</code>, or all devices if none was set.</li>
+<li><code>granularity</code>: The granularity of the resulting <code>Track</code> (e.g. <code>:sixteenth</code>, <code>:eighth</code>, etc.). A shorter granularity means that the timing of incoming MIDI notes can be represented more precisely, which may or may not be desirable.</li>
+<li><code>trim_start</code> and <code>trim_end</code>: If these are true, rests from the respective end of the track will be removed.</li>
+<li><code>ignore_vel</code>: By default, the velocity of incoming events is recorded in the <code>Step</code>s in the track. If this is true, all steps will have the default velocity of 127.</li>
+</ul>
+<p><code>TrackRecorder.record</code> returns a <code>Track</code>, but how do you save that track for future use or editing? The easiest way is to call <code>copy_repr</code> on the it, which will put a Ruby representation of the track on your clipboard. You can also print the track's Ruby representation in Sonic Pi with <code>puts track.repr</code>.</p>
+<p>Here's an example use of <code>TrackRecorder</code>:</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_use_bpm'>use_bpm</span> <span class='int'>95</span>
+
+<span class='id identifier rubyid_require'>require</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>~/spi-seq/core</span><span class='tstring_end'>&quot;</span></span>
+<span class='id identifier rubyid_init_spi_seq'><span class='object_link'><a href="top-level-namespace.html#init_spi_seq-instance_method" title="#init_spi_seq (method)">init_spi_seq</a></span></span>
+
+<span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="TrackRecorder.html" title="TrackRecorder (module)">TrackRecorder</a></span></span><span class='period'>.</span><span class='id identifier rubyid_record'><span class='object_link'><a href="TrackRecorder.html#record-class_method" title="TrackRecorder.record (method)">record</a></span></span><span class='lparen'>(</span><span class='label'>cc:</span> <span class='int'>119</span><span class='comma'>,</span>
+                         <span class='label'>granularity:</span> <span class='symbol'>:sixteenth</span><span class='comma'>,</span>
+                         <span class='label'>trim_start:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>trim_end:</span> <span class='kw'>false</span><span class='comma'>,</span>
+                         <span class='label'>ignore_vel:</span> <span class='kw'>true</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_copy_repr'>copy_repr</span>
+</code></pre>
+<h2 id="Everyday_use">Everyday use</h2>
+<h3 id="A_template">A template</h3>
+<p>I recommend writing a small template for a new sketch and keeping it handy. Here is roughly the template I use:</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_use_bpm'>use_bpm</span> <span class='int'>120</span>
+<span class='id identifier rubyid_use_midi_logging'>use_midi_logging</span> <span class='kw'>false</span>
+<span class='id identifier rubyid_use_debug'>use_debug</span> <span class='kw'>false</span>
+
+<span class='id identifier rubyid_require'>require</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>~/spi-seq/core</span><span class='tstring_end'>&quot;</span></span>
+<span class='id identifier rubyid_init_spi_seq'><span class='object_link'><a href="top-level-namespace.html#init_spi_seq-instance_method" title="#init_spi_seq (method)">init_spi_seq</a></span></span>
+
+<span class='id identifier rubyid_uf'>uf</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='label'>port:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>arturia_microfreak</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='int'>7</span><span class='rbrace'>}</span>
+<span class='id identifier rubyid_mf'>mf</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='label'>port:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>minifreak_midi</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='int'>8</span><span class='rbrace'>}</span>
+
+<span class='id identifier rubyid_use_midi_defaults'>use_midi_defaults</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_mf'>mf</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_use_cc_control_defaults'><span class='object_link'><a href="top-level-namespace.html#use_cc_control_defaults-instance_method" title="#use_cc_control_defaults (method)">use_cc_control_defaults</a></span></span><span class='lparen'>(</span><span class='label'>port:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>iphone</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+<span class='id identifier rubyid_use_player_defaults'><span class='object_link'><a href="top-level-namespace.html#use_player_defaults-instance_method" title="#use_player_defaults (method)">use_player_defaults</a></span></span><span class='lparen'>(</span><span class='label'>midi:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>sync:</span> <span class='symbol'>:midi_clock</span><span class='rparen'>)</span>
+
+<span class='id identifier rubyid_on_cold_run'><span class='object_link'><a href="top-level-namespace.html#on_cold_run-instance_method" title="#on_cold_run (method)">on_cold_run</a></span></span> <span class='kw'>do</span>
+  <span class='id identifier rubyid_midi_panic'><span class='object_link'><a href="top-level-namespace.html#midi_panic-instance_method" title="#midi_panic (method)">midi_panic</a></span></span><span class='lparen'>(</span><span class='label'>port:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>*</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>*</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_midi_panic_on_stop'><span class='object_link'><a href="top-level-namespace.html#midi_panic_on_stop-instance_method" title="#midi_panic_on_stop (method)">midi_panic_on_stop</a></span></span><span class='lparen'>(</span><span class='label'>port:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>*</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>*</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_midi_clock_live_loop'><span class='object_link'><a href="top-level-namespace.html#midi_clock_live_loop-instance_method" title="#midi_clock_live_loop (method)">midi_clock_live_loop</a></span></span><span class='lparen'>(</span><span class='label'>port:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>*</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span>
+</code></pre>
+<p>Some of that should be familiar, but let me explain:</p>
+<ul>
+<li>The MIDI device hashes (here <code>uf</code> for Microfreak and <code>mf</code> for Minifreak) are handy because you can use them to target playback by passing them directly to <code>track_live_loop</code> like this: <code>track_live_loop :some_track, some_track, **uf</code>. You can also pass them to <code>use_midi_defaults</code>, as seen here, which is a built-in Sonic Pi method that spi-seq also honors for playback with <code>track_live_loop</code>.</li>
+<li>We've seen <code>use_cc_control_defaults</code> and <code>use_player_defaults</code> before; they control default options for <code>Player</code>s and <code>track_live_loop</code>. I use the TouchOSC app on my phone as a MIDI controller, so I've set that as the default CC control device.</li>
+<li><code>on_cold_run</code> is a helper provided by spi-seq that will execute its block only when a Sonic Pi sketch is started after having been stopped; it will not run if you restart a sketch. It's a handy place to do things like start the MIDI clock loop, and in this case send a MIDI stop and all notes off message to all devices (<code>midi_panic</code>). <code>midi_panic_on_stop</code> sets up a hook that will also do a <code>midi_panic</code> when playback is stopped in Sonic Pi, or when the app quits, to avoid stuck notes.</li>
+</ul>
+<h3 id="Live_coding">Live coding</h3>
+<p>Of course, spi-seq plays well with Sonic Pi's live coding features. You can safely re-run a sketch using spi-seq; your existing <code>track_live_loops</code> will finish and changes will take effect on the next loop. There are a few things you should be aware of though.</p>
+<p>If you add a new <code>track_live_loop</code> and re-run your sketch, that loop will start the next time its <code>sync</code> source fires. If you're using MIDI output, that is likely the MIDI clock, which means the loop will start almost immediately. That is probably not what you want! You probably intended for the track to start playback when some other track finishes a loop. Luckily, since <code>track_live_loops</code> are just <code>live_loops</code> under the hood, all you need to do is provide an explicit <code>sync</code> parameter for your loop, with the name of the loop you'd like it to start with.</p>
+<p>Stopping existing live loops is always a little tricky in Sonic Pi. It's probably easiest to use the loop <a href="#muting-tracks">muting functionality</a>, which will silence playback of a track. The <code>cc</code> parameter to <code>track_live_loop</code> will watch for a MIDI CC to control muting. Or, you can add a call to <code>mute_live_loop(:loop_name)</code> (or <code>unmute_live_loop</code>) in your sketch and re-run it. Once muted, the track will stop playing once its current cycle completes.</p>
+<p>Otherwise, if you don't think you'll be starting the loop again, you can just change (or add) a <code>track_live_loop</code>'s block to call Sonic Pi's <code>stop</code> function.</p></div></div>
+
+      
+    </div>
+  </body>
+</html>
