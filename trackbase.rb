@@ -221,6 +221,9 @@ class TrackBase
     gridish = gridify(gridish)
     raise ArgumentError, "you must provide at least one slot" if gridish.empty?
 
+    # Can't do a full cycle when there are no hits...
+    full_cycle = false if pulses == 0
+
     # If we're doing a full cycle, we may need multiple copies of the Euclidean
     # pattern to complete a perfect loop. If we're spreading n slots over p
     # hits, we need exactly lcm(p, n) hits. And since the pattern contains
