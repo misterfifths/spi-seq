@@ -5,47 +5,9 @@ require_relative "chord"
 require_relative "interval"
 require_relative "midinote"
 
-
-# A {Chord} that has been voiced on a particular root note in a particular style
-# and inversion. Most easily created with {Chord#voice} or the global {C}
-# helper.
-#
-# Enumerable over its {#notes}, and has most of the read-only methods of Array.
-#
-# VoicedChord instances are immutable.
-class VoicedChord
-  include Enumerable
-  extend Forwardable
-
-  # The {Chord} that this instance voices.
-  # @return [Chord]
-  attr_reader :chord
-
-  # The root note upon which this instance voices {#chord}.
-  # @return [MIDINote]
-  attr_reader :root
-
-  # The number of inversions applied to {#chord}'s intervals before applying a
-  # voicing style.
-  # @return [Integer]
-  attr_reader :inversion
-
-  # The name of the voicing style applied to {#chord} after inversion. One of
-  # the keys of the {VOICINGS} hash.
-  # @return [Symbol]
-  attr_reader :voicing
-
-  # The notes resulting from inverting and voicing {#chord}.
-  # @return [Array<MIDINote>]
-  attr_reader :notes
-
-  # each gets us all of Enumerable. The others are common methods on Array that
-  # aren't in Enumerable.
-  def_delegators :@notes,
-                 :each, :[], :slice, :length, :size, :last, :to_a, :to_ary,
-                 :values_at, :empty?
-
-
+# Provides functionality for concretely expressing {Chord}s as an array of
+# {MIDINote}s. See {.voice}.
+module ChordVoicing
   VOICING_DEFS = {
     %i[closed]                  => :voice_closed,
     %i[rootless]                => :voice_rootless,
@@ -92,7 +54,7 @@ class VoicedChord
   # Blow VOICING_DEFS up into a 1-d map from names.
 
   # A hash of the voicing styles supported by this class. The keys of this hash
-  # are the valid values to pass to {#initialize}.
+  # are the valid values to pass to {.voice}.
   #
   # Valid voicing styles:
   # - `:closed`: The simplest voicing: uses the intervals in the chord as-is.
@@ -125,7 +87,7 @@ class VoicedChord
   #   octave.
   #
   # (Note that there are aliases for many of the above styles; print the result
-  # of `VoicedChord::VOICINGS.keys` to see all possible names.)
+  # of `ChordVoicing::VOICINGS.keys` to see all possible names.)
   VOICINGS = {}  # rubocop:disable Style/MutableConstant
   VOICING_DEFS.each do |names, val|
     names.each { |name| VOICINGS[name] = val }
@@ -137,14 +99,15 @@ class VoicedChord
   SHELL_INTERVALS.freeze
   private_constant :SHELL_INTERVALS
 
-
-  # Creates a new VoicedChord instance.
+  # Voices a {Chord} in a particular style on a root note. That is, converts
+  # the intervals in the chord to concrete notes, after potentially applying
+  # an inversion and a voicing technique.
   #
   # It is probably more convenient to create a {Chord} and call {Chord#voice
-  # voice} on it, rather than using this initializer. Or, to create and
-  # immediately voice a chord, you can use the {C} helper function.
+  # voice} on it, rather than using this method. Or, to create and immediately
+  # voice a chord, you can use the {C} helper function.
   #
-  # @param chord [Chord] The chord this instance will voice.
+  # @param chord [Chord] The chord to voice.
   # @param root [MIDINote, String, Symbol, Integer] The root note upon which to
   #   voice the chord. Must be a {MIDINote} or something understood by
   #   {MIDINote.new}.
@@ -152,40 +115,38 @@ class VoicedChord
   #   of the {.VOICINGS} hash.
   # @param inversion [Integer] How many times to invert `chord`'s intervals
   #   before applying the `voicing`.
+  # @return [Array<MIDINote>]
   # @see Chord#voice
   # @see C
-  def initialize(chord, root, voicing = :closed, inversion: 0)
-    @chord = chord
-    @root = MIDINote.new(root)
-    @inversion = inversion
-    @voicing = voicing.to_sym
+  def self.voice(chord, root, voicing = :closed, inversion: 0)
+    root = MIDINote.new(root)
 
     # Inversions apply before voicing.
-    raise RangeError, "inversion must be >= 0" unless @inversion >= 0
-    raise RangeError, "chord only has #{chord.intervals.length - 1} inversions" if @inversion >= chord.intervals.length
-    if @inversion > 0
+    raise RangeError, "inversion must be >= 0" unless inversion >= 0
+    raise RangeError, "chord only has #{chord.intervals.length - 1} inversions" if inversion >= chord.intervals.length
+    if inversion > 0
       intervals = chord.intervals.dup
-      shifted_intervals = intervals.shift(@inversion).map! { |i| i + 12 }
+      shifted_intervals = intervals.shift(inversion).map! { |i| i + 12 }
       intervals += shifted_intervals
 
       # Inversion may have duplicated an interval.
       intervals.sort!
       intervals.uniq!
     else
-      intervals = @chord.intervals
+      intervals = chord.intervals
     end
 
-    voice_val = VOICINGS[@voicing]
+    voice_val = VOICINGS[voicing]
     raise ArgumentError, "unknown voicing #{voicing}" if voice_val.nil?
-    @notes = case voice_val
+    notes = case voice_val
     when Symbol
-      VoicedChord.method(voice_val).call(intervals, @root)
+      method(voice_val).call(intervals, root)
     else
-      voice_val.call(intervals, @root)
+      voice_val.call(intervals, root)
     end
-    @notes.sort!
-    @notes.uniq!
-    @notes.freeze
+    notes.sort!
+    notes.uniq!
+    notes
   end
 
 

@@ -2,22 +2,22 @@
 
 require "forwardable"
 require_relative "interval"
-require_relative "voicedchord"
+require_relative "chordvoicing"
 
 # @!group Music theory
-# Returns a {VoicedChord} for a named chord on the given root note, using a
-# particular voicing style and inversion. A shortcut for creating a {Chord} and
-# immediately {Chord#voice voicing} it.
+# Returns an array of {MIDINote}s that express a named chord on the given root
+# note, using a particular voicing style and inversion. A shortcut for creating
+# a {Chord} and immediately {Chord#voice voicing} it.
 # @param root [MIDINote, String, Symbol, Integer] The root note of the chord.
 # @param name [Symbol, String] The name of the chord, a value accepted by
 #   {Chord.new}.
 # @param voicing [Symbol, String] The voicing style to use, a value accepted by
-#   {VoicedChord#initialize}.
+#   {ChordVoicing.voice}.
 # @param invert [Integer] The number of inversions to apply to the chord before
 #   voicing it.
-# @return [VoicedChord]
+# @return [Array<MIDINote>]
 # @see Chord.new
-# @see VoicedChord#initialize
+# @see ChordVoicing.voice
 # @see Chord#voice
 def C(root, name, voicing = :closed, invert: 0)
   Chord.new(name).voice(root, voicing, invert: invert)
@@ -36,8 +36,8 @@ end
 #
 # Note that this class only represents the intervals; it does not track a root
 # note or inversions. Instances can be concretely expressed (i.e., converted to
-# actual {MIDINote}s) on a particular root note with the {#voice} method, or by
-# creating a {VoicedChord}. Inversions also happen at voice-time.
+# actual {MIDINote}s) on a particular root note with the {#voice} method.
+# Inversions also happen at voice-time.
 #
 # **Chord objects are immutable.** The various mutation methods it provides
 # (e.g. {#flat}, {#sus4}, {#add}) return new Chord instances with different
@@ -233,19 +233,20 @@ class Chord
   end
 
 
-  # Creates a new {VoicedChord} from this chord.
+  # Voices the chord. That is, converts the {#intervals} to concrete notes,
+  # after potentially applying an inversion and a voicing technique.
   # @param root [MIDINote, String, Symbol, Integer] The root note upon which to
   #   voice the chord. Must be a {MIDINote} or something understood by
   #   {MIDINote.new}.
-  # @param voicing [Symbol] The voicing style to use. See
-  #   {VoicedChord#initialize} for potential values.
+  # @param voicing [Symbol] The voicing style to use. See {ChordVoicing.voice}
+  #   for potential values.
   # @param invert [Integer] How many times to invert the chord's intervals
   #   before applying the `voicing`.
-  # @return [VoicedChord]
-  # @see VoicedChord#initialize
+  # @return [Array<MIDINote>]
+  # @see ChordVoicing.voice
   # @see C
   def voice(root, voicing = :closed, invert: 0)
-    VoicedChord.new(self, root, voicing, inversion: invert)
+    ChordVoicing.voice(self, root, voicing, inversion: invert)
   end
 
 
