@@ -543,6 +543,14 @@ class TrackGridTest < Test::Unit::TestCase
     a, b = track.send(method, *args, **kwargs, &block)
     assert_grid a, a_grid
     assert_grid b, b_grid
+
+    if method == :extract
+      filter_t = track.filter(&block)
+      assert_grid filter_t, b_grid
+    elsif method == :extract_slots
+      filter_t = track.filter_slots(&block)
+      assert_grid filter_t, b_grid
+    end
   end
 
   def test_extract

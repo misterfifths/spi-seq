@@ -1344,6 +1344,7 @@ class TrackBase
   #   the two returned tracks. If false, it will be placed in the first.
   #
   # @return [Array(TrackBase, TrackBase)]
+  # @see #filter_steps
   # @see #extract_slots
   # @see #extract_x_of_y
   # @see #extract_every
@@ -1376,6 +1377,29 @@ class TrackBase
   end
 
   alias extract extract_steps
+
+  # Returns a new track containing only steps for which a block returns true.
+  # The new track will have the same length as this one, but will only contain
+  # the selected steps.
+  #
+  # The result is equivalent to the second returned track of {#extract_steps},
+  # and the block is exactly as described on that method.
+  #
+  # @yieldparam (see #extract_steps)
+  # @yieldreturn [Boolean] If true, the step will be present in the returned
+  #   track.
+  #
+  # @return [Track]
+  # @see #extract_steps
+  # @see #filter_slots
+  def filter_steps(&block)
+    _, t = extract_steps(&block)
+    t
+  end
+
+  alias filter filter_steps
+  alias select_steps filter_steps
+  alias select filter_steps
 
   # Returns two tracks by extracting slots for which a block returns true. This
   # is the slot equivalent of {#extract_steps}; the first returned track
@@ -1427,6 +1451,28 @@ class TrackBase
 
     [mutate(grid: grid1), mutate(grid: grid2)]
   end
+
+  # Returns a new track containing only slots for which a block returns true.
+  # The new track will have the same length as this one, but will only contain
+  # contain steps in the selected slots; others will be rests.
+  #
+  # The result is equivalent to the second returned track of {#extract_slots},
+  # and the block is exactly as described on that method.
+  #
+  # @yieldparam (see #extract_slots)
+  # @yieldreturn [Boolean] If true, the slot will be present in the returned
+  #   track. If false, the corresponding slot in the new track will be empty
+  #   (i.e. a rest).
+  #
+  # @return [Track]
+  # @see #extract_slots
+  # @see #filter_steps
+  def filter_slots(&block)
+    _, t = extract_slots(&block)
+    t
+  end
+
+  alias select_slots filter_slots
 
   # Returns two tracks by selecting steps in slots that are certain distances
   # apart. This is an expanded version of {#drop_every}. The first track it
