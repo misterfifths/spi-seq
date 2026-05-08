@@ -1250,12 +1250,31 @@ class Track < TrackBase
   # @return {Array(Track, Track)}
   # @see MIDINote#match?
   # @see #extract
+  # @see #filter_notes
   def extract_note(note)
     extract { |step| step.note.match?(note) }
   end
 
   alias extract_notes extract_note
 
+  # Returns a new track containing only steps that match the given note. The new
+  # The new track will have the same length as this one, but will only contain
+  # steps that match. Matches are evaluated with {MIDINote#match?}.
+  #
+  # The result is equivalent to the second returned track of {#extract_note}.
+  #
+  # @param (see #extract_note)
+  # @return [Track]
+  # @see #extract_note
+  # @see #filter_steps
+  def filter_notes(note)
+    _, t = extract_note(note)
+    t
+  end
+
+  alias filter_note filter_notes
+  alias select_notes filter_notes
+  alias select_note filter_notes
 
   ## @!group Mutating steps
 

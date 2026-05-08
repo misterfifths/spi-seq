@@ -544,13 +544,14 @@ class TrackGridTest < Test::Unit::TestCase
     assert_grid a, a_grid
     assert_grid b, b_grid
 
-    if method == :extract
-      filter_t = track.filter(&block)
-      assert_grid filter_t, b_grid
-    elsif method == :extract_slots
-      filter_t = track.filter_slots(&block)
-      assert_grid filter_t, b_grid
-    end
+    # Test the corresponding filter method too, if there is one.
+    filter_method = {
+      extract: :filter,
+      extract_slots: :filter_slots,
+      extract_note: :filter_note
+    }[method]
+
+    assert_grid track.send(filter_method, *args, **kwargs, &block), b_grid unless filter_method.nil?
   end
 
   def test_extract
