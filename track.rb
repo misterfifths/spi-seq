@@ -297,6 +297,31 @@ class Track < TrackBase
   end
 
 
+  ### @!group Properties
+
+  # Returns an array of numbers, one per slot in this track, containing the gate
+  # for the step in that slot (or 0 if the slot is empty). It is an error to
+  # call this method on a track with more than one step in any slot.
+  #
+  # The resulting array is suitable for use with {.isorhythm}.
+  #
+  # @example
+  #   T([:c4, S(:c4, 0.1), :r]).gates
+  #   # is equal to
+  #   [1, 0.1, 0]
+  #
+  # @return [Array<Number>]
+  # @see .isorhythm
+  def extract_gates
+    raise ArgumentError, "extract_gates can only be used on a mono track" unless mono?
+    @grid.map { |slot| slot.empty? ? 0 : slot[0].gate }
+  end
+
+  alias gates extract_gates
+  alias extract_rhythm extract_gates
+  alias rhythm extract_gates
+
+
   ### Mutators
 
   ## @!group Granularity manipulation
@@ -513,7 +538,7 @@ class Track < TrackBase
   alias grain regranularize
 
 
-  ## @!group Simple mutations
+  ## @!group Attribute mutations
 
   # Returns a new track with the given {#scale}. See {#initialize} for details
   # on this functionality.
@@ -524,55 +549,7 @@ class Track < TrackBase
   end
 
 
-  ## @!group Grid-level mutations
-
-  # Returns two Tracks by extracting steps that match the given note. Matches
-  # are evaluated with {MIDINote#match?}. The first returned track contains the
-  # non-matching steps, and the second contains the matching ones.
-  #
-  # @example
-  #   t = T([[:c1, :c2], :d2, :e2, :f2])
-  #   u, v = t.extract_note(:c)
-  #   # u is equivalent to
-  #   T([:r, :d2, :e2, :f2])
-  #   # and v is
-  #   T([[:c1, :c2], :r, :r, :r])
-  #
-  # @param note [MIDINote, String, Symbol, Integer] The note or pitch class to
-  #   match. See {MIDINote#match?} for precise rules.
-  # @return {Array(Track, Track)}
-  # @see MIDINote#match?
-  # @see #extract
-  def extract_note(note)
-    extract { |step| step.note.match?(note) }
-  end
-
-  alias extract_notes extract_note
-
-  # Returns an array of numbers, one per slot in this track, containing the gate
-  # for the step in that slot (or 0 if the slot is empty). It is an error to
-  # call this method on a track with more than one step in any slot.
-  #
-  # The resulting array is suitable for use with {.isorhythm}.
-  #
-  # @example
-  #   T([:c4, S(:c4, 0.1), :r]).gates
-  #   # is equal to
-  #   [1, 0.1, 0]
-  #
-  # @return [Array<Number>]
-  # @see .isorhythm
-  def extract_gates
-    raise ArgumentError, "extract_gates can only be used on a mono track" unless mono?
-    @grid.map { |slot| slot.empty? ? 0 : slot[0].gate }
-  end
-
-  alias gates extract_gates
-  alias extract_rhythm extract_gates
-  alias rhythm extract_gates
-
-
-  ## @!group Step-level mutations
+  ## @!group Step attribute mutators
 
   # Return a new Track where each step has the given {Step#gate gate}.
   #
@@ -607,51 +584,6 @@ class Track < TrackBase
   def scale_gate(factor)
     mutate_each_step { |step| step.with_gate(step.gate * factor) }
   end
-
-  # Returns a new Track where each step's {Step#gate gate} is replaced with the
-  # result of `curve_func`.
-  #
-  # `curve_func` must take 1 or 2 arguments, which are, in order:
-  # - The percentage through the {#grid grid} (0.0 - 1.0) where the slot
-  #   containing the step falls.
-  # - The index in the {#grid grid} of the slot containing the step.
-  #
-  # `curve_func` should return a floating point value 0 - 1 that will be used
-  # as the gate for all steps in the corresponding slot.
-  #
-  # See the {Curves} and {Easings} modules for prebuilt functions that meet
-  # these requirements.
-  #
-  # If `min` or `max` is provided, the curve function will be scaled via
-  # {Curves.scale} so that it falls in the given range. If only one of `min` or
-  # `max` is provided, the other defaults to the respective endpoint of the
-  # range 0 - 1.
-  #
-  # @param curve_func [#call] A callable defining the curve; see above.
-  # @param min [Number, nil] Defines scaling for the curve; see above.
-  # @param max [Number, nil] Defines scaling for the curve; see above.
-  # @return [Track]
-  # @see #gate
-  # @see #scale_gate
-  # @see #vel_curve
-  def with_gate_curve(curve_func, min: nil, max: nil)
-    raise TypeError, "Curve function must be a callable that takes 1-2 arguments" if !curve_func.respond_to?(:call) || curve_func.arity == 0 || curve_func.arity > 2
-
-    if !min.nil? || !max.nil?
-      min = 0 if min.nil?
-      max = 1 if max.nil?
-      curve_func = Curves.scale(curve_func, min, max)
-    end
-
-    mutate_each_step do |step, slot_idx, pct|
-      args = [pct, slot_idx].take(curve_func.arity)
-      gate = curve_func.call(*args)
-
-      step.with_gate(gate)
-    end
-  end
-
-  alias gate_curve with_gate_curve
 
   # Return a new Track where each step has the given {Step#vel velocity},
   # specified in the MIDI range of 0 - 127.
@@ -710,6 +642,237 @@ class Track < TrackBase
   end
 
   alias scale_velf scale_vel
+
+  # Returns a new Track where the octave of each step's {Step#note note} is set
+  # to the given value.
+  #
+  # @example
+  #   T([:a1, :b2, :c3]).with_octave(5)
+  #   # is equivalent to
+  #   T([:a5, :b5, :c5])
+  #
+  # @param new_octave [Integer]
+  # @return [Track]
+  # @see #shift_octave
+  # @see #up
+  # @see #down
+  # @see #transpose
+  def with_octave(new_octave)
+    mutate_each_step { |step| step.with_octave(new_octave) }
+  end
+
+  alias octave with_octave
+  alias oct octave
+
+  # Returns a new Track by shifting the octave of each step's {Step#note note}
+  # by the given amount.
+  #
+  # @example
+  #   T([:a1, :b2, :c3]).shift_octave(2)
+  #   # is equivalent to
+  #   T([:a3, :b4, :c5])
+  #
+  # @param shift [Integer]
+  # @return [Track]
+  # @see #with_octave
+  # @see #up
+  # @see #down
+  # @see #transpose
+  def shift_octave(shift)
+    mutate_each_step { |step| step.shift_octave(shift) }
+  end
+
+  # Returns a new Track by increasing the octave of each step's {Step#note note}
+  # by the given amount. This is equivalent to {#shift_octave}.
+  # @param octave_shift [Integer]
+  # @return [Track]
+  # @see #with_octave
+  # @see #shift_octave
+  # @see #down
+  # @see #transpose
+  def up(octave_shift = 1)
+    shift_octave(octave_shift)
+  end
+
+  # Returns a new Track by decreasing the octave of each Step's note by the
+  # given amount. This is equivalent to {#shift_octave} with the negation of its
+  # argument.
+  # @param octave_shift [Integer]
+  # @return [Track]
+  # @see #with_octave
+  # @see #shift_octave
+  # @see #up
+  # @see #transpose
+  def down(octave_shift = 1)
+    shift_octave(-octave_shift)
+  end
+
+  # Return a new Track where, with probability `p`, each step's {Step#note note}
+  # is shifted by a random value in the given range.
+  #
+  # @example
+  #   T([:a4, :b4, :c4, :d4]).rand_octave(-2..1, p: 0.75)
+  #   # might return a track equivalent to
+  #   T([:a2, :b4, :c5, :d3])
+  #
+  # @param range [Integer, Range] Defines the range of allowed octave shifts.
+  #   If an integer is passed, the range `-range..range` is used.
+  # @param p [Number] The probability (0 - 1) that any given step has its octave
+  #   shifted.
+  # @return [Track]
+  # @see #shift_octave
+  # @see #up
+  # @see #down
+  def rand_octave(range = 1, p: 0.5)
+    mutate_each_step do |step|
+      next step unless ExtApi.rand < p
+
+      # We've already decided to shift, so ignore random 0 values. Not using
+      # rand_i here since it's exclusive. rand is too, but we're rounding.
+      shift = 0
+      while shift == 0
+        if range.is_a?(Range)
+          shift = ExtApi.rand(range).round
+        else
+          shift = ExtApi.rand(-range..range).round
+        end
+      end
+
+      step.shift_octave(shift)
+    end
+  end
+
+  alias roct rand_octave
+
+  # Returns a new Track where each step's {Step#note} is shifted by the given
+  # number of semitones.
+  #
+  # @example
+  #   T([:a1, :b1, :r, :c1]).transpose(7)
+  #   # is equivalent to
+  #   [:e2, :fs2, :r, :g1]
+  #
+  # @param shift [Integer]
+  # @return [Track]
+  # @see #semi_up
+  # @see #semi_down
+  def transpose(shift)
+    mutate_each_step { |step| step.transpose(shift) }
+  end
+
+  alias tone transpose
+  alias shift_tone transpose
+  alias t transpose
+
+  # Returns a new Track where each step's {Step#note} is increased by the given
+  # number of semitones. This is equivalent to {#transpose}.
+  # @param tone_shift [Integer]
+  # @return [Track]
+  # @see #transpose
+  def semi_up(tone_shift = 1)
+    transpose(tone_shift)
+  end
+
+  alias sup semi_up
+
+  # Returns a new Track where each step's {Step#note} is decreased by the given
+  # number of semitones. This is equivalent to {#transpose} with the negation of
+  # its argument.
+  # @param tone_shift [Integer]
+  # @return [Track]
+  # @see #transpose
+  def semi_down(tone_shift = 1)
+    transpose(-tone_shift)
+  end
+
+  alias sdown semi_down
+
+  # Return a new Track in which each step has its {Step#note note}
+  # {MIDINote#snap snapped} to the nearest note in the given array.
+  #
+  # @example
+  #   notes = [:c4, :e4, :g4, :b4]
+  #   T([:e4, :b3, :gb4, :bs4]).snap_to_notes(notes)
+  #   # is equivalent to
+  #   T([:e4, :c4, :g4, :b4])
+  #
+  # @param notes [Array<MIDINote, String, Symbol, Integer>] The notes which
+  #   steps will be snapped. Elements can be {MIDINote}s or anything understood
+  #   by {MIDINote.new}.
+  # @return [Track]
+  # @see #snap_to_scale
+  # @see MIDINote#snap
+  def snap_to_notes(notes)
+    mutate_each_step { |step| step.with_note(step.note.snap(notes)) }
+  end
+
+  # Return a new Track in which each step has its {Step#note note} snapped to
+  # the nearest note in a scale starting on a particular tonic.
+  #
+  # Unlike providing a global Track {#scale} for quantization in {#initialize}
+  # or {#with_scale}, this action is "destructive" in that steps in the new
+  # track will have modified notes.
+  #
+  # @param tonic [String, Symbol] The pitch class for the root note of the
+  #   scale, e.g. `:c`.
+  # @param scale_name [Symbol, String] The name of the scale to use, one of the
+  #   keys of the {Scale.SCALES} hash.
+  # @return [Track]
+  # @see #scale
+  # @see Scale.full_scale
+  # @see Scale#snap
+  def snap_to_scale(tonic, scale_name)
+    scale = Scale.full_scale(tonic, scale_name)
+    mutate_each_step { |step| step.with_note(scale.snap(step.note)) }
+  end
+
+
+  # @!group Moving Step attributes along a curve
+
+  # Returns a new Track where each step's {Step#gate gate} is replaced with the
+  # result of `curve_func`.
+  #
+  # `curve_func` must take 1 or 2 arguments, which are, in order:
+  # - The percentage through the {#grid grid} (0.0 - 1.0) where the slot
+  #   containing the step falls.
+  # - The index in the {#grid grid} of the slot containing the step.
+  #
+  # `curve_func` should return a floating point value 0 - 1 that will be used
+  # as the gate for all steps in the corresponding slot.
+  #
+  # See the {Curves} and {Easings} modules for prebuilt functions that meet
+  # these requirements.
+  #
+  # If `min` or `max` is provided, the curve function will be scaled via
+  # {Curves.scale} so that it falls in the given range. If only one of `min` or
+  # `max` is provided, the other defaults to the respective endpoint of the
+  # range 0 - 1.
+  #
+  # @param curve_func [#call] A callable defining the curve; see above.
+  # @param min [Number, nil] Defines scaling for the curve; see above.
+  # @param max [Number, nil] Defines scaling for the curve; see above.
+  # @return [Track]
+  # @see #gate
+  # @see #scale_gate
+  # @see #vel_curve
+  def with_gate_curve(curve_func, min: nil, max: nil)
+    raise TypeError, "Curve function must be a callable that takes 1-2 arguments" if !curve_func.respond_to?(:call) || curve_func.arity == 0 || curve_func.arity > 2
+
+    if !min.nil? || !max.nil?
+      min = 0 if min.nil?
+      max = 1 if max.nil?
+      curve_func = Curves.scale(curve_func, min, max)
+    end
+
+    mutate_each_step do |step, slot_idx, pct|
+      args = [pct, slot_idx].take(curve_func.arity)
+      gate = curve_func.call(*args)
+
+      step.with_gate(gate)
+    end
+  end
+
+  alias gate_curve with_gate_curve
 
   # Returns a new Track where each step's {Step#vel velocity} is replaced with
   # the result of `curve_func`.
@@ -1067,188 +1230,34 @@ class Track < TrackBase
     taper_vel(trailing_vel, taper_final_tie: taper_final_tie, taper_single: taper_single, zero_to_one: true)
   end
 
-  # Returns a new Track where the octave of each step's {Step#note note} is set
-  # to the given value.
+
+  ## @!group Adding, removing, and filtering steps
+
+  # Returns two Tracks by extracting steps that match the given note. Matches
+  # are evaluated with {MIDINote#match?}. The first returned track contains the
+  # non-matching steps, and the second contains the matching ones.
   #
   # @example
-  #   T([:a1, :b2, :c3]).with_octave(5)
-  #   # is equivalent to
-  #   T([:a5, :b5, :c5])
+  #   t = T([[:c1, :c2], :d2, :e2, :f2])
+  #   u, v = t.extract_note(:c)
+  #   # u is equivalent to
+  #   T([:r, :d2, :e2, :f2])
+  #   # and v is
+  #   T([[:c1, :c2], :r, :r, :r])
   #
-  # @param new_octave [Integer]
-  # @return [Track]
-  # @see #shift_octave
-  # @see #up
-  # @see #down
-  # @see #transpose
-  def with_octave(new_octave)
-    mutate_each_step { |step| step.with_octave(new_octave) }
+  # @param note [MIDINote, String, Symbol, Integer] The note or pitch class to
+  #   match. See {MIDINote#match?} for precise rules.
+  # @return {Array(Track, Track)}
+  # @see MIDINote#match?
+  # @see #extract
+  def extract_note(note)
+    extract { |step| step.note.match?(note) }
   end
 
-  alias octave with_octave
-  alias oct octave
+  alias extract_notes extract_note
 
-  # Returns a new Track by shifting the octave of each step's {Step#note note}
-  # by the given amount.
-  #
-  # @example
-  #   T([:a1, :b2, :c3]).shift_octave(2)
-  #   # is equivalent to
-  #   T([:a3, :b4, :c5])
-  #
-  # @param shift [Integer]
-  # @return [Track]
-  # @see #with_octave
-  # @see #up
-  # @see #down
-  # @see #transpose
-  def shift_octave(shift)
-    mutate_each_step { |step| step.shift_octave(shift) }
-  end
 
-  # Returns a new Track by increasing the octave of each step's {Step#note note}
-  # by the given amount. This is equivalent to {#shift_octave}.
-  # @param octave_shift [Integer]
-  # @return [Track]
-  # @see #with_octave
-  # @see #shift_octave
-  # @see #down
-  # @see #transpose
-  def up(octave_shift = 1)
-    shift_octave(octave_shift)
-  end
-
-  # Returns a new Track by decreasing the octave of each Step's note by the
-  # given amount. This is equivalent to {#shift_octave} with the negation of its
-  # argument.
-  # @param octave_shift [Integer]
-  # @return [Track]
-  # @see #with_octave
-  # @see #shift_octave
-  # @see #up
-  # @see #transpose
-  def down(octave_shift = 1)
-    shift_octave(-octave_shift)
-  end
-
-  # Return a new Track where, with probability `p`, each step's {Step#note note}
-  # is shifted by a random value in the given range.
-  #
-  # @example
-  #   T([:a4, :b4, :c4, :d4]).rand_octave(-2..1, p: 0.75)
-  #   # might return a track equivalent to
-  #   T([:a2, :b4, :c5, :d3])
-  #
-  # @param range [Integer, Range] Defines the range of allowed octave shifts.
-  #   If an integer is passed, the range `-range..range` is used.
-  # @param p [Number] The probability (0 - 1) that any given step has its octave
-  #   shifted.
-  # @return [Track]
-  # @see #shift_octave
-  # @see #up
-  # @see #down
-  def rand_octave(range = 1, p: 0.5)
-    mutate_each_step do |step|
-      next step unless ExtApi.rand < p
-
-      # We've already decided to shift, so ignore random 0 values. Not using
-      # rand_i here since it's exclusive. rand is too, but we're rounding.
-      shift = 0
-      while shift == 0
-        if range.is_a?(Range)
-          shift = ExtApi.rand(range).round
-        else
-          shift = ExtApi.rand(-range..range).round
-        end
-      end
-
-      step.shift_octave(shift)
-    end
-  end
-
-  alias roct rand_octave
-
-  # Returns a new Track where each step's {Step#note} is shifted by the given
-  # number of semitones.
-  #
-  # @example
-  #   T([:a1, :b1, :r, :c1]).transpose(7)
-  #   # is equivalent to
-  #   [:e2, :fs2, :r, :g1]
-  #
-  # @param shift [Integer]
-  # @return [Track]
-  # @see #semi_up
-  # @see #semi_down
-  def transpose(shift)
-    mutate_each_step { |step| step.transpose(shift) }
-  end
-
-  alias tone transpose
-  alias shift_tone transpose
-  alias t transpose
-
-  # Returns a new Track where each step's {Step#note} is increased by the given
-  # number of semitones. This is equivalent to {#transpose}.
-  # @param tone_shift [Integer]
-  # @return [Track]
-  # @see #transpose
-  def semi_up(tone_shift = 1)
-    transpose(tone_shift)
-  end
-
-  alias sup semi_up
-
-  # Returns a new Track where each step's {Step#note} is decreased by the given
-  # number of semitones. This is equivalent to {#transpose} with the negation of
-  # its argument.
-  # @param tone_shift [Integer]
-  # @return [Track]
-  # @see #transpose
-  def semi_down(tone_shift = 1)
-    transpose(-tone_shift)
-  end
-
-  alias sdown semi_down
-
-  # Return a new Track in which each step has its {Step#note note}
-  # {MIDINote#snap snapped} to the nearest note in the given array.
-  #
-  # @example
-  #   notes = [:c4, :e4, :g4, :b4]
-  #   T([:e4, :b3, :gb4, :bs4]).snap_to_notes(notes)
-  #   # is equivalent to
-  #   T([:e4, :c4, :g4, :b4])
-  #
-  # @param notes [Array<MIDINote, String, Symbol, Integer>] The notes which
-  #   steps will be snapped. Elements can be {MIDINote}s or anything understood
-  #   by {MIDINote.new}.
-  # @return [Track]
-  # @see #snap_to_scale
-  # @see MIDINote#snap
-  def snap_to_notes(notes)
-    mutate_each_step { |step| step.with_note(step.note.snap(notes)) }
-  end
-
-  # Return a new Track in which each step has its {Step#note note} snapped to
-  # the nearest note in a scale starting on a particular tonic.
-  #
-  # Unlike providing a global Track {#scale} for quantization in {#initialize}
-  # or {#with_scale}, this action is "destructive" in that steps in the new
-  # track will have modified notes.
-  #
-  # @param tonic [String, Symbol] The pitch class for the root note of the
-  #   scale, e.g. `:c`.
-  # @param scale_name [Symbol, String] The name of the scale to use, one of the
-  #   keys of the {Scale.SCALES} hash.
-  # @return [Track]
-  # @see #scale
-  # @see Scale.full_scale
-  # @see Scale#snap
-  def snap_to_scale(tonic, scale_name)
-    scale = Scale.full_scale(tonic, scale_name)
-    mutate_each_step { |step| step.with_note(scale.snap(step.note)) }
-  end
+  ## @!group Mutating steps
 
   # Returns a new Track where each step with a matching {Step#note note} is
   # replaced with a step that has note `repl` but is otherwise identical.

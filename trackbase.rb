@@ -384,7 +384,7 @@ class TrackBase
 
   ### Mutators
 
-  ## @!group Simple mutations
+  ## @!group Attribute mutations
 
   # Returns a new track with the given {#granularity}. Does not effect the
   # timing of any steps, so the track's duration (in terms of beat length) will
@@ -409,81 +409,7 @@ class TrackBase
   alias rate with_rate
 
 
-  ## @!group Grid-level mutations
-
-  # Return a new track, replacing each slot in this track with the result of the
-  # given block.
-  #
-  # The block may return:
-  # - A single step or something convertible to one (as defined by the track
-  #   subclass), which will be converted to a one-step slot and replace the slot
-  #   yielded to the block.
-  # - A slot (an array of steps), which will replace the slot yielded to the
-  #   block.
-  # - `nil`, `:r`, or `:rest`, which will replace the slot yielded to the block
-  #   with an empty slot (i.e. a rest). Note that this is the same as returning
-  #   an empty array.
-  # - An array of slots, which will all be added in place of the yielded slot
-  #
-  # @example
-  #   t = T([[:f8, :f9], :b2, [:f8, :f9]])
-  #   u = t.mutate_each_slot { |slot| slot.length == 1 ? [:c4] : slot }
-  #   # u is equivalent to
-  #   T([[:f8, :f9], [:c4], [:f8, :f9]])
-  #
-  # @example
-  #   t = T([[:a1, :a2], :b1, :r, :d1])
-  #   u = t.mutate_each_slot { |slot, idx| idx > 1 ? slot : [:c4] }
-  #   # u is equivalent to
-  #   T([:c4, :c4, :r, :d1])
-  #
-  # @yieldparam slot [Array<StepBase>] The slot to mutate.
-  # @yieldparam index [Integer] (optional) The index of the slot in the track.
-  # @yieldparam percent [Number] (optional) The percent through the track that
-  #   the slot falls. For instance, the first slot of the track will have
-  #   percent 0, the middle slot (in a track with an odd number of slots) will
-  #   have percent 0.5, and the final slot will have percent 1.0.
-  # @yieldreturn [StepBase, Array<StepBase, Array<StepBase>>, nil, :r, :rest]
-  #   (or other subclass-defined types) Determines the value to use in place of
-  #   the slot in the resulting track; see above.
-  # @return [TrackBase]
-  # @see #mutate_each_step
-  # @see #mutate_slot
-  # @see #mutate_filled_slot
-  def mutate_each_slot(&block)
-    raise ArgumentError, "Block must take 1-3 arguments" if block.arity == 0 || block.arity > 3
-
-    new_grid = []
-    @grid.each_with_index do |slot, i|
-      if i == 0
-        pct = 0.0
-      elsif i == @grid.length - 1
-        pct = 1.0
-      else
-        pct = i.to_f / (num_slots - 1)
-      end
-
-      args = [slot, i, pct].take(block.arity)
-      replacement = block.call(*args)
-
-      # The block may return something convertible to a slot (step/note/etc.),
-      # or a 1d array (which we will take as a slot), or an array that contains
-      # some number of other arrays (which we will take as a set of slots). This
-      # behavior is pretty odd. But, it's somewhat in keeping with set_slot, and
-      # having the ability to expand one slot into multiple here is nice...
-      replacement = [replacement] unless ExtApi.enumerable?(replacement)
-      is_gridish = replacement.any? { |e| ExtApi.enumerable?(e) }
-
-      if is_gridish
-        new_grid += self.class.gridify(replacement)
-      else
-        new_grid << replacement  # This will get slotified by the initializer.
-      end
-    end
-    mutate(grid: new_grid)
-  end
-
-  alias mutate_slots mutate_each_slot
+  ## @!group Integrating with other tracks
 
   # Returns a new track with `other_track` appended to this one. If
   # `other_track` is not a track, it is converted to one using the initializer.
@@ -497,6 +423,7 @@ class TrackBase
   #   The track to append, or a value that is convertible to a track. See the
   #   subclass initializer for details.
   # @return [TrackBase]
+  # @see #append_slot
   def append(other_track)
     other_track = compatibly_trackify(other_track)
     assert_compatible_track(other_track)
@@ -523,6 +450,7 @@ class TrackBase
   #   The track to merge with this one, or a value that is convertible to a
   #   track. See the subclass initializer for details.
   # @return [TrackBase]
+  # @see #append
   def merge(other_track)
     other_track = compatibly_trackify(other_track)
     assert_compatible_track(other_track)
@@ -542,26 +470,6 @@ class TrackBase
   end
 
   alias | merge
-
-  # Creates a new track by merging each group of `n` consecutive slots into one
-  # slot each. If `n` does not evenly divide the number of slots in the original
-  # track, the final slot will merge the remaining slots.
-  #
-  # @example
-  #   T([:c3, :d3, :e3, :f3, :g3]).gmerge(2)
-  #   # is equivalent to
-  #   T([[:c3, :d3], [:e3, :f3], [:g3]])
-  #
-  # @param n [Integer] The size of each group of slots to merge.
-  # @return [TrackBase]
-  # @see #each_cons
-  def grouped_merge(n)
-    new_grid = @grid.each_slice(n).map { |slots| slots.flatten }
-    mutate(grid: new_grid)
-  end
-
-  alias gmerge grouped_merge
-  alias group grouped_merge
 
   # Creates a new track that interleaves the slots of `other_track` with those
   # of this track. If `other_track` is not a track, it is converted to a
@@ -715,96 +623,8 @@ class TrackBase
 
   alias gzip grouped_zip
 
-  # Returns a new track that plays each successive overlapped set of `n` slots.
-  # If `flatten` is false, each overlapped set of slots will be grouped into a
-  # new slot.
-  #
-  # @example
-  #   T([:a1, :b1, [:c1, :c2], :d1, :e1]).each_cons(3)
-  #   # is equivalent to
-  #   T([:a1, :b1, [:c1, :c2],
-  #      :b1, [:c1, :c2], :d1,
-  #      [:c1, :c2], :d1, :e1])
-  #
-  # @example
-  #   T([:a1, :b1, [:c1, :c2], :d1, :e1]).each_cons(3, flatten: false)
-  #   # is equivalent to
-  #   T([[:a1, :b1, :c1, :c2],
-  #      [:b1, :c1, :c2, :d1],
-  #      [:c1, :c2, :d1, :e1]])
-  #
-  # @param n [Integer] The number of slots to consider in groups. It is an error
-  #   to pass a value greater than the length of the track.
-  # @param flatten [Boolean] Whether the grouped slots should be merged together
-  #   into single slots.
-  # @return [TrackBase]
-  # @see #gmerge
-  def each_cons(n, flatten: true)
-    raise IndexError, "n=#{n} is greater than the length of the track (#{@grid.length})" if n > @grid.length
 
-    new_grid = @grid.each_cons(n).to_a
-    if flatten
-      new_grid = new_grid.flatten(1)
-    else
-      new_grid.map!(&:flatten)
-    end
-    mutate(grid: new_grid)
-  end
-
-  # Returns a new track that contains every permutation of `n` slots. The order
-  # of the permutations is indeterminate. If `n` is nil, permutes all slots.
-  # @param n [Integer, nil]
-  # @return [TrackBase]
-  # @see #combination
-  def permutation(n = nil)
-    mutate(grid: @grid.permutation(n).to_a) #.flatten(1))
-  end
-
-  alias permutations permutation
-
-  # Returns a new track that contains every combination of `n` slots. The order
-  # of the combinations is indeterminate.
-  # @param n [Integer]
-  # @return [TrackBase]
-  # @see #permutation
-  def combination(n)
-    mutate(grid: @grid.combination(n).to_a.flatten(1))
-  end
-
-  alias combinations combination
-
-  # Returns a new track that repeats the slots of this track `n` times.
-  #
-  # @example
-  #   T([:a1, :b2]) * 4
-  #   # is equivalent to
-  #   T([:a1, :b2, :a1, :b2, :a1, :b2, :a1, :b2])
-  #
-  # @param n [Integer]
-  # @return [TrackBase]
-  # @see #cycle_to_length
-  def repeat(n)
-    mutate(grid: @grid * n)
-  end
-
-  alias * repeat
-
-  # Returns a new track that repeats the slots of this track for `n` slots. Note
-  # that if `n` does not evenly divide the length of this track, the final
-  # repetition in the result will be truncated so that the overall track has `n`
-  # slots.
-  #
-  # @example
-  #   T([:a1, :b1, :c1]).cycle_to_length(5)
-  #   # is equivalent to
-  #   T([:a1, :b1, :c1, :a1, :b1])
-  #
-  # @param n [Integer] The number of slots in the new track.
-  # @return [TrackBase]
-  # @see #repeat
-  def cycle_to_length(n)
-    mutate(grid: @grid.cycle.take(n))
-  end
+  ## @!group Managing rests
 
   # Returns a new track with all empty slots (rests) removed from this one.
   # Raises an exception if this would result in an empty track.
@@ -862,6 +682,79 @@ class TrackBase
   def trim
     ltrim.rtrim
   end
+
+  # Returns a new track by adding `num_rests` many empty slots (rests) to the
+  # beginning of the track.
+  # @param num_rests [Integer]
+  # @return [TrackBase]
+  # @see #rpad
+  # @see #ltrim
+  # @see #rtrim
+  # @see #trim
+  def left_pad(num_rests = 1)
+    mutate(grid: [[]] * num_rests + @grid)
+  end
+
+  alias lpad left_pad
+
+  # Returns a new track by adding `num_rests` many empty slots (rests) to the
+  # end of the track.
+  # @param num_rests [Integer]
+  # @return [TrackBase]
+  # @see #lpad
+  # @see #rtrim
+  # @see #ltrim
+  # @see #trim
+  def right_pad(num_rests = 1)
+    mutate(grid: @grid + [[]] * num_rests)
+  end
+
+  alias rpad right_pad
+
+  # Returns a new track by adding `num_rests` many empty slots (rests) after
+  # each slot in this track.
+  #
+  # @example
+  #   T([:a1, :b1, :c1]).space(2)
+  #   # is equivalent to
+  #   T([:a1, :r, :r, :b1, :r, :r, :c1, :r, :r])
+  #
+  # @param num_rests [Integer]
+  # @return [TrackBase]
+  # @see #space_every
+  def space(num_rests = 1)
+    new_grid = []
+    @grid.each do |slot|
+      new_grid << slot
+      new_grid.concat([[]] * num_rests)
+    end
+
+    mutate(grid: new_grid)
+  end
+
+  # Returns a new track by adding `num_rests` many empty slots (rests) between
+  # each group of `group_size` slots from this track.
+  #
+  # @example
+  #   T([:a1, :b1, :c1, :d1, :e1, :f1]).space_every(3, 2)
+  #   # is equivalent to
+  #   T([:a1, :b1, :c1, :r, :r, :d1, :e1, :f1, :r, :r])
+  #
+  # @param group_size [Integer]
+  # @param num_rests [Integer]
+  # @return [TrackBase]
+  # @see #space
+  def space_every(group_size, num_rests = 1)
+    new_grid = []
+    @grid.each_slice(group_size) do |chunk|
+      new_grid += chunk
+      new_grid += [[]] * num_rests
+    end
+
+    mutate(grid: new_grid)
+  end
+
+  ## @!group Reordering slots
 
   # Returns a new track with the slots of this track in reverse order.
   #
@@ -971,75 +864,210 @@ class TrackBase
   alias rshift right
   alias shr right
 
-  # Returns a new track by adding `num_rests` many empty slots (rests) to the
-  # beginning of the track.
-  # @param num_rests [Integer]
-  # @return [TrackBase]
-  # @see #rpad
-  # @see #ltrim
-  # @see #rtrim
-  # @see #trim
-  def left_pad(num_rests = 1)
-    mutate(grid: [[]] * num_rests + @grid)
-  end
 
-  alias lpad left_pad
+  # @!group Mutating slots
 
-  # Returns a new track by adding `num_rests` many empty slots (rests) to the
-  # end of the track.
-  # @param num_rests [Integer]
-  # @return [TrackBase]
-  # @see #lpad
-  # @see #rtrim
-  # @see #ltrim
-  # @see #trim
-  def right_pad(num_rests = 1)
-    mutate(grid: @grid + [[]] * num_rests)
-  end
-
-  alias rpad right_pad
-
-  # Returns a new track by adding `num_rests` many empty slots (rests) after
-  # each slot in this track.
+  # Return a new track, replacing each slot in this track with the result of the
+  # given block.
+  #
+  # The block may return:
+  # - A single step or something convertible to one (as defined by the track
+  #   subclass), which will be converted to a one-step slot and replace the slot
+  #   yielded to the block.
+  # - A slot (an array of steps), which will replace the slot yielded to the
+  #   block.
+  # - `nil`, `:r`, or `:rest`, which will replace the slot yielded to the block
+  #   with an empty slot (i.e. a rest). Note that this is the same as returning
+  #   an empty array.
+  # - An array of slots, which will all be added in place of the yielded slot
   #
   # @example
-  #   T([:a1, :b1, :c1]).space(2)
-  #   # is equivalent to
-  #   T([:a1, :r, :r, :b1, :r, :r, :c1, :r, :r])
+  #   t = T([[:f8, :f9], :b2, [:f8, :f9]])
+  #   u = t.mutate_each_slot { |slot| slot.length == 1 ? [:c4] : slot }
+  #   # u is equivalent to
+  #   T([[:f8, :f9], [:c4], [:f8, :f9]])
   #
-  # @param num_rests [Integer]
+  # @example
+  #   t = T([[:a1, :a2], :b1, :r, :d1])
+  #   u = t.mutate_each_slot { |slot, idx| idx > 1 ? slot : [:c4] }
+  #   # u is equivalent to
+  #   T([:c4, :c4, :r, :d1])
+  #
+  # @yieldparam slot [Array<StepBase>] The slot to mutate.
+  # @yieldparam index [Integer] (optional) The index of the slot in the track.
+  # @yieldparam percent [Number] (optional) The percent through the track that
+  #   the slot falls. For instance, the first slot of the track will have
+  #   percent 0, the middle slot (in a track with an odd number of slots) will
+  #   have percent 0.5, and the final slot will have percent 1.0.
+  # @yieldreturn [StepBase, Array<StepBase, Array<StepBase>>, nil, :r, :rest]
+  #   (or other subclass-defined types) Determines the value to use in place of
+  #   the slot in the resulting track; see above.
   # @return [TrackBase]
-  # @see #space_every
-  def space(num_rests = 1)
-    new_grid = []
-    @grid.each do |slot|
-      new_grid << slot
-      new_grid.concat([[]] * num_rests)
-    end
+  # @see #mutate_each_step
+  # @see #mutate_slot
+  # @see #mutate_filled_slot
+  def mutate_each_slot(&block)
+    raise ArgumentError, "Block must take 1-3 arguments" if block.arity == 0 || block.arity > 3
 
+    new_grid = []
+    @grid.each_with_index do |slot, i|
+      if i == 0
+        pct = 0.0
+      elsif i == @grid.length - 1
+        pct = 1.0
+      else
+        pct = i.to_f / (num_slots - 1)
+      end
+
+      args = [slot, i, pct].take(block.arity)
+      replacement = block.call(*args)
+
+      # The block may return something convertible to a slot (step/note/etc.),
+      # or a 1d array (which we will take as a slot), or an array that contains
+      # some number of other arrays (which we will take as a set of slots). This
+      # behavior is pretty odd. But, it's somewhat in keeping with set_slot, and
+      # having the ability to expand one slot into multiple here is nice...
+      replacement = [replacement] unless ExtApi.enumerable?(replacement)
+      is_gridish = replacement.any? { |e| ExtApi.enumerable?(e) }
+
+      if is_gridish
+        new_grid += self.class.gridify(replacement)
+      else
+        new_grid << replacement  # This will get slotified by the initializer.
+      end
+    end
     mutate(grid: new_grid)
   end
 
-  # Returns a new track by adding `num_rests` many empty slots (rests) between
-  # each group of `group_size` slots from this track.
+  alias mutate_slots mutate_each_slot
+
+  # Returns a new track with the steps in slot `idx` replaced with the given
+  # steps.
   #
   # @example
-  #   T([:a1, :b1, :c1, :d1, :e1, :f1]).space_every(3, 2)
+  #   T([:a1, :b1, :r, :d1]).replace_slot(2, [:c2, :c3])
   #   # is equivalent to
-  #   T([:a1, :b1, :c1, :r, :r, :d1, :e1, :f1, :r, :r])
+  #   T([:a1, :b1, [:c2, :c3], :d1])
   #
-  # @param group_size [Integer]
-  # @param num_rests [Integer]
+  # @param idx [Integer] The index of the slot to replace. Must be a valid index
+  #   for the {#grid}.
+  # @param new_steps [StepBase, Array<StepBase>, nil, :r, :rest] (or other types
+  #   depending on the subclass) The new contents of the slot. May be an array
+  #   of the subclass-appropriate step type (e.g. {Step} for {Track}s), a single
+  #   such step (which will be converted to a single-step slot), or a value
+  #   convertible to a step (e.g. a {MIDINote} for {Track}s). If this value is
+  #   a {MIDINote.rest? rest}, the slot is cleared.
   # @return [TrackBase]
-  # @see #space
-  def space_every(group_size, num_rests = 1)
-    new_grid = []
-    @grid.each_slice(group_size) do |chunk|
-      new_grid += chunk
-      new_grid += [[]] * num_rests
-    end
-
+  # @see #clear_slot
+  # @see #append_slot
+  # @see #set_filled_slot
+  def replace_slot(idx, new_steps)
+    raise IndexError, "Index #{idx} is beyond the length of the track (#{@grid.length})" if idx >= @grid.length
+    new_grid = @grid.dup
+    new_grid[idx] = new_steps  # This will get slotified by the initializer.
     mutate(grid: new_grid)
+  end
+
+  alias set_slot replace_slot
+
+  # Return a new track, replacing the steps in the `n`th non-empty slot with the
+  # given steps. This is equivalent to {#set_slot} with the index of the `n`th
+  # non-empty slot; see that method for details.
+  # @param n [Integer] The `n`th non-empty slot will be mutated.
+  # @param new_steps [StepBase, Array<StepBase>, nil, :r, :rest] (or other types
+  #   depending on the subclass) The new contents of the slot. May be an array
+  #   of the subclass-appropriate step type (e.g. {Step} for {Track}s), a single
+  #   such step (which will be converted to a single-step slot), or a value
+  #   convertible to a step (e.g. a {MIDINote} for {Track}s). If this value is
+  #   a {MIDINote.rest? rest}, the slot is cleared.
+  # @return [TrackBase]
+  # @see #set_slot
+  # @see #indexes_of_filled_slots
+  # @see #filled_slot
+  def replace_filled_slot(n, new_steps)
+    idx = indexes_of_filled_slots[n]
+    set_slot(idx, new_steps)
+  end
+
+  alias set_filled_slot replace_filled_slot
+
+  # Returns a new track with all steps in slot `idx` removed. That is, the slot
+  # is turned into a rest.
+  #
+  # @example
+  #   T([:a1, [:b1, :b2], :c3]).clear_slot(1)
+  #   # is equivalent to
+  #   T([:a1, :r, :c3])
+  #
+  # @param idx [Integer] The index of the slot to replace. Must be a valid index
+  #   for the {#grid}.
+  # @return [TrackBase]
+  # @see set_slot
+  def clear_slot(idx)
+    replace_slot(idx, [])
+  end
+
+  # Returns a new track with the given steps appended to the slot at the given
+  # index.
+  #
+  # @example
+  #   T([:a1, :b1, :c1]).append_slot(1, [:b2, :b3])
+  #   # is equivalent to
+  #   T([:a1, [:b1, :b2, :b3], :c1])
+  #
+  # @param idx [Integer] The index of the slot to replace. Must be a valid index
+  #   for the {#grid}.
+  # @param new_steps [StepBase, Array<StepBase>, nil, :r, :rest] (or other types
+  #   depending on the subclass) - The step or steps to add to the slot. May be
+  #   an array of the subclass-appropriate step type (e.g. {Step} for {Track}s),
+  #   a single such step, or a value convertible to a step (e.g. a {MIDINote}
+  #   for {Track}s).
+  # @return [TrackBase]
+  # @see #append
+  # @see #set_slot
+  def append_slot(idx, new_steps)
+    raise IndexError, "index #{idx} is past the end of the grid" if idx >= @grid.length
+
+    new_slot = @grid[idx] + self.class.slotify(new_steps)
+    new_grid = @grid.dup
+    new_grid[idx] = new_slot
+    mutate(grid: new_grid)
+  end
+
+
+  ## @!group Adding, removing, and filtering slots
+
+  # Returns a new track that repeats the slots of this track `n` times.
+  #
+  # @example
+  #   T([:a1, :b2]) * 4
+  #   # is equivalent to
+  #   T([:a1, :b2, :a1, :b2, :a1, :b2, :a1, :b2])
+  #
+  # @param n [Integer]
+  # @return [TrackBase]
+  # @see #cycle_to_length
+  def repeat(n)
+    mutate(grid: @grid * n)
+  end
+
+  alias * repeat
+
+  # Returns a new track that repeats the slots of this track for `n` slots. Note
+  # that if `n` does not evenly divide the length of this track, the final
+  # repetition in the result will be truncated so that the overall track has `n`
+  # slots.
+  #
+  # @example
+  #   T([:a1, :b1, :c1]).cycle_to_length(5)
+  #   # is equivalent to
+  #   T([:a1, :b1, :c1, :a1, :b1])
+  #
+  # @param n [Integer] The number of slots in the new track.
+  # @return [TrackBase]
+  # @see #repeat
+  def cycle_to_length(n)
+    mutate(grid: @grid.cycle.take(n))
   end
 
   # Returns a new track with the first `n` slots removed from this one.
@@ -1126,9 +1154,9 @@ class TrackBase
     mutate(grid: @grid.values_at(*idxs))
   end
 
-  # Returns a new track consisting of `n` random slots from this track's grid.
-  # Only picks from filled slots; rests are not considered. The relative order
-  # of the slots is maintained.
+  # Returns a new track consisting of `n` random non-rest slots from this
+  # track's grid. Unlike {#sample}, only picks from slots with steps. The
+  # relative order of the slots is maintained.
   # @param n [Integer] The number of slots to select.
   # @return [TrackBase]
   # @see #sample
@@ -1240,166 +1268,6 @@ class TrackBase
   end
 
   alias rdropout rand_dropout
-
-  # Returns a new track with the steps in slot `idx` replaced with the given
-  # steps.
-  #
-  # @example
-  #   T([:a1, :b1, :r, :d1]).replace_slot(2, [:c2, :c3])
-  #   # is equivalent to
-  #   T([:a1, :b1, [:c2, :c3], :d1])
-  #
-  # @param idx [Integer] The index of the slot to replace. Must be a valid index
-  #   for the {#grid}.
-  # @param new_steps [StepBase, Array<StepBase>, nil, :r, :rest] (or other types
-  #   depending on the subclass) The new contents of the slot. May be an array
-  #   of the subclass-appropriate step type (e.g. {Step} for {Track}s), a single
-  #   such step (which will be converted to a single-step slot), or a value
-  #   convertible to a step (e.g. a {MIDINote} for {Track}s). If this value is
-  #   a {MIDINote.rest? rest}, the slot is cleared.
-  # @return [TrackBase]
-  # @see #clear_slot
-  # @see #append_slot
-  # @see #set_filled_slot
-  def replace_slot(idx, new_steps)
-    raise IndexError, "Index #{idx} is beyond the length of the track (#{@grid.length})" if idx >= @grid.length
-    new_grid = @grid.dup
-    new_grid[idx] = new_steps  # This will get slotified by the initializer.
-    mutate(grid: new_grid)
-  end
-
-  alias set_slot replace_slot
-
-  # Returns a new track with all steps in slot `idx` removed. That is, the slot
-  # is turned into a rest.
-  #
-  # @example
-  #   T([:a1, [:b1, :b2], :c3]).clear_slot(1)
-  #   # is equivalent to
-  #   T([:a1, :r, :c3])
-  #
-  # @param idx [Integer] The index of the slot to replace. Must be a valid index
-  #   for the {#grid}.
-  # @return [TrackBase]
-  # @see set_slot
-  def clear_slot(idx)
-    replace_slot(idx, [])
-  end
-
-  # Returns a new track with the given steps appended to the slot at the given
-  # index.
-  #
-  # @example
-  #   T([:a1, :b1, :c1]).append_slot(1, [:b2, :b3])
-  #   # is equivalent to
-  #   T([:a1, [:b1, :b2, :b3], :c1])
-  #
-  # @param idx [Integer] The index of the slot to replace. Must be a valid index
-  #   for the {#grid}.
-  # @param new_steps [StepBase, Array<StepBase>, nil, :r, :rest] (or other types
-  #   depending on the subclass) - The step or steps to add to the slot. May be
-  #   an array of the subclass-appropriate step type (e.g. {Step} for {Track}s),
-  #   a single such step, or a value convertible to a step (e.g. a {MIDINote}
-  #   for {Track}s).
-  # @return [TrackBase]
-  # @see set_slot
-  def append_slot(idx, new_steps)
-    raise IndexError, "index #{idx} is past the end of the grid" if idx >= @grid.length
-
-    new_slot = @grid[idx] + self.class.slotify(new_steps)
-    new_grid = @grid.dup
-    new_grid[idx] = new_slot
-    mutate(grid: new_grid)
-  end
-
-  # Returns two tracks by extracting steps for which a block returns true.
-  #
-  # If the block returns true, the step will be placed in the second of the two
-  # returned tracks. If it returns false, the step will be placed in the first.
-  # The returned tracks will have the same length; if the process results in all
-  # steps in a slot winding up in only one of the tracks, the slot in the other
-  # track will be empty (i.e., a rest).
-  #
-  # @example
-  #   t = T([[:c1, :c2], :d2, :e2, :f2])
-  #
-  #   u, v = t.extract_steps { |step| step.note.match?(:c) }
-  #   # u is equivalent to
-  #   T([:r, :d2, :e2, :f2])
-  #   # and v is
-  #   T([[:c1, :c2], :r, :r, :r])
-  #
-  #   x, y = t.extract_steps { |step| step.note.octave == 2 }
-  #   # x is equivalent to
-  #   T([:c1, :r, :r, :r])
-  #   # and y is
-  #   T([:c2, :d2, :e2, :f2])
-  #
-  # @yieldparam step [StepBase] The step under consideration.
-  # @yieldparam slot [Array<StepBase>] (optional) The slot to which the step
-  #   belongs.
-  # @yieldparam slot_idx [Integer] (optional) The index in the {#grid} of the
-  #   slot the step belongs to.
-  # @yieldreturn [Boolean] If true, the step will be placed in the second of
-  #   the two returned tracks. If false, it will be placed in the first.
-  #
-  # @return [Array(TrackBase, TrackBase)]
-  # @see #filter_steps
-  # @see #extract_slots
-  # @see #extract_x_of_y
-  # @see #extract_every
-  def extract_steps(&block)
-    raise ArgumentError, "Block must take 1-3 arguments" if block.arity == 0 || block.arity > 3
-
-    grid1 = []
-    grid2 = []
-
-    @grid.each_with_index do |slot, i|
-      slot1 = []
-      slot2 = []
-
-      slot.each do |step|
-        args = [step, slot, i].take(block.arity)
-        should_extract = block.call(*args)
-
-        if should_extract
-          slot2 << step
-        else
-          slot1 << step
-        end
-      end
-
-      grid1 << slot1
-      grid2 << slot2
-    end
-
-    [mutate(grid: grid1), mutate(grid: grid2)]
-  end
-
-  alias extract extract_steps
-
-  # Returns a new track containing only steps for which a block returns true.
-  # The new track will have the same length as this one, but will only contain
-  # the selected steps.
-  #
-  # The result is equivalent to the second returned track of {#extract_steps},
-  # and the block is exactly as described on that method.
-  #
-  # @yieldparam (see #extract_steps)
-  # @yieldreturn [Boolean] If true, the step will be present in the returned
-  #   track.
-  #
-  # @return [Track]
-  # @see #extract_steps
-  # @see #filter_slots
-  def filter_steps(&block)
-    _, t = extract_steps(&block)
-    t
-  end
-
-  alias filter filter_steps
-  alias select_steps filter_steps
-  alias select filter_steps
 
   # Returns two tracks by extracting slots for which a block returns true. This
   # is the slot equivalent of {#extract_steps}; the first returned track
@@ -1567,7 +1435,182 @@ class TrackBase
   alias gextract extract_x_of_y
 
 
-  ## @!group Step-level mutations
+  ## @!group Combining and permuting slots
+
+  # Creates a new track by merging each group of `n` consecutive slots into one
+  # slot each. If `n` does not evenly divide the number of slots in the original
+  # track, the final slot will merge the remaining slots.
+  #
+  # @example
+  #   T([:c3, :d3, :e3, :f3, :g3]).gmerge(2)
+  #   # is equivalent to
+  #   T([[:c3, :d3], [:e3, :f3], [:g3]])
+  #
+  # @param n [Integer] The size of each group of slots to merge.
+  # @return [TrackBase]
+  # @see #each_cons
+  def grouped_merge(n)
+    new_grid = @grid.each_slice(n).map { |slots| slots.flatten }
+    mutate(grid: new_grid)
+  end
+
+  alias gmerge grouped_merge
+  alias group grouped_merge
+
+  # Returns a new track that plays each successive overlapped set of `n` slots.
+  # If `flatten` is false, each overlapped set of slots will be grouped into a
+  # new slot.
+  #
+  # @example
+  #   T([:a1, :b1, [:c1, :c2], :d1, :e1]).each_cons(3)
+  #   # is equivalent to
+  #   T([:a1, :b1, [:c1, :c2],
+  #      :b1, [:c1, :c2], :d1,
+  #      [:c1, :c2], :d1, :e1])
+  #
+  # @example
+  #   T([:a1, :b1, [:c1, :c2], :d1, :e1]).each_cons(3, flatten: false)
+  #   # is equivalent to
+  #   T([[:a1, :b1, :c1, :c2],
+  #      [:b1, :c1, :c2, :d1],
+  #      [:c1, :c2, :d1, :e1]])
+  #
+  # @param n [Integer] The number of slots to consider in groups. It is an error
+  #   to pass a value greater than the length of the track.
+  # @param flatten [Boolean] Whether the grouped slots should be merged together
+  #   into single slots.
+  # @return [TrackBase]
+  # @see #gmerge
+  def each_cons(n, flatten: true)
+    raise IndexError, "n=#{n} is greater than the length of the track (#{@grid.length})" if n > @grid.length
+
+    new_grid = @grid.each_cons(n).to_a
+    if flatten
+      new_grid = new_grid.flatten(1)
+    else
+      new_grid.map!(&:flatten)
+    end
+    mutate(grid: new_grid)
+  end
+
+  # Returns a new track that contains every permutation of `n` slots. The order
+  # of the permutations is indeterminate. If `n` is nil, permutes all slots.
+  # @param n [Integer, nil]
+  # @return [TrackBase]
+  # @see #combination
+  def permutation(n = nil)
+    mutate(grid: @grid.permutation(n).to_a) #.flatten(1))
+  end
+
+  alias permutations permutation
+
+  # Returns a new track that contains every combination of `n` slots. The order
+  # of the combinations is indeterminate.
+  # @param n [Integer]
+  # @return [TrackBase]
+  # @see #permutation
+  def combination(n)
+    mutate(grid: @grid.combination(n).to_a.flatten(1))
+  end
+
+  alias combinations combination
+
+
+  ## @!group Adding, removing, and filtering steps
+
+  # Returns two tracks by extracting steps for which a block returns true.
+  #
+  # If the block returns true, the step will be placed in the second of the two
+  # returned tracks. If it returns false, the step will be placed in the first.
+  # The returned tracks will have the same length; if the process results in all
+  # steps in a slot winding up in only one of the tracks, the slot in the other
+  # track will be empty (i.e., a rest).
+  #
+  # @example
+  #   t = T([[:c1, :c2], :d2, :e2, :f2])
+  #
+  #   u, v = t.extract_steps { |step| step.note.match?(:c) }
+  #   # u is equivalent to
+  #   T([:r, :d2, :e2, :f2])
+  #   # and v is
+  #   T([[:c1, :c2], :r, :r, :r])
+  #
+  #   x, y = t.extract_steps { |step| step.note.octave == 2 }
+  #   # x is equivalent to
+  #   T([:c1, :r, :r, :r])
+  #   # and y is
+  #   T([:c2, :d2, :e2, :f2])
+  #
+  # @yieldparam step [StepBase] The step under consideration.
+  # @yieldparam slot [Array<StepBase>] (optional) The slot to which the step
+  #   belongs.
+  # @yieldparam slot_idx [Integer] (optional) The index in the {#grid} of the
+  #   slot the step belongs to.
+  # @yieldreturn [Boolean] If true, the step will be placed in the second of
+  #   the two returned tracks. If false, it will be placed in the first.
+  #
+  # @return [Array(TrackBase, TrackBase)]
+  # @see #filter_steps
+  # @see #extract_slots
+  # @see #extract_x_of_y
+  # @see #extract_every
+  def extract_steps(&block)
+    raise ArgumentError, "Block must take 1-3 arguments" if block.arity == 0 || block.arity > 3
+
+    grid1 = []
+    grid2 = []
+
+    @grid.each_with_index do |slot, i|
+      slot1 = []
+      slot2 = []
+
+      slot.each do |step|
+        args = [step, slot, i].take(block.arity)
+        should_extract = block.call(*args)
+
+        if should_extract
+          slot2 << step
+        else
+          slot1 << step
+        end
+      end
+
+      grid1 << slot1
+      grid2 << slot2
+    end
+
+    [mutate(grid: grid1), mutate(grid: grid2)]
+  end
+
+  alias extract extract_steps
+
+  # Returns a new track containing only steps for which a block returns true.
+  # The new track will have the same length as this one, but will only contain
+  # the selected steps.
+  #
+  # The result is equivalent to the second returned track of {#extract_steps},
+  # and the block is exactly as described on that method.
+  #
+  # @yieldparam (see #extract_steps)
+  # @yieldreturn [Boolean] If true, the step will be present in the returned
+  #   track.
+  #
+  # @return [Track]
+  # @see #extract_steps
+  # @see #filter_slots
+  def filter_steps(&block)
+    _, t = extract_steps(&block)
+    t
+  end
+
+  alias filter filter_steps
+  alias select_steps filter_steps
+  alias select filter_steps
+
+
+
+
+  ## @!group Mutating steps
 
   # Return a new track, replacing each step in this track with the result of the
   # given block.
@@ -1662,6 +1705,7 @@ class TrackBase
   # @return [TrackBase]
   # @see #mutate_each_step
   # @see #mutate_each_slot
+  # @see #set_slot
   def mutate_steps_in_slot(idx, &block)
     raise ArgumentError, "Block must take 1 argument" if block.arity != 1
 
@@ -1687,26 +1731,8 @@ class TrackBase
     mutate_steps_in_slot(idx, &block)
   end
 
-  # Return a new track, replacing the steps in the `n`th non-empty slot with the
-  # given steps. This is equivalent to {#set_slot} with the index of the `n`th
-  # non-empty slot; see that method for details.
-  # @param n [Integer] The `n`th non-empty slot will be mutated.
-  # @param new_steps [StepBase, Array<StepBase>, nil, :r, :rest] (or other types
-  #   depending on the subclass) The new contents of the slot. May be an array
-  #   of the subclass-appropriate step type (e.g. {Step} for {Track}s), a single
-  #   such step (which will be converted to a single-step slot), or a value
-  #   convertible to a step (e.g. a {MIDINote} for {Track}s). If this value is
-  #   a {MIDINote.rest? rest}, the slot is cleared.
-  # @return [TrackBase]
-  # @see #set_slot
-  # @see #indexes_of_filled_slots
-  # @see #filled_slot
-  def replace_filled_slot(n, new_steps)
-    idx = indexes_of_filled_slots[n]
-    set_slot(idx, new_steps)
-  end
 
-  alias set_filled_slot replace_filled_slot
+  ## @!group Step attribute mutators
 
   # Returns a new track where every step has the given {StepBase#prob
   # probability}.
