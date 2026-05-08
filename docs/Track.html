@@ -226,6 +226,43 @@ documentation for the basics of the grid, slots, and mutation methods.</p>
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(gridish, granularity: NoteLength::Eighth, scale: nil, timescale: 1)  &#x21d2; Track </a>
+    
+
+    
+  </span>
+  
+  
+    <span class="note title constructor">constructor</span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Constructs a Track with the given grid and attributes.</p></div></span>
+  
+</li>
+
+      
+    </ul>
+    
+      <h3 class="inherited">Methods inherited from <span class='object_link'><a href="TrackBase.html" title="TrackBase (class)">TrackBase</a></span></h3>
+      <p class="inherited"><span class='object_link'><a href="TrackBase.html#euclid-class_method" title="TrackBase.euclid (method)">euclid</a></span>, <span class='object_link'><a href="TrackBase.html#rest-class_method" title="TrackBase.rest (method)">rest</a></span></p>
+    
+  
+    <h2>
+      Properties
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#condense-instance_method" title="#condense (instance method)">#<strong>condense</strong>(times = 1)  &#x21d2; Track </a>
     
 
@@ -270,15 +307,15 @@ documentation for the basics of the grid, slots, and mutation methods.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(gridish, granularity: NoteLength::Eighth, scale: nil, timescale: 1)  &#x21d2; Track </a>
+      <a href="#extract_gates-instance_method" title="#extract_gates (instance method)">#<strong>extract_gates</strong>  &#x21d2; Array&lt;Number&gt; </a>
     
 
+    
+      (also: #gates, #extract_rhythm, #rhythm)
     
   </span>
   
   
-    <span class="note title constructor">constructor</span>
-  
   
   
   
@@ -286,7 +323,7 @@ documentation for the basics of the grid, slots, and mutation methods.</p>
   
 
   
-    <span class="summary_desc"><div class='inline'><p>Constructs a Track with the given grid and attributes.</p></div></span>
+    <span class="summary_desc"><div class='inline'><p>Returns an array of numbers, one per slot in this track, containing the gate for the step in that slot (or 0 if the slot is empty).</p></div></span>
   
 </li>
 
@@ -318,11 +355,11 @@ documentation for the basics of the grid, slots, and mutation methods.</p>
     </ul>
     
       <h3 class="inherited">Methods inherited from <span class='object_link'><a href="TrackBase.html" title="TrackBase (class)">TrackBase</a></span></h3>
-      <p class="inherited"><span class='object_link'><a href="TrackBase.html#euclid-class_method" title="TrackBase.euclid (method)">euclid</a></span>, <span class='object_link'><a href="TrackBase.html#rest-class_method" title="TrackBase.rest (method)">rest</a></span></p>
+      <p class="inherited"><span class='object_link'><a href="TrackBase.html#beat_length-instance_method" title="TrackBase#beat_length (method)">#beat_length</a></span>, <span class='object_link'><a href="TrackBase.html#empty%3F-instance_method" title="TrackBase#empty? (method)">#empty?</a></span>, <span class='object_link'><a href="TrackBase.html#indexes_of_filled_slots-instance_method" title="TrackBase#indexes_of_filled_slots (method)">#indexes_of_filled_slots</a></span>, <span class='object_link'><a href="TrackBase.html#mono%3F-instance_method" title="TrackBase#mono? (method)">#mono?</a></span>, <span class='object_link'><a href="TrackBase.html#nth_filled_slot-instance_method" title="TrackBase#nth_filled_slot (method)">#nth_filled_slot</a></span>, <span class='object_link'><a href="TrackBase.html#num_slots-instance_method" title="TrackBase#num_slots (method)">#num_slots</a></span>, <span class='object_link'><a href="TrackBase.html#poly%3F-instance_method" title="TrackBase#poly? (method)">#poly?</a></span></p>
     
   
     <h2>
-      Simple mutations
+      Attribute mutations
       <small><a href="#" class="summary_toggle">collapse</a></small>
     </h2>
 
@@ -357,68 +394,7 @@ documentation for the basics of the grid, slots, and mutation methods.</p>
     
   
     <h2>
-      Grid-level mutations
-      <small><a href="#" class="summary_toggle">collapse</a></small>
-    </h2>
-
-    <ul class="summary">
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#extract_gates-instance_method" title="#extract_gates (instance method)">#<strong>extract_gates</strong>  &#x21d2; Array&lt;Number&gt; </a>
-    
-
-    
-      (also: #gates, #extract_rhythm, #rhythm)
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Returns an array of numbers, one per slot in this track, containing the gate for the step in that slot (or 0 if the slot is empty).</p></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#extract_note-instance_method" title="#extract_note (instance method)">#<strong>extract_note</strong>(note)  &#x21d2; Array(Track, Track) </a>
-    
-
-    
-      (also: #extract_notes)
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Returns two Tracks by extracting steps that match the given note.</p></div></span>
-  
-</li>
-
-      
-    </ul>
-    
-      <h3 class="inherited">Methods inherited from <span class='object_link'><a href="TrackBase.html" title="TrackBase (class)">TrackBase</a></span></h3>
-      <p class="inherited"><span class='object_link'><a href="TrackBase.html#append-instance_method" title="TrackBase#append (method)">#append</a></span>, <span class='object_link'><a href="TrackBase.html#append_slot-instance_method" title="TrackBase#append_slot (method)">#append_slot</a></span>, <span class='object_link'><a href="TrackBase.html#clear-instance_method" title="TrackBase#clear (method)">#clear</a></span>, <span class='object_link'><a href="TrackBase.html#clear_slot-instance_method" title="TrackBase#clear_slot (method)">#clear_slot</a></span>, <span class='object_link'><a href="TrackBase.html#combination-instance_method" title="TrackBase#combination (method)">#combination</a></span>, <span class='object_link'><a href="TrackBase.html#compact-instance_method" title="TrackBase#compact (method)">#compact</a></span>, <span class='object_link'><a href="TrackBase.html#cycle_to_length-instance_method" title="TrackBase#cycle_to_length (method)">#cycle_to_length</a></span>, <span class='object_link'><a href="TrackBase.html#drop-instance_method" title="TrackBase#drop (method)">#drop</a></span>, <span class='object_link'><a href="TrackBase.html#drop_every-instance_method" title="TrackBase#drop_every (method)">#drop_every</a></span>, <span class='object_link'><a href="TrackBase.html#drop_last-instance_method" title="TrackBase#drop_last (method)">#drop_last</a></span>, <span class='object_link'><a href="TrackBase.html#drop_x_of_y-instance_method" title="TrackBase#drop_x_of_y (method)">#drop_x_of_y</a></span>, <span class='object_link'><a href="TrackBase.html#each_cons-instance_method" title="TrackBase#each_cons (method)">#each_cons</a></span>, <span class='object_link'><a href="TrackBase.html#extract_every-instance_method" title="TrackBase#extract_every (method)">#extract_every</a></span>, <span class='object_link'><a href="TrackBase.html#extract_slots-instance_method" title="TrackBase#extract_slots (method)">#extract_slots</a></span>, <span class='object_link'><a href="TrackBase.html#extract_steps-instance_method" title="TrackBase#extract_steps (method)">#extract_steps</a></span>, <span class='object_link'><a href="TrackBase.html#extract_x_of_y-instance_method" title="TrackBase#extract_x_of_y (method)">#extract_x_of_y</a></span>, <span class='object_link'><a href="TrackBase.html#grouped_merge-instance_method" title="TrackBase#grouped_merge (method)">#grouped_merge</a></span>, <span class='object_link'><a href="TrackBase.html#grouped_zip-instance_method" title="TrackBase#grouped_zip (method)">#grouped_zip</a></span>, <span class='object_link'><a href="TrackBase.html#left_pad-instance_method" title="TrackBase#left_pad (method)">#left_pad</a></span>, <span class='object_link'><a href="TrackBase.html#ltrim-instance_method" title="TrackBase#ltrim (method)">#ltrim</a></span>, <span class='object_link'><a href="TrackBase.html#merge-instance_method" title="TrackBase#merge (method)">#merge</a></span>, <span class='object_link'><a href="TrackBase.html#mirror-instance_method" title="TrackBase#mirror (method)">#mirror</a></span>, <span class='object_link'><a href="TrackBase.html#mutate_each_slot-instance_method" title="TrackBase#mutate_each_slot (method)">#mutate_each_slot</a></span>, <span class='object_link'><a href="TrackBase.html#permutation-instance_method" title="TrackBase#permutation (method)">#permutation</a></span>, <span class='object_link'><a href="TrackBase.html#rand_dropout-instance_method" title="TrackBase#rand_dropout (method)">#rand_dropout</a></span>, <span class='object_link'><a href="TrackBase.html#reflect-instance_method" title="TrackBase#reflect (method)">#reflect</a></span>, <span class='object_link'><a href="TrackBase.html#repeat-instance_method" title="TrackBase#repeat (method)">#repeat</a></span>, <span class='object_link'><a href="TrackBase.html#replace_slot-instance_method" title="TrackBase#replace_slot (method)">#replace_slot</a></span>, <span class='object_link'><a href="TrackBase.html#reverse-instance_method" title="TrackBase#reverse (method)">#reverse</a></span>, <span class='object_link'><a href="TrackBase.html#right-instance_method" title="TrackBase#right (method)">#right</a></span>, <span class='object_link'><a href="TrackBase.html#right_pad-instance_method" title="TrackBase#right_pad (method)">#right_pad</a></span>, <span class='object_link'><a href="TrackBase.html#rotate-instance_method" title="TrackBase#rotate (method)">#rotate</a></span>, <span class='object_link'><a href="TrackBase.html#rtrim-instance_method" title="TrackBase#rtrim (method)">#rtrim</a></span>, <span class='object_link'><a href="TrackBase.html#sample-instance_method" title="TrackBase#sample (method)">#sample</a></span>, <span class='object_link'><a href="TrackBase.html#sample_filled_slots-instance_method" title="TrackBase#sample_filled_slots (method)">#sample_filled_slots</a></span>, <span class='object_link'><a href="TrackBase.html#shuffle-instance_method" title="TrackBase#shuffle (method)">#shuffle</a></span>, <span class='object_link'><a href="TrackBase.html#shuffle_filled_slots-instance_method" title="TrackBase#shuffle_filled_slots (method)">#shuffle_filled_slots</a></span>, <span class='object_link'><a href="TrackBase.html#slice-instance_method" title="TrackBase#slice (method)">#slice</a></span>, <span class='object_link'><a href="TrackBase.html#space-instance_method" title="TrackBase#space (method)">#space</a></span>, <span class='object_link'><a href="TrackBase.html#space_every-instance_method" title="TrackBase#space_every (method)">#space_every</a></span>, <span class='object_link'><a href="TrackBase.html#take-instance_method" title="TrackBase#take (method)">#take</a></span>, <span class='object_link'><a href="TrackBase.html#trim-instance_method" title="TrackBase#trim (method)">#trim</a></span>, <span class='object_link'><a href="TrackBase.html#zip-instance_method" title="TrackBase#zip (method)">#zip</a></span></p>
-    
-  
-    <h2>
-      Step-level mutations
+      Step attribute mutators
       <small><a href="#" class="summary_toggle">collapse</a></small>
     </h2>
 
@@ -442,124 +418,6 @@ documentation for the basics of the grid, slots, and mutation methods.</p>
 
   
     <span class="summary_desc"><div class='inline'><p>Returns a new Track by decreasing the octave of each Step's note by the given amount.</p></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#evolve-instance_method" title="#evolve (instance method)">#<strong>evolve</strong>(tone_shifts: [-12, 12], octave_limit: 1..6, gate_delta: 0.5, gate_limit: 0.1..1, velf_delta: 0, velf_limit: 0.1..1, p: 0.25)  &#x21d2; Track </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Returns a new Track, applying controlled random mutations to each step.</p></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#fade_in_linear-instance_method" title="#fade_in_linear (instance method)">#<strong>fade_in_linear</strong>(min = 0.0, max = 1.0, start: 0.0)  &#x21d2; Track </a>
-    
-
-    
-      (also: #fade_in_lin, #fade_in, #in_lin)
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Returns a new Track that fades in linearly, via <span class='object_link'><a href="Step.html#vel-instance_method" title="Step#vel (method)">velocity</a></span>.</p></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#fade_in_quad-instance_method" title="#fade_in_quad (instance method)">#<strong>fade_in_quad</strong>(min = 0.0, max = 1.0, start: 0.0)  &#x21d2; Track </a>
-    
-
-    
-      (also: #in_quad)
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Returns a new Track that fades in quadratically, via <span class='object_link'><a href="Step.html#vel-instance_method" title="Step#vel (method)">velocity</a></span>.</p></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#fade_out_linear-instance_method" title="#fade_out_linear (instance method)">#<strong>fade_out_linear</strong>(max = 1.0, min = 0.0, start: 0.0)  &#x21d2; Track </a>
-    
-
-    
-      (also: #fade_out_lin, #fade_out, #out_lin)
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Returns a new Track that fades out linearly, via <span class='object_link'><a href="Step.html#vel-instance_method" title="Step#vel (method)">velocity</a></span>.</p></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#fade_out_quad-instance_method" title="#fade_out_quad (instance method)">#<strong>fade_out_quad</strong>(max = 1.0, min = 0.0, start: 0.0)  &#x21d2; Track </a>
-    
-
-    
-      (also: #out_quad)
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Returns a new Track that fades out quadratically, via <span class='object_link'><a href="Step.html#vel-instance_method" title="Step#vel (method)">velocity</a></span>.</p></div></span>
   
 </li>
 
@@ -751,11 +609,11 @@ documentation for the basics of the grid, slots, and mutation methods.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#sub_note-instance_method" title="#sub_note (instance method)">#<strong>sub_note</strong>(target, repl)  &#x21d2; Track </a>
+      <a href="#transpose-instance_method" title="#transpose (instance method)">#<strong>transpose</strong>(shift)  &#x21d2; Track </a>
     
 
     
-      (also: #sub, #replace_note, #replace)
+      (also: #tone, #shift_tone, #t)
     
   </span>
   
@@ -767,7 +625,234 @@ documentation for the basics of the grid, slots, and mutation methods.</p>
   
 
   
-    <span class="summary_desc"><div class='inline'><p>Returns a new Track where each step with a matching <span class='object_link'><a href="Step.html#note-instance_method" title="Step#note (method)">note</a></span> is replaced with a step that has note <code>repl</code> but is otherwise identical.</p></div></span>
+    <span class="summary_desc"><div class='inline'><p>Returns a new Track where each step's <span class='object_link'><a href="Step.html#note-instance_method" title="Step#note (method)">Step#note</a></span> is shifted by the given number of semitones.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#up-instance_method" title="#up (instance method)">#<strong>up</strong>(octave_shift = 1)  &#x21d2; Track </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new Track by increasing the octave of each step's <span class='object_link'><a href="Step.html#note-instance_method" title="Step#note (method)">note</a></span> by the given amount.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#with_gate-instance_method" title="#with_gate (instance method)">#<strong>with_gate</strong>(new_gate)  &#x21d2; Track </a>
+    
+
+    
+      (also: #gate)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Return a new Track where each step has the given <span class='object_link'><a href="Step.html#gate-instance_method" title="Step#gate (method)">gate</a></span>.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#with_octave-instance_method" title="#with_octave (instance method)">#<strong>with_octave</strong>(new_octave)  &#x21d2; Track </a>
+    
+
+    
+      (also: #octave)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new Track where the octave of each step's <span class='object_link'><a href="Step.html#note-instance_method" title="Step#note (method)">note</a></span> is set to the given value.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#with_vel-instance_method" title="#with_vel (instance method)">#<strong>with_vel</strong>(new_vel)  &#x21d2; Track </a>
+    
+
+    
+      (also: #vel)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Return a new Track where each step has the given <span class='object_link'><a href="Step.html#vel-instance_method" title="Step#vel (method)">velocity</a></span>, specified in the MIDI range of 0 - 127.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#with_velf-instance_method" title="#with_velf (instance method)">#<strong>with_velf</strong>(new_velf)  &#x21d2; Track </a>
+    
+
+    
+      (also: #velf)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Return a new Track where each step has the given <span class='object_link'><a href="Step.html#vel-instance_method" title="Step#vel (method)">velocity</a></span>, specified as a value between 0 and 1 inclusive.</p></div></span>
+  
+</li>
+
+      
+    </ul>
+    
+      <h3 class="inherited">Methods inherited from <span class='object_link'><a href="TrackBase.html" title="TrackBase (class)">TrackBase</a></span></h3>
+      <p class="inherited"><span class='object_link'><a href="TrackBase.html#fill-instance_method" title="TrackBase#fill (method)">#fill</a></span>, <span class='object_link'><a href="TrackBase.html#with_prob-instance_method" title="TrackBase#with_prob (method)">#with_prob</a></span>, <span class='object_link'><a href="TrackBase.html#without_prob-instance_method" title="TrackBase#without_prob (method)">#without_prob</a></span></p>
+    
+  
+    <h2>
+      Moving Step attributes along a curve
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#fade_in_linear-instance_method" title="#fade_in_linear (instance method)">#<strong>fade_in_linear</strong>(min = 0.0, max = 1.0, start: 0.0)  &#x21d2; Track </a>
+    
+
+    
+      (also: #fade_in_lin, #fade_in, #in_lin)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new Track that fades in linearly, via <span class='object_link'><a href="Step.html#vel-instance_method" title="Step#vel (method)">velocity</a></span>.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#fade_in_quad-instance_method" title="#fade_in_quad (instance method)">#<strong>fade_in_quad</strong>(min = 0.0, max = 1.0, start: 0.0)  &#x21d2; Track </a>
+    
+
+    
+      (also: #in_quad)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new Track that fades in quadratically, via <span class='object_link'><a href="Step.html#vel-instance_method" title="Step#vel (method)">velocity</a></span>.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#fade_out_linear-instance_method" title="#fade_out_linear (instance method)">#<strong>fade_out_linear</strong>(max = 1.0, min = 0.0, start: 0.0)  &#x21d2; Track </a>
+    
+
+    
+      (also: #fade_out_lin, #fade_out, #out_lin)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new Track that fades out linearly, via <span class='object_link'><a href="Step.html#vel-instance_method" title="Step#vel (method)">velocity</a></span>.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#fade_out_quad-instance_method" title="#fade_out_quad (instance method)">#<strong>fade_out_quad</strong>(max = 1.0, min = 0.0, start: 0.0)  &#x21d2; Track </a>
+    
+
+    
+      (also: #out_quad)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new Track that fades out quadratically, via <span class='object_link'><a href="Step.html#vel-instance_method" title="Step#vel (method)">velocity</a></span>.</p></div></span>
   
 </li>
 
@@ -841,76 +926,6 @@ documentation for the basics of the grid, slots, and mutation methods.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#transpose-instance_method" title="#transpose (instance method)">#<strong>transpose</strong>(shift)  &#x21d2; Track </a>
-    
-
-    
-      (also: #tone, #shift_tone, #t)
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Returns a new Track where each step's <span class='object_link'><a href="Step.html#note-instance_method" title="Step#note (method)">Step#note</a></span> is shifted by the given number of semitones.</p></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#up-instance_method" title="#up (instance method)">#<strong>up</strong>(octave_shift = 1)  &#x21d2; Track </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Returns a new Track by increasing the octave of each step's <span class='object_link'><a href="Step.html#note-instance_method" title="Step#note (method)">note</a></span> by the given amount.</p></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#with_gate-instance_method" title="#with_gate (instance method)">#<strong>with_gate</strong>(new_gate)  &#x21d2; Track </a>
-    
-
-    
-      (also: #gate)
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Return a new Track where each step has the given <span class='object_link'><a href="Step.html#gate-instance_method" title="Step#gate (method)">gate</a></span>.</p></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#with_gate_curve-instance_method" title="#with_gate_curve (instance method)">#<strong>with_gate_curve</strong>(curve_func, min: nil, max: nil)  &#x21d2; Track </a>
     
 
@@ -928,54 +943,6 @@ documentation for the basics of the grid, slots, and mutation methods.</p>
 
   
     <span class="summary_desc"><div class='inline'><p>Returns a new Track where each step's <span class='object_link'><a href="Step.html#gate-instance_method" title="Step#gate (method)">gate</a></span> is replaced with the result of <code>curve_func</code>.</p></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#with_octave-instance_method" title="#with_octave (instance method)">#<strong>with_octave</strong>(new_octave)  &#x21d2; Track </a>
-    
-
-    
-      (also: #octave)
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Returns a new Track where the octave of each step's <span class='object_link'><a href="Step.html#note-instance_method" title="Step#note (method)">note</a></span> is set to the given value.</p></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#with_vel-instance_method" title="#with_vel (instance method)">#<strong>with_vel</strong>(new_vel)  &#x21d2; Track </a>
-    
-
-    
-      (also: #vel)
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Return a new Track where each step has the given <span class='object_link'><a href="Step.html#vel-instance_method" title="Step#vel (method)">velocity</a></span>, specified in the MIDI range of 0 - 127.</p></div></span>
   
 </li>
 
@@ -1007,30 +974,6 @@ documentation for the basics of the grid, slots, and mutation methods.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#with_velf-instance_method" title="#with_velf (instance method)">#<strong>with_velf</strong>(new_velf)  &#x21d2; Track </a>
-    
-
-    
-      (also: #velf)
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Return a new Track where each step has the given <span class='object_link'><a href="Step.html#vel-instance_method" title="Step#vel (method)">velocity</a></span>, specified as a value between 0 and 1 inclusive.</p></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#with_velf_curve-instance_method" title="#with_velf_curve (instance method)">#<strong>with_velf_curve</strong>(curve_func, min: nil, max: nil)  &#x21d2; Track </a>
     
 
@@ -1054,8 +997,125 @@ documentation for the basics of the grid, slots, and mutation methods.</p>
       
     </ul>
     
+  
+    <h2>
+      Adding, removing, and filtering steps
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#extract_note-instance_method" title="#extract_note (instance method)">#<strong>extract_note</strong>(note)  &#x21d2; Array(Track, Track) </a>
+    
+
+    
+      (also: #extract_notes)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns two Tracks by extracting steps that match the given note.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#filter_notes-instance_method" title="#filter_notes (instance method)">#<strong>filter_notes</strong>(note)  &#x21d2; Track </a>
+    
+
+    
+      (also: #filter_note, #select_notes, #select_note)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new track containing only steps that match the given note.</p></div></span>
+  
+</li>
+
+      
+    </ul>
+    
       <h3 class="inherited">Methods inherited from <span class='object_link'><a href="TrackBase.html" title="TrackBase (class)">TrackBase</a></span></h3>
-      <p class="inherited"><span class='object_link'><a href="TrackBase.html#fill-instance_method" title="TrackBase#fill (method)">#fill</a></span>, <span class='object_link'><a href="TrackBase.html#mutate_each_step-instance_method" title="TrackBase#mutate_each_step (method)">#mutate_each_step</a></span>, <span class='object_link'><a href="TrackBase.html#mutate_filled_slot-instance_method" title="TrackBase#mutate_filled_slot (method)">#mutate_filled_slot</a></span>, <span class='object_link'><a href="TrackBase.html#mutate_steps_in_slot-instance_method" title="TrackBase#mutate_steps_in_slot (method)">#mutate_steps_in_slot</a></span>, <span class='object_link'><a href="TrackBase.html#replace_filled_slot-instance_method" title="TrackBase#replace_filled_slot (method)">#replace_filled_slot</a></span>, <span class='object_link'><a href="TrackBase.html#with_prob-instance_method" title="TrackBase#with_prob (method)">#with_prob</a></span>, <span class='object_link'><a href="TrackBase.html#without_prob-instance_method" title="TrackBase#without_prob (method)">#without_prob</a></span></p>
+      <p class="inherited"><span class='object_link'><a href="TrackBase.html#extract_steps-instance_method" title="TrackBase#extract_steps (method)">#extract_steps</a></span>, <span class='object_link'><a href="TrackBase.html#filter_steps-instance_method" title="TrackBase#filter_steps (method)">#filter_steps</a></span></p>
+    
+  
+    <h2>
+      Mutating steps
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#evolve-instance_method" title="#evolve (instance method)">#<strong>evolve</strong>(tone_shifts: [-12, 12], octave_limit: 1..6, gate_delta: 0.5, gate_limit: 0.1..1, velf_delta: 0, velf_limit: 0.1..1, p: 0.25)  &#x21d2; Track </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new Track, applying controlled random mutations to each step.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#sub_note-instance_method" title="#sub_note (instance method)">#<strong>sub_note</strong>(target, repl)  &#x21d2; Track </a>
+    
+
+    
+      (also: #sub, #replace_note, #replace)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new Track where each step with a matching <span class='object_link'><a href="Step.html#note-instance_method" title="Step#note (method)">note</a></span> is replaced with a step that has note <code>repl</code> but is otherwise identical.</p></div></span>
+  
+</li>
+
+      
+    </ul>
+    
+      <h3 class="inherited">Methods inherited from <span class='object_link'><a href="TrackBase.html" title="TrackBase (class)">TrackBase</a></span></h3>
+      <p class="inherited"><span class='object_link'><a href="TrackBase.html#mutate_each_step-instance_method" title="TrackBase#mutate_each_step (method)">#mutate_each_step</a></span>, <span class='object_link'><a href="TrackBase.html#mutate_filled_slot-instance_method" title="TrackBase#mutate_filled_slot (method)">#mutate_filled_slot</a></span>, <span class='object_link'><a href="TrackBase.html#mutate_steps_in_slot-instance_method" title="TrackBase#mutate_steps_in_slot (method)">#mutate_steps_in_slot</a></span></p>
     
   
     <h2>
@@ -1128,7 +1188,7 @@ documentation for the basics of the grid, slots, and mutation methods.</p>
   
   
   <h3 class="inherited">Methods inherited from <span class='object_link'><a href="TrackBase.html" title="TrackBase (class)">TrackBase</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="TrackBase.html#beat_length-instance_method" title="TrackBase#beat_length (method)">#beat_length</a></span>, <span class='object_link'><a href="TrackBase.html#copy_repr-instance_method" title="TrackBase#copy_repr (method)">#copy_repr</a></span>, <span class='object_link'><a href="TrackBase.html#empty%3F-instance_method" title="TrackBase#empty? (method)">#empty?</a></span>, <span class='object_link'><a href="TrackBase.html#indexes_of_filled_slots-instance_method" title="TrackBase#indexes_of_filled_slots (method)">#indexes_of_filled_slots</a></span>, <span class='object_link'><a href="TrackBase.html#inspect-instance_method" title="TrackBase#inspect (method)">#inspect</a></span>, <span class='object_link'><a href="TrackBase.html#mono%3F-instance_method" title="TrackBase#mono? (method)">#mono?</a></span>, <span class='object_link'><a href="TrackBase.html#nth_filled_slot-instance_method" title="TrackBase#nth_filled_slot (method)">#nth_filled_slot</a></span>, <span class='object_link'><a href="TrackBase.html#num_slots-instance_method" title="TrackBase#num_slots (method)">#num_slots</a></span>, <span class='object_link'><a href="TrackBase.html#poly%3F-instance_method" title="TrackBase#poly? (method)">#poly?</a></span>, <span class='object_link'><a href="TrackBase.html#repr-instance_method" title="TrackBase#repr (method)">#repr</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="TrackBase.html#append-instance_method" title="TrackBase#append (method)">#append</a></span>, <span class='object_link'><a href="TrackBase.html#append_slot-instance_method" title="TrackBase#append_slot (method)">#append_slot</a></span>, <span class='object_link'><a href="TrackBase.html#clear-instance_method" title="TrackBase#clear (method)">#clear</a></span>, <span class='object_link'><a href="TrackBase.html#clear_slot-instance_method" title="TrackBase#clear_slot (method)">#clear_slot</a></span>, <span class='object_link'><a href="TrackBase.html#combination-instance_method" title="TrackBase#combination (method)">#combination</a></span>, <span class='object_link'><a href="TrackBase.html#compact-instance_method" title="TrackBase#compact (method)">#compact</a></span>, <span class='object_link'><a href="TrackBase.html#copy_repr-instance_method" title="TrackBase#copy_repr (method)">#copy_repr</a></span>, <span class='object_link'><a href="TrackBase.html#cycle_to_length-instance_method" title="TrackBase#cycle_to_length (method)">#cycle_to_length</a></span>, <span class='object_link'><a href="TrackBase.html#drop-instance_method" title="TrackBase#drop (method)">#drop</a></span>, <span class='object_link'><a href="TrackBase.html#drop_every-instance_method" title="TrackBase#drop_every (method)">#drop_every</a></span>, <span class='object_link'><a href="TrackBase.html#drop_last-instance_method" title="TrackBase#drop_last (method)">#drop_last</a></span>, <span class='object_link'><a href="TrackBase.html#drop_x_of_y-instance_method" title="TrackBase#drop_x_of_y (method)">#drop_x_of_y</a></span>, <span class='object_link'><a href="TrackBase.html#each_cons-instance_method" title="TrackBase#each_cons (method)">#each_cons</a></span>, <span class='object_link'><a href="TrackBase.html#extract_every-instance_method" title="TrackBase#extract_every (method)">#extract_every</a></span>, <span class='object_link'><a href="TrackBase.html#extract_slots-instance_method" title="TrackBase#extract_slots (method)">#extract_slots</a></span>, <span class='object_link'><a href="TrackBase.html#extract_x_of_y-instance_method" title="TrackBase#extract_x_of_y (method)">#extract_x_of_y</a></span>, <span class='object_link'><a href="TrackBase.html#filter_slots-instance_method" title="TrackBase#filter_slots (method)">#filter_slots</a></span>, <span class='object_link'><a href="TrackBase.html#grouped_merge-instance_method" title="TrackBase#grouped_merge (method)">#grouped_merge</a></span>, <span class='object_link'><a href="TrackBase.html#grouped_zip-instance_method" title="TrackBase#grouped_zip (method)">#grouped_zip</a></span>, <span class='object_link'><a href="TrackBase.html#inspect-instance_method" title="TrackBase#inspect (method)">#inspect</a></span>, <span class='object_link'><a href="TrackBase.html#left_pad-instance_method" title="TrackBase#left_pad (method)">#left_pad</a></span>, <span class='object_link'><a href="TrackBase.html#ltrim-instance_method" title="TrackBase#ltrim (method)">#ltrim</a></span>, <span class='object_link'><a href="TrackBase.html#merge-instance_method" title="TrackBase#merge (method)">#merge</a></span>, <span class='object_link'><a href="TrackBase.html#mirror-instance_method" title="TrackBase#mirror (method)">#mirror</a></span>, <span class='object_link'><a href="TrackBase.html#mutate_each_slot-instance_method" title="TrackBase#mutate_each_slot (method)">#mutate_each_slot</a></span>, <span class='object_link'><a href="TrackBase.html#permutation-instance_method" title="TrackBase#permutation (method)">#permutation</a></span>, <span class='object_link'><a href="TrackBase.html#rand_dropout-instance_method" title="TrackBase#rand_dropout (method)">#rand_dropout</a></span>, <span class='object_link'><a href="TrackBase.html#reflect-instance_method" title="TrackBase#reflect (method)">#reflect</a></span>, <span class='object_link'><a href="TrackBase.html#repeat-instance_method" title="TrackBase#repeat (method)">#repeat</a></span>, <span class='object_link'><a href="TrackBase.html#replace_filled_slot-instance_method" title="TrackBase#replace_filled_slot (method)">#replace_filled_slot</a></span>, <span class='object_link'><a href="TrackBase.html#replace_slot-instance_method" title="TrackBase#replace_slot (method)">#replace_slot</a></span>, <span class='object_link'><a href="TrackBase.html#repr-instance_method" title="TrackBase#repr (method)">#repr</a></span>, <span class='object_link'><a href="TrackBase.html#reverse-instance_method" title="TrackBase#reverse (method)">#reverse</a></span>, <span class='object_link'><a href="TrackBase.html#right-instance_method" title="TrackBase#right (method)">#right</a></span>, <span class='object_link'><a href="TrackBase.html#right_pad-instance_method" title="TrackBase#right_pad (method)">#right_pad</a></span>, <span class='object_link'><a href="TrackBase.html#rotate-instance_method" title="TrackBase#rotate (method)">#rotate</a></span>, <span class='object_link'><a href="TrackBase.html#rtrim-instance_method" title="TrackBase#rtrim (method)">#rtrim</a></span>, <span class='object_link'><a href="TrackBase.html#sample-instance_method" title="TrackBase#sample (method)">#sample</a></span>, <span class='object_link'><a href="TrackBase.html#sample_filled_slots-instance_method" title="TrackBase#sample_filled_slots (method)">#sample_filled_slots</a></span>, <span class='object_link'><a href="TrackBase.html#shuffle-instance_method" title="TrackBase#shuffle (method)">#shuffle</a></span>, <span class='object_link'><a href="TrackBase.html#shuffle_filled_slots-instance_method" title="TrackBase#shuffle_filled_slots (method)">#shuffle_filled_slots</a></span>, <span class='object_link'><a href="TrackBase.html#slice-instance_method" title="TrackBase#slice (method)">#slice</a></span>, <span class='object_link'><a href="TrackBase.html#space-instance_method" title="TrackBase#space (method)">#space</a></span>, <span class='object_link'><a href="TrackBase.html#space_every-instance_method" title="TrackBase#space_every (method)">#space_every</a></span>, <span class='object_link'><a href="TrackBase.html#take-instance_method" title="TrackBase#take (method)">#take</a></span>, <span class='object_link'><a href="TrackBase.html#trim-instance_method" title="TrackBase#trim (method)">#trim</a></span>, <span class='object_link'><a href="TrackBase.html#zip-instance_method" title="TrackBase#zip (method)">#zip</a></span></p>
 <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
@@ -2042,18 +2102,18 @@ operation.</p></div>
       <pre class="lines">
 
 
-476
-477
-478
-479
-480
-481
-482
-483
-484</pre>
+501
+502
+503
+504
+505
+506
+507
+508
+509</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 476</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 501</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_condense'>condense</span><span class='lparen'>(</span><span class='id identifier rubyid_times'>times</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='kw'>self</span>
@@ -2138,12 +2198,12 @@ argument.</p>
       <pre class="lines">
 
 
-1130
-1131
-1132</pre>
+706
+707
+708</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 1130</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 706</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_down'>down</span><span class='lparen'>(</span><span class='id identifier rubyid_octave_shift'>octave_shift</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_shift_octave'>shift_octave</span><span class='lparen'>(</span><span class='op'>-</span><span class='id identifier rubyid_octave_shift'>octave_shift</span><span class='rparen'>)</span>
@@ -2333,34 +2393,6 @@ a step, 0 - 1.</p></div>
       <pre class="lines">
 
 
-1355
-1356
-1357
-1358
-1359
-1360
-1361
-1362
-1363
-1364
-1365
-1366
-1367
-1368
-1369
-1370
-1371
-1372
-1373
-1374
-1375
-1376
-1377
-1378
-1379
-1380
-1381
-1382
 1383
 1384
 1385
@@ -2371,10 +2403,38 @@ a step, 0 - 1.</p></div>
 1390
 1391
 1392
-1393</pre>
+1393
+1394
+1395
+1396
+1397
+1398
+1399
+1400
+1401
+1402
+1403
+1404
+1405
+1406
+1407
+1408
+1409
+1410
+1411
+1412
+1413
+1414
+1415
+1416
+1417
+1418
+1419
+1420
+1421</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 1355</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 1383</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_evolve'>evolve</span><span class='lparen'>(</span><span class='label'>tone_shifts:</span> <span class='lbracket'>[</span><span class='op'>-</span><span class='int'>12</span><span class='comma'>,</span> <span class='int'>12</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>octave_limit:</span> <span class='int'>1</span><span class='op'>..</span><span class='int'>6</span><span class='comma'>,</span> <span class='label'>gate_delta:</span> <span class='float'>0.5</span><span class='comma'>,</span> <span class='label'>gate_limit:</span> <span class='float'>0.1</span><span class='op'>..</span><span class='int'>1</span><span class='comma'>,</span> <span class='label'>velf_delta:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>velf_limit:</span> <span class='float'>0.1</span><span class='op'>..</span><span class='int'>1</span><span class='comma'>,</span> <span class='label'>p:</span> <span class='float'>0.25</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_gate_delta'>gate_delta</span> <span class='op'>=</span> <span class='op'>-</span><span class='id identifier rubyid_gate_delta'>gate_delta</span><span class='op'>..</span><span class='id identifier rubyid_gate_delta'>gate_delta</span> <span class='kw'>unless</span> <span class='id identifier rubyid_gate_delta'>gate_delta</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Range</span><span class='rparen'>)</span>
@@ -2515,18 +2575,18 @@ step.</p>
       <pre class="lines">
 
 
-380
-381
-382
-383
-384
-385
-386
-387
-388</pre>
+405
+406
+407
+408
+409
+410
+411
+412
+413</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 380</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 405</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_expand'>expand</span><span class='lparen'>(</span><span class='id identifier rubyid_times'>times</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='kw'>self</span>
@@ -2616,13 +2676,13 @@ call this method on a track with more than one step in any slot.</p>
       <pre class="lines">
 
 
-565
-566
-567
-568</pre>
+315
+316
+317
+318</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 565</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 315</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_extract_gates'>extract_gates</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>extract_gates can only be used on a mono track</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_mono?'>mono?</span>
@@ -2709,6 +2769,8 @@ match. See <span class='object_link'><a href="MIDINote.html#match%3F-instance_me
     
       <li><span class='object_link'><a href="TrackBase.html#extract-instance_method" title="TrackBase#extract (method)">TrackBase#extract</a></span></li>
     
+      <li><span class='object_link'><a href="#filter_notes-instance_method" title="Track#filter_notes (method)">#filter_notes</a></span></li>
+    
   </ul>
 
 </div><table class="source_code">
@@ -2717,12 +2779,12 @@ match. See <span class='object_link'><a href="MIDINote.html#match%3F-instance_me
       <pre class="lines">
 
 
-546
-547
-548</pre>
+1254
+1255
+1256</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 546</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 1254</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_extract_note'>extract_note</span><span class='lparen'>(</span><span class='id identifier rubyid_note'>note</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_extract'>extract</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span> <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_note'>note</span><span class='period'>.</span><span class='id identifier rubyid_match?'>match?</span><span class='lparen'>(</span><span class='id identifier rubyid_note'>note</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -2858,12 +2920,12 @@ velocity of <code>min</code>, and ones thereafter will increase along the curve 
       <pre class="lines">
 
 
-810
-811
-812</pre>
+973
+974
+975</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 810</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 973</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_fade_in_linear'>fade_in_linear</span><span class='lparen'>(</span><span class='id identifier rubyid_min'>min</span> <span class='op'>=</span> <span class='float'>0.0</span><span class='comma'>,</span> <span class='id identifier rubyid_max'>max</span> <span class='op'>=</span> <span class='float'>1.0</span><span class='comma'>,</span> <span class='label'>start:</span> <span class='float'>0.0</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_with_velf_curve'>with_velf_curve</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="Curves.html" title="Curves (module)">Curves</a></span></span><span class='period'>.</span><span class='id identifier rubyid_fade_in_linear'><span class='object_link'><a href="Curves.html#fade_in_linear-class_method" title="Curves.fade_in_linear (method)">fade_in_linear</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_min'>min</span><span class='comma'>,</span> <span class='id identifier rubyid_max'>max</span><span class='comma'>,</span> <span class='id identifier rubyid_start'>start</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -2986,12 +3048,12 @@ velocity of <code>min</code>, and ones thereafter will increase along the curve 
       <pre class="lines">
 
 
-827
-828
-829</pre>
+990
+991
+992</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 827</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 990</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_fade_in_quad'>fade_in_quad</span><span class='lparen'>(</span><span class='id identifier rubyid_min'>min</span> <span class='op'>=</span> <span class='float'>0.0</span><span class='comma'>,</span> <span class='id identifier rubyid_max'>max</span> <span class='op'>=</span> <span class='float'>1.0</span><span class='comma'>,</span> <span class='label'>start:</span> <span class='float'>0.0</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_with_velf_curve'>with_velf_curve</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="Curves.html" title="Curves (module)">Curves</a></span></span><span class='period'>.</span><span class='id identifier rubyid_fade_in_quad'><span class='object_link'><a href="Curves.html#fade_in_quad-class_method" title="Curves.fade_in_quad (method)">fade_in_quad</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_min'>min</span><span class='comma'>,</span> <span class='id identifier rubyid_max'>max</span><span class='comma'>,</span> <span class='id identifier rubyid_start'>start</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -3127,12 +3189,12 @@ velocity of <code>max</code>, and ones thereafter will decrease along the curve 
       <pre class="lines">
 
 
-857
-858
-859</pre>
+1020
+1021
+1022</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 857</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 1020</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_fade_out_linear'>fade_out_linear</span><span class='lparen'>(</span><span class='id identifier rubyid_max'>max</span> <span class='op'>=</span> <span class='float'>1.0</span><span class='comma'>,</span> <span class='id identifier rubyid_min'>min</span> <span class='op'>=</span> <span class='float'>0.0</span><span class='comma'>,</span> <span class='label'>start:</span> <span class='float'>0.0</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_with_velf_curve'>with_velf_curve</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="Curves.html" title="Curves (module)">Curves</a></span></span><span class='period'>.</span><span class='id identifier rubyid_fade_out_linear'><span class='object_link'><a href="Curves.html#fade_out_linear-class_method" title="Curves.fade_out_linear (method)">fade_out_linear</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_max'>max</span><span class='comma'>,</span> <span class='id identifier rubyid_min'>min</span><span class='comma'>,</span> <span class='id identifier rubyid_start'>start</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -3255,15 +3317,104 @@ velocity of <code>max</code>, and ones thereafter will decrease along the curve 
       <pre class="lines">
 
 
-874
-875
-876</pre>
+1037
+1038
+1039</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 874</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 1037</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_fade_out_quad'>fade_out_quad</span><span class='lparen'>(</span><span class='id identifier rubyid_max'>max</span> <span class='op'>=</span> <span class='float'>1.0</span><span class='comma'>,</span> <span class='id identifier rubyid_min'>min</span> <span class='op'>=</span> <span class='float'>0.0</span><span class='comma'>,</span> <span class='label'>start:</span> <span class='float'>0.0</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_with_velf_curve'>with_velf_curve</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="Curves.html" title="Curves (module)">Curves</a></span></span><span class='period'>.</span><span class='id identifier rubyid_fade_out_quad'><span class='object_link'><a href="Curves.html#fade_out_quad-class_method" title="Curves.fade_out_quad (method)">fade_out_quad</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_max'>max</span><span class='comma'>,</span> <span class='id identifier rubyid_min'>min</span><span class='comma'>,</span> <span class='id identifier rubyid_start'>start</span><span class='rparen'>)</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="filter_notes-instance_method">
+  
+    #<strong>filter_notes</strong>(note)  &#x21d2; <tt><span class='object_link'><a href="" title="Track (class)">Track</a></span></tt> 
+  
+
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='filter_note-instance_method'>filter_note</span>, <span id='select_notes-instance_method'>select_notes</span>, <span id='select_note-instance_method'>select_note</span></span>
+    </span>
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a new track containing only steps that match the given note. The new
+The new track will have the same length as this one, but will only contain
+steps that match. Matches are evaluated with <span class='object_link'><a href="MIDINote.html#match%3F-instance_method" title="MIDINote#match? (method)">MIDINote#match?</a></span>.</p>
+<p>The result is equivalent to the second returned track of <span class='object_link'><a href="#extract_note-instance_method" title="Track#extract_note (method)">#extract_note</a></span>.</p>
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>note</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span></tt>, <tt><span class='object_link'>String</span></tt>, <tt><span class='object_link'>Symbol</span></tt>, <tt>Integer</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The note or pitch class to
+match. See <span class='object_link'><a href="MIDINote.html#match%3F-instance_method" title="MIDINote#match? (method)">MIDINote#match?</a></span> for precise rules.</p></div>
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="Track (class)">Track</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><span class='object_link'><a href="#extract_note-instance_method" title="Track#extract_note (method)">#extract_note</a></span></li>
+    
+      <li><span class='object_link'><a href="TrackBase.html#filter_steps-instance_method" title="TrackBase#filter_steps (method)">TrackBase#filter_steps</a></span></li>
+    
+  </ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+1270
+1271
+1272
+1273</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'track.rb', line 1270</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_filter_notes'>filter_notes</span><span class='lparen'>(</span><span class='id identifier rubyid_note'>note</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid__'>_</span><span class='comma'>,</span> <span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='id identifier rubyid_extract_note'>extract_note</span><span class='lparen'>(</span><span class='id identifier rubyid_note'>note</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_t'>t</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -3371,27 +3522,27 @@ shifted.</p></div>
       <pre class="lines">
 
 
-1150
-1151
-1152
-1153
-1154
-1155
-1156
-1157
-1158
-1159
-1160
-1161
-1162
-1163
-1164
-1165
-1166
-1167</pre>
+726
+727
+728
+729
+730
+731
+732
+733
+734
+735
+736
+737
+738
+739
+740
+741
+742
+743</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 1150</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 726</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_rand_octave'>rand_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_range'>range</span> <span class='op'>=</span> <span class='int'>1</span><span class='comma'>,</span> <span class='label'>p:</span> <span class='float'>0.5</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span>
@@ -3500,17 +3651,17 @@ understood by <span class='object_link'><a href="NoteLength.html#new-class_metho
       <pre class="lines">
 
 
-503
-504
-505
-506
-507
-508
-509
-510</pre>
+528
+529
+530
+531
+532
+533
+534
+535</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 503</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 528</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_regranularize'>regranularize</span><span class='lparen'>(</span><span class='id identifier rubyid_new_granularity'>new_granularity</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_new_granularity'>new_granularity</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="NoteLength.html" title="NoteLength (class)">NoteLength</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="NoteLength.html#new-class_method" title="NoteLength.new (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_new_granularity'>new_granularity</span><span class='rparen'>)</span>
@@ -3597,12 +3748,12 @@ factor.</p>
       <pre class="lines">
 
 
-607
-608
-609</pre>
+584
+585
+586</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 607</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 584</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_scale_gate'>scale_gate</span><span class='lparen'>(</span><span class='id identifier rubyid_factor'>factor</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span> <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_with_gate'>with_gate</span><span class='lparen'>(</span><span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_gate'>gate</span> <span class='op'>*</span> <span class='id identifier rubyid_factor'>factor</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -3690,12 +3841,12 @@ given factor.</p>
       <pre class="lines">
 
 
-708
-709
-710</pre>
+640
+641
+642</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 708</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 640</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_scale_vel'>scale_vel</span><span class='lparen'>(</span><span class='id identifier rubyid_factor'>factor</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span> <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_with_vel'>with_vel</span><span class='lparen'>(</span><span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_vel'>vel</span> <span class='op'>*</span> <span class='id identifier rubyid_factor'>factor</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -3772,12 +3923,12 @@ its argument.</p>
       <pre class="lines">
 
 
-1208
-1209
-1210</pre>
+784
+785
+786</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 1208</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 784</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_semi_down'>semi_down</span><span class='lparen'>(</span><span class='id identifier rubyid_tone_shift'>tone_shift</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_transpose'>transpose</span><span class='lparen'>(</span><span class='op'>-</span><span class='id identifier rubyid_tone_shift'>tone_shift</span><span class='rparen'>)</span>
@@ -3853,12 +4004,12 @@ number of semitones. This is equivalent to <span class='object_link'><a href="#t
       <pre class="lines">
 
 
-1196
-1197
-1198</pre>
+772
+773
+774</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 1196</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 772</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_semi_up'>semi_up</span><span class='lparen'>(</span><span class='id identifier rubyid_tone_shift'>tone_shift</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_transpose'>transpose</span><span class='lparen'>(</span><span class='id identifier rubyid_tone_shift'>tone_shift</span><span class='rparen'>)</span>
@@ -3944,12 +4095,12 @@ by the given amount.</p>
       <pre class="lines">
 
 
-1105
-1106
-1107</pre>
+681
+682
+683</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 1105</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 681</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_shift_octave'>shift_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span> <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_shift_octave'>shift_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -4037,12 +4188,12 @@ by <span class='object_link'><a href="MIDINote.html#new-class_method" title="MID
       <pre class="lines">
 
 
-1229
-1230
-1231</pre>
+805
+806
+807</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 1229</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 805</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_snap_to_notes'>snap_to_notes</span><span class='lparen'>(</span><span class='id identifier rubyid_notes'>notes</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span> <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_with_note'>with_note</span><span class='lparen'>(</span><span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_note'>note</span><span class='period'>.</span><span class='id identifier rubyid_snap'>snap</span><span class='lparen'>(</span><span class='id identifier rubyid_notes'>notes</span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -4138,13 +4289,13 @@ keys of the <span class='object_link'><a href="Scale.html#SCALES-constant" title
       <pre class="lines">
 
 
-1248
-1249
-1250
-1251</pre>
+824
+825
+826
+827</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 1248</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 824</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_snap_to_scale'>snap_to_scale</span><span class='lparen'>(</span><span class='id identifier rubyid_tonic'>tonic</span><span class='comma'>,</span> <span class='id identifier rubyid_scale_name'>scale_name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_scale'>scale</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Scale.html" title="Scale (class)">Scale</a></span></span><span class='period'>.</span><span class='id identifier rubyid_full_scale'><span class='object_link'><a href="Scale.html#full_scale-class_method" title="Scale.full_scale (method)">full_scale</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_tonic'>tonic</span><span class='comma'>,</span> <span class='id identifier rubyid_scale_name'>scale_name</span><span class='rparen'>)</span>
@@ -4265,30 +4416,30 @@ above.</p></div>
       <pre class="lines">
 
 
-1293
-1294
-1295
-1296
-1297
-1298
-1299
-1300
-1301
-1302
-1303
-1304
-1305
-1306
-1307
-1308
-1309
-1310
-1311
-1312
-1313</pre>
+1321
+1322
+1323
+1324
+1325
+1326
+1327
+1328
+1329
+1330
+1331
+1332
+1333
+1334
+1335
+1336
+1337
+1338
+1339
+1340
+1341</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 1293</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 1321</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_sub_note'>sub_note</span><span class='lparen'>(</span><span class='id identifier rubyid_target'>target</span><span class='comma'>,</span> <span class='id identifier rubyid_repl'>repl</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_orig_has_octave'>orig_has_octave</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_has_octave?'><span class='object_link'><a href="MIDINote.html#has_octave%3F-class_method" title="MIDINote.has_octave? (method)">has_octave?</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_target'>target</span><span class='rparen'>)</span>
@@ -4431,12 +4582,12 @@ continuations of a tie also have their gate adjusted.</p></div>
       <pre class="lines">
 
 
-1027
-1028
-1029</pre>
+1190
+1191
+1192</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 1027</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 1190</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_taper_gate'>taper_gate</span><span class='lparen'>(</span><span class='id identifier rubyid_trailing_gate'>trailing_gate</span> <span class='op'>=</span> <span class='float'>0.75</span><span class='comma'>,</span> <span class='label'>taper_final_tie:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>taper_single:</span> <span class='kw'>false</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_taper_steps'>taper_steps</span><span class='lparen'>(</span><span class='label'>taper_final_tie:</span> <span class='id identifier rubyid_taper_final_tie'>taper_final_tie</span><span class='comma'>,</span> <span class='label'>taper_single:</span> <span class='id identifier rubyid_taper_single'>taper_single</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_s'>s</span><span class='op'>|</span> <span class='id identifier rubyid_s'>s</span><span class='period'>.</span><span class='id identifier rubyid_with_gate'>with_gate</span><span class='lparen'>(</span><span class='id identifier rubyid_trailing_gate'>trailing_gate</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -4570,13 +4721,13 @@ continuations of a tie also have their velocity adjusted.</p></div>
       <pre class="lines">
 
 
-1050
-1051
-1052
-1053</pre>
+1213
+1214
+1215
+1216</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 1050</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 1213</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_taper_vel'>taper_vel</span><span class='lparen'>(</span><span class='id identifier rubyid_trailing_vel'>trailing_vel</span> <span class='op'>=</span> <span class='int'>64</span><span class='comma'>,</span> <span class='label'>taper_final_tie:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>taper_single:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>zero_to_one:</span> <span class='kw'>false</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_trailing_vel'>trailing_vel</span> <span class='op'>*=</span> <span class='int'>127</span> <span class='kw'>if</span> <span class='id identifier rubyid_zero_to_one'>zero_to_one</span>
@@ -4688,12 +4839,12 @@ continuations of a tie also have their velocity adjusted.</p></div>
       <pre class="lines">
 
 
-1066
-1067
-1068</pre>
+1229
+1230
+1231</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 1066</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 1229</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_taper_velf'>taper_velf</span><span class='lparen'>(</span><span class='id identifier rubyid_trailing_vel'>trailing_vel</span> <span class='op'>=</span> <span class='float'>0.5</span><span class='comma'>,</span> <span class='label'>taper_final_tie:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>taper_single:</span> <span class='kw'>false</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_taper_vel'>taper_vel</span><span class='lparen'>(</span><span class='id identifier rubyid_trailing_vel'>trailing_vel</span><span class='comma'>,</span> <span class='label'>taper_final_tie:</span> <span class='id identifier rubyid_taper_final_tie'>taper_final_tie</span><span class='comma'>,</span> <span class='label'>taper_single:</span> <span class='id identifier rubyid_taper_single'>taper_single</span><span class='comma'>,</span> <span class='label'>zero_to_one:</span> <span class='kw'>true</span><span class='rparen'>)</span>
@@ -4858,41 +5009,41 @@ the result.</li>
       <pre class="lines">
 
 
-1431
-1432
-1433
-1434
-1435
-1436
-1437
-1438
-1439
-1440
-1441
-1442
-1443
-1444
-1445
-1446
-1447
-1448
-1449
-1450
-1451
-1452
-1453
-1454
-1455
-1456
-1457
-1458
 1459
 1460
 1461
-1462</pre>
+1462
+1463
+1464
+1465
+1466
+1467
+1468
+1469
+1470
+1471
+1472
+1473
+1474
+1475
+1476
+1477
+1478
+1479
+1480
+1481
+1482
+1483
+1484
+1485
+1486
+1487
+1488
+1489
+1490</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 1431</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 1459</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_cc'>to_cc</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Block must take 1-3 arguments</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>==</span> <span class='int'>0</span> <span class='op'>||</span> <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>&gt;</span> <span class='int'>3</span>
@@ -5088,40 +5239,40 @@ the result.</li>
       <pre class="lines">
 
 
-1501
-1502
-1503
-1504
-1505
-1506
-1507
-1508
-1509
-1510
-1511
-1512
-1513
-1514
-1515
-1516
-1517
-1518
-1519
-1520
-1521
-1522
-1523
-1524
-1525
-1526
-1527
-1528
 1529
 1530
-1531</pre>
+1531
+1532
+1533
+1534
+1535
+1536
+1537
+1538
+1539
+1540
+1541
+1542
+1543
+1544
+1545
+1546
+1547
+1548
+1549
+1550
+1551
+1552
+1553
+1554
+1555
+1556
+1557
+1558
+1559</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 1501</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 1529</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_simple_cc'>to_simple_cc</span><span class='lparen'>(</span><span class='id identifier rubyid_cc_number'>cc_number</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Block must take 1-3 arguments</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>==</span> <span class='int'>0</span> <span class='op'>||</span> <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>&gt;</span> <span class='int'>3</span>
@@ -5235,12 +5386,12 @@ number of semitones.</p>
       <pre class="lines">
 
 
-1183
-1184
-1185</pre>
+759
+760
+761</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 1183</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 759</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_transpose'>transpose</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span> <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_transpose'>transpose</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -5318,12 +5469,12 @@ by the given amount. This is equivalent to <span class='object_link'><a href="#s
       <pre class="lines">
 
 
-1117
-1118
-1119</pre>
+693
+694
+695</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 1117</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 693</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_up'>up</span><span class='lparen'>(</span><span class='id identifier rubyid_octave_shift'>octave_shift</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_shift_octave'>shift_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_octave_shift'>octave_shift</span><span class='rparen'>)</span>
@@ -5410,12 +5561,12 @@ by the given amount. This is equivalent to <span class='object_link'><a href="#s
       <pre class="lines">
 
 
-589
-590
-591</pre>
+566
+567
+568</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 589</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 566</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_gate'>with_gate</span><span class='lparen'>(</span><span class='id identifier rubyid_new_gate'>new_gate</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span> <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_with_gate'>with_gate</span><span class='lparen'>(</span><span class='id identifier rubyid_new_gate'>new_gate</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -5555,25 +5706,25 @@ range 0 - 1.</p>
       <pre class="lines">
 
 
-637
-638
-639
-640
-641
-642
-643
-644
-645
-646
-647
-648
-649
-650
-651
-652</pre>
+858
+859
+860
+861
+862
+863
+864
+865
+866
+867
+868
+869
+870
+871
+872
+873</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 637</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 858</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_gate_curve'>with_gate_curve</span><span class='lparen'>(</span><span class='id identifier rubyid_curve_func'>curve_func</span><span class='comma'>,</span> <span class='label'>min:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>max:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Curve function must be a callable that takes 1-2 arguments</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='op'>!</span><span class='id identifier rubyid_curve_func'>curve_func</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:call</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_curve_func'>curve_func</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>==</span> <span class='int'>0</span> <span class='op'>||</span> <span class='id identifier rubyid_curve_func'>curve_func</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>&gt;</span> <span class='int'>2</span>
@@ -5676,12 +5827,12 @@ to the given value.</p>
       <pre class="lines">
 
 
-1084
-1085
-1086</pre>
+660
+661
+662</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 1084</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 660</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_octave'>with_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_new_octave'>new_octave</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span> <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_with_octave'>with_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_new_octave'>new_octave</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -5744,12 +5895,12 @@ on this functionality.</p>
       <pre class="lines">
 
 
-522
-523
-524</pre>
+547
+548
+549</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 522</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 547</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_scale'>with_scale</span><span class='lparen'>(</span><span class='id identifier rubyid_scale'>scale</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>scale:</span> <span class='id identifier rubyid_scale'>scale</span><span class='rparen'>)</span>
@@ -5839,12 +5990,12 @@ specified in the MIDI range of 0 - 127.</p>
       <pre class="lines">
 
 
-670
-671
-672</pre>
+602
+603
+604</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 670</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 602</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_vel'>with_vel</span><span class='lparen'>(</span><span class='id identifier rubyid_new_vel'>new_vel</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span> <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_with_vel'>with_vel</span><span class='lparen'>(</span><span class='id identifier rubyid_new_vel'>new_vel</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -6014,27 +6165,27 @@ range (0 - 127 if <code>zero_to_one</code> is false, otherwise 0 - 1).</p>
       <pre class="lines">
 
 
-751
-752
-753
-754
-755
-756
-757
-758
-759
-760
-761
-762
-763
-764
-765
-766
-767
-768</pre>
+914
+915
+916
+917
+918
+919
+920
+921
+922
+923
+924
+925
+926
+927
+928
+929
+930
+931</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 751</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 914</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_vel_curve'>with_vel_curve</span><span class='lparen'>(</span><span class='id identifier rubyid_curve_func'>curve_func</span><span class='comma'>,</span> <span class='label'>zero_to_one:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>min:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>max:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Curve function must be a callable that takes 1-2 arguments</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='op'>!</span><span class='id identifier rubyid_curve_func'>curve_func</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:call</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_curve_func'>curve_func</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>==</span> <span class='int'>0</span> <span class='op'>||</span> <span class='id identifier rubyid_curve_func'>curve_func</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>&gt;</span> <span class='int'>2</span>
@@ -6137,12 +6288,12 @@ specified as a value between 0 and 1 inclusive.</p>
       <pre class="lines">
 
 
-689
-690
-691</pre>
+621
+622
+623</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 689</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 621</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_velf'>with_velf</span><span class='lparen'>(</span><span class='id identifier rubyid_new_velf'>new_velf</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span> <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_with_velf'>with_velf</span><span class='lparen'>(</span><span class='id identifier rubyid_new_velf'>new_velf</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -6252,12 +6403,12 @@ a value between 0 and 1.</p></div>
       <pre class="lines">
 
 
-780
-781
-782</pre>
+943
+944
+945</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 780</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 943</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_velf_curve'>with_velf_curve</span><span class='lparen'>(</span><span class='id identifier rubyid_curve_func'>curve_func</span><span class='comma'>,</span> <span class='label'>min:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>max:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_with_vel_curve'>with_vel_curve</span><span class='lparen'>(</span><span class='id identifier rubyid_curve_func'>curve_func</span><span class='comma'>,</span> <span class='label'>zero_to_one:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>min:</span> <span class='id identifier rubyid_min'>min</span><span class='comma'>,</span> <span class='label'>max:</span> <span class='id identifier rubyid_max'>max</span><span class='rparen'>)</span>
