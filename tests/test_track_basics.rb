@@ -67,4 +67,28 @@ class TrackBasicTest < Test::Unit::TestCase
     assert_equal s.length, 1
     assert_equal s[0].note, :c3
   end
+
+  def test_repr
+    assert_repr T[:r]
+    assert_repr T[:c4]
+    assert_repr T[:c4, :d4]
+    assert_repr T[:c4, :r, :d4]
+    assert_repr T[[:c4, :e4], :r, :d4]
+
+    assert_repr T[S(:c4, gate: 0.5)]
+    assert_repr T[S(:c4, gate: 0.25, vel: 50)]
+    assert_repr T[S(:c4, gate: 0.25, vel: 50).accum(1)]
+    assert_repr T[S(:c4, gate: 0.25, vel: 50).accum(1, min: -5)]
+    assert_repr T[S(:c4, gate: 0.25, vel: 50).accum(1, min: -5, max: 22)]
+    assert_repr T[S(:c4, gate: 0.25, vel: 50).accum(1, min: -5, max: 22, mode: :freeze)]
+
+    # Prob spot-checks
+    assert_repr T[S(:c4, gate: 0.25, vel: 50, prob: Prob.every_other).accum(1, min: -5, max: 22, mode: :freeze)]
+    assert_repr T[S(:c4, gate: 0.25, vel: 50, prob: Prob.x_of_y(2, 5)).accum(1, min: -5, max: 22, mode: :freeze)]
+    assert_repr T[S(:c4, gate: 0.25, vel: 50, prob: 0.25).accum(1, min: -5, max: 22, mode: :freeze)]
+
+    assert_repr T[:c4, granularity: :whole]
+    assert_repr T[:c4, granularity: :whole, timescale: 2]
+    assert_repr T[:c4, granularity: :whole, timescale: 2, scale: Scale.full_scale(:c, :major)]
+  end
 end

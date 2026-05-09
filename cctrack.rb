@@ -286,6 +286,12 @@ class CCTrack < TrackBase
       raise TypeError, "Not a valid value for a grid: #{x.inspect}"
     end
   end
+
+  protected
+
+  def repr_ctor_method
+    "CCT"
+  end
 end
 
 # An alias for the {CCTrack} class. You can easily make a new instance using the

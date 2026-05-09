@@ -1683,6 +1683,10 @@ class Track < TrackBase
     kwargs[:scale] = nil
     kwargs
   end
+
+  def repr_ctor_method
+    "T"
+  end
 end
 
 # An alias for the {Track} class. You can easily make a new instance using the

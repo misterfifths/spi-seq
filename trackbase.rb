@@ -361,12 +361,13 @@ class TrackBase
   ### @!group String representations
 
   # Returns a string representation of the track as Ruby code.
-  # @param group [Integer] The number of slots of the track to group together
-  #   on a single line before adding a line break.
+  # @param group [Integer, nil] The number of slots of the track to group
+  #   together on a single line before adding a line break, or nil to keep all
+  #   slots on the same line.
   # @return [String]
   # @see #inspect
   def repr(group: 8)
-    ctor_invocation = "#{self.class.name}.new("
+    ctor_invocation = "#{repr_ctor_method}["
     slot_line_indent = " " * ctor_invocation.length
 
     slot_reprs = @grid.map do |slot|
@@ -1902,6 +1903,14 @@ class TrackBase
       granularity: NoteLength::Eighth,
       timescale: 1
     }
+  end
+
+  # The string representation of the method to call to create a new instance of
+  # this track subclass. Defaults to the name of the class; if there is a
+  # shorthand method, subclasses should return it here. Used to implement
+  # `repr`, which will call it with square brackets, not parentheses.
+  def repr_ctor_method
+    self.class.name
   end
 
   # Returns a new track by applying the given mutations to this track. That is,

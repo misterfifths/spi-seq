@@ -5,8 +5,11 @@ require_relative "test_helper"
 require_relative "../track"
 require_relative "../cctrack"
 require_relative "../math/curves"
+require_relative "track_test_helpers"
 
 class CCTrackTest < Test::Unit::TestCase
+  include TrackTestHelpers
+
   def equal_steps?(a, b)
     a.cc == b.cc &&
       a.val == b.val &&
@@ -150,5 +153,30 @@ class CCTrackTest < Test::Unit::TestCase
     t = CCTrack.curve(127, 0, 100, Curves::UpDown2Sine, 16)
     u = CCTrack.rest(16).add_curve(127, 0, 100, Curves::UpDown2Sine, 0, 15)
     assert_grid t, u.grid
+  end
+
+  def test_repr
+    a = CC(1, 1)
+    b = CC(2, 2)
+    c = CC(3, 3)
+
+    assert_repr CCT[:r]
+    assert_repr CCT[a]
+    assert_repr CCT[a, b]
+    assert_repr CCT[a, :r, b]
+    assert_repr CCT[[a, b], :r, c]
+
+    assert_repr CCT[a.accum(1)]
+    assert_repr CCT[a.accum(1, min: -5)]
+    assert_repr CCT[a.accum(1, min: -5, max: 22)]
+    assert_repr CCT[a.accum(1, min: -5, max: 22, mode: :freeze)]
+
+    # Prob spot-checks
+    assert_repr CCT[a.with_prob(Prob.every_other).accum(1, min: -5, max: 22, mode: :freeze)]
+    assert_repr CCT[a.with_prob(Prob.x_of_y(2, 5)).accum(1, min: -5, max: 22, mode: :freeze)]
+    assert_repr CCT[a.with_prob(0.25).accum(1, min: -5, max: 22, mode: :freeze)]
+
+    assert_repr CCT[a, granularity: :whole]
+    assert_repr CCT[a, granularity: :whole, timescale: 2]
   end
 end

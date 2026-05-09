@@ -40,10 +40,12 @@ module TrackTestHelpers
     assert_equal track.granularity, granularity
     assert_equal track.timescale, timescale
 
-    if scale.nil?
-      assert_nil track.scale
-    else
-      assert_same track.scale, scale
+    if track.is_a?(Track)
+      if scale.nil?
+        assert_nil track.scale
+      else
+        assert_same track.scale, scale
+      end
     end
   end
 
@@ -107,6 +109,17 @@ module TrackTestHelpers
       assert_raises { t8_1.send(method, t16_1, *args, **kwargs) }
       assert_raises { t8_2.send(method, t16_1, *args, **kwargs) }
       assert_raises { t16_1.send(method, t32_2, *args, **kwargs) }
+    end
+  end
+
+  # Asserts that the given track round-trips to an equivalent one if its repr
+  # is evaluated.
+  def assert_repr(t)
+    # Testing different groupings to make sure syntax errors don't sneak in.
+    [nil, 8, 4, 1].each do |group|
+      roundtrip = eval(t.repr(group: group))  # rubocop:disable Security/Eval
+      assert_gt roundtrip, t.granularity, t.timescale, scale: t.is_a?(Track) ? t.scale : nil
+      assert_grid roundtrip, t.grid
     end
   end
 end
