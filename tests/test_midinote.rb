@@ -328,4 +328,19 @@ class MIDINoteTest < Test::Unit::TestCase
     assert_equal N(:eb4).snap_to_scale(:c, :major), :e4
     assert_equal N(:bs4).snap_to_scale(:c, :major), :c5
   end
+
+  def test_repr
+    # repr should be the same as to_sym.
+
+    [:cs4, :Cs4, :CS4, :db4, :Db4, :DB4,
+     "cs4", "Cs4", "CS4", "db4", "Db4", "DB4",
+     61].each do |val|
+      n = N(val)
+      assert_equal n.repr, ":#{n.to_sym}"
+    end
+
+    # Octave wrap-around
+    assert_equal N(:cb4), ":b3"
+    assert_equal N(:bs4), ":c5"
+  end
 end

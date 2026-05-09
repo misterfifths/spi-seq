@@ -90,4 +90,27 @@ class CCStepTest < Test::Unit::TestCase
     assert_raises { CC(127, 50).accum(mode: :nope) }
     assert_raises { CC(127, 50).accum(mode: nil) }
   end
+
+  def assert_repr(s)
+    roundtrip = eval(s.repr)  # rubocop:disable Security/Eval
+    assert_attrs roundtrip, s.cc, s.val, s.prob
+    assert_accum roundtrip, s.accum_delta, min: s.accum_min, max: s.accum_max,
+                            mode: s.accum_mode, prob: s.accum_prob
+  end
+
+  def test_repr
+    a = CC(1, 1)
+
+    assert_repr a
+
+    assert_repr a.accum(1)
+    assert_repr a.accum(1, min: -5)
+    assert_repr a.accum(1, min: -5, max: 22)
+    assert_repr a.accum(1, min: -5, max: 22, mode: :freeze)
+
+    # Prob spot-checks
+    assert_repr a.with_prob(Prob.every_other).accum(1, min: -5, max: 22, mode: :freeze)
+    assert_repr a.with_prob(Prob.x_of_y(2, 5)).accum(1, min: -5, max: 22, mode: :freeze)
+    assert_repr a.with_prob(0.25).accum(1, min: -5, max: 22, mode: :freeze)
+  end
 end

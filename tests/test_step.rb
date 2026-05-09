@@ -142,4 +142,33 @@ class StepTest < Test::Unit::TestCase
     assert_raises { S(:c4).accum(mode: :nope) }
     assert_raises { S(:c4).accum(mode: nil) }
   end
+
+  def assert_repr(s)
+    roundtrip = eval(s.repr)  # rubocop:disable Security/Eval
+
+    # A completely default step should just have a note symbol as its repr.
+    if s.vel == 127 && s.gate == 1 && s.prob.nil? && s.accum_delta == 0
+      assert_equal roundtrip, s.note.to_sym
+      return
+    end
+
+    assert_attrs roundtrip, s.note, s.vel, s.gate, s.prob
+    assert_accum roundtrip, s.accum_delta, min: s.accum_min, max: s.accum_max,
+                            mode: s.accum_mode, prob: s.accum_prob
+  end
+
+  def test_repr
+    assert_repr S(:c4)
+    assert_repr S(:c4, gate: 0.5)
+    assert_repr S(:c4, gate: 0.25, vel: 50)
+    assert_repr S(:c4, gate: 0.25, vel: 50).accum(1)
+    assert_repr S(:c4, gate: 0.25, vel: 50).accum(1, min: -5)
+    assert_repr S(:c4, gate: 0.25, vel: 50).accum(1, min: -5, max: 22)
+    assert_repr S(:c4, gate: 0.25, vel: 50).accum(1, min: -5, max: 22, mode: :freeze)
+
+    # Prob spot-checks
+    assert_repr S(:c4, gate: 0.25, vel: 50, prob: Prob.every_other).accum(1, min: -5, max: 22, mode: :freeze)
+    assert_repr S(:c4, gate: 0.25, vel: 50, prob: Prob.x_of_y(2, 5)).accum(1, min: -5, max: 22, mode: :freeze)
+    assert_repr S(:c4, gate: 0.25, vel: 50, prob: 0.25).accum(1, min: -5, max: 22, mode: :freeze)
+  end
 end

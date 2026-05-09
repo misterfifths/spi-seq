@@ -91,4 +91,21 @@ class ScaleTest < Test::Unit::TestCase
     assert_equal s.snap(:eb4), :e4
     assert_equal s.snap(:bs4), :c5
   end
+
+  def assert_repr(sc)
+    roundtrip = eval(sc.repr)  # rubocop:disable Security/Eval
+    assert_equal roundtrip.name, sc.name
+    assert_equal roundtrip.tonic, sc.tonic
+    assert_equal roundtrip.num_octaves, sc.num_octaves
+    assert_equal roundtrip.clamp_to_midi, sc.clamp_to_midi
+    assert_equal roundtrip.notes, sc.notes
+  end
+
+  def test_repr
+    assert_repr Scale.new(:c4, :major)
+    assert_repr Scale.new(:c4, :major, num_octaves: 2)
+    assert_repr Scale.new(:c4, :major, num_octaves: 10, clamp_to_midi: true)
+
+    assert_repr Scale.full_scale(:c, :minor)
+  end
 end

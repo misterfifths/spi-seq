@@ -421,4 +421,17 @@ class ProbTest < Test::Unit::TestCase
       [:b2, 5, nil]
     ], play_count: 3, fill: true
   end
+
+  def assert_repr(p)
+    roundtrip = eval(p.repr)  # rubocop:disable Security/Eval
+    assert_equal roundtrip.to_s, p.to_s  # TODO: this is a crappy way to test Prob equality
+  end
+
+  def test_repr
+    # Just spot-checks
+    assert_repr Prob.every_other
+    assert_repr Prob.x_of_y(2, 5)
+    assert_repr Prob.chance(0.25)
+    assert_raises { Prob.custom(->{ true }).repr }
+  end
 end
