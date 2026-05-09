@@ -83,12 +83,12 @@ module TrackTestHelpers
   # This method does not check the grid of the returned track; it only checks
   # for a correct granularity and timescale.
   def assert_merge_strictness(method, *args, **kwargs)
-    t8_1 = T(:c1)
+    t8_1 = T[:c1]
     c_maj = Scale.full_scale(:c, :major)
-    t8_1_cmajor = T(:c1, scale: c_maj)
-    t8_2 = T(:c2, timescale: 2)
-    t16_1 = T(:c3, granularity: :sixteenth)
-    t32_2 = T(:c4, granularity: :thirty_second, timescale: 2)
+    t8_1_cmajor = T[:c1, scale: c_maj]
+    t8_2 = T[:c2, timescale: 2]
+    t16_1 = T[:c3, granularity: :sixteenth]
+    t32_2 = T[:c4, granularity: :thirty_second, timescale: 2]
 
     # Strict merging is off by default. The result should have the granularity
     # and timescale of the receiver.

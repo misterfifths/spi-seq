@@ -62,10 +62,10 @@ The power of spi-seq lies in its many tools to create, mutate, combine, and othe
 
 A track is played back using a `Player`, which walks through the slots in a `Track`, one after another, and plays their `Step`s simultaneously for the correct duration. You will not usually create a `Player` manually, instead relying on `track_live_loop` to do it for you.
 
-The easiest way to create a `Track` is to use `Track.new`, which is also aliased to `T`. You can express the notes to play in a variety of ways, but the simplest is an array of symbols, strings, or MIDI note numbers. Here's a snippet that creates a simple progression of notes and loops it indefinitely:
+The `Track` class is aliased to `T`, and its `new` method is aliased to `[]`, so the easiest way to make a track is to write `T[...]`. You can express the notes to play in a variety of ways, but the simplest is an number of symbols, strings, or MIDI note numbers. Here's a snippet that creates a simple progression of notes and loops it indefinitely:
 
 ```ruby
-t = T([:c4, :e4, :f4, :c5])
+t = T[:c4, :e4, :f4, :c5]
 track_live_loop :my_first_track, t
 ```
 
@@ -90,7 +90,7 @@ use_player_defaults(midi: true, sync: :midi_clock)
 # above.
 midi_clock_live_loop
 
-t = T([:c4, :e4, :f4, :c5])
+t = T[:c4, :e4, :f4, :c5]
 track_live_loop :my_first_track, t
 ```
 
@@ -105,13 +105,13 @@ See the [Everyday Use](#everyday-use) section for an example of a template you m
 The duration of each slot in a track is specified by the track's `granularity`, which is expressed in traditional note length terms. For instance, quarter-note granularity means that each slot will last for one beat (where the BPM is defined by Sonic Pi). The default granularity for a track is an eighth note, so each slot lasts for half a beat. You can specify the granularity at track construction time, using symbols for the names:
 
 ```ruby
-T([:d4, :e5], granularity: :whole)
+T[:d4, :e5, granularity: :whole]
 ```
 
 If you would like to rest for a particular slot, you can use `:r` instead of a note. For instance, this track is the same as the above, except there is a rest (lasting a whole note) between the other two notes:
 
 ```ruby
-T([:d4, :r, :e5], granularity: :whole)
+T[:d4, :r, :e5, granularity: :whole]
 ```
 
 Aside from the standard initializer, there are many other ways to create new tracks. For instance, you can arpeggiate notes in a variety of patterns with `Track.arp` (here, using Sonic Pi's built-in `chord` method):
@@ -133,12 +133,12 @@ Track.euclid([:a3, :b3, :c3], 11, 16)
 If you want to play more than one note simultaneously (e.g., to play a chord), group those notes together in an array when passing them to the initializer:
 
 ```ruby
-T([
+T[
   [:c4, :c3],
   :e4,
   [:f4, :f3],
   :c5
-])
+]
 ```
 
 In that track, the C4 and C3 will be played together (they share a slot), then the E4, then the F4 and F3 together, then the C5.
@@ -146,31 +146,31 @@ In that track, the C4 and C3 will be played together (they share a slot), then t
 You'll notice that we haven't manually created any `Step` objects yet; we've just been providing raw notes inside of slots. That's because the `Track` initializer will make `Step`s out of notes for us, using some defaults for attributes like the velocity and gate. However, if you want to specify those parameters, you can pass a `Step` to the `Track` initializer instead of a note. `Step.new` is aliased to just `S` for convenience. Here's a track where the notes have increasingly shorter gates, and the second note has a low velocity:
 
 ```ruby
-T([
+T[
   :a2,
   S(:c4, vel: 20, gate: 0.75)
   S(:d4, gate: 0.5),
   S(:e4, gate: 0.25)
-])
+]
 ```
 
 The default velocity for a step is 127, and the default gate is the maximum, 1.0, which is a tie. Tied notes are continued without release if they would also play in the next slot. For instance, in this track, the :c4 is held for the first three slots, terminating 25% of the way through the third:
 
 ```ruby
-T([
+T[
   S(:c4, gate: 1),
   [S(:c4, gate: 1), S(:c2, gate: 0.5)],
   S(:c4, gate: 0.25),
   S(:c2, gate: 0.75)
-])
+]
 
 # or, equivalently, since a gate of 1 is the default:
-T([
+T[
   :c4,
   [:c4, S(:c2, gate: 0.5)],
   S(:c4, gate: 0.25),
   S(:c2, gate: 0.75)
-])
+]
 ```
 
 ### Step probabilities
@@ -180,21 +180,21 @@ By giving a `Step` a *probability*, you can control the conditions under which t
 The simplest way to express a probability is to pass a floating point number as the `prob` parameter to `Step.new` (aliased to `S`). That specifies the chance that the note will play, with 1.0 meaning a 100% chance. For instance, the C4 in this track only has a 25% chance of playing on any given loop; there is a 75% chance that slot will be just a rest instead:
 
 ```ruby
-t = T([
+t = T[
   :e4,
   S(:c4, prob: 0.25),
   :g3
-])
+]
 ```
 
 More elaborate probabilities are part of the `Prob` class. For instance, the `every` probability will trigger the given note every nth cycle. Here, the C4 will only play every 3rd loop; on other loops that slot will just be a rest:
 
 ```ruby
-t = T([
+t = T[
   :e4,
   S(:c4, prob: Prob.every(3)),
   :g3
-])
+]
 ```
 
 Check out the `Prob` documentation for more elaborate options. You can specify that a step should only trigger on the first loop of a track, or only if the previous slot was a rest, and so on. There is also a special probability called `fill` which we'll discuss [later](#fill-mode).
@@ -210,9 +210,9 @@ While probabilities control whether a `Step` triggers at all, *accumulation* can
 You can most easily apply accumulation to a `Step` with the `accum` method, which takes the delta and keyword arguments for each of the other parameters described above. For example, consider this track:
 
 ```ruby
-t = T([
+t = T[
   S(:c4).accum(1, max: 12, mode: :freeze)
-])
+]
 ```
 
 When that track is played, the first loop will play a C4. In the next loop, the accumulation will take effect and it will play a C#4 - a note one semitone higher (the `delta` being 1). The next loop will play a D4, and so on for 12 cycles until it plays a C5 (12 semitones of accumulation). At that point, since the maximum accumulation has been reached and the mode is `:freeze`, all further cycles of the track will also play a C5.
@@ -220,9 +220,9 @@ When that track is played, the first loop will play a C4. In the next loop, the 
 The accumulation delta can be negative. Consider this track:
 
 ```ruby
-t = T([
+t = T[
   S(:c4).accum(-12, min: -24, max: 24, mode: :reverse)
-])
+]
 ```
 
 That will play a C4, then a C3 and a C2, then, since that's the minimum accumulation of -24 and the mode is `:reverse`, the delta is effectively negated and the following cycle will play a C3. Then a C4 again, a C5, and a C6. The C6 is the max accumulation, so the delta is negated again and the following cycle will play a C5, and so on.
@@ -230,9 +230,9 @@ That will play a C4, then a C3 and a C2, then, since that's the minimum accumula
 Note that accumulation can have its own probability, independent of the step to which it belongs. For instance, take this track:
 
 ```ruby
-t = T([
+t = T[
   S(:c4).accum(7, max: 21, prob: Prob.every_other)
-])
+]
 ```
 
 The accumulation of 7 semitones will only trigger on every other playback of the track, so the first two cycles will play a C4, the next two will play a G4, and so on.
@@ -247,7 +247,7 @@ You can transpose all notes in a track some number of semitones with `transpose`
 
 ```ruby
 # Each note in the chord winds up in its own slot; this track has 5 slots.
-t = T(chord(:c3, :major9))
+t = T[*chord(:c3, :major9)]
 
 # Remember, Tracks are immutable, so this transpose call returns a new
 # track and won't change t!
@@ -258,20 +258,20 @@ t_transpose = t.transpose(-7)
 together = t | t_transpose
 
 # The final track is equivalent to this:
-# T([ [:f2, :c3], [:a2, :e3], [:c3, :g3], [:e3, :b3], [:g3, :d4] ])
+# T[[:f2, :c3], [:a2, :e3], [:c3, :g3], [:e3, :b3], [:g3, :d4]]
 ```
 
 Or, more concisely:
 
 ```ruby
-t = T(chord(:c3, :major9))
+t = T[*chord(:c3, :major9)]
 t |= t.transpose(-7)
 ```
 
 Let's play those notes forward and then backward, without repeating the notes in the middle or at the end. `reverse` reverses a track, and `drop(n)` removes the first `n` slots from a track (defaulting to 1). `drop_last` is like `drop`, but removes slots from the end of a track. The `+` operator concatenates two tracks. So:
 
 ```ruby
-t = T(chord(:c3, :major9))
+t = T[*chord(:c3, :major9)]
 t |= t.transpose(-7)
 t = t + t.reverse.drop.drop_last
 ```
@@ -281,7 +281,7 @@ The `reflect` method is actually shorthand for the `t + t.reverse.drop` pattern.
 Now let's alternate between those notes and the same ones shifted up an octave, so that we hear e.g. C3+F3 then C4+F4, and so on. The `up(n)` method transposes a track up `n` octaves (defaulting to 1). The `zip` function takes another track and interleaves the two tracks' steps. And for kicks, let's give the higher notes a shorter gate, using the `gate` method, which sets the gate on all steps in a track. We can do something like this:
 
 ```ruby
-t = T(chord(:c3, :major9))
+t = T[*chord(:c3, :major9)]
 t |= t.transpose(-7)
 t = t.reflect.drop_last
 t = t.zip(t.up.gate(0.5))
@@ -290,14 +290,14 @@ t = t.zip(t.up.gate(0.5))
 If we had constructed that track manually with `Track.new`, it would look like this:
 
 ```ruby
-T([
-   [:f2, :c3], [S(:f3, gate: 0.5), S(:c4, gate: 0.5)],
-   [:a2, :e3], [S(:a3, gate: 0.5), S(:e4, gate: 0.5)],
-   [:c3, :g3], [S(:c4, gate: 0.5), S(:g4, gate: 0.5)],
-   ...,
-   [:c3, :g3], [S(:c4, gate: 0.5), S(:g4, gate: 0.5)],
-   [:a2, :e3], [S(:a3, gate: 0.5), S(:e4, gate: 0.5)]
-])
+T[
+  [:f2, :c3], [S(:f3, gate: 0.5), S(:c4, gate: 0.5)],
+  [:a2, :e3], [S(:a3, gate: 0.5), S(:e4, gate: 0.5)],
+  [:c3, :g3], [S(:c4, gate: 0.5), S(:g4, gate: 0.5)],
+  ...,
+  [:c3, :g3], [S(:c4, gate: 0.5), S(:g4, gate: 0.5)],
+  [:a2, :e3], [S(:a3, gate: 0.5), S(:e4, gate: 0.5)]
+]
 ```
 
 Note the alternating pairs generated by `zip`: each slot is followed by a slot with same notes up an octave with a shorter gate. Note also how the track is mirrored due to the concatenation with its reverse (via `reflect`) - the early A+E, C+G progression appears backwards at the end of the track. But the leading F+C pair is missing at the very end so that the track loops cleanly (that was the `drop_last`).
@@ -305,7 +305,7 @@ Note the alternating pairs generated by `zip`: each slot is followed by a slot w
 We've barely scratched the surface, but already it's easy to assemble complicated tracks. Here's a nice melody using things you've seen so far and a few new tricks: the `*` operator concatenates a track with itself some number of times, and the `shl` method shifts a track's slots to the left, wrapping the first slots back around to the end. This is an intricate 64-step sequence, all constructed from simple manipulations of a minor 7th chord!
 
 ```ruby
-t = T(chord(:d4, :minor7)).gate(0.5)
+t = T[*chord(:d4, :minor7)].gate(0.5)
 t = t.zip(t.reverse.gate(0.25).shl)
 t = t * 2 + t.transpose(7) * 2
 t = t.zip(t.transpose(-7))
@@ -314,7 +314,7 @@ t = t.zip(t.transpose(-7))
 Just like normal `live_loop`s, you can have multiple `track_live_loops` running at the same time. So let's add a bass accompaniment to the above. We'll construct that from the melody track by shifting it down two octaves with `down` and, to add some rhythm, we'll turn every 3rd slot into a rest with `dropout`. Let's also make the bass notes have a longer gate than those in the melody.
 
 ```ruby
-t = T(chord(:d4, :minor7)).gate(0.5)
+t = T[*chord(:d4, :minor7)].gate(0.5)
 t = t.zip(t.rev.gate(0.25).shl)
 t = t * 2 + t.transpose(7) * 2
 t = t.zip(t.transpose(-7))
@@ -352,7 +352,7 @@ Note that we did not need to pass `track_live_loop` a track up-front, since the 
 For another example, we could randomly rearrange the notes in our track each cycle, using the `shuffle` method:
 
 ```ruby
-t = T(chord(:c3, :major13)).gate(0.5)
+t = T[*chord(:c3, :major13)].gate(0.5)
 
 track_live_loop :t do
   t.shuffle
@@ -376,7 +376,7 @@ Here's an example with two tracks. The melody starts unmuted (and is not control
 ```ruby
 use_cc_control_defaults(port: "my_midi_device", channel: 1)
 
-t = T(chord(:c3, :major13)).gate(0.5)
+t = T[*chord(:c3, :major13)].gate(0.5)
 
 track_live_loop :melody, t
 
@@ -413,11 +413,11 @@ Unlike muting, *fill mode takes effect immediately*. That is, steps with the fil
 Here's an example where an E2 is only triggered in fill mode. The `track_live_loop` is configured to watch CC 111 for fill.
 
 ```ruby
-t = T([
+t = T[
   :c4,
   [:e4, S(:e2, prob: Prob.fill)],
   :g4
-])
+]
 
 track_live_loop :t, t, fill_cc: 111
 ```
@@ -426,15 +426,16 @@ There is also a `not_fill` probability, which specifies that a step should only 
 
 ### Sequencing CCs
 
-So far we've only seen `Track`s and `Step`s, which both deal with sequencing notes. spi-seq can also sequence MIDI CCs using the `CCTrack` class. `CCTrack` shares the same structure and many methods with `Track`, but instead of note-based `Step`s, it contains `CCStep`s, which consist of a CC number and a value. The initializers `CCTrack.new` and `CCStep.new` are aliased to `CCT` and `CC` respectively. Constructing and using a `CCTrack` should look rather familiar:
+So far we've only seen `Track`s and `Step`s, which both deal with sequencing notes. spi-seq can also sequence MIDI CCs using the `CCTrack` class. `CCTrack` shares the same structure and many methods with `Track`, but instead of note-based `Step`s, it contains `CCStep`s, which consist of a CC number and a value. `CCTrack` is aliased to `CCT`, and you can call its initializer with brackets, just like `T`. `CCStep.new` is aliased to `CC`. Constructing and using a `CCTrack` should look rather familiar:
 
 ```ruby
-t = CCT([
+t = CCT[
   CC(10, 1),
   CC(10, 25),
   :r,
-  CC(15, 3)
-], granularity: :half)
+  CC(15, 3),
+  granularity: :half
+]
 
 track_live_loop :my_cc_track, t
 ```

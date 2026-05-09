@@ -26,18 +26,18 @@ class PlayerTest < Test::Unit::TestCase
   end
 
   def test_sleep
-    assert_sleep T(:c4, granularity: :quarter)
-    assert_sleep T(:c4)
-    assert_sleep T([:c4, :d4])
-    assert_sleep T([[:c4, :d4], [:e4, :f4]], granularity: :whole)
+    assert_sleep T[:c4, granularity: :quarter]
+    assert_sleep T[:c4]
+    assert_sleep T[:c4, :d4]
+    assert_sleep T[[:c4, :d4], [:e4, :f4], granularity: :whole]
 
-    assert_sleep T([:c4, :d4], granularity: :whole, timescale: 2)
-    assert_sleep T([:c4, :d4], granularity: :quarter, timescale: 8)
-    assert_sleep T([:c4, :d4], granularity: :half, timescale: 0.5)
-    assert_sleep T([:c4, :d4], granularity: :half, timescale: 0.125)
+    assert_sleep T[:c4, :d4, granularity: :whole, timescale: 2]
+    assert_sleep T[:c4, :d4, granularity: :quarter, timescale: 8]
+    assert_sleep T[:c4, :d4, granularity: :half, timescale: 0.5]
+    assert_sleep T[:c4, :d4, granularity: :half, timescale: 0.125]
 
     # A sleep should terminate held ties.
-    p = player(T([:c4, :c4], granularity: :quarter))
+    p = player(T[:c4, :c4, granularity: :quarter])
     es = events do
       p.play
       p.sleep
@@ -47,25 +47,25 @@ class PlayerTest < Test::Unit::TestCase
 
   def test_basics
     # Basics of duration & ties
-    assert_playback_events T(:c4), [[:c4, 0, nil]]  # No off event since this is tied.
-    assert_playback_events qT([:c4, :r]), [[:c4, 0, 1]]
-    assert_playback_events qT([S(:c4, gate: 0.5)]), [[:c4, 0, 0.5]]
-    assert_playback_events qT([:c4, S(:c4, gate: 0.25)]), [[:c4, 0, 1.25]]
+    assert_playback_events T[:c4], [[:c4, 0, nil]]  # No off event since this is tied.
+    assert_playback_events QT[:c4, :r], [[:c4, 0, 1]]
+    assert_playback_events QT[S(:c4, gate: 0.5)], [[:c4, 0, 0.5]]
+    assert_playback_events QT[:c4, S(:c4, gate: 0.25)], [[:c4, 0, 1.25]]
 
     # Multiple steps per slot
-    assert_playback_events qT([[:c4, :d4], :r]), [
+    assert_playback_events QT[[:c4, :d4], :r], [
       [:c4, 0, 1],
       [:d4, 0, 1]
     ]
-    assert_playback_events qT([[:c4, :d4], :d4]), [
+    assert_playback_events QT[[:c4, :d4], :d4], [
       [:c4, 0, 1],
       [:d4, 0, nil]
     ]
-    assert_playback_events qT([[:c4, :d4], S(:d4, gate: 0.3)]), [
+    assert_playback_events QT[[:c4, :d4], S(:d4, gate: 0.3)], [
       [:c4, 0, 1],
       [:d4, 0, 1.3]
     ]
-    assert_playback_events qT([[:c4], [:c4, :d4]]), [
+    assert_playback_events QT[[:c4], [:c4, :d4]], [
       [:c4, 0, nil],
       [:d4, 1, nil]
     ]
@@ -73,76 +73,76 @@ class PlayerTest < Test::Unit::TestCase
 
   def test_midi_devices
     use_midi_defaults
-    assert_playback_events T(:c4), [[:c4, 0, nil, 127, "*", "*"]]
-    assert_playback_events T(:c4), [[:c4, 0, nil, 127, "midi_device", "*"]], port: "midi_device"
-    assert_playback_events T(:c4), [[:c4, 0, nil, 127, "*", 2]], channel: 2
-    assert_playback_events T(:c4), [[:c4, 0, nil, 127, "midi_device", 8]], port: "midi_device", channel: 8
+    assert_playback_events QT[:c4], [[:c4, 0, nil, 127, "*", "*"]]
+    assert_playback_events QT[:c4], [[:c4, 0, nil, 127, "midi_device", "*"]], port: "midi_device"
+    assert_playback_events QT[:c4], [[:c4, 0, nil, 127, "*", 2]], channel: 2
+    assert_playback_events QT[:c4], [[:c4, 0, nil, 127, "midi_device", 8]], port: "midi_device", channel: 8
 
     use_midi_defaults(port: "default_device")
-    assert_playback_events T(:c4), [[:c4, 0, nil, 127, "default_device", "*"]]
-    assert_playback_events T(:c4), [[:c4, 0, nil, 127, "default_device", 5]], channel: 5
-    assert_playback_events T(:c4), [[:c4, 0, nil, 127, "another_device", "*"]], port: "another_device"
+    assert_playback_events QT[:c4], [[:c4, 0, nil, 127, "default_device", "*"]]
+    assert_playback_events QT[:c4], [[:c4, 0, nil, 127, "default_device", 5]], channel: 5
+    assert_playback_events QT[:c4], [[:c4, 0, nil, 127, "another_device", "*"]], port: "another_device"
 
     use_midi_defaults(channel: 4)
     # That should have cleared the default port.
-    assert_playback_events T(:c4), [[:c4, 0, nil, 127, "*", 4]]
-    assert_playback_events T(:c4), [[:c4, 0, nil, 127, "another_device", 4]], port: "another_device"
-    assert_playback_events T(:c4), [[:c4, 0, nil, 127, "*", 3]], channel: 3
+    assert_playback_events QT[:c4], [[:c4, 0, nil, 127, "*", 4]]
+    assert_playback_events QT[:c4], [[:c4, 0, nil, 127, "another_device", 4]], port: "another_device"
+    assert_playback_events QT[:c4], [[:c4, 0, nil, 127, "*", 3]], channel: 3
 
     use_midi_defaults(port: "def_dev", channel: 6)
-    assert_playback_events T(:c4), [[:c4, 0, nil, 127, "def_dev", 6]]
-    assert_playback_events T(:c4), [[:c4, 0, nil, 127, "another_device", 6]], port: "another_device"
-    assert_playback_events T(:c4), [[:c4, 0, nil, 127, "def_dev", 3]], channel: 3
+    assert_playback_events QT[:c4], [[:c4, 0, nil, 127, "def_dev", 6]]
+    assert_playback_events QT[:c4], [[:c4, 0, nil, 127, "another_device", 6]], port: "another_device"
+    assert_playback_events QT[:c4], [[:c4, 0, nil, 127, "def_dev", 3]], channel: 3
 
     use_midi_defaults
   end
 
   def test_vel
-    assert_playback_events T(:c4), [[:c4, 0, nil, 127]]
-    assert_playback_events T(S(:c4, vel: 64)), [[:c4, 0, nil, 64]]
+    assert_playback_events QT[:c4], [[:c4, 0, nil, 127]]
+    assert_playback_events QT[S(:c4, vel: 64)], [[:c4, 0, nil, 64]]
 
     # Velocity changes over the lifespan of a tied note are ignored.
-    assert_playback_events qT([S(:c4, vel: 98), S(:c4, vel: 64), :r]), [
+    assert_playback_events QT[S(:c4, vel: 98), S(:c4, vel: 64), :r], [
       [:c4, 0, 2, 98]
     ]
   end
 
   def test_bpm
     use_bpm 60
-    assert_playback_events T([:c4, :r]), [[:c4, 0, 0.5]]
-    assert_playback_events T([:c4, :r], granularity: :quarter), [[:c4, 0, 1]]
-    assert_playback_events T([:c4, :r], granularity: :whole), [[:c4, 0, 4]]
+    assert_playback_events T[:c4, :r], [[:c4, 0, 0.5]]
+    assert_playback_events T[:c4, :r, granularity: :quarter], [[:c4, 0, 1]]
+    assert_playback_events T[:c4, :r, granularity: :whole], [[:c4, 0, 4]]
 
     use_bpm 120
-    assert_playback_events T([:c4, :r]), [[:c4, 0, 0.25]]
-    assert_playback_events T([:c4, :r], granularity: :quarter), [[:c4, 0, 0.5]]
-    assert_playback_events T([:c4, :r], granularity: :whole), [[:c4, 0, 2]]
+    assert_playback_events T[:c4, :r], [[:c4, 0, 0.25]]
+    assert_playback_events T[:c4, :r, granularity: :quarter], [[:c4, 0, 0.5]]
+    assert_playback_events T[:c4, :r, granularity: :whole], [[:c4, 0, 2]]
 
     use_bpm 30
-    assert_playback_events T([:c4, :r]), [[:c4, 0, 1]]
-    assert_playback_events T([:c4, :r], granularity: :quarter), [[:c4, 0, 2]]
-    assert_playback_events T([:c4, :r], granularity: :whole), [[:c4, 0, 8]]
+    assert_playback_events T[:c4, :r], [[:c4, 0, 1]]
+    assert_playback_events T[:c4, :r, granularity: :quarter], [[:c4, 0, 2]]
+    assert_playback_events T[:c4, :r, granularity: :whole], [[:c4, 0, 8]]
   end
 
   def test_timescale
     use_bpm 60
-    assert_playback_events T([:c4, :r], granularity: :quarter, timescale: 2), [[:c4, 0, 0.5]]
-    assert_playback_events T([:c4, :r], granularity: :quarter, timescale: 0.5), [[:c4, 0, 2]]
-    assert_playback_events T([:c4, :r], granularity: :whole, timescale: 0.5), [[:c4, 0, 8]]
-    assert_playback_events T([:c4, :r], granularity: :whole, timescale: 4), [[:c4, 0, 1]]
+    assert_playback_events T[:c4, :r, granularity: :quarter, timescale: 2], [[:c4, 0, 0.5]]
+    assert_playback_events T[:c4, :r, granularity: :quarter, timescale: 0.5], [[:c4, 0, 2]]
+    assert_playback_events T[:c4, :r, granularity: :whole, timescale: 0.5], [[:c4, 0, 8]]
+    assert_playback_events T[:c4, :r, granularity: :whole, timescale: 4], [[:c4, 0, 1]]
 
     use_bpm 120
-    assert_playback_events T([:c4, :r], granularity: :quarter, timescale: 2), [[:c4, 0, 0.25]]
-    assert_playback_events T([:c4, :r], granularity: :quarter, timescale: 0.5), [[:c4, 0, 1]]
-    assert_playback_events T([:c4, :r], granularity: :whole, timescale: 0.5), [[:c4, 0, 4]]
-    assert_playback_events T([:c4, :r], granularity: :whole, timescale: 4), [[:c4, 0, 0.5]]
+    assert_playback_events T[:c4, :r, granularity: :quarter, timescale: 2], [[:c4, 0, 0.25]]
+    assert_playback_events T[:c4, :r, granularity: :quarter, timescale: 0.5], [[:c4, 0, 1]]
+    assert_playback_events T[:c4, :r, granularity: :whole, timescale: 0.5], [[:c4, 0, 4]]
+    assert_playback_events T[:c4, :r, granularity: :whole, timescale: 4], [[:c4, 0, 0.5]]
   end
 
   def test_scale
     cmaj = Scale.full_scale(:c, :major)
 
     # Notes should snap to the scale at play time.
-    assert_playback_events qT([:c4, :cs3, :ds3, :f3, :as3], scale: cmaj), [
+    assert_playback_events QT[:c4, :cs3, :ds3, :f3, :as3, scale: cmaj], [
       [:c4, 0, 1],
       [:d3, 1, 2],
       [:e3, 2, 3],
@@ -151,44 +151,44 @@ class PlayerTest < Test::Unit::TestCase
     ]
 
     # Snapped notes should tie into their unsnapped version.
-    assert_playback_events qT([:d3, :cs3, :r], scale: cmaj), [
+    assert_playback_events QT[:d3, :cs3, :r, scale: cmaj], [
       [:d3, 0, 2]
     ]
-    assert_playback_events qT([:cs3, :d3, :r], scale: cmaj), [
+    assert_playback_events QT[:cs3, :d3, :r, scale: cmaj], [
       [:d3, 0, 2]
     ]
-    assert_playback_events qT([:cs3, S(:d3, gate: 0.25), :r], scale: cmaj), [
+    assert_playback_events QT[:cs3, S(:d3, gate: 0.25), :r, scale: cmaj], [
       [:d3, 0, 1.25]
     ]
-    assert_playback_events qT([:cs3, :d3], scale: cmaj), [
+    assert_playback_events QT[:cs3, :d3, scale: cmaj], [
       [:d3, 0, nil]
     ]
 
     # If snapping results in duplicate notes, the one with the longest gate
     # should win.
-    assert_playback_events qT([[S(:d3, gate: 0.5), S(:cs3, gate: 0.75)]], scale: cmaj), [
+    assert_playback_events QT[[S(:d3, gate: 0.5), S(:cs3, gate: 0.75)], scale: cmaj], [
       [:d3, 0, 0.75]
     ]
 
     # Duplicate notes from snaps should also tie.
-    assert_playback_events T([[:d3, :cs3], [:d3]], scale: cmaj), [[:d3, 0, nil]]
+    assert_playback_events T[[:d3, :cs3], [:d3], scale: cmaj], [[:d3, 0, nil]]
   end
 
   def test_swap_track
-    p = player(qT(:c4))
+    p = player(QT[:c4])
     es = events do
       p.play
       p.play
       assert_equal p.cycle, 2
 
-      p.swap_track(T([:r, :d4]))  # note the granularity
+      p.swap_track(T[:r, :d4])  # note the granularity
       # cycle is not reset by default
       assert_equal p.cycle, 2
       p.play
       assert_equal p.cycle, 3
 
       # This should tie to the previous track
-      p.swap_track(qT(S(:d4, gate: 0.5)), reset_cycle: true)
+      p.swap_track(QT[S(:d4, gate: 0.5)], reset_cycle: true)
       assert_equal p.cycle, 0
       p.play
       assert_equal p.cycle, 1
@@ -199,10 +199,10 @@ class PlayerTest < Test::Unit::TestCase
     ]
 
     # Swapping between timescales
-    p = player(T(:c4, granularity: :quarter, timescale: 0.5))
+    p = player(T[:c4, granularity: :quarter, timescale: 0.5])
     es = events do
       p.play
-      p.swap_track(T([:r, :d4, :r], granularity: :whole, timescale: 2))
+      p.swap_track(T[:r, :d4, :r, granularity: :whole, timescale: 2])
       p.play
     end
     assert_events es, [
@@ -212,10 +212,10 @@ class PlayerTest < Test::Unit::TestCase
 
     # Swapping between scales
     cmaj = Scale.full_scale(:c, :major)
-    p = player(qT(:cs4, scale: cmaj))
+    p = player(QT[:cs4, scale: cmaj])
     es = events do
       p.play
-      p.swap_track(qT(:cs4))
+      p.swap_track(QT[:cs4])
       p.play
     end
     assert_events es, [
@@ -224,10 +224,10 @@ class PlayerTest < Test::Unit::TestCase
     ]
 
     # sleep should function on the new track
-    p = player(qT(:c4))
+    p = player(QT[:c4])
     es = events do
       p.play
-      p.swap_track(qT([:d4, :e4]))
+      p.swap_track(QT[:d4, :e4])
       p.sleep
     end
     assert_in_delta secs_per_beat(3), vt
@@ -236,7 +236,7 @@ class PlayerTest < Test::Unit::TestCase
 
   def test_stop
     # stop should terminate held ties and reset cycle
-    p = player(qT(:c4))
+    p = player(QT[:c4])
     es = events do
       p.play
       p.play
@@ -249,7 +249,7 @@ class PlayerTest < Test::Unit::TestCase
 
   def test_cycle
     # cycle should increase with play but not sleep
-    p = player(T(:c4))
+    p = player(T[:c4])
     assert_equal p.cycle, 0
     5.times do |i|
       p.play
@@ -265,7 +265,7 @@ class PlayerTest < Test::Unit::TestCase
   def test_final_ties_in_loop
     # A tie at the end of a track should be terminated when that track loops if
     # it's not continued in the first slot.
-    assert_playback_events qT([:r, :c4]), [
+    assert_playback_events QT[:r, :c4], [
       [:c4, 1, 2],
       [:c4, 3, 4],
       [:c4, 5, nil]
@@ -273,14 +273,14 @@ class PlayerTest < Test::Unit::TestCase
 
     # Final ties should continue seamlessly into the same note if it's present
     # at the beginning of the track.
-    assert_playback_events qT([S(:c4, gate: 0.5), :c4]), [
+    assert_playback_events QT[S(:c4, gate: 0.5), :c4], [
       [:c4, 0, 0.5],  # first note
       [:c4, 1, 2.5],  # final tie, looping back to the first note, then ending
       [:c4, 3, 4.5],  # final tie again, looping again
       [:c4, 5, nil]   # final tie, held
     ], play_count: 3
 
-    assert_playback_events qT([:c4, :r, :c4]), [
+    assert_playback_events QT[:c4, :r, :c4], [
       [:c4, 0, 1],  # first note
       [:c4, 2, 4],  # final tie, looping back to the first note, then ending
       [:c4, 5, 7],  # final tie, looping again
@@ -288,7 +288,7 @@ class PlayerTest < Test::Unit::TestCase
     ], play_count: 3
 
     # Final ties should loop seamlessly if they are continued.
-    assert_playback_events qT([:c4, :c4]), [
+    assert_playback_events QT[:c4, :c4], [
       [:c4, 0, nil]
     ], play_count: 5
   end

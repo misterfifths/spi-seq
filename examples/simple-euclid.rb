@@ -22,5 +22,5 @@ tll :v, v
 
 # On top of the short pulses of the Euclidean tracks, play the notes of the
 # chord up a fifth, held quite a bit longer (whole notes).
-long = T(notes, granularity: :whole).transpose(7).mirror.gate(0.9)
+long = T[*notes, granularity: :whole].transpose(7).mirror.gate(0.9)
 tll :long, long

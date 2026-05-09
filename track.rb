@@ -11,15 +11,6 @@ require_relative "theory/notelength"
 require_relative "theory/scale"
 require_relative "trackbase"
 
-# @!group Steps and tracks
-# An alias for {Track#initialize Track.new}.
-# @return [Track]
-def T(*args, **kwargs)
-  Track.new(*args, **kwargs)
-end
-# @!endgroup
-
-
 # A Track deals with a grid whose slots contain {Step}s. Step instances
 # represent MIDI notes and properties controlling their expression (e.g.
 # {Step#gate gate} and {Step#vel velocity}). When a Track is played with a
@@ -27,8 +18,10 @@ end
 # steps. Alternatively, they can be played using Sonic Pi's internal synthesis,
 # though that is not recommended.
 #
+# This class is aliased to `T`.
+#
 # Note that **tracks are immutable**. The mutation methods provided here, like
-# {#up}, return new CCTracks that have all the same attributes as the receiver
+# {#up}, return new Tracks that have all the same attributes as the receiver
 # (e.g. {#timescale} and {#granularity}), with just the described change. That
 # includes the steps in its grid, unless the method explicitly modifies those.
 #
@@ -51,37 +44,33 @@ class Track < TrackBase
   # array of {Step}s, which all trigger simultaneously for a duration of the
   # `granularity`. A slot may be empty to represent a rest.
   #
+  # Track itself is aliased to `T`, and `Track.new` is aliased to `[]`, so you
+  # can instantiate a Track with `T[...]`.
+  #
   # ### Grid definition
   #
-  # `gridish` may be:
-  # - A single "stepish" value: a {Step}, {MIDINote}, something convertible to a
+  # The positional arguments may be some mix of:
+  # - Single "stepish" values: a {Step}, {MIDINote}, something convertible to a
   #   MIDINote (a string, symbol, or number; see {MIDINote.new}), or a rest
   #   (nil, `:r`, `:rest`). Such values will be converted to a {Step} if needed,
   #   using the default gate (1.0) and velocity (127). The result will be a
-  #   single-slot track containing just that step. For example:
-  #     T(S(:c4, gate: 0.5))  # grid is [[S(:c4, gate: 0.5)]]
-  #     T(N(:c4))  # grid is [[S(:c4)]]
-  #     T(:c4)  # grid is also [[S(:c4)]]; manually calling N is rarely necessary
-  #     T(:r)  # grid is [[]]
-  # - A 1-dimensional array, either empty or containing "stepish" values. This
-  #   will result in a track with one slot per element in the array, each of
-  #   which contains the converted "stepish" value. For example:
-  #     T([:c4, :r, S(:c5, vel: 50)])  # grid is [ [S(:c4)], [], [S(:c5, vel: 50)] ]
-  #     T([])  # grid is [[]]
-  # - An array that contains arrays of "stepish" values, or some mix of such
-  #   arrays and single "stepish" values. Subarrays will be grouped into a
-  #   single slot, and the standalone values will be converted to single-step
-  #   slots. For example:
-  #     T([:a1, :r, [:b1, :c1], :d1])
-  #     # grid is [ [S(:a1)], [], [S(:b1), S(:c1)], [S(:d1)] ]
+  #   single-slot track containing just that step (or a rest). For example:
+  #     T[S(:c4, gate: 0.5)]  # grid is [[S(:c4, gate: 0.5)]]
+  #     T[N(:c4)]  # grid is [[S(:c4)]]
+  #     T[:c4]  # grid is also [[S(:c4)]]; manually calling N is rarely necessary
+  #     T[:r]  # grid is [[]]
+  # - Arrays of "stepish" values. These are used as the contents of a slot; the
+  #   values in an array will be grouped together into a slot in the track. For
+  #   example:
+  #     T[[:b1, :c1], :a1, :r, :d1]
+  #     # grid is [ [S(:b1), S(:c1)], [S(:a1)], [], [S(:d1)] ]
   #
-  #     T([:c4, :r, [:c5, S(:d5, gate: 0.1)]])
-  #     # grid is [ [S(:c4)], [], [S(:c5), S(:d5, gate: 0.1)] ]
+  #     T[[:c5, S(:d5, gate: 0.1)], :c4, :r]
+  #     # grid is [ [S(:c5), S(:d5, gate: 0.1)], [S(:c4)], [] ]
   #
-  # In the end, the grid conversion should be relatively natural. You can pass a
-  # single note-like value or {Step} to get a single-slot track. Or, if you pass
-  # an array, single values will get their own slot and values grouped into a
-  # subarray will share a slot.
+  # In the end, the grid conversion should be relatively natural. Non-array
+  # value will get their own slot, and values grouped into an array will share a
+  # slot. Note-like values will be converted to default {Step}s.
   #
   # It is never necessary to use actual {MIDINote} instances when constructing a
   # Track - you can just use the symbols, strings, or note numbers directly.
@@ -89,6 +78,7 @@ class Track < TrackBase
   # need to specify a non-default velocity or gate.
   #
   # Tracks must have at least one slot, though that slot may be empty (a rest).
+  # So, `T[]` without any arguments is an error.
   #
   # A single slot cannot contain more than one step with the same {Step#note
   # note}. If that would happen, the step with the highest {Step#gate gate} is
@@ -109,20 +99,20 @@ class Track < TrackBase
   # As an alternative to {#scale}, you can return a new Track with all steps
   # snapped to a scale using the {#snap_to_scale} method.
   #
-  # @param gridish [Array<Array<Step, String, Symbol, Integer>, Step, String,
-  #   Symbol, Integer, nil, :r, :rest>, Step, String, Symbol, Integer, nil, :r,
-  #   :rest] Defines the grid for the new track; see above.
+  # @param gridish [Array<Step, String, Symbol, Integer>, Step, String,
+  #   Symbol, Integer, nil, :r, :rest] Defines the grid for the new track; see
+  #   above.
   # @param granularity [NoteLength, Number, Symbol] The {#granularity} for the
   #   new track. Can be a {NoteLength} or a value understood by
   #   {NoteLength.new}.
   # @param timescale [Number] The {#timescale} for the new track.
   # @param scale [Scale, nil] The {#scale} for the new track; see above.
-  def initialize(gridish, granularity: NoteLength::Eighth, scale: nil, timescale: 1)
+  def initialize(*gridish, granularity: NoteLength::Eighth, scale: nil, timescale: 1)
     # Track itself does basically nothing with the scale; it's all handled by
     # the Player.
     @scale = scale
 
-    super(gridish, granularity: granularity, timescale: timescale)
+    super(*gridish, granularity: granularity, timescale: timescale)
   end
 
   # Constructs a Track that arpeggiates the given notes. A {Step} will be
@@ -140,12 +130,12 @@ class Track < TrackBase
   # @example
   #   Track.arp([:a1, :b1, :c1], :twouptwodown)
   #   # is equivalent to
-  #   T([:c1, :c1, :a1, :a1, :b1, :b1, :a1, :a1])
+  #   T[:c1, :c1, :a1, :a1, :b1, :b1, :a1, :a1]
   #
   # @example
   #   Track.arp([:a1, :b1, :c1], :updown, pulses: 4, length: 9)
   #   # is equivalent to
-  #   T([:c1, :r, :r, :a1, :r, :b1, :r, :a1, :r])
+  #   T[:c1, :r, :r, :a1, :r, :b1, :r, :a1, :r]
   #   # The notes from the arpeggiation (:c1, :a1, :b1, :a1) were spread over
   #   # 4 beats in 9 slots, according to a Euclidean rhythm.
   #
@@ -212,9 +202,9 @@ class Track < TrackBase
   # @example
   #   Track.isorhythm([:a1, :b2, :c3], [1, 0.5, 0, 0.25])
   #   # is equivalent to
-  #   T([:a1, S(:a1, gate: 0.5), :r, S(:b2, gate: 0.25),
-  #      :c3, S(:c3, gate: 0.5), :r, S(:a1, gate: 0.25),
-  #      :b2, S(:b2, gate: 0.5), :r, S(:c3, gate: 0.25)])
+  #   T[:a1, S(:a1, gate: 0.5), :r, S(:b2, gate: 0.25),
+  #     :c3, S(:c3, gate: 0.5), :r, S(:a1, gate: 0.25),
+  #     :b2, S(:b2, gate: 0.5), :r, S(:c3, gate: 0.25)]
   #   # The gates array represents 2 runs, and each of those runs is assigned
   #   # the same note. The rhythm defined by the gates was repeated 3 times
   #   # while cycling through the notes, so that every note was used and the
@@ -257,7 +247,7 @@ class Track < TrackBase
         Step.new(:c4, gate: g)
       end
     end
-    hit_track = Track.new(hit_grid, granularity: granularity, timescale: timescale)
+    hit_track = new(*hit_grid, granularity: granularity, timescale: timescale)
 
     # TODO: make these methods public so we don't have to call them with send.
     run_count = 0
@@ -306,7 +296,7 @@ class Track < TrackBase
   # The resulting array is suitable for use with {.isorhythm}.
   #
   # @example
-  #   T([:c4, S(:c4, 0.1), :r]).gates
+  #   T[:c4, S(:c4, 0.1), :r].gates
   #   # is equal to
   #   [1, 0.1, 0]
   #
@@ -383,16 +373,16 @@ class Track < TrackBase
   # It is an error to attempt to expand a track with 64th-note granularity.
   #
   # @example
-  #   t = T([S(:a1, gate: 0.25),
-  #          S(:b1, gate: 0.5),
-  #          S(:c1, gate: 0.75),
-  #          :d1], granularity: :eighth)
+  #   t = T[S(:a1, gate: 0.25),
+  #         S(:b1, gate: 0.5),
+  #         S(:c1, gate: 0.75),
+  #         :d1, granularity: :eighth]
   #   u = t.expand
   #   # u is equivalent to
-  #   T([S(:a1, gate: 0.5), :r,
-  #      :b1, :r,
-  #      :c1, S(:c1, gate: 0.5),
-  #      :d1, :d1], granularity: :sixteenth)
+  #   T[S(:a1, gate: 0.5), :r,
+  #     :b1, :r,
+  #     :c1, S(:c1, gate: 0.5),
+  #     :d1, :d1, granularity: :sixteenth]
   #   # There are now twice as many slots and the granularity has doubled. But
   #   # to keep things sounding the same, the gates on all steps have also
   #   # doubled, which in some cases resulted a single step expanding to a tie.
@@ -478,16 +468,16 @@ class Track < TrackBase
   # It is an error to attempt to condense a track with whole-note granularity.
   #
   # @example
-  #   t = T([S(:a1, gate: 0.5), :r,
-  #          :b1, :r,
-  #          :c1, S(:c1, gate: 0.5),
-  #          :d1, :d1], granularity: :sixteenth)
+  #   t = T[S(:a1, gate: 0.5), :r,
+  #         :b1, :r,
+  #         :c1, S(:c1, gate: 0.5),
+  #         :d1, :d1, granularity: :sixteenth]
   #   u = t.condense
   #   # u is equivalent to
-  #   T([S(:a1, gate: 0.25),
-  #      S(:b1, gate: 0.5),
-  #      S(:c1, gate: 0.75),
-  #      :d1], granularity: :eighth)
+  #   T[S(:a1, gate: 0.25),
+  #     S(:b1, gate: 0.5),
+  #     S(:c1, gate: 0.75),
+  #     :d1, granularity: :eighth]
   #   # The number of slots and granularity have both been halved, but so has
   #   # the gate of each step or pair of tied steps. In some cases that resulted
   #   # in two tied steps becoming one.
@@ -512,7 +502,7 @@ class Track < TrackBase
   # to return a new Track with the given {#granularity granularity}.
   #
   # @example
-  #   t = T([:a1, :b1], granularity: :eighth)
+  #   t = T[:a1, :b1, granularity: :eighth]
   #
   #   t.regrain(:thirtysecond)
   #   # is equivalent to
@@ -554,9 +544,9 @@ class Track < TrackBase
   # Return a new Track where each step has the given {Step#gate gate}.
   #
   # @example
-  #   T([:c4, S(:d4, gate: 0.5), :r]).gate(0.75)
+  #   T[:c4, S(:d4, gate: 0.5), :r].gate(0.75)
   #   # is equivalent to
-  #   T([S(:c5, gate: 0.75), S(:d4, gate: 0.75), :r])
+  #   T[S(:c5, gate: 0.75), S(:d4, gate: 0.75), :r]
   #
   # @param new_gate [Number]
   # @return [Track]
@@ -573,9 +563,9 @@ class Track < TrackBase
   # factor.
   #
   # @example
-  #   T([:c4, S(:d4, gate: 0.5), :r]).scale_gate(0.5)
+  #   T[:c4, S(:d4, gate: 0.5), :r].scale_gate(0.5)
   #   # is equivalent to
-  #   T([S(:c5, gate: 0.5), S(:d4, gate: 0.25), :r])
+  #   T[S(:c5, gate: 0.5), S(:d4, gate: 0.25), :r]
   #
   # @param factor [Number]
   # @return [Track]
@@ -589,9 +579,9 @@ class Track < TrackBase
   # specified in the MIDI range of 0 - 127.
   #
   # @example
-  #   T([:c4, S(:d4, vel: 20), :r]).vel(63)
+  #   T[:c4, S(:d4, vel: 20), :r].vel(63)
   #   # is equivalent to
-  #   T([S(:c5, vel: 63), S(:d4, vel: 63), :r])
+  #   T[S(:c5, vel: 63), S(:d4, vel: 63), :r]
   #
   # @param new_vel [Number]
   # @return [Track]
@@ -609,9 +599,9 @@ class Track < TrackBase
   # specified as a value between 0 and 1 inclusive.
   #
   # @example
-  #   T([:c4, S(:d4, vel: 20), :r]).velf(0.5)
+  #   T[:c4, S(:d4, vel: 20), :r].velf(0.5)
   #   # is equivalent to
-  #   T([S(:c5, vel: 63), S(:d4, vel: 63), :r])
+  #   T[S(:c5, vel: 63), S(:d4, vel: 63), :r]
   #
   # @param new_velf [Number]
   # @return [Track]
@@ -628,9 +618,9 @@ class Track < TrackBase
   # given factor.
   #
   # @example
-  #   T([:c4, S(:d4, vel: 20), :r]).scale_vel(0.5)
+  #   T[:c4, S(:d4, vel: 20), :r].scale_vel(0.5)
   #   # is equivalent to
-  #   T([S(:c5, vel: 63), S(:d4, vel: 10), :r])
+  #   T[S(:c5, vel: 63), S(:d4, vel: 10), :r]
   #
   # @param factor [Number]
   # @return [Track]
@@ -647,9 +637,9 @@ class Track < TrackBase
   # to the given value.
   #
   # @example
-  #   T([:a1, :b2, :c3]).with_octave(5)
+  #   T[:a1, :b2, :c3].with_octave(5)
   #   # is equivalent to
-  #   T([:a5, :b5, :c5])
+  #   T[:a5, :b5, :c5]
   #
   # @param new_octave [Integer]
   # @return [Track]
@@ -668,9 +658,9 @@ class Track < TrackBase
   # by the given amount.
   #
   # @example
-  #   T([:a1, :b2, :c3]).shift_octave(2)
+  #   T[:a1, :b2, :c3].shift_octave(2)
   #   # is equivalent to
-  #   T([:a3, :b4, :c5])
+  #   T[:a3, :b4, :c5]
   #
   # @param shift [Integer]
   # @return [Track]
@@ -711,9 +701,9 @@ class Track < TrackBase
   # is shifted by a random value in the given range.
   #
   # @example
-  #   T([:a4, :b4, :c4, :d4]).rand_octave(-2..1, p: 0.75)
+  #   T[:a4, :b4, :c4, :d4].rand_octave(-2..1, p: 0.75)
   #   # might return a track equivalent to
-  #   T([:a2, :b4, :c5, :d3])
+  #   T[:a2, :b4, :c5, :d3]
   #
   # @param range [Integer, Range] Defines the range of allowed octave shifts.
   #   If an integer is passed, the range `-range..range` is used.
@@ -748,9 +738,9 @@ class Track < TrackBase
   # number of semitones.
   #
   # @example
-  #   T([:a1, :b1, :r, :c1]).transpose(7)
+  #   T[:a1, :b1, :r, :c1].transpose(7)
   #   # is equivalent to
-  #   [:e2, :fs2, :r, :g1]
+  #   T[:e2, :fs2, :r, :g1]
   #
   # @param shift [Integer]
   # @return [Track]
@@ -792,9 +782,9 @@ class Track < TrackBase
   #
   # @example
   #   notes = [:c4, :e4, :g4, :b4]
-  #   T([:e4, :b3, :gb4, :bs4]).snap_to_notes(notes)
+  #   T[:e4, :b3, :gb4, :bs4].snap_to_notes(notes)
   #   # is equivalent to
-  #   T([:e4, :c4, :g4, :b4])
+  #   T[:e4, :c4, :g4, :b4]
   #
   # @param notes [Array<MIDINote, String, Symbol, Integer>] The notes which
   #   steps will be snapped. Elements can be {MIDINote}s or anything understood
@@ -949,10 +939,10 @@ class Track < TrackBase
   # Returns a new Track that fades in linearly, via {Step#vel velocity}.
   #
   # @example
-  #   T([:a1, :b1, :c1, :d1, :e1, :f1]).fade_in(0.1, start: 0.5)
+  #   T[:a1, :b1, :c1, :d1, :e1, :f1].fade_in(0.1, start: 0.5)
   #   # is equivalent to
-  #   T([S(:a1, vel: 12), S(:b1, vel: 12), S(:c1, vel: 12),
-  #      S(:d1, vel: 35), S(:e1, vel: 81), :f1])
+  #   T[S(:a1, vel: 12), S(:b1, vel: 12), S(:c1, vel: 12),
+  #     S(:d1, vel: 35), S(:e1, vel: 81), :f1]
   #   # Until the halfway point (start = 0.5), steps were given the `min`
   #   # velocity (0.1 * 127 = 12). After that point, velocities increase
   #   # linearly to the `max` (1 by default = 127).
@@ -996,10 +986,10 @@ class Track < TrackBase
   # Returns a new Track that fades out linearly, via {Step#vel velocity}.
   #
   # @example
-  #   T([:a1, :b1, :c1, :d1, :e1, :f1]).fade_out(1, 0.1, start: 0.5)
+  #   T[:a1, :b1, :c1, :d1, :e1, :f1].fade_out(1, 0.1, start: 0.5)
   #   # is equivalent to
-  #   T([:a1, :b1, :c1,
-  #      S(:d1, vel: 104), S(:e1, vel: 58), S(:f1, vel: 12)])
+  #   T[:a1, :b1, :c1,
+  #     S(:d1, vel: 104), S(:e1, vel: 58), S(:f1, vel: 12)]
   #   # Until the halfway point (start = 0.5), steps were given the `max`
   #   # velocity (1 * 127 = 127). After that point, velocities decrease
   #   # linearly to the `min` (0.1 * 127 = 12).
@@ -1172,9 +1162,9 @@ class Track < TrackBase
   # runs of tied steps with the same {Step#note note}.
   #
   # @example
-  #   T([:c4, :c4, :c4, :r, :d4, S(:d4, gate: 0.5)]).taper_gate(0.25)
+  #   T[:c4, :c4, :c4, :r, :d4, S(:d4, gate: 0.5)].taper_gate(0.25)
   #   # is equivalent to
-  #   T([:c4, :c4, S(:c4, gate: 0.25), :r, :d4, S(:d4, gate: 0.25)])
+  #   T[:c4, :c4, S(:c4, gate: 0.25), :r, :d4, S(:d4, gate: 0.25)]
   #   # The final step in both runs had its gate set to 0.25.
   #
   # @param trailing_gate [Number] The gate to apply to the final step in a run.
@@ -1238,12 +1228,12 @@ class Track < TrackBase
   # non-matching steps, and the second contains the matching ones.
   #
   # @example
-  #   t = T([[:c1, :c2], :d2, :e2, :f2])
+  #   t = T[[:c1, :c2], :d2, :e2, :f2]
   #   u, v = t.extract_note(:c)
   #   # u is equivalent to
-  #   T([:r, :d2, :e2, :f2])
+  #   T[:r, :d2, :e2, :f2]
   #   # and v is
-  #   T([[:c1, :c2], :r, :r, :r])
+  #   T[[:c1, :c2], :r, :r, :r]
   #
   # @param note [MIDINote, String, Symbol, Integer] The note or pitch class to
   #   match. See {MIDINote#match?} for precise rules.
@@ -1294,23 +1284,23 @@ class Track < TrackBase
   # `repl` may be nil, :r, or :rest to remove the targeted steps.
   #
   # @example
-  #   t = T([:c4, [:d1, :d2], :c3])
+  #   t = T[:c4, [:d1, :d2], :c3]
   #
   #   u = t.sub_note(:d2, :f9)
   #   # u is equivalent to
-  #   T([:c4, [:d1, :f9], :c3])
+  #   T[:c4, [:d1, :f9], :c3]
   #
   #   v = t.sub_note(:d, :f9)  # changes all Ds
   #   # v is equivalent to
-  #   T([:c4, [:f9, :f9], :c3])
+  #   T[:c4, [:f9, :f9], :c3]
   #
   #   w = t.sub_note(:d, :f)  # changes all Ds, but leaves octaves intact
   #   # w is equivalent to
-  #   T([:c4, [:f1, :f2], :c3])
+  #   T[:c4, [:f1, :f2], :c3]
   #
   #   x = t.sub_note(:c, :r)  # removes all Cs
   #   # x is equivalent to
-  #   T([:r, [:d1, :d2], :r])
+  #   T[:r, [:d1, :d2], :r]
   #
   # @param target [MIDINote, Symbol, String, Integer] Defines the notes to
   #   target; see above.
@@ -1429,13 +1419,13 @@ class Track < TrackBase
   # return determines the steps in the corresponding slot in a new CCTrack.
   #
   # @example
-  #   t = T([:a1, :c2, :c3])
+  #   t = T[:a1, :c2, :c3]
   #   cct = t.to_cc do |slot, slot_idx|
   #     next :r if slot.empty?
   #     slot.first.note.pitch_class == :c ? CC(127, 10 * slot_idx) : nil
   #   end
   #   # cct is equivalent to
-  #   CCT([:r, CC(127, 10), CC(127, 20)])
+  #   CCT[:r, CC(127, 10), CC(127, 20)]
   #
   # @yieldparam slot [Array<Step>] A slot in this track.
   # @yieldparam slot_idx [Integer] (optional) The index of the slot in this
@@ -1486,7 +1476,7 @@ class Track < TrackBase
       end
     end
 
-    CCTrack.new(new_grid, granularity: @granularity, timescale: @timescale)
+    CCTrack.new(*new_grid, granularity: @granularity, timescale: @timescale)
   end
 
   alias cc to_cc
@@ -1499,13 +1489,13 @@ class Track < TrackBase
   # a new CCTrack.
   #
   # @example
-  #   t = T([:a1, :r, :b1, :c1, :r])
+  #   t = T[:a1, :r, :b1, :c1, :r]
   #   cct = t.to_simple_cc(127) do |slot, _, pct|
   #     next :r if slot.empty?
   #     127 * pct
   #   end
   #   # cct is equivalent to
-  #   CCT([CC(127, 0), :r, CC(127, 63), CC(127, 95), :r])
+  #   CCT[CC(127, 0), :r, CC(127, 63), CC(127, 95), :r]
   #
   # @yieldparam slot [Array<Step>] A slot in this track.
   # @yieldparam slot_idx [Integer] (optional) The index of the slot in this
@@ -1694,3 +1684,7 @@ class Track < TrackBase
     kwargs
   end
 end
+
+# An alias for the {Track} class. You can easily make a new instance using the
+# {Track.initialize []} method, like `T[:c4, :d4]`.
+T = Track

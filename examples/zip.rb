@@ -9,7 +9,7 @@ init_spi_seq
 
 # This is a variation on an example in the readme.
 
-t = T(chord(:fs3, :major)).gate(0.5)
+t = T[*chord(:fs3, :major)].gate(0.5)
 
 # Interleave the track with itself in reverse, with a shorter gate and shifted to the left.
 t = t.zip(t.reverse.gate(0.25).shl)

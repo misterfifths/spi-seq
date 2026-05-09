@@ -20,7 +20,7 @@ class TrackGridTest < Test::Unit::TestCase
   end
 
   def test_mutate_each_slot
-    t = T([:a1, [:b2, :b3], :c3])
+    t = T[:a1, [:b2, :b3], :c3]
 
     assert_mutate_slots(t, [[:f9], [:f9], [:f9]]) { |_| :f9 }
     assert_mutate_slots(t, [[:f9], [:f9], [:f9]]) { |_, _| :f9 }
@@ -58,36 +58,36 @@ class TrackGridTest < Test::Unit::TestCase
   def test_append
     assert_merge_strictness :+
 
-    assert_grid T(:c4) + T(:d4), [[:c4], [:d4]]
-    assert_grid T(:c4) + :d4, [[:c4], [:d4]]
-    assert_grid T(:c4) + Track.rest(2), [[:c4], [], []]
-    assert_grid T(:c4) + :r, [[:c4], []]
-    assert_grid T(:c4) + [:r, [:d5, :e5]], [[:c4], [], [:d5, :e5]]
+    assert_grid T[:c4] + T[:d4], [[:c4], [:d4]]
+    assert_grid T[:c4] + :d4, [[:c4], [:d4]]
+    assert_grid T[:c4] + Track.rest(2), [[:c4], [], []]
+    assert_grid T[:c4] + :r, [[:c4], []]
+    assert_grid T[:c4] + [:r, [:d5, :e5]], [[:c4], [], [:d5, :e5]]
 
-    assert_gt T(:c4, granularity: :whole, timescale: 2) + T(:c4, granularity: :whole, timescale: 2), NoteLength::Whole, 2
+    assert_gt T[:c4, granularity: :whole, timescale: 2] + T[:c4, granularity: :whole, timescale: 2], NoteLength::Whole, 2
   end
 
   def test_merge
     assert_merge_strictness :|
 
-    assert_grid T(:c4) | T(:d4), [[:c4, :d4]]
-    assert_grid T(:c4) | :d4, [[:c4, :d4]]
-    assert_grid T(:c4) | [:d4], [[:c4, :d4]]
-    assert_grid T(:c4) | T(:c4), [[:c4]]  # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
-    assert_grid T([:r, :d4]) | T([:c4, :r]), [[:c4], [:d4]]
-    assert_grid T([:r, :d4]) | [:c4, :r], [[:c4], [:d4]]
-    assert_grid T([[:a1, :b2], [:d4, :e5]]) | T([:c3, :f6]), [[:a1, :b2, :c3], [:d4, :e5, :f6]]
+    assert_grid T[:c4] | T[:d4], [[:c4, :d4]]
+    assert_grid T[:c4] | :d4, [[:c4, :d4]]
+    assert_grid T[:c4] | [:d4], [[:c4, :d4]]
+    assert_grid T[:c4] | T[:c4], [[:c4]]  # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
+    assert_grid T[:r, :d4] | T[:c4, :r], [[:c4], [:d4]]
+    assert_grid T[:r, :d4] | [:c4, :r], [[:c4], [:d4]]
+    assert_grid T[[:a1, :b2], [:d4, :e5]] | T[:c3, :f6], [[:a1, :b2, :c3], [:d4, :e5, :f6]]
 
     # Differing lengths: the result should be the length of the longest track.
-    assert_grid T(:c4) | T([:d4, :f4]), [[:c4, :d4], [:f4]]
-    assert_grid T([:d4, :f4]) | T(:c4), [[:c4, :d4], [:f4]]
-    assert_grid T([:d4, :f4]) | :c4, [[:c4, :d4], [:f4]]
-    assert_grid T([:d4, :f4]) | [:c4, :g4], [[:c4, :d4], [:f4, :g4]]
-    assert_grid T(:c4) | Track.rest(5), [[:c4], [], [], [], []]
+    assert_grid T[:c4] | T[:d4, :f4], [[:c4, :d4], [:f4]]
+    assert_grid T[:d4, :f4] | T[:c4], [[:c4, :d4], [:f4]]
+    assert_grid T[:d4, :f4] | :c4, [[:c4, :d4], [:f4]]
+    assert_grid T[:d4, :f4] | [:c4, :g4], [[:c4, :d4], [:f4, :g4]]
+    assert_grid T[:c4] | Track.rest(5), [[:c4], [], [], [], []]
   end
 
   def test_grouped_merge
-    t = T([:a1, :b2, :c3, :d4, :e5, :f6])
+    t = T[:a1, :b2, :c3, :d4, :e5, :f6]
 
     # Even division
     assert_grid t.group(1), [[:a1], [:b2], [:c3], [:d4], [:e5], [:f6]]
@@ -107,71 +107,71 @@ class TrackGridTest < Test::Unit::TestCase
   def test_zip
     assert_merge_strictness :zip
 
-    t = T([:a1, :b2, :c3, :d4])
+    t = T[:a1, :b2, :c3, :d4]
 
-    assert_grid t.zip(T(:f6)), [[:a1], [:f6], [:b2], [:f6], [:c3], [:f6], [:d4], [:f6]]
+    assert_grid t.zip(T[:f6]), [[:a1], [:f6], [:b2], [:f6], [:c3], [:f6], [:d4], [:f6]]
     assert_grid t.zip(:f6), [[:a1], [:f6], [:b2], [:f6], [:c3], [:f6], [:d4], [:f6]]
     assert_grid t.zip([:f6]), [[:a1], [:f6], [:b2], [:f6], [:c3], [:f6], [:d4], [:f6]]
     assert_grid t.zip([[:f6]]), [[:a1], [:f6], [:b2], [:f6], [:c3], [:f6], [:d4], [:f6]]
 
-    assert_grid t.zip(T(:f6), cycle: false), [[:a1], [:f6], [:b2], [], [:c3], [], [:d4], []]
-    assert_grid t.zip(T(:f6), cycle: false, pad_with_rests: false), [[:a1], [:f6], [:b2], [:c3], [:d4]]
+    assert_grid t.zip(T[:f6], cycle: false), [[:a1], [:f6], [:b2], [], [:c3], [], [:d4], []]
+    assert_grid t.zip(T[:f6], cycle: false, pad_with_rests: false), [[:a1], [:f6], [:b2], [:c3], [:d4]]
 
-    assert_grid t.zip(T([:f6, :g6])), [[:a1], [:f6], [:b2], [:g6], [:c3], [:f6], [:d4], [:g6]]
-    assert_grid t.zip(T([:f6, :g6]), cycle: false), [[:a1], [:f6], [:b2], [:g6], [:c3], [], [:d4], []]
-    assert_grid t.zip(T([:f6, :g6]), cycle: false, pad_with_rests: false), [[:a1], [:f6], [:b2], [:g6], [:c3], [:d4]]
+    assert_grid t.zip(T[:f6, :g6]), [[:a1], [:f6], [:b2], [:g6], [:c3], [:f6], [:d4], [:g6]]
+    assert_grid t.zip(T[:f6, :g6], cycle: false), [[:a1], [:f6], [:b2], [:g6], [:c3], [], [:d4], []]
+    assert_grid t.zip(T[:f6, :g6], cycle: false, pad_with_rests: false), [[:a1], [:f6], [:b2], [:g6], [:c3], [:d4]]
   end
 
   def test_grouped_zip
     assert_merge_strictness :gzip, 1, 1
 
-    t = T([:a1, :b2, :c3, :d4])
+    t = T[:a1, :b2, :c3, :d4]
 
-    assert_grid t.gzip(T(:f6), 1, 1), [[:a1], [:f6], [:b2], [:f6], [:c3], [:f6], [:d4], [:f6]]
+    assert_grid t.gzip(T[:f6], 1, 1), [[:a1], [:f6], [:b2], [:f6], [:c3], [:f6], [:d4], [:f6]]
     assert_grid t.gzip(:f6, 1, 1), [[:a1], [:f6], [:b2], [:f6], [:c3], [:f6], [:d4], [:f6]]
     assert_grid t.gzip([:f6], 1, 1), [[:a1], [:f6], [:b2], [:f6], [:c3], [:f6], [:d4], [:f6]]
     assert_grid t.gzip([[:f6]], 1, 1), [[:a1], [:f6], [:b2], [:f6], [:c3], [:f6], [:d4], [:f6]]
-    assert_grid t.gzip(T(:f6), 1, 1, cycle: false), [[:a1], [:f6], [:b2], [], [:c3], [], [:d4], []]
-    assert_grid t.gzip(T(:f6), 1, 1, cycle: false, pad_with_rests: false), [[:a1], [:f6], [:b2], [:c3], [:d4]]
+    assert_grid t.gzip(T[:f6], 1, 1, cycle: false), [[:a1], [:f6], [:b2], [], [:c3], [], [:d4], []]
+    assert_grid t.gzip(T[:f6], 1, 1, cycle: false, pad_with_rests: false), [[:a1], [:f6], [:b2], [:c3], [:d4]]
 
-    assert_grid t.gzip(T(:f6), 2, 1), [[:a1], [:b2], [:f6], [:c3], [:d4], [:f6]]
-    assert_grid t.gzip(T(:f6), 2, 1, cycle: false), [[:a1], [:b2], [:f6], [:c3], [:d4], []]
-    assert_grid t.gzip(T(:f6), 2, 1, cycle: false, pad_with_rests: false), [[:a1], [:b2], [:f6], [:c3], [:d4]]
+    assert_grid t.gzip(T[:f6], 2, 1), [[:a1], [:b2], [:f6], [:c3], [:d4], [:f6]]
+    assert_grid t.gzip(T[:f6], 2, 1, cycle: false), [[:a1], [:b2], [:f6], [:c3], [:d4], []]
+    assert_grid t.gzip(T[:f6], 2, 1, cycle: false, pad_with_rests: false), [[:a1], [:b2], [:f6], [:c3], [:d4]]
 
-    assert_grid t.gzip(T(:f6), 3, 1), [[:a1], [:b2], [:c3], [:f6], [:d4], [:a1], [:b2], [:f6]]
-    assert_grid t.gzip(T(:f6), 3, 1, cycle: false), [[:a1], [:b2], [:c3], [:f6], [:d4], [], [], []]
-    assert_grid t.gzip(T(:f6), 3, 1, cycle: false, pad_with_rests: false), [[:a1], [:b2], [:c3], [:f6], [:d4]]
+    assert_grid t.gzip(T[:f6], 3, 1), [[:a1], [:b2], [:c3], [:f6], [:d4], [:a1], [:b2], [:f6]]
+    assert_grid t.gzip(T[:f6], 3, 1, cycle: false), [[:a1], [:b2], [:c3], [:f6], [:d4], [], [], []]
+    assert_grid t.gzip(T[:f6], 3, 1, cycle: false, pad_with_rests: false), [[:a1], [:b2], [:c3], [:f6], [:d4]]
 
-    assert_grid t.gzip(T(:f6), 4, 1), [[:a1], [:b2], [:c3], [:d4], [:f6]]
+    assert_grid t.gzip(T[:f6], 4, 1), [[:a1], [:b2], [:c3], [:d4], [:f6]]
 
-    assert_grid t.gzip(T([:f6, :g6]), 1, 1), [[:a1], [:f6], [:b2], [:g6], [:c3], [:f6], [:d4], [:g6]]
-    assert_grid t.gzip(T([:f6, :g6]), 1, 1, cycle: false), [[:a1], [:f6], [:b2], [:g6], [:c3], [], [:d4], []]
-    assert_grid t.gzip(T([:f6, :g6]), 1, 1, cycle: false, pad_with_rests: false), [[:a1], [:f6], [:b2], [:g6], [:c3], [:d4]]
+    assert_grid t.gzip(T[:f6, :g6], 1, 1), [[:a1], [:f6], [:b2], [:g6], [:c3], [:f6], [:d4], [:g6]]
+    assert_grid t.gzip(T[:f6, :g6], 1, 1, cycle: false), [[:a1], [:f6], [:b2], [:g6], [:c3], [], [:d4], []]
+    assert_grid t.gzip(T[:f6, :g6], 1, 1, cycle: false, pad_with_rests: false), [[:a1], [:f6], [:b2], [:g6], [:c3], [:d4]]
 
-    assert_grid t.gzip(T([:f6, :g6]), 2, 1), [[:a1], [:b2], [:f6], [:c3], [:d4], [:g6]]
+    assert_grid t.gzip(T[:f6, :g6], 2, 1), [[:a1], [:b2], [:f6], [:c3], [:d4], [:g6]]
 
-    assert_grid t.gzip(T([:f6, :g6]), 3, 1), [[:a1], [:b2], [:c3], [:f6], [:d4], [:a1], [:b2], [:g6]]
-    assert_grid t.gzip(T([:f6, :g6]), 3, 1, cycle: false), [[:a1], [:b2], [:c3], [:f6], [:d4], [], [], [:g6]]
+    assert_grid t.gzip(T[:f6, :g6], 3, 1), [[:a1], [:b2], [:c3], [:f6], [:d4], [:a1], [:b2], [:g6]]
+    assert_grid t.gzip(T[:f6, :g6], 3, 1, cycle: false), [[:a1], [:b2], [:c3], [:f6], [:d4], [], [], [:g6]]
 
     # Sizes greater than either track
-    assert_grid t.gzip(T(:f6), 6, 1), [[:a1], [:b2], [:c3], [:d4], [:a1], [:b2], [:f6]]
-    assert_grid t.gzip(T(:f6), 6, 1, cycle: false), [[:a1], [:b2], [:c3], [:d4], [], [], [:f6]]
-    assert_grid t.gzip(T(:f6), 6, 1, cycle: false, pad_with_rests: false), [[:a1], [:b2], [:c3], [:d4], [:f6]]
+    assert_grid t.gzip(T[:f6], 6, 1), [[:a1], [:b2], [:c3], [:d4], [:a1], [:b2], [:f6]]
+    assert_grid t.gzip(T[:f6], 6, 1, cycle: false), [[:a1], [:b2], [:c3], [:d4], [], [], [:f6]]
+    assert_grid t.gzip(T[:f6], 6, 1, cycle: false, pad_with_rests: false), [[:a1], [:b2], [:c3], [:d4], [:f6]]
 
-    assert_grid t.gzip(T([:f6, :g6]), 2, 3), [[:a1], [:b2], [:f6], [:g6], [:f6], [:c3], [:d4], [:g6], [:f6], [:g6]]
-    assert_grid t.gzip(T([:f6, :g6]), 2, 3, cycle: false), [[:a1], [:b2], [:f6], [:g6], [], [:c3], [:d4], [], [], []]
-    assert_grid t.gzip(T([:f6, :g6]), 2, 3, cycle: false, pad_with_rests: false), [[:a1], [:b2], [:f6], [:g6], [:c3], [:d4]]
+    assert_grid t.gzip(T[:f6, :g6], 2, 3), [[:a1], [:b2], [:f6], [:g6], [:f6], [:c3], [:d4], [:g6], [:f6], [:g6]]
+    assert_grid t.gzip(T[:f6, :g6], 2, 3, cycle: false), [[:a1], [:b2], [:f6], [:g6], [], [:c3], [:d4], [], [], []]
+    assert_grid t.gzip(T[:f6, :g6], 2, 3, cycle: false, pad_with_rests: false), [[:a1], [:b2], [:f6], [:g6], [:c3], [:d4]]
 
     # Lil guys
-    assert_grid T(:c4).gzip([:d4, :e4], 1, 1), [[:c4], [:d4]]
-    assert_grid T(:c4).gzip([:d4, :e4], 1, 2), [[:c4], [:d4], [:e4]]
-    assert_grid T(:c4).gzip([:d4, :e4], 2, 1), [[:c4], [:c4], [:d4]]
-    assert_grid T(:c4).gzip([:d4, :e4], 2, 1, cycle: false), [[:c4], [], [:d4]]
-    assert_grid T(:c4).gzip([:d4, :e4], 2, 1, cycle: false, pad_with_rests: false), [[:c4], [:d4]]
+    assert_grid T[:c4].gzip([:d4, :e4], 1, 1), [[:c4], [:d4]]
+    assert_grid T[:c4].gzip([:d4, :e4], 1, 2), [[:c4], [:d4], [:e4]]
+    assert_grid T[:c4].gzip([:d4, :e4], 2, 1), [[:c4], [:c4], [:d4]]
+    assert_grid T[:c4].gzip([:d4, :e4], 2, 1, cycle: false), [[:c4], [], [:d4]]
+    assert_grid T[:c4].gzip([:d4, :e4], 2, 1, cycle: false, pad_with_rests: false), [[:c4], [:d4]]
   end
 
   def test_each_cons
-    t = T([:a1, :b2, :c3, :d4])
+    t = T[:a1, :b2, :c3, :d4]
 
     assert_grid t.each_cons(1), [[:a1], [:b2], [:c3], [:d4]]
     assert_grid t.each_cons(1, flatten: false), [[:a1], [:b2], [:c3], [:d4]]
@@ -186,7 +186,7 @@ class TrackGridTest < Test::Unit::TestCase
   end
 
   def test_repeat
-    t = T([:a1, :b2])
+    t = T[:a1, :b2]
 
     assert_raises { t * 0 }
     assert_grid t * 1, t.grid
@@ -195,7 +195,7 @@ class TrackGridTest < Test::Unit::TestCase
   end
 
   def test_cycle_to_length
-    t = T([:a1, :b2, :c3])
+    t = T[:a1, :b2, :c3]
 
     assert_raises { t.cycle_to_length(0) }
     assert_grid t.cycle_to_length(1), [[:a1]]
@@ -207,12 +207,12 @@ class TrackGridTest < Test::Unit::TestCase
   end
 
   def test_compact
-    assert_grid T([:r, :r, :a1, :r, :b2, :r, :r, :c3, :r]).compact, [[:a1], [:b2], [:c3]]
+    assert_grid T[:r, :r, :a1, :r, :b2, :r, :r, :c3, :r].compact, [[:a1], [:b2], [:c3]]
     assert_raises { Track.rest.compact }
   end
 
   def test_trim
-    t = T([:r, :r, :a1, :b2, :r, :c3, :r, :r, :r])
+    t = T[:r, :r, :a1, :b2, :r, :c3, :r, :r, :r]
 
     assert_grid t.ltrim, [[:a1], [:b2], [], [:c3], [], [], []]
     assert_grid t.rtrim, [[], [], [:a1], [:b2], [], [:c3]]
@@ -224,48 +224,48 @@ class TrackGridTest < Test::Unit::TestCase
   end
 
   def test_reverse
-    assert_grid T(:c4).rev, [[:c4]]
-    assert_grid T([:a1, :b2]).rev, [[:b2], [:a1]]
-    assert_grid T([:a1, :r, :b2]).rev, [[:b2], [], [:a1]]
-    assert_grid T([:a1, :r, :b2, :c3]).rev, [[:c3], [:b2], [], [:a1]]
-    assert_grid T([:a1, :r, :b2, [:c3, :d4]]).rev, [[:c3, :d4], [:b2], [], [:a1]]
+    assert_grid T[:c4].rev, [[:c4]]
+    assert_grid T[:a1, :b2].rev, [[:b2], [:a1]]
+    assert_grid T[:a1, :r, :b2].rev, [[:b2], [], [:a1]]
+    assert_grid T[:a1, :r, :b2, :c3].rev, [[:c3], [:b2], [], [:a1]]
+    assert_grid T[:a1, :r, :b2, [:c3, :d4]].rev, [[:c3, :d4], [:b2], [], [:a1]]
   end
 
   def test_mirror
     # Repeats the slot in the middle.
-    assert_grid T(:c4).mirror, [[:c4], [:c4]]
-    assert_grid T([:a1, :b2]).mirror, [[:a1], [:b2], [:b2], [:a1]]
-    assert_grid T([:a1, [:b2, :c3]]).mirror, [[:a1], [:b2, :c3], [:b2, :c3], [:a1]]
-    assert_grid T([:a1, :r]).mirror, [[:a1], [], [], [:a1]]
-    assert_grid T([:a1, :b2, :c3]).mirror, [[:a1], [:b2], [:c3], [:c3], [:b2], [:a1]]
+    assert_grid T[:c4].mirror, [[:c4], [:c4]]
+    assert_grid T[:a1, :b2].mirror, [[:a1], [:b2], [:b2], [:a1]]
+    assert_grid T[:a1, [:b2, :c3]].mirror, [[:a1], [:b2, :c3], [:b2, :c3], [:a1]]
+    assert_grid T[:a1, :r].mirror, [[:a1], [], [], [:a1]]
+    assert_grid T[:a1, :b2, :c3].mirror, [[:a1], [:b2], [:c3], [:c3], [:b2], [:a1]]
   end
 
   def test_reflect
     # Does not repeat the slot in the middle.
-    assert_grid T(:c4).reflect, [[:c4]]
-    assert_grid T([:a1, :b2]).reflect, [[:a1], [:b2], [:a1]]
-    assert_grid T([:a1, [:b2, :c3]]).reflect, [[:a1], [:b2, :c3], [:a1]]
-    assert_grid T([:a1, :r]).reflect, [[:a1], [], [:a1]]
-    assert_grid T([:a1, :b2, :c3]).reflect, [[:a1], [:b2], [:c3], [:b2], [:a1]]
+    assert_grid T[:c4].reflect, [[:c4]]
+    assert_grid T[:a1, :b2].reflect, [[:a1], [:b2], [:a1]]
+    assert_grid T[:a1, [:b2, :c3]].reflect, [[:a1], [:b2, :c3], [:a1]]
+    assert_grid T[:a1, :r].reflect, [[:a1], [], [:a1]]
+    assert_grid T[:a1, :b2, :c3].reflect, [[:a1], [:b2], [:c3], [:b2], [:a1]]
   end
 
   def test_shuffle
-    assert_grid T(:c4).shuffle, [[:c4]]
+    assert_grid T[:c4].shuffle, [[:c4]]
 
     unless ExtApi.in_sonic_pi?  # Not testing Sonic Pi's randomness
       srand 1234
       # Inexplicably, Array.shuffle does nothing immediately after an srand?
-      assert_grid T([:a1, :b2, :c3, :d4]).shuffle, [[:a1], [:b2], [:c3], [:d4]]
-      assert_grid T([:a1, :b2, :c3, :d4]).shuffle, [[:b2], [:c3], [:d4], [:a1]]
+      assert_grid T[:a1, :b2, :c3, :d4].shuffle, [[:a1], [:b2], [:c3], [:d4]]
+      assert_grid T[:a1, :b2, :c3, :d4].shuffle, [[:b2], [:c3], [:d4], [:a1]]
     end
   end
 
   def test_shuffle_filled_slots
-    assert_grid T(:c4).shuffle_filled, [[:c4]]
-    assert_grid T([:c4, :r]).shuffle_filled, [[:c4], []]
+    assert_grid T[:c4].shuffle_filled, [[:c4]]
+    assert_grid T[:c4, :r].shuffle_filled, [[:c4], []]
     assert_grid Track.rest(2).shuffle_filled, [[], []]
 
-    t = T([:a1, :r, :r, :b2, [:c3, :d4]])
+    t = T[:a1, :r, :r, :b2, [:c3, :d4]]
     unless ExtApi.in_sonic_pi?  # Not testing Sonic Pi's randomness
       srand 1234
       # Inexplicably, Array.shuffle does nothing immediately after an srand?
@@ -276,91 +276,91 @@ class TrackGridTest < Test::Unit::TestCase
   end
 
   def test_rotate
-    assert_grid T(:c4).shl, [[:c4]]
-    assert_grid T(:c4).shl(5), [[:c4]]
-    assert_grid T(:c4).shr, [[:c4]]
-    assert_grid T(:c4).shr(5), [[:c4]]
+    assert_grid T[:c4].shl, [[:c4]]
+    assert_grid T[:c4].shl(5), [[:c4]]
+    assert_grid T[:c4].shr, [[:c4]]
+    assert_grid T[:c4].shr(5), [[:c4]]
 
-    assert_grid T([:a1, :b2]).shl, [[:b2], [:a1]]
-    assert_grid T([:a1, :b2]).shl(2), [[:a1], [:b2]]
-    assert_grid T([:a1, :b2]).rotate(2), [[:a1], [:b2]]
-    assert_grid T([:a1, :b2]).shl(3), [[:b2], [:a1]]
-    assert_grid T([:a1, :b2]).shr, [[:b2], [:a1]]
-    assert_grid T([:a1, :b2]).shr(2), [[:a1], [:b2]]
-    assert_grid T([:a1, :b2]).rotate(-2), [[:a1], [:b2]]
-    assert_grid T([:a1, :b2]).shr(3), [[:b2], [:a1]]
+    assert_grid T[:a1, :b2].shl, [[:b2], [:a1]]
+    assert_grid T[:a1, :b2].shl(2), [[:a1], [:b2]]
+    assert_grid T[:a1, :b2].rotate(2), [[:a1], [:b2]]
+    assert_grid T[:a1, :b2].shl(3), [[:b2], [:a1]]
+    assert_grid T[:a1, :b2].shr, [[:b2], [:a1]]
+    assert_grid T[:a1, :b2].shr(2), [[:a1], [:b2]]
+    assert_grid T[:a1, :b2].rotate(-2), [[:a1], [:b2]]
+    assert_grid T[:a1, :b2].shr(3), [[:b2], [:a1]]
 
-    assert_grid T([:a1, :b2, :c3]).shl, [[:b2], [:c3], [:a1]]
-    assert_grid T([:a1, :b2, :c3]).shl(2), [[:c3], [:a1], [:b2]]
-    assert_grid T([:a1, :b2, :c3]).rotate(2), [[:c3], [:a1], [:b2]]
-    assert_grid T([:a1, :b2, :c3]).shl(3), [[:a1], [:b2], [:c3]]
-    assert_grid T([:a1, :b2, :c3]).shl(4), [[:b2], [:c3], [:a1]]
-    assert_grid T([:a1, :b2, :c3]).shr, [[:c3], [:a1], [:b2]]
-    assert_grid T([:a1, :b2, :c3]).shr(2), [[:b2], [:c3], [:a1]]
-    assert_grid T([:a1, :b2, :c3]).rotate(-2), [[:b2], [:c3], [:a1]]
-    assert_grid T([:a1, :b2, :c3]).shr(3), [[:a1], [:b2], [:c3]]
-    assert_grid T([:a1, :b2, :c3]).shr(4), [[:c3], [:a1], [:b2]]
+    assert_grid T[:a1, :b2, :c3].shl, [[:b2], [:c3], [:a1]]
+    assert_grid T[:a1, :b2, :c3].shl(2), [[:c3], [:a1], [:b2]]
+    assert_grid T[:a1, :b2, :c3].rotate(2), [[:c3], [:a1], [:b2]]
+    assert_grid T[:a1, :b2, :c3].shl(3), [[:a1], [:b2], [:c3]]
+    assert_grid T[:a1, :b2, :c3].shl(4), [[:b2], [:c3], [:a1]]
+    assert_grid T[:a1, :b2, :c3].shr, [[:c3], [:a1], [:b2]]
+    assert_grid T[:a1, :b2, :c3].shr(2), [[:b2], [:c3], [:a1]]
+    assert_grid T[:a1, :b2, :c3].rotate(-2), [[:b2], [:c3], [:a1]]
+    assert_grid T[:a1, :b2, :c3].shr(3), [[:a1], [:b2], [:c3]]
+    assert_grid T[:a1, :b2, :c3].shr(4), [[:c3], [:a1], [:b2]]
   end
 
   def test_pad
-    assert_grid T(:c4).left_pad, [[], [:c4]]
-    assert_grid T(:c4).left_pad(2), [[], [], [:c4]]
-    assert_grid T(:c4).right_pad(1), [[:c4], []]
-    assert_grid T(:c4).right_pad(2), [[:c4], [], []]
+    assert_grid T[:c4].left_pad, [[], [:c4]]
+    assert_grid T[:c4].left_pad(2), [[], [], [:c4]]
+    assert_grid T[:c4].right_pad(1), [[:c4], []]
+    assert_grid T[:c4].right_pad(2), [[:c4], [], []]
 
-    assert_grid T([:a1, :b2]).left_pad(2), [[], [], [:a1], [:b2]]
-    assert_grid T([:a1, :b2]).right_pad(2), [[:a1], [:b2], [], []]
+    assert_grid T[:a1, :b2].left_pad(2), [[], [], [:a1], [:b2]]
+    assert_grid T[:a1, :b2].right_pad(2), [[:a1], [:b2], [], []]
   end
 
   def test_space
-    assert_grid T(:c4).space, [[:c4], []]
-    assert_grid T(:c4).space(2), [[:c4], [], []]
+    assert_grid T[:c4].space, [[:c4], []]
+    assert_grid T[:c4].space(2), [[:c4], [], []]
 
-    assert_grid T([:a1, :b2]).space, [[:a1], [], [:b2], []]
-    assert_grid T([:a1, :b2]).space(2), [[:a1], [], [], [:b2], [], []]
+    assert_grid T[:a1, :b2].space, [[:a1], [], [:b2], []]
+    assert_grid T[:a1, :b2].space(2), [[:a1], [], [], [:b2], [], []]
   end
 
   def test_space_every
-    assert_grid T(:c4).space_every(1), [[:c4], []]
-    assert_grid T(:c4).space_every(1, 2), [[:c4], [], []]
-    assert_grid T(:c4).space_every(2), [[:c4], []]
-    assert_grid T(:c4).space_every(2, 2), [[:c4], [], []]
+    assert_grid T[:c4].space_every(1), [[:c4], []]
+    assert_grid T[:c4].space_every(1, 2), [[:c4], [], []]
+    assert_grid T[:c4].space_every(2), [[:c4], []]
+    assert_grid T[:c4].space_every(2, 2), [[:c4], [], []]
 
-    assert_grid T([:a1, :b2, :c3]).space_every(1), [[:a1], [], [:b2], [], [:c3], []]
-    assert_grid T([:a1, :b2, :c3]).space_every(1, 2), [[:a1], [], [], [:b2], [], [], [:c3], [], []]
-    assert_grid T([:a1, :b2, :c3]).space_every(2), [[:a1], [:b2], [], [:c3], []]
-    assert_grid T([:a1, :b2, :c3]).space_every(3), [[:a1], [:b2], [:c3], []]
-    assert_grid T([:a1, :b2, :c3]).space_every(3, 2), [[:a1], [:b2], [:c3], [], []]
-    assert_grid T([:a1, :b2, :c3]).space_every(4), [[:a1], [:b2], [:c3], []]
-    assert_grid T([:a1, :b2, :c3]).space_every(4, 2), [[:a1], [:b2], [:c3], [], []]
+    assert_grid T[:a1, :b2, :c3].space_every(1), [[:a1], [], [:b2], [], [:c3], []]
+    assert_grid T[:a1, :b2, :c3].space_every(1, 2), [[:a1], [], [], [:b2], [], [], [:c3], [], []]
+    assert_grid T[:a1, :b2, :c3].space_every(2), [[:a1], [:b2], [], [:c3], []]
+    assert_grid T[:a1, :b2, :c3].space_every(3), [[:a1], [:b2], [:c3], []]
+    assert_grid T[:a1, :b2, :c3].space_every(3, 2), [[:a1], [:b2], [:c3], [], []]
+    assert_grid T[:a1, :b2, :c3].space_every(4), [[:a1], [:b2], [:c3], []]
+    assert_grid T[:a1, :b2, :c3].space_every(4, 2), [[:a1], [:b2], [:c3], [], []]
   end
 
   def test_drop
-    assert_raises { T(:c4).drop }
-    assert_raises { T([:a1, :a2]).drop(2) }
-    assert_raises { T([:a1, :a2]).drop(5) }
+    assert_raises { T[:c4].drop }
+    assert_raises { T[:a1, :a2].drop(2) }
+    assert_raises { T[:a1, :a2].drop(5) }
 
-    t = T([:a1, :b2, :c3])
+    t = T[:a1, :b2, :c3]
     assert_grid t.drop, [[:b2], [:c3]]
     assert_grid t.drop(1), [[:b2], [:c3]]
     assert_grid t.drop(2), [[:c3]]
   end
 
   def test_drop_last
-    assert_raises { T(:c4).drop_last }
-    assert_raises { T([:a1, :a2]).drop_last(2) }
-    assert_raises { T([:a1, :a2]).drop_last(5) }
+    assert_raises { T[:c4].drop_last }
+    assert_raises { T[:a1, :a2].drop_last(2) }
+    assert_raises { T[:a1, :a2].drop_last(5) }
 
-    t = T([:a1, :b2, :c3])
+    t = T[:a1, :b2, :c3]
     assert_grid t.drop_last, [[:a1], [:b2]]
     assert_grid t.drop_last(1), [[:a1], [:b2]]
     assert_grid t.drop_last(2), [[:a1]]
   end
 
   def test_take
-    assert_raises { T(:c4).take(0) }
+    assert_raises { T[:c4].take(0) }
 
-    t = T([:a1, :b2, :c3])
+    t = T[:a1, :b2, :c3]
     assert_grid t.take(1), [[:a1]]
     assert_grid t.take(2), [[:a1], [:b2]]
     assert_grid t.take(3), [[:a1], [:b2], [:c3]]
@@ -368,11 +368,11 @@ class TrackGridTest < Test::Unit::TestCase
   end
 
   def test_slice
-    assert_grid T(:c4)[0], [[:c4]]
-    assert_grid T(:c4)[-1], [[:c4]]
-    assert_raises { T(:c4)[1] }
+    assert_grid T[:c4][0], [[:c4]]
+    assert_grid T[:c4][-1], [[:c4]]
+    assert_raises { T[:c4][1] }
 
-    t = T([:a1, :b2, :c3])
+    t = T[:a1, :b2, :c3]
     assert_grid t[0], [[:a1]]
     assert_grid t[1], [[:b2]]
     assert_grid t[2], [[:c3]]
@@ -392,13 +392,13 @@ class TrackGridTest < Test::Unit::TestCase
   end
 
   def test_sample
-    assert_raises { T(:c4).sample(0) }
-    assert_grid T(:c4).sample(1), [[:c4]]
-    assert_grid T(:c4).sample(2), [[:c4]]
+    assert_raises { T[:c4].sample(0) }
+    assert_grid T[:c4].sample(1), [[:c4]]
+    assert_grid T[:c4].sample(2), [[:c4]]
 
     unless ExtApi.in_sonic_pi?  # Not testing Sonic Pi's randomness
       srand 1234
-      t = T([:a1, :b2, :r, :c3, :d4])
+      t = T[:a1, :b2, :r, :c3, :d4]
       assert_grid t.sample(5), [[:a1], [:b2], [], [:c3], [:d4]]
       assert_grid t.sample(4), [[:a1], [:b2], [], [:c3]]
       assert_grid t.sample(3), [[:a1], [], [:d4]]
@@ -415,15 +415,15 @@ class TrackGridTest < Test::Unit::TestCase
   end
 
   def test_drop_every
-    assert_raises { T(:c4).dropout }
-    assert_raises { T(:c4).dropout(0) }
-    assert_raises { T(:c4).dropout(-1) }
-    assert_raises { T(:c4).dropout(1, 0) }
-    assert_raises { T(:c4).dropout("nope") }
+    assert_raises { T[:c4].dropout }
+    assert_raises { T[:c4].dropout(0) }
+    assert_raises { T[:c4].dropout(-1) }
+    assert_raises { T[:c4].dropout(1, 0) }
+    assert_raises { T[:c4].dropout("nope") }
 
-    assert_grid T(:c4).dropout(1), [[]]
+    assert_grid T[:c4].dropout(1), [[]]
 
-    t = T([:a1, :b2, :c3, :d4])
+    t = T[:a1, :b2, :c3, :d4]
     assert_grid t.dropout(1), [[], [], [], []]
     assert_grid t.dropout(2), [[:a1], [], [:c3], []]
     assert_grid t.dropout(3), [[:a1], [:b2], [], [:d4]]
@@ -431,19 +431,19 @@ class TrackGridTest < Test::Unit::TestCase
     assert_grid t.dropout(5), [[:a1], [:b2], [:c3], [:d4]]
     assert_grid t.dropout(10), [[:a1], [:b2], [:c3], [:d4]]
 
-    t = T([:a1, :r, :b2, :r, :r, :c3])
+    t = T[:a1, :r, :b2, :r, :r, :c3]
     assert_grid t.dropout(1, skip_empty: true), [[], [], [], [], [], []]
     assert_grid t.dropout(2, skip_empty: true), [[:a1], [], [], [], [], [:c3]]
     assert_grid t.dropout(3, skip_empty: true), [[:a1], [], [:b2], [], [], []]
     assert_grid t.dropout(4, skip_empty: true), [[:a1], [], [:b2], [], [], [:c3]]
 
     # Multiple gaps
-    t = T([:a1] * 12)
+    t = T[*[:a1] * 12]
     assert_grid t.dropout(1, 3), [[], [:a1], [:a1], [], [], [:a1], [:a1], [], [], [:a1], [:a1], []]
     assert_grid t.dropout(2, 4), [[:a1], [], [:a1], [:a1], [:a1], [], [:a1], [], [:a1], [:a1], [:a1], []]
     assert_grid t.dropout(2, 3, 4), [[:a1], [], [:a1], [:a1], [], [:a1], [:a1], [:a1], [], [:a1], [], [:a1]]
 
-    t = T([:a1, :r] * 6)
+    t = T[*[:a1, :r] * 6]
     assert_grid t.dropout(1, 3, skip_empty: true),
       [
         [], [],    # drop (1), rest
@@ -456,7 +456,7 @@ class TrackGridTest < Test::Unit::TestCase
   end
 
   def test_drop_x_of_y
-    t = T([:a1] * 12)
+    t = T[*[:a1] * 12]
 
     assert_raises { t.gdrop(1, 0) }
     assert_raises { t.gdrop(0, 1) }
@@ -476,7 +476,7 @@ class TrackGridTest < Test::Unit::TestCase
     # this is useless but shouldn't be an error
     assert_grid t.gdrop(1, 1), [[]] * 12
 
-    t = T([:a1, :r] * 6)
+    t = T[*[:a1, :r] * 6]
     assert_grid t.gdrop(2, 3, skip_empty: true),
       [
         [:a1], [],
@@ -486,10 +486,10 @@ class TrackGridTest < Test::Unit::TestCase
   end
 
   def test_rand_dropout
-    assert_grid T(:c4).rdropout(1), [[]]
-    assert_grid T(:c4).rdropout(0), [[:c4]]
+    assert_grid T[:c4].rdropout(1), [[]]
+    assert_grid T[:c4].rdropout(0), [[:c4]]
 
-    t = T([:a1, :b2, :c3, :d4])
+    t = T[:a1, :b2, :c3, :d4]
     assert_grid t.rdropout(1), [[], [], [], []]
     assert_grid t.rdropout(0), [[:a1], [:b2], [:c3], [:d4]]
 
@@ -500,10 +500,10 @@ class TrackGridTest < Test::Unit::TestCase
   end
 
   def test_replace_slot
-    assert_grid T(:c4).set_slot(0, [:d5, :e5]), [[:d5, :e5]]
-    assert_raises { T(:c4).set_slot(2, [:d5]) }
+    assert_grid T[:c4].set_slot(0, [:d5, :e5]), [[:d5, :e5]]
+    assert_raises { T[:c4].set_slot(2, [:d5]) }
 
-    t = T([:a1, :b2, :c3])
+    t = T[:a1, :b2, :c3]
     assert_grid t.set_slot(0, [:f9]), [[:f9], [:b2], [:c3]]
     assert_grid t.set_slot(1, [:f9]), [[:a1], [:f9], [:c3]]
     assert_grid t.set_slot(2, [:f9]), [[:a1], [:b2], [:f9]]
@@ -516,7 +516,7 @@ class TrackGridTest < Test::Unit::TestCase
   end
 
   def test_clear_slot
-    t = T([:a1, [:b2, :c3], :r])
+    t = T[:a1, [:b2, :c3], :r]
     assert_grid t.clear_slot(0), [[], [:b2, :c3], []]
     assert_grid t.clear_slot(1), [[:a1], [], []]
     assert_grid t.clear_slot(2), [[:a1], [:b2, :c3], []]
@@ -524,10 +524,10 @@ class TrackGridTest < Test::Unit::TestCase
   end
 
   def test_append_slot
-    assert_grid T(:c4).append_slot(0, [:d5, :e5]), [[:c4, :d5, :e5]]
-    assert_raises { T(:c4).append_slot(2, [:d5]) }
+    assert_grid T[:c4].append_slot(0, [:d5, :e5]), [[:c4, :d5, :e5]]
+    assert_raises { T[:c4].append_slot(2, [:d5]) }
 
-    t = T([:a1, :b2, :c3])
+    t = T[:a1, :b2, :c3]
     assert_grid t.append_slot(0, [:f9]), [[:a1, :f9], [:b2], [:c3]]
     assert_grid t.append_slot(1, [:f9]), [[:a1], [:b2, :f9], [:c3]]
     assert_grid t.append_slot(2, [:f9]), [[:a1], [:b2], [:c3, :f9]]
@@ -555,7 +555,7 @@ class TrackGridTest < Test::Unit::TestCase
   end
 
   def test_extract
-    t = T([:a1, [:b2, :b3], :c3])
+    t = T[:a1, [:b2, :b3], :c3]
 
     assert_extract(t, [[], [], []], [[:a1], [:b2, :b3], [:c3]]) { |_| true }
     assert_extract(t, [[:a1], [:b2, :b3], [:c3]], [[], [], []]) { |_| false }
@@ -575,7 +575,7 @@ class TrackGridTest < Test::Unit::TestCase
   end
 
   def test_extract_slots
-    t = T([:a1, [:b2, :b3], :c3])
+    t = T[:a1, [:b2, :b3], :c3]
 
     assert_extract_slots(t, [[], [], []], [[:a1], [:b2, :b3], [:c3]]) { |_| true }
     assert_extract_slots(t, [[:a1], [:b2, :b3], [:c3]], [[], [], []]) { |_| false }
@@ -591,7 +591,7 @@ class TrackGridTest < Test::Unit::TestCase
   end
 
   def test_extract_every
-    t = T([:a1, [:b2, :b3], :c3])
+    t = T[:a1, [:b2, :b3], :c3]
 
     assert_raises { t.extract_every(0) }
     assert_extract_every t, 1, [[], [], []], [[:a1], [:b2, :b3], [:c3]]
@@ -600,7 +600,7 @@ class TrackGridTest < Test::Unit::TestCase
     assert_extract_every t, 4, [[:a1], [:b2, :b3], [:c3]], [[], [], []]
 
     # Multiple gaps
-    t = T([:a1] * 12)
+    t = T[*[:a1] * 12]
     assert_extract_every t, [1, 3],
       [[], [:a1], [:a1], [], [], [:a1], [:a1], [], [], [:a1], [:a1], []],
       [[:a1], [], [], [:a1], [:a1], [], [], [:a1], [:a1], [], [], [:a1]]
@@ -611,7 +611,7 @@ class TrackGridTest < Test::Unit::TestCase
       [[:a1], [], [:a1], [:a1], [], [:a1], [:a1], [:a1], [], [:a1], [], [:a1]],
       [[], [:a1], [], [], [:a1], [], [], [], [:a1], [], [:a1], []]
 
-    t = T([:a1, :r] * 6)
+    t = T[*[:a1, :r] * 6]
     assert_extract_every t, [1, 3],
       [
         [], [],    # drop (1), rest
@@ -638,7 +638,7 @@ class TrackGridTest < Test::Unit::TestCase
   end
 
   def test_extract_x_of_y
-    t = T([:a1] * 12)
+    t = T[*[:a1] * 12]
 
     assert_raises { t.gextract(1, 0) }
     assert_raises { t.gextract(0, 1) }
@@ -667,7 +667,7 @@ class TrackGridTest < Test::Unit::TestCase
                     [[:a1], []] + [[:a1]] * 10,
                     [[], [:a1]] + [[]] * 10
 
-    t = T([:a1, :r] * 6)
+    t = T[*[:a1, :r] * 6]
     assert_gextract t, 2, 3,
       [
         [:a1], [],
@@ -686,7 +686,7 @@ class TrackGridTest < Test::Unit::TestCase
   end
 
   def test_extract_note
-    t = T([:a1, [:b2, :b3], :c3])
+    t = T[:a1, [:b2, :b3], :c3]
 
     assert_extract_note t, :d, [[:a1], [:b2, :b3], [:c3]], [[], [], []]
     assert_extract_note t, :b, [[:a1], [], [:c3]], [[], [:b2, :b3], []]
@@ -698,20 +698,20 @@ class TrackGridTest < Test::Unit::TestCase
   def test_extract_gates
     assert_equal Track.rest.gates, [0]
     assert_equal Track.rest(4).gates, [0, 0, 0, 0]
-    assert_equal T(:c4).gates, [1]
-    assert_equal T([:r, :c4]).gates, [0, 1]
-    assert_equal T([:c4, :c4]).gates, [1, 1]
-    assert_equal T([:r, :c4, :c4, :r]).gates, [0, 1, 1, 0]
-    assert_equal T([:r, :c4, :r, :c4]).gates, [0, 1, 0, 1]
-    assert_equal T([S(:c4, gate: 0.5)]).gates, [0.5]
-    assert_equal T([:c4, S(:c4, gate: 0.5)]).gates, [1, 0.5]
-    assert_equal T([S(:c4, gate: 0.25), S(:c4, gate: 0.5)]).gates, [0.25, 0.5]
-    assert_equal T([:c4, S(:c4, gate: 0.25), S(:c4, gate: 0.5)]).gates, [1, 0.25, 0.5]
-    assert_equal T([S(:c4, gate: 0.25), :r, S(:c4, gate: 0.5)]).gates, [0.25, 0, 0.5]
+    assert_equal T[:c4].gates, [1]
+    assert_equal T[:r, :c4].gates, [0, 1]
+    assert_equal T[:c4, :c4].gates, [1, 1]
+    assert_equal T[:r, :c4, :c4, :r].gates, [0, 1, 1, 0]
+    assert_equal T[:r, :c4, :r, :c4].gates, [0, 1, 0, 1]
+    assert_equal T[S(:c4, gate: 0.5)].gates, [0.5]
+    assert_equal T[:c4, S(:c4, gate: 0.5)].gates, [1, 0.5]
+    assert_equal T[S(:c4, gate: 0.25), S(:c4, gate: 0.5)].gates, [0.25, 0.5]
+    assert_equal T[:c4, S(:c4, gate: 0.25), S(:c4, gate: 0.5)].gates, [1, 0.25, 0.5]
+    assert_equal T[S(:c4, gate: 0.25), :r, S(:c4, gate: 0.5)].gates, [0.25, 0, 0.5]
 
-    assert_equal T([:c4, :d4]).gates, [1, 1]
-    assert_equal T([:c4, S(:d4, gate: 0.1)]).gates, [1, 0.1]
+    assert_equal T[:c4, :d4].gates, [1, 1]
+    assert_equal T[:c4, S(:d4, gate: 0.1)].gates, [1, 0.1]
 
-    assert_raises { T([[:c4, :d4]]).gates }
+    assert_raises { T[[:c4, :d4]].gates }
   end
 end

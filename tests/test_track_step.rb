@@ -17,7 +17,7 @@ class TrackStepTest < Test::Unit::TestCase
   end
 
   def test_mutate_each_step
-    t = T([:a1, [:b2, :c3], :d4])
+    t = T[:a1, [:b2, :c3], :d4]
 
     assert_mutate_steps(t, [[:f9], [:f9], [:f9]]) { |_| :f9 }
     assert_mutate_steps(t, [[:f9], [:f9], [:f9]]) { |_, _| :f9 }
@@ -48,7 +48,7 @@ class TrackStepTest < Test::Unit::TestCase
   end
 
   def test_mutate_steps_in_slot
-    t = T([:a1, [:b2, :c3], :r])
+    t = T[:a1, [:b2, :c3], :r]
 
     assert_mutate_in_slot(t, 0, [[:a2], [:b2, :c3], []]) { |s| s.shift_tone(12) }
     assert_mutate_in_slot(t, 1, [[:a1], [], []]) { |_| nil }
@@ -66,7 +66,7 @@ class TrackStepTest < Test::Unit::TestCase
   end
 
   def test_mutate_filled_slot
-    t = T([:a1, :r, [:b2, :c3], :r])
+    t = T[:a1, :r, [:b2, :c3], :r]
 
     assert_mutate_filled_slot(t, 0, [[:a2], [], [:b2, :c3], []]) { |s| s.shift_tone(12) }
     assert_mutate_filled_slot(t, 1, [[:a1], [], [:f9], []]) { |_| :f9 }
@@ -79,7 +79,7 @@ class TrackStepTest < Test::Unit::TestCase
   end
 
   def test_replace_filled_slot
-    t = T([:a1, :r, [:b2, :c3], :r])
+    t = T[:a1, :r, [:b2, :c3], :r]
 
     assert_set_filled_slot t, 0, :a2, [[:a2], [], [:b2, :c3], []]
     assert_set_filled_slot t, 0, [:a2, :a3], [[:a2, :a3], [], [:b2, :c3], []]
@@ -92,79 +92,79 @@ class TrackStepTest < Test::Unit::TestCase
   end
 
   def test_with_gate
-    assert_steps_attr T(:c4).gate(0.5), :gate, 0.5
-    assert_steps_attr T([:c4, :d4]).gate(0.5), :gate, 0.5
-    assert_steps_attr T([:c4, [:d4, :e4]]).gate(0.5), :gate, 0.5
-    assert_steps_attr T([S(:f9, gate: 0.25)]).gate(0.5), :gate, 0.5
+    assert_steps_attr T[:c4].gate(0.5), :gate, 0.5
+    assert_steps_attr T[:c4, :d4].gate(0.5), :gate, 0.5
+    assert_steps_attr T[:c4, [:d4, :e4]].gate(0.5), :gate, 0.5
+    assert_steps_attr T[S(:f9, gate: 0.25)].gate(0.5), :gate, 0.5
 
-    assert_steps_attr T([S(:f9, gate: 0.25), :e8]).gate(2), :gate, 1
-    assert_steps_attr T([S(:f9, gate: 0.25), :e8]).gate(-2), :gate, 0
+    assert_steps_attr T[S(:f9, gate: 0.25), :e8].gate(2), :gate, 1
+    assert_steps_attr T[S(:f9, gate: 0.25), :e8].gate(-2), :gate, 0
   end
 
   def test_scale_gate
-    assert_grid T(:c4).scale_gate(0.5), [[S(:c4, gate: 0.5)]]
-    assert_grid T([:c4, :d4]).scale_gate(0.5), [[S(:c4, gate: 0.5)], [S(:d4, gate: 0.5)]]
-    assert_grid T([:c4, [:d4, S(:e4, gate: 0.5)]]).scale_gate(0.25), [[S(:c4, gate: 0.25)], [S(:d4, gate: 0.25), S(:e4, gate: 0.125)]]
+    assert_grid T[:c4].scale_gate(0.5), [[S(:c4, gate: 0.5)]]
+    assert_grid T[:c4, :d4].scale_gate(0.5), [[S(:c4, gate: 0.5)], [S(:d4, gate: 0.5)]]
+    assert_grid T[:c4, [:d4, S(:e4, gate: 0.5)]].scale_gate(0.25), [[S(:c4, gate: 0.25)], [S(:d4, gate: 0.25), S(:e4, gate: 0.125)]]
 
-    assert_grid T([S(:f9, gate: 0.25), [:d4, :e4]]).scale_gate(2), [[S(:f9, gate: 0.5)], [:d4, :e4]]
-    assert_grid T([:c4, S(:d4, gate: 0.5)]).scale_gate(-1), [[S(:c4, gate: 0)], [S(:d4, gate: 0)]]
+    assert_grid T[S(:f9, gate: 0.25), [:d4, :e4]].scale_gate(2), [[S(:f9, gate: 0.5)], [:d4, :e4]]
+    assert_grid T[:c4, S(:d4, gate: 0.5)].scale_gate(-1), [[S(:c4, gate: 0)], [S(:d4, gate: 0)]]
   end
 
   def test_with_vel
-    assert_steps_attr T(:c4).vel(63), :vel, 63
-    assert_steps_attr T([:c4, :d4]).vel(63), :vel, 63
-    assert_steps_attr T([:c4, [:d4, :e4]]).vel(63), :vel, 63
-    assert_steps_attr T([S(:f9, vel: 99)]).vel(63), :vel, 63
+    assert_steps_attr T[:c4].vel(63), :vel, 63
+    assert_steps_attr T[:c4, :d4].vel(63), :vel, 63
+    assert_steps_attr T[:c4, [:d4, :e4]].vel(63), :vel, 63
+    assert_steps_attr T[S(:f9, vel: 99)].vel(63), :vel, 63
 
-    assert_steps_attr T([S(:f9, vel: 32), :e8]).vel(256), :vel, 127
-    assert_steps_attr T([S(:f9, vel: 32), :e8]).vel(-127), :vel, 0
+    assert_steps_attr T[S(:f9, vel: 32), :e8].vel(256), :vel, 127
+    assert_steps_attr T[S(:f9, vel: 32), :e8].vel(-127), :vel, 0
 
     # velf
-    assert_steps_attr T(:c4).velf(0.5), :vel, 63
-    assert_steps_attr T([:c4, :d4]).velf(0.5), :vel, 63
-    assert_steps_attr T([:c4, [:d4, :e4]]).velf(0.5), :vel, 63
-    assert_steps_attr T([S(:f9, vel: 99)]).velf(0.5), :vel, 63
+    assert_steps_attr T[:c4].velf(0.5), :vel, 63
+    assert_steps_attr T[:c4, :d4].velf(0.5), :vel, 63
+    assert_steps_attr T[:c4, [:d4, :e4]].velf(0.5), :vel, 63
+    assert_steps_attr T[S(:f9, vel: 99)].velf(0.5), :vel, 63
 
-    assert_steps_attr T([S(:f9, vel: 32), :e8]).velf(2), :vel, 127
-    assert_steps_attr T([S(:f9, vel: 32), :e8]).velf(-1), :vel, 0
+    assert_steps_attr T[S(:f9, vel: 32), :e8].velf(2), :vel, 127
+    assert_steps_attr T[S(:f9, vel: 32), :e8].velf(-1), :vel, 0
   end
 
   def test_scale_vel
-    assert_grid T(:c4).scale_vel(0.5), [[S(:c4, vel: 63)]]
-    assert_grid T([:c4, :d4]).scale_vel(0.5), [[S(:c4, vel: 63)], [S(:d4, vel: 63)]]
-    assert_grid T([:c4, [:d4, S(:e4, vel: 63)]]).scale_vel(0.25), [[S(:c4, vel: 31)], [S(:d4, vel: 31), S(:e4, vel: 15)]]
+    assert_grid T[:c4].scale_vel(0.5), [[S(:c4, vel: 63)]]
+    assert_grid T[:c4, :d4].scale_vel(0.5), [[S(:c4, vel: 63)], [S(:d4, vel: 63)]]
+    assert_grid T[:c4, [:d4, S(:e4, vel: 63)]].scale_vel(0.25), [[S(:c4, vel: 31)], [S(:d4, vel: 31), S(:e4, vel: 15)]]
 
-    assert_grid T([S(:f9, vel: 31), [:d4, :e4]]).scale_vel(2), [[S(:f9, vel: 62)], [:d4, :e4]]
-    assert_grid T([:c4, S(:d4, vel: 63)]).scale_vel(-1), [[S(:c4, vel: 0)], [S(:d4, vel: 0)]]
+    assert_grid T[S(:f9, vel: 31), [:d4, :e4]].scale_vel(2), [[S(:f9, vel: 62)], [:d4, :e4]]
+    assert_grid T[:c4, S(:d4, vel: 63)].scale_vel(-1), [[S(:c4, vel: 0)], [S(:d4, vel: 0)]]
   end
 
   def test_with_octave_shift_octave
-    assert_grid T(:c4).oct(6), [[:c6]]
-    assert_grid T([:c4, :d5]).oct(5), [[:c5], [:d5]]
-    assert_grid T([:c4, [:d5, :e6]]).oct(3), [[:c3], [:d3, :e3]]
+    assert_grid T[:c4].oct(6), [[:c6]]
+    assert_grid T[:c4, :d5].oct(5), [[:c5], [:d5]]
+    assert_grid T[:c4, [:d5, :e6]].oct(3), [[:c3], [:d3, :e3]]
 
-    assert_grid T(:c4).up(2), [[:c6]]
-    assert_grid T(:c4).shift_octave(2), [[:c6]]
-    assert_grid T([:c4, :d5]).up(5), [[:c9], [:d10]]
-    assert_grid T([:c4, [:d5, :e6]]).down(3), [[:c1], [:d2, :e3]]
-    assert_grid T([:c4, [:d5, :e6]]).shift_octave(-3), [[:c1], [:d2, :e3]]
+    assert_grid T[:c4].up(2), [[:c6]]
+    assert_grid T[:c4].shift_octave(2), [[:c6]]
+    assert_grid T[:c4, :d5].up(5), [[:c9], [:d10]]
+    assert_grid T[:c4, [:d5, :e6]].down(3), [[:c1], [:d2, :e3]]
+    assert_grid T[:c4, [:d5, :e6]].shift_octave(-3), [[:c1], [:d2, :e3]]
   end
 
   def test_rand_octave
     unless ExtApi.in_sonic_pi?  # Not testing Sonic Pi's randomness
       srand 123456
-      assert_grid T(:c4).roct, [[:c3]]
-      assert_grid T([:c4, :d5]).roct(p: 1), [[:c3], [:d4]]
-      assert_grid T([:c4, [:d5, :e6]]).roct(3, p: 1), [[:c1], [:d3, :e3]]
-      assert_grid T([:c4, [:d5, :e6]]).roct(0..2), [[:c4], [:d5, :e8]]
-      assert_grid T([:c4, [:d5, :e6]]).roct(-2..2), [[:c4], [:d3, :e5]]
+      assert_grid T[:c4].roct, [[:c3]]
+      assert_grid T[:c4, :d5].roct(p: 1), [[:c3], [:d4]]
+      assert_grid T[:c4, [:d5, :e6]].roct(3, p: 1), [[:c1], [:d3, :e3]]
+      assert_grid T[:c4, [:d5, :e6]].roct(0..2), [[:c4], [:d5, :e8]]
+      assert_grid T[:c4, [:d5, :e6]].roct(-2..2), [[:c4], [:d3, :e5]]
     end
   end
 
   def test_shift_tone
-    assert_grid T(:c4).transpose(2), [[:d4]]
-    assert_grid T([:c4, :d5]).transpose(5), [[:f4], [:g5]]
-    assert_grid T([:c4, [:d5, :e6]]).transpose(-3), [[:a3], [:b4, :cs6]]
+    assert_grid T[:c4].transpose(2), [[:d4]]
+    assert_grid T[:c4, :d5].transpose(5), [[:f4], [:g5]]
+    assert_grid T[:c4, [:d5, :e6]].transpose(-3), [[:a3], [:b4, :cs6]]
   end
 
   def assert_sub_note(track, note, repl, grid)
@@ -172,7 +172,7 @@ class TrackStepTest < Test::Unit::TestCase
   end
 
   def test_sub_note
-    t = T([:a1, [:b2, :b3], :c3])
+    t = T[:a1, [:b2, :b3], :c3]
 
     assert_sub_note t, :d, :e, [[:a1], [:b2, :b3], [:c3]]
     assert_sub_note t, :b, :c, [[:a1], [:c2, :c3], [:c3]]
@@ -190,7 +190,7 @@ class TrackStepTest < Test::Unit::TestCase
   end
 
   def test_prob
-    t = T([:c1, S(:c2, prob: 0.5), [S(:c3, prob: Prob.one_in(3)), :c4]])
+    t = T[:c1, S(:c2, prob: 0.5), [S(:c3, prob: Prob.one_in(3)), :c4]]
 
     assert_steps_attr t.clear_prob, :prob, nil
     assert_steps_attr t.prob(Prob.every_other), :prob, Prob.every_other
@@ -202,7 +202,7 @@ class TrackStepTest < Test::Unit::TestCase
   end
 
   def test_fill
-    t = T([:c1, [S(:c2, prob: 0.5), S(:c3, prob: Prob.fill)], S(:c4, prob: Prob.one_in(3))])
+    t = T[:c1, [S(:c2, prob: 0.5), S(:c3, prob: Prob.fill)], S(:c4, prob: Prob.one_in(3))]
 
     assert_steps_attr t.fill, :prob, Prob.fill
     assert_grid t.fill(false), [[:c1], [S(:c2, prob: 0.5), :c3], [S(:c4, prob: Prob.one_in(3))]]
@@ -234,7 +234,7 @@ class TrackStepTest < Test::Unit::TestCase
   end
 
   def test_with_gate_curve
-    t = T([:c1, [S(:c2, gate: 0.5), S(:c3, gate: 0.25)], :c4])
+    t = T[:c1, [S(:c2, gate: 0.5), S(:c3, gate: 0.25)], :c4]
 
     assert_gate_curve t.gate_curve(Curves::UpLinear), Curves::UpLinear
     assert_gate_curve t.gate_curve(Curves::UpDown3Sine), Curves::UpDown3Sine
@@ -249,7 +249,7 @@ class TrackStepTest < Test::Unit::TestCase
   end
 
   def test_with_vel_curve
-    t = T([:c1, [S(:c2, vel: 63), S(:c3, vel: 31)], :c4])
+    t = T[:c1, [S(:c2, vel: 63), S(:c3, vel: 31)], :c4]
     scaled_lin = ->(pct) { pct * 127 }
     raw_lin = ->(pct) { pct }
 
@@ -282,7 +282,7 @@ class TrackStepTest < Test::Unit::TestCase
   end
 
   def test_fade_in_fade_out
-    t = T([:c1, [S(:c2, vel: 63), S(:c3, vel: 31)], :c4] + [:d9] * 20)
+    t = T[:c1, [S(:c2, vel: 63), S(:c3, vel: 31)], :c4, *[:d9] * 20]
 
     [true, false].each do |fade_in|
       [true, false].each do |quad|
@@ -300,14 +300,14 @@ class TrackStepTest < Test::Unit::TestCase
   end
 
   def test_taper_gate_taper_vel
-    t = T([
+    t = T[
       [:c1, :d1],
       [:c1],
       [S(:c1, gate: 0.75, vel: 63), :e1],
       [S(:c1, gate: 0.25), :e1],  # This begins a new run of c1; the previous one was not tied.
       [:f1, S(:c1, gate: 0.1)],  # This is a new run of c1 too; the previous lasted one slot.
       [:f1, :d1, S(:c1, gate: 0.25)]  # This c1 run does not loop into slot 0, but the d1 does.
-    ])
+    ]
 
     assert_grid t.taper_gate(0.5), [
       [:c1, :d1],
@@ -386,7 +386,7 @@ class TrackStepTest < Test::Unit::TestCase
   end
 
   def test_snap_to_notes
-    t = T([55, 60, 65, 70])
+    t = T[55, 60, 65, 70]
 
     assert_grid t.snap_to_notes([58]), [[58], [58], [58], [58]]
     assert_grid t.snap_to_notes([60, 68]), [[60], [60], [68], [68]]
@@ -394,8 +394,8 @@ class TrackStepTest < Test::Unit::TestCase
   end
 
   def test_snap_to_scale
-    t = T([:c4, :d3, :e2, :f1, :"g-1",
-           :cs4, :eb4, :bs4])
+    t = T[:c4, :d3, :e2, :f1, :"g-1",
+          :cs4, :eb4, :bs4]
 
     assert_grid t.snap_to_scale(:c, :major),
                 [[:c4], [:d3], [:e2], [:f1], [:"g-1"],
@@ -403,7 +403,7 @@ class TrackStepTest < Test::Unit::TestCase
   end
 
   def test_evolve
-    t = T([S(:c1, gate: 0.5, vel: 63), :c2, S(:c3, gate: 0.1, vel: 10)])
+    t = T[S(:c1, gate: 0.5, vel: 63), :c2, S(:c3, gate: 0.1, vel: 10)]
 
     unless ExtApi.in_sonic_pi?  # Not testing Sonic Pi's randomness
       srand 1234

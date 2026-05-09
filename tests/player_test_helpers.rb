@@ -13,9 +13,7 @@ module PlayerTestHelpers
     :drain_events, :vt, :reset_vt, :use_bpm, :current_bpm, :secs_per_beat,
     :use_midi_defaults
 
-  def qT(gridish, **kwargs)
-    Track.new(gridish, granularity: :quarter, **kwargs)
-  end
+  QT = ->(*gridish, **kwargs) { Track.new(*gridish, granularity: :quarter, **kwargs) }
 
   def player(track, port: nil, channel: nil)
     if track.is_a?(Track)

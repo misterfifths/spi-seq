@@ -12,7 +12,7 @@ init_spi_seq
 pulse_chain = [[:fs3],
                [:fs3, :as3],
                [:fs3, :as3, :ds4]]
-pulses = pulse_chain.map { |ns| T([ns] * 16) }.reduce(:+)
+pulses = pulse_chain.map { |ns| T[ns] * 16 }.reduce(:+)
 
 # Turn every 5th, then 3nd, then 5th, ... slot into a rest
 pulses = pulses.dropout(5, 3)

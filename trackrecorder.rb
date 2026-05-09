@@ -211,7 +211,7 @@ module TrackRecorder
                         min_gate: min_gate, quantize_gates: quantize_gates)
     end
 
-    t = Track.new(slots, granularity: granularity)
+    t = Track.new(*slots, granularity: granularity)
 
     # If we're snapping endpoints to the timeline, with rounding error, it's
     # probably possible to wind up with rests at the beginning of the track.

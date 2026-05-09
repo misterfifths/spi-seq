@@ -46,21 +46,21 @@ class CCPlayerTest < Test::Unit::TestCase
 
   def test_basics
     # Correct basic start times
-    assert_playback_events CCT(A), [a_at(0)]
-    assert_playback_events CCT([A, B]), [a_at(0), b_at(0.5)]
-    assert_playback_events CCT([A, :r, B], granularity: :quarter), [a_at(0), b_at(2)]
+    assert_playback_events CCT[A], [a_at(0)]
+    assert_playback_events CCT[A, B], [a_at(0), b_at(0.5)]
+    assert_playback_events CCT[A, :r, B, granularity: :quarter], [a_at(0), b_at(2)]
 
     # Multiple steps per slot
-    assert_playback_events CCT([[A, B], :r, [C, D]], granularity: :quarter), [
+    assert_playback_events CCT[[A, B], :r, [C, D], granularity: :quarter], [
       a_at(0), b_at(0),
       c_at(2), d_at(2)
     ]
 
     # There is no such thing as a tie
-    assert_playback_events CCT([A, A], granularity: :quarter), [
+    assert_playback_events CCT[A, A, granularity: :quarter], [
       a_at(0), a_at(1)
     ]
-    assert_playback_events CCT([A, A.with_val(127)], granularity: :quarter), [
+    assert_playback_events CCT[A, A.with_val(127), granularity: :quarter], [
       a_at(0),
       a_at(1, val: 127),
       a_at(2),

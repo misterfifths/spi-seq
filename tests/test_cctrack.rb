@@ -36,23 +36,22 @@ class CCTrackTest < Test::Unit::TestCase
     b = CC(2, 2)
     c = CC(3, 3)
 
-    assert_grid CCT([[a]]), [[a]]
-    assert_grid CCT([a]), [[a]]
-    assert_grid CCT(a), [[a]]
-    assert_grid CCT([[a, b]]), [[a, b]]
-    assert_grid CCT([[a, b], [c]]), [[a, b], [c]]
-    assert_grid CCT([[a, b], c]), [[a, b], [c]]
-    assert_grid CCT([a, b, c]), [[a], [b], [c]]
+    assert_grid CCT[[a]], [[a]]
+    assert_grid CCT[a], [[a]]
+    assert_grid CCT[[a, b]], [[a, b]]
+    assert_grid CCT[[a, b], [c]], [[a, b], [c]]
+    assert_grid CCT[[a, b], c], [[a, b], [c]]
+    assert_grid CCT[a, b, c], [[a], [b], [c]]
 
-    assert_raises { CCT([]) }
+    assert_raises { CCT[] }
   end
 
   def test_dupe_numbers
     low = CC(1, 1)
     high = CC(1, 127)
 
-    assert_grid CCT([[low, high]]), [[high]]
-    assert_grid CCT([[low, high, high]]), [[high]]
+    assert_grid CCT[[low, high]], [[high]]
+    assert_grid CCT[[low, high, high]], [[high]]
   end
 
   def test_simple
@@ -68,7 +67,7 @@ class CCTrackTest < Test::Unit::TestCase
   end
 
   def test_track_to_cc
-    t = T([:c4, :r, :d4, :c5])
+    t = T[:c4, :r, :d4, :c5]
     a = CC(5, 1)
     b = CC(6, 2)
     c = CC(7, 3)
@@ -97,7 +96,7 @@ class CCTrackTest < Test::Unit::TestCase
   end
 
   def test_track_to_simple_cc
-    t = T([:c4, :r, :d4, :c5])
+    t = T[:c4, :r, :d4, :c5]
     a = CC(5, 1)
     b = CC(5, 2)
     c = CC(5, 3)

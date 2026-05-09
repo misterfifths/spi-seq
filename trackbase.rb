@@ -121,23 +121,29 @@ class TrackBase
   # `granularity`. A slot may be empty to represent a rest.
   #
   # `gridish` is converted to a grid using rules specific to subclasses; see
-  # those for details. In general, non-array arguments will be converted to a
-  # one-slot grid, and arrays will have each element converted to a slot.
+  # those for details. In general, non-array arguments will be placed in a slot
+  # by themselves, and arrays are used as a slot.
   #
   # Tracks must have at least one slot, though that slot may be empty (a rest).
   #
-  # @param gridish Acceptable types vary by subclass.
+  # @param gridish [Array<StepBase>, StepBase, nil, :r, :rest] (and other types
+  #   on a per-subclass basis) Defines the grid for the track; see subclass
+  #   initializers for details.
   # @param granularity [NoteLength, Number, Symbol] The {#granularity} for the
   #   new track. Can be a {NoteLength} or a value understood by
   #   {NoteLength.new}.
   # @param timescale [Number] The {#timescale} for the new track.
-  def initialize(gridish, granularity: NoteLength::Eighth, timescale: 1)
+  def initialize(*gridish, granularity: NoteLength::Eighth, timescale: 1)
     @grid = self.class.gridify(gridish)
     raise ArgumentError, "A Track's grid must have at least one slot" if @grid.empty?
     @granularity = NoteLength.new(granularity)
 
     raise RangeError, "Timescale must be a number greater than 0" unless timescale.is_a?(Numeric) && timescale > 0
     @timescale = timescale
+  end
+
+  class << self
+    alias [] new
   end
 
   # Constructs a track with the given number of slots, each of which is empty
@@ -150,7 +156,7 @@ class TrackBase
   # @return [TrackBase]
   def self.rest(num_slots = 1, granularity: NoteLength::Eighth, timescale: 1)
     grid = [[]] * num_slots
-    new(grid, granularity: granularity, timescale: timescale)
+    new(*grid, granularity: granularity, timescale: timescale)
   end
 
   # Constructs a track that plays the slots of `gridish` in a Euclidean rhythm.
@@ -167,11 +173,11 @@ class TrackBase
   # needed). For example:
   #   Track.euclid([:c3, :d3], 3, 4)
   #   # is equivalent to
-  #   T([:c3, :r, :d3, :c4])
+  #   T[:c3, :r, :d3, :c4]
   #
   #   Track.euclid([:c3, :d3, :e3], 3, 4, cycle: false)
   #   # is equivalent to
-  #   T([:c3, :r, :e3, :c3])
+  #   T[:c3, :r, :e3, :c3]
   #   # The final two slots contain :e3 and :c3 because those are the
   #   # corresponding notes at those slot indices in `gridish` passed to euclid
   #   # (modulo its length).
@@ -182,10 +188,10 @@ class TrackBase
   # `full_cycle` implies `cycle`. For instance:
   #   Track.euclid([:a1, :b1, :c1, :d1], 3, 4, full_cycle: true)
   #   # is equivalent to
-  #   T([:a1, :r, :b1, :c1,
-  #      :d1, :r, :a1, :b1,
-  #      :c1, :r, :d1, :a1,
-  #      :b1, :r, :c1, :d1])
+  #   T[:a1, :r, :b1, :c1,
+  #     :d1, :r, :a1, :b1,
+  #     :c1, :r, :d1, :a1,
+  #     :b1, :r, :c1, :d1]
   #
   # Note that each group of 4 slots in the result repeats the same pattern of
   # hits (hit rest hit hit), but the steps chosen from the input cycle across
@@ -251,7 +257,7 @@ class TrackBase
       end
     end
 
-    new(grid, granularity: granularity, timescale: timescale)
+    new(*grid, granularity: granularity, timescale: timescale)
   end
 
 
@@ -325,7 +331,7 @@ class TrackBase
   # @return [String]
   # @see #inspect
   def repr(group: 8)
-    ctor_invocation = "#{self.class.name}.new(["
+    ctor_invocation = "#{self.class.name}.new("
     slot_line_indent = " " * ctor_invocation.length
 
     slot_reprs = @grid.map do |slot|
@@ -359,7 +365,7 @@ class TrackBase
       kwargs = ", " + ctor_args.map { |k, v| "#{k}: #{v}" }.join(", ")  # rubocop:disable Style/StringConcatenation
     end
 
-    "#{ctor_invocation}#{total_slot_repr}]#{kwargs})"
+    "#{ctor_invocation}#{total_slot_repr}#{kwargs}]"
   end
 
   # Copies the {#repr} of this track to the clipboard.
@@ -415,9 +421,14 @@ class TrackBase
   # `other_track` is not a track, it is converted to one using the initializer.
   #
   # @example
-  #   T([:a1, :b2]) + T([:c3, :r])
+  #   T[:a1, :b2] + T[:c3, :r]
   #   # is equivalent to
-  #   T([:a1, :b2, :c3, :r])
+  #   T[:a1, :b2, :c3, :r]
+  #
+  # @example
+  #   T[:a1, :b2] + [:c4] * 4  # The array will be converted to a track
+  #   # is equivalent to
+  #   T[:a1, :b2, :c4, :c4, :c4, :c4]
   #
   # @param other_track [TrackBase, StepBase, Array<StepBase, Array<StepBase>>]
   #   The track to append, or a value that is convertible to a track. See the
@@ -440,11 +451,11 @@ class TrackBase
   # to a compatible one using the initializer.
   #
   # @example
-  #   t = T([:c1, :r, :c3])
-  #   u = T([:r, :c2, :c4, :c5])
+  #   t = T[:c1, :r, :c3]
+  #   u = T[:r, :c2, :c4, :c5]
   #   v = t | u
   #   # v is equivalent to
-  #   T([:c1, :c2, [:c3, :c4], :c5])
+  #   T[:c1, :c2, [:c3, :c4], :c5]
   #
   # @param other_track [TrackBase, StepBase, Array<StepBase, Array<StepBase>>]
   #   The track to merge with this one, or a value that is convertible to a
@@ -486,20 +497,20 @@ class TrackBase
   # pad_with_rests is only relevant when cycle is false.
   #
   # @example
-  #   t = T([:a1, :b1, :c1, :d1])
-  #   u = T([:e5, :f5])
+  #   t = T[:a1, :b1, :c1, :d1]
+  #   u = T[:e5, :f5]
   #
   #   v = t.zip(u)
   #   # v is equivalent to
-  #   T([:a1, :e5, :b1, :f5, :c1, :e5, :d1, :f5])
+  #   T[:a1, :e5, :b1, :f5, :c1, :e5, :d1, :f5]
   #
   #   x = t.zip(u, cycle: false)
   #   # x is equivalent to
-  #   T([:a1, :e5, :b1, :f5, :c1, :r, :d1, :r])
+  #   T[:a1, :e5, :b1, :f5, :c1, :r, :d1, :r]
   #
   #   y = t.zip(u, cycle: false, pad_with_rests: false)
   #   # y is equivalent to
-  #   T([:a1, :e5, :b1, :f5, :c1, :d1])
+  #   T[:a1, :e5, :b1, :f5, :c1, :d1]
   #
   # @param other_track [TrackBase, StepBase, Array<StepBase, Array<StepBase>>]
   #   The track to zip with this one, or a value that is convertible to a track.
@@ -552,24 +563,24 @@ class TrackBase
   # resulting track in place of the missing slots.
   #
   # @example
-  #   t = T([:a1, :b1, :c1, :d1])
-  #   u = T([:e2, :f2])
+  #   t = T[:a1, :b1, :c1, :d1]
+  #   u = T[:e2, :f2]
   #
   #   v = t.gzip(u, 3, 1)
   #   # v is equivalent to
-  #   T([:a1, :b1, :c1, :e2, :d1, :a1, :b1, :f2])
+  #   T[:a1, :b1, :c1, :e2, :d1, :a1, :b1, :f2]
   #   # Note that when the slots in t were exhausted (after the :d1), the
   #   # remaining slots in that group came from wrapping around to the beginning
   #   # of the track - hence the :a1 and :b1.
   #
   #   w = t.gzip(u, 3, 1, cycle: false)
   #   # w is equivalent to
-  #   T([:a1, :b1, :c1, :e2, :d1, :r, :r, :f2])
+  #   T[:a1, :b1, :c1, :e2, :d1, :r, :r, :f2]
   #   # No wrap-around happened here, so the short group was filled with rests.
   #
   #   x = t.gzip(u, 3, 1, cycle: false, pad_with_rests: false)
   #   # x is equivalent to
-  #   T([:a1, :b1, :c1, :e2, :d1, :f2])
+  #   T[:a1, :b1, :c1, :e2, :d1, :f2]
   #   # Same as above, but the short group was not filled out with rests.
   #
   # @param other_track [TrackBase, StepBase, Array<StepBase, Array<StepBase>>]
@@ -715,9 +726,9 @@ class TrackBase
   # each slot in this track.
   #
   # @example
-  #   T([:a1, :b1, :c1]).space(2)
+  #   T[:a1, :b1, :c1].space(2)
   #   # is equivalent to
-  #   T([:a1, :r, :r, :b1, :r, :r, :c1, :r, :r])
+  #   T[:a1, :r, :r, :b1, :r, :r, :c1, :r, :r]
   #
   # @param num_rests [Integer]
   # @return [TrackBase]
@@ -736,9 +747,9 @@ class TrackBase
   # each group of `group_size` slots from this track.
   #
   # @example
-  #   T([:a1, :b1, :c1, :d1, :e1, :f1]).space_every(3, 2)
+  #   T[:a1, :b1, :c1, :d1, :e1, :f1].space_every(3, 2)
   #   # is equivalent to
-  #   T([:a1, :b1, :c1, :r, :r, :d1, :e1, :f1, :r, :r])
+  #   T[:a1, :b1, :c1, :r, :r, :d1, :e1, :f1, :r, :r]
   #
   # @param group_size [Integer]
   # @param num_rests [Integer]
@@ -759,9 +770,9 @@ class TrackBase
   # Returns a new track with the slots of this track in reverse order.
   #
   # @example
-  #   T([[:a1, :a2], :b1, :r]).reverse
+  #   T[[:a1, :a2], :b1, :r].reverse
   #   # is equivalent to
-  #   T([:r, :b1, [:a1, :a2]])
+  #   T[:r, :b1, [:a1, :a2]]
   #
   # @return [TrackBase]
   # @see #mirror
@@ -777,9 +788,9 @@ class TrackBase
   # repeating the slot in the middle.
   #
   # @example
-  #   T([:a1, :b1, :c1]).mirror
+  #   T[:a1, :b1, :c1].mirror
   #   # is equivalent to
-  #   T([:a1, :b1, :c1, :c1, :b1, :a1])
+  #   T[:a1, :b1, :c1, :c1, :b1, :a1]
   #
   # @return [TrackBase]
   # @see #reverse
@@ -792,9 +803,9 @@ class TrackBase
   # without repeating the slot in the middle.
   #
   # @example
-  #   T([:a1, :b1, :c1]).reflect
+  #   T[:a1, :b1, :c1].reflect
   #   # is equivalent to
-  #   T([:a1, :b1, :c1, :b1, :a1])
+  #   T[:a1, :b1, :c1, :b1, :a1]
   #
   # @return [TrackBase]
   # @see #reverse
@@ -836,9 +847,9 @@ class TrackBase
   # to the end of the grid as needed.
   #
   # @example
-  #   T([:a1, :b1, :c1, :d1, :e1]).rotate(2)
+  #   T[:a1, :b1, :c1, :d1, :e1].rotate(2)
   #   # is equivalent to
-  #   T([:c1, :d1, :e1, :a1, :b1])
+  #   T[:c1, :d1, :e1, :a1, :b1]
   #
   # @param leftward_shift [Integer]
   # @return [TrackBase]
@@ -882,16 +893,16 @@ class TrackBase
   # - An array of slots, which will all be added in place of the yielded slot
   #
   # @example
-  #   t = T([[:f8, :f9], :b2, [:f8, :f9]])
+  #   t = T[[:f8, :f9], :b2, [:f8, :f9]]
   #   u = t.mutate_each_slot { |slot| slot.length == 1 ? [:c4] : slot }
   #   # u is equivalent to
-  #   T([[:f8, :f9], [:c4], [:f8, :f9]])
+  #   T[[:f8, :f9], [:c4], [:f8, :f9]]
   #
   # @example
-  #   t = T([[:a1, :a2], :b1, :r, :d1])
+  #   t = T[[:a1, :a2], :b1, :r, :d1]
   #   u = t.mutate_each_slot { |slot, idx| idx > 1 ? slot : [:c4] }
   #   # u is equivalent to
-  #   T([:c4, :c4, :r, :d1])
+  #   T[:c4, :c4, :r, :d1]
   #
   # @yieldparam slot [Array<StepBase>] The slot to mutate.
   # @yieldparam index [Integer] (optional) The index of the slot in the track.
@@ -945,9 +956,9 @@ class TrackBase
   # steps.
   #
   # @example
-  #   T([:a1, :b1, :r, :d1]).replace_slot(2, [:c2, :c3])
+  #   T[:a1, :b1, :r, :d1].replace_slot(2, [:c2, :c3])
   #   # is equivalent to
-  #   T([:a1, :b1, [:c2, :c3], :d1])
+  #   T[:a1, :b1, [:c2, :c3], :d1]
   #
   # @param idx [Integer] The index of the slot to replace. Must be a valid index
   #   for the {#grid}.
@@ -995,9 +1006,9 @@ class TrackBase
   # is turned into a rest.
   #
   # @example
-  #   T([:a1, [:b1, :b2], :c3]).clear_slot(1)
+  #   T[:a1, [:b1, :b2], :c3].clear_slot(1)
   #   # is equivalent to
-  #   T([:a1, :r, :c3])
+  #   T[:a1, :r, :c3]
   #
   # @param idx [Integer] The index of the slot to replace. Must be a valid index
   #   for the {#grid}.
@@ -1011,9 +1022,9 @@ class TrackBase
   # index.
   #
   # @example
-  #   T([:a1, :b1, :c1]).append_slot(1, [:b2, :b3])
+  #   T[:a1, :b1, :c1].append_slot(1, [:b2, :b3])
   #   # is equivalent to
-  #   T([:a1, [:b1, :b2, :b3], :c1])
+  #   T[:a1, [:b1, :b2, :b3], :c1]
   #
   # @param idx [Integer] The index of the slot to replace. Must be a valid index
   #   for the {#grid}.
@@ -1040,9 +1051,9 @@ class TrackBase
   # Returns a new track that repeats the slots of this track `n` times.
   #
   # @example
-  #   T([:a1, :b2]) * 4
+  #   T[:a1, :b2] * 4
   #   # is equivalent to
-  #   T([:a1, :b2, :a1, :b2, :a1, :b2, :a1, :b2])
+  #   T[:a1, :b2, :a1, :b2, :a1, :b2, :a1, :b2]
   #
   # @param n [Integer]
   # @return [TrackBase]
@@ -1059,9 +1070,9 @@ class TrackBase
   # slots.
   #
   # @example
-  #   T([:a1, :b1, :c1]).cycle_to_length(5)
+  #   T[:a1, :b1, :c1].cycle_to_length(5)
   #   # is equivalent to
-  #   T([:a1, :b1, :c1, :a1, :b1])
+  #   T[:a1, :b1, :c1, :a1, :b1]
   #
   # @param n [Integer] The number of slots in the new track.
   # @return [TrackBase]
@@ -1073,9 +1084,9 @@ class TrackBase
   # Returns a new track with the first `n` slots removed from this one.
   #
   # @example
-  #   T([:a1, :b1, :c1, :d1]).drop(2)
+  #   T[:a1, :b1, :c1, :d1].drop(2)
   #   # is equivalent to
-  #   T([:c1, :d1])
+  #   T[:c1, :d1]
   #
   # @param n [Integer]
   # @return [TrackBase]
@@ -1089,9 +1100,9 @@ class TrackBase
   # Returns a new track with the final `n` slots removed from this one.
   #
   # @example
-  #   T([:a1, :b1, :c1, :d1]).drop_last(2)
+  #   T[:a1, :b1, :c1, :d1].drop_last(2)
   #   # is equivalent to
-  #   T([:a1, :b1])
+  #   T[:a1, :b1]
   #
   # @param n [Integer]
   # @return [TrackBase]
@@ -1106,9 +1117,9 @@ class TrackBase
   # Returns a new track consisting of only the first `n` slots of this track.
   #
   # @example
-  #   T([:a1, :b1, :c1, :d1]).take(3)
+  #   T[:a1, :b1, :c1, :d1].take(3)
   #   # is equivalent to
-  #   T([:a1, :b1, :c1])
+  #   T[:a1, :b1, :c1]
   #
   # @param n [Integer]
   # @return [TrackBase]
@@ -1139,11 +1150,11 @@ class TrackBase
   # The relative order of the selected slots is maintained.
   #
   # @example
-  #   T([:a1, :b1, :r, :d1, :e1]).sample(2)
+  #   T[:a1, :b1, :r, :d1, :e1].sample(2)
   #   # might result in
-  #   T([:b1, :e1])
+  #   T[:b1, :e1]
   #   # or, if the rest is selected
-  #   T([:r, :d1])
+  #   T[:r, :d1]
   #
   # @param n [Intger] The number of slots to select.
   # @return [TrackBase]
@@ -1177,36 +1188,36 @@ class TrackBase
   # arguments if there are enough slots to warrant it.
   #
   # @example
-  #   t = T(:c4) * 9
+  #   t = T[:c4] * 9
   #
   #   u = t.dropout(3)
   #   # u is equivalent to
-  #   T([:c4, :c4, :r,
-  #      :c4, :c4, :r,
-  #      :c4, :c4, :r])
+  #   T[:c4, :c4, :r,
+  #     :c4, :c4, :r,
+  #     :c4, :c4, :r]
   #
   #   v = t.dropout(2, 3)
   #   # v is equivalent to
-  #   T([:c4, :r,
-  #      :c4, :c4, :r,
-  #      :c4, :r,
-  #      :c4, :c4])
+  #   T[:c4, :r,
+  #     :c4, :c4, :r,
+  #     :c4, :r,
+  #     :c4, :c4]
   #
   # @example
-  #   t = T([:c4, :c4, :r, :c4, :r, :c4, :c4])
+  #   t = T[:c4, :c4, :r, :c4, :r, :c4, :c4]
   #
   #   u = t.dropout(2)
   #   # u is equivalent to
-  #   T([:c4, :r,
-  #      :r, :r,
-  #      :r, :r,
-  #      :c4])
+  #   T[:c4, :r,
+  #     :r, :r,
+  #     :r, :r,
+  #     :c4]
   #
   #   v = t.dropout(2, skip_empty: true)
   #   # v is equivalent to
-  #   T([:c4, :r,
-  #      :r, :c4, :r, :r,
-  #      :c4])
+  #   T[:c4, :r,
+  #     :r, :c4, :r, :r,
+  #     :c4]
   #   # The slots containing rests were ignored.
   #
   # @param gaps [Integer] Specifies the slots to clear; see above. You must pass
@@ -1229,11 +1240,11 @@ class TrackBase
   # become rests.
   #
   # @example
-  #   T([:a1, :a2, :a3, :a4, :a5, :a6, :a7]).drop_x_of_y(2, 3)
+  #   T[:a1, :a2, :a3, :a4, :a5, :a6, :a7].drop_x_of_y(2, 3)
   #   # is equivalent to
-  #   T([:a1, :r, :a3,
-  #      :a4, :r, :a6,
-  #      :a7])
+  #   T[:a1, :r, :a3,
+  #     :a4, :r, :a6,
+  #     :a7]
   #
   # @param x [Integer] Specifies the slot within each group of `y` slots to
   #   turn into a rest. Must be greater than 0 and <= `y`.
@@ -1276,19 +1287,19 @@ class TrackBase
   # that are not selected into a particular track will be rests.
   #
   # @example
-  #   t = T([[:c1, :c2], :d2, :e2, :f2])
+  #   t = T[[:c1, :c2], :d2, :e2, :f2]
   #
   #   u, v = t.extract_slots { |slot| slot.length == 2 }
   #   # u is equivalent to
-  #   T([:r, :d2, :e2, :f2])
+  #   T[:r, :d2, :e2, :f2]
   #   # and v is
-  #   T([[:c1, :c2], :r, :r, :r])
+  #   T[[:c1, :c2], :r, :r, :r]
   #
   #   x, y = t.extract_slots { |_, i| i % 2 == 0 }
   #   # x is equivalent to
-  #   T([:r, :d2, :r, :f2])
+  #   T[:r, :d2, :r, :f2]
   #   # and y is
-  #   T([[:c1, :c2], :r, :e2, :r])
+  #   T[[:c1, :c2], :r, :e2, :r]
   #
   # @yieldparam slot [Array<StepBase>] The slot under consideration.
   # @yieldparam slot_idx [Integer] (optional) The index in the {#grid} of the
@@ -1349,13 +1360,13 @@ class TrackBase
   # filled in the second.
   #
   # @example
-  #   t = T([:a1, :b1, :c1, :d1, :e1, :f1])
+  #   t = T[:a1, :b1, :c1, :d1, :e1, :f1]
   #
   #   u, v = t.extract_every(3)
   #   # u is equivalent to
-  #   T([:a1, :b1, :r, :d1, :e1, :r])
+  #   T[:a1, :b1, :r, :d1, :e1, :r]
   #   # and v is
-  #   T([:r, :r, :c4, :r, :r, :f1])
+  #   T[:r, :r, :c4, :r, :r, :f1]
   #
   # @param (see #drop_every)
   # @return [TrackBase]
@@ -1396,15 +1407,15 @@ class TrackBase
   # is, slots that are empty in the first track will be filled in the second.
   #
   # @example
-  #   u, v = T([:a1, :a2, :a3, :a4, :a5, :a6, :a7]).extract_x_of_y(2, 3)
+  #   u, v = T[:a1, :a2, :a3, :a4, :a5, :a6, :a7].extract_x_of_y(2, 3)
   #   # u is equivalent to
-  #   T([:a1, :r, :a3,
-  #      :a4, :r, :a6,
-  #      :a7])
+  #   T[:a1, :r, :a3,
+  #     :a4, :r, :a6,
+  #     :a7]
   #   # and v is
-  #   T([:r, :a2, :r,
-  #      :r, :a5, :r,
-  #      :r])
+  #   T[:r, :a2, :r,
+  #     :r, :a5, :r,
+  #     :r]
   #
   # @param x [Integer] Specifies the slot within each group of `y` slots to
   #   place in the first returned track; other slots will be in the second. Must
@@ -1442,9 +1453,9 @@ class TrackBase
   # track, the final slot will merge the remaining slots.
   #
   # @example
-  #   T([:c3, :d3, :e3, :f3, :g3]).gmerge(2)
+  #   T[:c3, :d3, :e3, :f3, :g3].gmerge(2)
   #   # is equivalent to
-  #   T([[:c3, :d3], [:e3, :f3], [:g3]])
+  #   T[[:c3, :d3], [:e3, :f3], [:g3]]
   #
   # @param n [Integer] The size of each group of slots to merge.
   # @return [TrackBase]
@@ -1462,18 +1473,18 @@ class TrackBase
   # new slot.
   #
   # @example
-  #   T([:a1, :b1, [:c1, :c2], :d1, :e1]).each_cons(3)
+  #   T[:a1, :b1, [:c1, :c2], :d1, :e1].each_cons(3)
   #   # is equivalent to
-  #   T([:a1, :b1, [:c1, :c2],
-  #      :b1, [:c1, :c2], :d1,
-  #      [:c1, :c2], :d1, :e1])
+  #   T[:a1, :b1, [:c1, :c2],
+  #     :b1, [:c1, :c2], :d1,
+  #     [:c1, :c2], :d1, :e1]
   #
   # @example
-  #   T([:a1, :b1, [:c1, :c2], :d1, :e1]).each_cons(3, flatten: false)
+  #   T[:a1, :b1, [:c1, :c2], :d1, :e1].each_cons(3, flatten: false)
   #   # is equivalent to
-  #   T([[:a1, :b1, :c1, :c2],
-  #      [:b1, :c1, :c2, :d1],
-  #      [:c1, :c2, :d1, :e1]])
+  #   T[[:a1, :b1, :c1, :c2],
+  #     [:b1, :c1, :c2, :d1],
+  #     [:c1, :c2, :d1, :e1]]
   #
   # @param n [Integer] The number of slots to consider in groups. It is an error
   #   to pass a value greater than the length of the track.
@@ -1527,19 +1538,19 @@ class TrackBase
   # track will be empty (i.e., a rest).
   #
   # @example
-  #   t = T([[:c1, :c2], :d2, :e2, :f2])
+  #   t = T[[:c1, :c2], :d2, :e2, :f2]
   #
   #   u, v = t.extract_steps { |step| step.note.match?(:c) }
   #   # u is equivalent to
-  #   T([:r, :d2, :e2, :f2])
+  #   T[:r, :d2, :e2, :f2]
   #   # and v is
-  #   T([[:c1, :c2], :r, :r, :r])
+  #   T[[:c1, :c2], :r, :r, :r]
   #
   #   x, y = t.extract_steps { |step| step.note.octave == 2 }
   #   # x is equivalent to
-  #   T([:c1, :r, :r, :r])
+  #   T[:c1, :r, :r, :r]
   #   # and y is
-  #   T([:c2, :d2, :e2, :f2])
+  #   T[:c2, :d2, :e2, :f2]
   #
   # @yieldparam step [StepBase] The step under consideration.
   # @yieldparam slot [Array<StepBase>] (optional) The slot to which the step
@@ -1622,18 +1633,18 @@ class TrackBase
   #   the corresponding slot of the yielded step.
   # 
   # @example
-  #   t = T([[:f8, :f9], :c2, [:c8, :d9]])
+  #   t = T[[:f8, :f9], :c2, [:c8, :d9]]
   #   u = t.mutate_each_step do |step|
   #     step.with_gate(step.note.octave > 8 ? 0.25 : 1)
   #   end
   #   # u is equivalent to
-  #   T([[:f8, S(:f9, gate: 0.25)],
-  #      :c2,
-  #      [:c8, S(:d9, gate: 0.25)]])
+  #   T[[:f8, S(:f9, gate: 0.25)],
+  #     :c2,
+  #     [:c8, S(:d9, gate: 0.25)]]
   #
   #   v = t.mutate_each_step { |step| step.note.pitch_class == :c ? :r : step  }
   #   # v is equivalent to
-  #   T([[:f8, :f9], :r, :d9])
+  #   T[[:f8, :f9], :r, :d9]
   # 
   # @yieldparam step [StepBase] The step to mutate.
   # @yieldparam slot_idx [Integer] (optional) The index in the {#grid} of the
@@ -1691,10 +1702,10 @@ class TrackBase
   # called and no changes will be made.
   #
   # @example
-  #   t = T([[:f8, :f9], :c2, [:c8, :d9]])
+  #   t = T[[:f8, :f9], :c2, [:c8, :d9]]
   #   u = t.mutate_steps_in_slot(2) { |step| step.shift_octave(-2) }
   #   # u is equivalent to
-  #   T([[:f8, :f9], :c2, [:c6, :d7]])
+  #   T[[:f8, :f9], :c2, [:c6, :d7]]
   #
   # @yieldparam step [StepBase] The step to mutate.
   # @yieldreturn [StepBase, Array<StepBase>, nil, :r, :rest] (or other subclass-
@@ -1868,7 +1879,7 @@ class TrackBase
       mutations[ivar] = send(ivar) unless mutations.has_key?(ivar)
     end
 
-    self.class.new(grid, **mutations)
+    self.class.new(*grid, **mutations)
   end
 
   def strict_track_merging?

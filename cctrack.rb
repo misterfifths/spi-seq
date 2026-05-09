@@ -6,19 +6,12 @@ require_relative "theory/midinote"  # Only for `rest?`
 require_relative "theory/notelength"
 require_relative "trackbase"
 
-# @!group Steps and tracks
-# An alias for {TrackBase#initialize CCTrack.new}.
-# @return [CCTrack]
-def CCT(*args, **kwargs)
-  CCTrack.new(*args, **kwargs)
-end
-# @!endgroup
-
-
 # A CCTrack deals with a grid whose slots contain {CCStep}s. CCStep instances
 # represent MIDI CC events, consisting of a {CCStep#number CC number} and a
 # {CCStep#value value}. When a CCTrack is played with a {CCPlayer} or a
 # {track_live_loop}, MIDI CC messages are sent corresponding to the steps.
+#
+# This class is aliased to `CCT`.
 #
 # Note that **tracks are immutable**. The mutation methods provided here, like
 # {#add_curve}, return new CCTracks that have all the same attributes as the
@@ -36,42 +29,41 @@ class CCTrack < TrackBase
   # array of {CCStep}s, which all trigger simultaneously for a duration of the
   # `granularity`. A slot may be empty to represent a rest.
   #
-  # `gridish` may be:
-  # - A single "stepish" value: a {CCStep} or a rest (nil, `:r`, `:rest`). Such
-  #   values will result in a track with one slot containing that step (or a
-  #   rest). For example:
-  #     CCT(CC(127, 5))  # grid is [[CC(127, 5)]]
-  #     CCT(:r)  # grid is [[]]
-  # - A 1-dimensional array, either empty or containing "stepish" values. This
-  #   will result in a track with one slot per element in the array, each of
-  #   which contains the "stepish" value. For example:
-  #     CCT([CC(127, 5), :r, CC(127, 10)])  # grid is [ [CC(127, 5)], [], [CC(127, 10)] ]
-  #     CCT([])  # grid is [[]]
-  # - An array that contains arrays of "stepish" values, or some mix of such
-  #   arrays and single "stepish" values. Subarrays will be grouped into a
-  #   single slot, and the standalone "stepish" values will be converted to
-  #   single-step slots. For example:
-  #     CCT([CC(127, 5), :r, [CC(127, 10), CC(5, 6)]])
-  #     # grid is [ [CC(127, 5)], [], [CC(127, 10), CC(5, 6)] ]
+  # CCTrack itself is aliased to `CCT`, and `CCTrack.new` is aliased to `[]`,
+  # so you can instantiate a CCTrack with `CCT[...]`.
   #
-  # In the end, the grid conversion should be relatively natural. You can pass a
-  # single value to get a single-slot track. Or, if you pass an array, single
-  # values will get their own slot and values grouped into a subarray will share
+  # The positional arguments may be some mix of:
+  # - "Stepish" values: a {CCStep} or a rest (nil, `:r`, `:rest`). Such values
+  #   will be converted to a single slot containing that step (or a rest). For
+  #   example:
+  #     CCT[CC(127, 5)]  # grid is [[CC(127, 5)]]
+  #     CCT[CC(127, 5), CC(127, 20)]  # grid is [[CC(127, 5)], [CC(127, 20)]]
+  #     CCT[CC(127, 5), :r]  # grid is [[CC(127, 5)], []]
+  #     CCT[:r]  # grid is [[]]
+  # - Arrays of "stepish" values. These are used as the contents of a slot; the
+  #   values in an array will be grouped together into a slot in the track. For
+  #   example:
+  #     CCT[[CC(127, 10), CC(5, 6)], :r, CC(127, 5)]
+  #     # grid is [ [CC(127, 10), CC(5, 6)], [], [CC(127, 5)] ]
+  #
+  # In the end, the grid conversion should be relatively natural. Non-array
+  # values will get their own slot, and values grouped into an array will share
   # a slot.
   #
   # Tracks must have at least one slot, though that slot may be empty (a rest).
+  # So, `CCT[]` with no arguments is an error.
   #
   # A single slot cannot contain more than one step with the same {CCStep#number
   # number}. If that would happen, the step with the highest {CCStep#value
   # value} is chosen, and the other colliding steps are discarded.
   #
-  # @param gridish [Array<Array<CCStep>, CCStep, nil, :r, :rest>, CCStep, nil,
-  #   :r, :rest] Defines the grid for the new track; see above.
+  # @param gridish [Array<CCStep>, CCStep, nil, :r, :rest>] Defines the grid for
+  #   the new track; see above.
   # @param granularity [NoteLength, Number, Symbol] The {#granularity} for the
   #   new track. Can be a {NoteLength} or a value understood by
   #   {NoteLength.new}.
   # @param timescale [Number] The {#timescale} for the new track.
-  def initialize(gridish, granularity: NoteLength::Eighth, timescale: 1)
+  def initialize(*gridish, granularity: NoteLength::Eighth, timescale: 1)
     # Overridden purely to provide documentation.
     super
   end
@@ -113,7 +105,7 @@ class CCTrack < TrackBase
       end
     end
 
-    new(slots, granularity: granularity, timescale: timescale)
+    new(*slots, granularity: granularity, timescale: timescale)
   end
 
   # Creates a track containing {CCStep}s for the given number whose value varies
@@ -125,8 +117,8 @@ class CCTrack < TrackBase
   # @example
   #   CCTrack.curve(127, 50, 80, Curves::UpLinear, 8)
   #   # is equivalent to
-  #   CCT([CC(127, 50), CC(127, 54), CC(127, 58), CC(127, 62),
-  #        CC(127, 67), CC(127, 71), CC(127, 75), CC(127, 80)])
+  #   CCT[CC(127, 50), CC(127, 54), CC(127, 58), CC(127, 62),
+  #       CC(127, 67), CC(127, 71), CC(127, 75), CC(127, 80)]
   #
   # @param cc_number [Integer] The {CCStep#number number} for the new CCSteps.
   # @param start_val [Integer] The starting {CCStep#value value} for the new
@@ -295,3 +287,7 @@ class CCTrack < TrackBase
     end
   end
 end
+
+# An alias for the {CCTrack} class. You can easily make a new instance using the
+# {CCTrack.initialize []} method, like `CCT[:c4, :d4]`.
+CCT = CCTrack

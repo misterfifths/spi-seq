@@ -11,47 +11,47 @@ class TrackBasicTest < Test::Unit::TestCase
   include TrackTestHelpers
 
   def test_basic_methods
-    assert_equal T(:c4).num_slots, 1
-    assert_equal T([:c4, :d4]).num_slots, 2
+    assert_equal T[:c4].num_slots, 1
+    assert_equal T[:c4, :d4].num_slots, 2
 
-    assert_equal T(:c4).beat_length, 0.5
-    assert_equal T([:c4, :d4]).beat_length, 1
-    assert_equal T([:c4, :d4], granularity: :whole).beat_length, 8
+    assert_equal T[:c4].beat_length, 0.5
+    assert_equal T[:c4, :d4].beat_length, 1
+    assert_equal T[:c4, :d4, granularity: :whole].beat_length, 8
 
-    assert T(:r).empty?
-    assert T([:r, :r]).empty?
-    refute T(:c4).empty?
+    assert T[:r].empty?
+    assert T[:r, :r].empty?
+    refute T[:c4].empty?
 
-    assert T(:r).mono?
-    assert T(:c4).mono?
-    assert T([:c4, :d4]).mono?
-    refute T([:c4, [:d4, :e4]]).mono?
+    assert T[:r].mono?
+    assert T[:c4].mono?
+    assert T[:c4, :d4].mono?
+    refute T[:c4, [:d4, :e4]].mono?
 
-    refute T(:r).poly?
-    refute T(:c4).poly?
-    refute T([:c4, :d4]).poly?
-    assert T([:c4, [:d4, :e4]]).poly?
+    refute T[:r].poly?
+    refute T[:c4].poly?
+    refute T[:c4, :d4].poly?
+    assert T[:c4, [:d4, :e4]].poly?
   end
 
   def test_attr_mutators
-    assert_gt T(:c4).with_granularity(:whole), NoteLength::Whole, 1
-    assert_gt T(:c4, granularity: :half).with_granularity(:sixteenth), NoteLength::Sixteenth, 1
+    assert_gt T[:c4].with_granularity(:whole), NoteLength::Whole, 1
+    assert_gt T[:c4, granularity: :half].with_granularity(:sixteenth), NoteLength::Sixteenth, 1
 
-    assert_gt T(:c4).with_rate(2), NoteLength::Eighth, 2
-    assert_gt T(:c4, timescale: 5).with_rate(0.5), NoteLength::Eighth, 0.5
+    assert_gt T[:c4].with_rate(2), NoteLength::Eighth, 2
+    assert_gt T[:c4, timescale: 5].with_rate(0.5), NoteLength::Eighth, 0.5
 
     c_maj = Scale.full_scale(:c, :major)
     c_min = Scale.full_scale(:c, :minor)
-    assert_gt T(:c4).with_scale(c_maj), NoteLength::Eighth, 1, scale: c_maj
-    assert_gt T(:c4, scale: c_min).with_scale(c_maj), NoteLength::Eighth, 1, scale: c_maj
-    assert_gt T(:c4, scale: c_min).with_scale(nil), NoteLength::Eighth, 1
+    assert_gt T[:c4].with_scale(c_maj), NoteLength::Eighth, 1, scale: c_maj
+    assert_gt T[:c4, scale: c_min].with_scale(c_maj), NoteLength::Eighth, 1, scale: c_maj
+    assert_gt T[:c4, scale: c_min].with_scale(nil), NoteLength::Eighth, 1
   end
 
   def test_filled_slots
     assert_empty Track.rest(3).indexes_of_filled_slots
     assert_raises { Track.rest(3).nth_filled_slot(0) }
 
-    t = T([:a1, [:b2, :b3], :r, :c3, :r])
+    t = T[:a1, [:b2, :b3], :r, :c3, :r]
     assert_equal t.indexes_of_filled_slots, [0, 1, 3]
 
     s = t.nth_filled_slot(0)

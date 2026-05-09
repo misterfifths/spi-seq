@@ -24,7 +24,7 @@ class AccumTest < Test::Unit::TestCase
   def assert_std_accum(delta, deltas:, min: 0, max: 12, mode: :wrap, prob: nil, **kwargs)
     expected_events = deltas.map.with_index { |d, i| [N(:c4) + d, i, i + 0.5] }
 
-    assert_playback_events(qT(S(:c4, gate: 0.5).accum(delta, min: min, max: max, mode: mode, prob: prob)),
+    assert_playback_events(QT[S(:c4, gate: 0.5).accum(delta, min: min, max: max, mode: mode, prob: prob)],
                            expected_events,
                            **kwargs)
   end
@@ -81,7 +81,7 @@ class AccumTest < Test::Unit::TestCase
 
   def test_prob
     # accum shouldn't trigger if the step itself doesn't
-    assert_playback_events qT(S(:c4, gate: 0.5, prob: Prob.every_other).accum(1, max: 2, mode: :freeze)), [
+    assert_playback_events QT[S(:c4, gate: 0.5, prob: Prob.every_other).accum(1, max: 2, mode: :freeze)], [
       [:c4, 0, 0.5],
       # skipped in cycle 2
       [:cs4, 2, 2.5],
@@ -94,7 +94,7 @@ class AccumTest < Test::Unit::TestCase
     ], play_count: 9
 
     # accum shouldn't trigger if the accum prob doesn't
-    assert_playback_events qT(S(:c4, gate: 0.5).accum(1, max: 2, mode: :freeze, prob: Prob.every_other)), [
+    assert_playback_events QT[S(:c4, gate: 0.5).accum(1, max: 2, mode: :freeze, prob: Prob.every_other)], [
       [:c4, 0, 0.5],
       [:c4, 1, 1.5],
       [:cs4, 2, 2.5],
@@ -106,7 +106,7 @@ class AccumTest < Test::Unit::TestCase
     ], play_count: 8
 
     # accum and step probs should stack
-    assert_playback_events qT(S(:c4, gate: 0.5, prob: Prob.not_first).accum(1, max: 3, mode: :freeze, prob: Prob.every_other)), [
+    assert_playback_events QT[S(:c4, gate: 0.5, prob: Prob.not_first).accum(1, max: 3, mode: :freeze, prob: Prob.every_other)], [
       # skipped
       [:c4, 1, 1.5],  # first time for this step; accum will never trigger
       [:cs4, 2, 2.5], # this is an every other cycle; accum triggers
@@ -121,7 +121,7 @@ class AccumTest < Test::Unit::TestCase
 
   def test_cctrack
     # Accumulation applies to the value of CCSteps.
-    assert_playback_events CCTrack.new([CC(64, 5).accum(1, max: 3, mode: :freeze)], granularity: :quarter), [
+    assert_playback_events CCT[CC(64, 5).accum(1, max: 3, mode: :freeze), granularity: :quarter], [
       [64, 5, 0],
       [64, 6, 1],
       [64, 7, 2],
