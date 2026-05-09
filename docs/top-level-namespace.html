@@ -101,6 +101,36 @@
 
     <dl class="constants">
       
+        <dt id="T-constant" class="">T =
+          <div class="docstring">
+  <div class="discussion">
+    <p>An alias for the <span class='object_link'><a href="Track.html" title="Track (class)">Track</a></span> class. You can easily make a new instance using the
+<span class='object_link'><a href="Track.html#initialize-instance_method" title="Track#initialize (method)">[]</a></span> method, like <code>T[:c4, :d4]</code>.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'><span class='object_link'><a href="Track.html" title="Track (class)">Track</a></span></span></pre></dd>
+      
+        <dt id="CCT-constant" class="">CCT =
+          <div class="docstring">
+  <div class="discussion">
+    <p>An alias for the <span class='object_link'><a href="CCTrack.html" title="CCTrack (class)">CCTrack</a></span> class. You can easily make a new instance using the
+<span class='object_link'><a href="CCTrack.html#initialize-instance_method" title="CCTrack#initialize (method)">[]</a></span> method, like <code>CCT[:c4, :d4]</code>.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'><span class='object_link'><a href="CCTrack.html" title="CCTrack (class)">CCTrack</a></span></span></pre></dd>
+      
         <dt id="Ch-constant" class="">Ch =
           <div class="docstring">
   <div class="discussion">
@@ -173,28 +203,6 @@ name.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="top-level-namespace.html#CCT-instance_method" title="#CCT (instance method)">#<strong>CCT</strong>(*args, **kwargs)  &#x21d2; CCTrack </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>An alias for <span class='object_link'><a href="TrackBase.html#initialize-instance_method" title="TrackBase#initialize (method)">CCTrack.new</a></span>.</p></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="top-level-namespace.html#current_track_defaults-instance_method" title="#current_track_defaults (instance method)">#<strong>current_track_defaults</strong>  &#x21d2; Hash{Symbol =&gt; Object} </a>
     
 
@@ -232,28 +240,6 @@ name.</p>
 
   
     <span class="summary_desc"><div class='inline'><p>An alias for <span class='object_link'><a href="Step.html#initialize-instance_method" title="Step#initialize (method)">Step.new</a></span>.</p></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="top-level-namespace.html#T-instance_method" title="#T (instance method)">#<strong>T</strong>(*args, **kwargs)  &#x21d2; Track </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>An alias for <span class='object_link'><a href="Track.html#initialize-instance_method" title="Track#initialize (method)">Track.new</a></span>.</p></div></span>
   
 </li>
 
@@ -1490,58 +1476,6 @@ the same manner as <code>channel</code>.</p></div>
     <span class='id identifier rubyid_cc'>cc</span><span class='comma'>,</span> <span class='id identifier rubyid_val'>val</span> <span class='op'>=</span> <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_sync'>sync</span><span class='lparen'>(</span><span class='id identifier rubyid_cue_path'>cue_path</span><span class='rparen'>)</span>
     <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='id identifier rubyid_cc'>cc</span><span class='comma'>,</span> <span class='id identifier rubyid_val'>val</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_take'>take</span><span class='lparen'>(</span><span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span><span class='rparen'>)</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="CCT-instance_method">
-  
-    #<strong>CCT</strong>(*args, **kwargs)  &#x21d2; <tt><span class='object_link'><a href="CCTrack.html" title="CCTrack (class)">CCTrack</a></span></tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    <p>An alias for <span class='object_link'><a href="TrackBase.html#initialize-instance_method" title="TrackBase#initialize (method)">CCTrack.new</a></span>.</p>
-
-  </div>
-</div>
-<div class="tags">
-  
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt><span class='object_link'><a href="CCTrack.html" title="CCTrack (class)">CCTrack</a></span></tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-12
-13
-14</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'cctrack.rb', line 12</span>
-
-<span class='kw'>def</span> <span class='const'>CCT</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span>
-  <span class='const'><span class='object_link'><a href="CCTrack.html" title="CCTrack (class)">CCTrack</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="CCTrack.html#initialize-instance_method" title="CCTrack#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -2918,58 +2852,6 @@ function.</p>
 
 <span class='kw'>def</span> <span class='const'>SC</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="Scale.html" title="Scale (class)">Scale</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Scale.html#initialize-instance_method" title="Scale#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="T-instance_method">
-  
-    #<strong>T</strong>(*args, **kwargs)  &#x21d2; <tt><span class='object_link'><a href="Track.html" title="Track (class)">Track</a></span></tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    <p>An alias for <span class='object_link'><a href="Track.html#initialize-instance_method" title="Track#initialize (method)">Track.new</a></span>.</p>
-
-  </div>
-</div>
-<div class="tags">
-  
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt><span class='object_link'><a href="Track.html" title="Track (class)">Track</a></span></tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-17
-18
-19</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 17</span>
-
-<span class='kw'>def</span> <span class='const'>T</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span>
-  <span class='const'><span class='object_link'><a href="Track.html" title="Track (class)">Track</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Track.html#initialize-instance_method" title="Track#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>

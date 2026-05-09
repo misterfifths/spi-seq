@@ -110,6 +110,7 @@
 represent MIDI CC events, consisting of a <span class='object_link'><a href="CCStep.html#number-instance_method" title="CCStep#number (method)">CC number</a></span> and a
 <span class='object_link'><a href="CCStep.html#value-instance_method" title="CCStep#value (method)">value</a></span>. When a CCTrack is played with a <span class='object_link'><a href="CCPlayer.html" title="CCPlayer (class)">CCPlayer</a></span> or a
 <span class='object_link'><a href="top-level-namespace.html#track_live_loop-instance_method" title="#track_live_loop (method)">#track_live_loop</a></span>, MIDI CC messages are sent corresponding to the steps.</p>
+<p>This class is aliased to <code>CCT</code>.</p>
 <p>Note that <strong>tracks are immutable</strong>. The mutation methods provided here, like
 <span class='object_link'><a href="#add_curve-instance_method" title="CCTrack#add_curve (method)">#add_curve</a></span>, return new CCTracks that have all the same attributes as the
 receiver (e.g. <span class='object_link'><a href="TrackBase.html#timescale-instance_method" title="TrackBase#timescale (method)">TrackBase#timescale</a></span> and <span class='object_link'><a href="TrackBase.html#granularity-instance_method" title="TrackBase#granularity (method)">TrackBase#granularity</a></span>), with just the described
@@ -222,7 +223,7 @@ documentation for the basics of the grid, slots, and mutation methods.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(gridish, granularity: NoteLength::Eighth, timescale: 1)  &#x21d2; CCTrack </a>
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(*gridish, granularity: NoteLength::Eighth, timescale: 1)  &#x21d2; CCTrack </a>
     
 
     
@@ -258,14 +259,14 @@ documentation for the basics of the grid, slots, and mutation methods.</p>
   
   
   <h3 class="inherited">Methods inherited from <span class='object_link'><a href="TrackBase.html" title="TrackBase (class)">TrackBase</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="TrackBase.html#append-instance_method" title="TrackBase#append (method)">#append</a></span>, <span class='object_link'><a href="TrackBase.html#append_slot-instance_method" title="TrackBase#append_slot (method)">#append_slot</a></span>, <span class='object_link'><a href="TrackBase.html#beat_length-instance_method" title="TrackBase#beat_length (method)">#beat_length</a></span>, <span class='object_link'><a href="TrackBase.html#clear-instance_method" title="TrackBase#clear (method)">#clear</a></span>, <span class='object_link'><a href="TrackBase.html#clear_slot-instance_method" title="TrackBase#clear_slot (method)">#clear_slot</a></span>, <span class='object_link'><a href="TrackBase.html#combination-instance_method" title="TrackBase#combination (method)">#combination</a></span>, <span class='object_link'><a href="TrackBase.html#compact-instance_method" title="TrackBase#compact (method)">#compact</a></span>, <span class='object_link'><a href="TrackBase.html#copy_repr-instance_method" title="TrackBase#copy_repr (method)">#copy_repr</a></span>, <span class='object_link'><a href="TrackBase.html#cycle_to_length-instance_method" title="TrackBase#cycle_to_length (method)">#cycle_to_length</a></span>, <span class='object_link'><a href="TrackBase.html#drop-instance_method" title="TrackBase#drop (method)">#drop</a></span>, <span class='object_link'><a href="TrackBase.html#drop_every-instance_method" title="TrackBase#drop_every (method)">#drop_every</a></span>, <span class='object_link'><a href="TrackBase.html#drop_last-instance_method" title="TrackBase#drop_last (method)">#drop_last</a></span>, <span class='object_link'><a href="TrackBase.html#drop_x_of_y-instance_method" title="TrackBase#drop_x_of_y (method)">#drop_x_of_y</a></span>, <span class='object_link'><a href="TrackBase.html#each_cons-instance_method" title="TrackBase#each_cons (method)">#each_cons</a></span>, <span class='object_link'><a href="TrackBase.html#empty%3F-instance_method" title="TrackBase#empty? (method)">#empty?</a></span>, <span class='object_link'><a href="TrackBase.html#euclid-class_method" title="TrackBase.euclid (method)">euclid</a></span>, <span class='object_link'><a href="TrackBase.html#extract_every-instance_method" title="TrackBase#extract_every (method)">#extract_every</a></span>, <span class='object_link'><a href="TrackBase.html#extract_slots-instance_method" title="TrackBase#extract_slots (method)">#extract_slots</a></span>, <span class='object_link'><a href="TrackBase.html#extract_steps-instance_method" title="TrackBase#extract_steps (method)">#extract_steps</a></span>, <span class='object_link'><a href="TrackBase.html#extract_x_of_y-instance_method" title="TrackBase#extract_x_of_y (method)">#extract_x_of_y</a></span>, <span class='object_link'><a href="TrackBase.html#fill-instance_method" title="TrackBase#fill (method)">#fill</a></span>, <span class='object_link'><a href="TrackBase.html#filter_slots-instance_method" title="TrackBase#filter_slots (method)">#filter_slots</a></span>, <span class='object_link'><a href="TrackBase.html#filter_steps-instance_method" title="TrackBase#filter_steps (method)">#filter_steps</a></span>, <span class='object_link'><a href="TrackBase.html#grouped_merge-instance_method" title="TrackBase#grouped_merge (method)">#grouped_merge</a></span>, <span class='object_link'><a href="TrackBase.html#grouped_zip-instance_method" title="TrackBase#grouped_zip (method)">#grouped_zip</a></span>, <span class='object_link'><a href="TrackBase.html#indexes_of_filled_slots-instance_method" title="TrackBase#indexes_of_filled_slots (method)">#indexes_of_filled_slots</a></span>, <span class='object_link'><a href="TrackBase.html#inspect-instance_method" title="TrackBase#inspect (method)">#inspect</a></span>, <span class='object_link'><a href="TrackBase.html#left_pad-instance_method" title="TrackBase#left_pad (method)">#left_pad</a></span>, <span class='object_link'><a href="TrackBase.html#ltrim-instance_method" title="TrackBase#ltrim (method)">#ltrim</a></span>, <span class='object_link'><a href="TrackBase.html#merge-instance_method" title="TrackBase#merge (method)">#merge</a></span>, <span class='object_link'><a href="TrackBase.html#mirror-instance_method" title="TrackBase#mirror (method)">#mirror</a></span>, <span class='object_link'><a href="TrackBase.html#mono%3F-instance_method" title="TrackBase#mono? (method)">#mono?</a></span>, <span class='object_link'><a href="TrackBase.html#mutate_each_slot-instance_method" title="TrackBase#mutate_each_slot (method)">#mutate_each_slot</a></span>, <span class='object_link'><a href="TrackBase.html#mutate_each_step-instance_method" title="TrackBase#mutate_each_step (method)">#mutate_each_step</a></span>, <span class='object_link'><a href="TrackBase.html#mutate_filled_slot-instance_method" title="TrackBase#mutate_filled_slot (method)">#mutate_filled_slot</a></span>, <span class='object_link'><a href="TrackBase.html#mutate_steps_in_slot-instance_method" title="TrackBase#mutate_steps_in_slot (method)">#mutate_steps_in_slot</a></span>, <span class='object_link'><a href="TrackBase.html#nth_filled_slot-instance_method" title="TrackBase#nth_filled_slot (method)">#nth_filled_slot</a></span>, <span class='object_link'><a href="TrackBase.html#num_slots-instance_method" title="TrackBase#num_slots (method)">#num_slots</a></span>, <span class='object_link'><a href="TrackBase.html#permutation-instance_method" title="TrackBase#permutation (method)">#permutation</a></span>, <span class='object_link'><a href="TrackBase.html#poly%3F-instance_method" title="TrackBase#poly? (method)">#poly?</a></span>, <span class='object_link'><a href="TrackBase.html#rand_dropout-instance_method" title="TrackBase#rand_dropout (method)">#rand_dropout</a></span>, <span class='object_link'><a href="TrackBase.html#reflect-instance_method" title="TrackBase#reflect (method)">#reflect</a></span>, <span class='object_link'><a href="TrackBase.html#repeat-instance_method" title="TrackBase#repeat (method)">#repeat</a></span>, <span class='object_link'><a href="TrackBase.html#replace_filled_slot-instance_method" title="TrackBase#replace_filled_slot (method)">#replace_filled_slot</a></span>, <span class='object_link'><a href="TrackBase.html#replace_slot-instance_method" title="TrackBase#replace_slot (method)">#replace_slot</a></span>, <span class='object_link'><a href="TrackBase.html#repr-instance_method" title="TrackBase#repr (method)">#repr</a></span>, <span class='object_link'><a href="TrackBase.html#rest-class_method" title="TrackBase.rest (method)">rest</a></span>, <span class='object_link'><a href="TrackBase.html#reverse-instance_method" title="TrackBase#reverse (method)">#reverse</a></span>, <span class='object_link'><a href="TrackBase.html#right-instance_method" title="TrackBase#right (method)">#right</a></span>, <span class='object_link'><a href="TrackBase.html#right_pad-instance_method" title="TrackBase#right_pad (method)">#right_pad</a></span>, <span class='object_link'><a href="TrackBase.html#rotate-instance_method" title="TrackBase#rotate (method)">#rotate</a></span>, <span class='object_link'><a href="TrackBase.html#rtrim-instance_method" title="TrackBase#rtrim (method)">#rtrim</a></span>, <span class='object_link'><a href="TrackBase.html#sample-instance_method" title="TrackBase#sample (method)">#sample</a></span>, <span class='object_link'><a href="TrackBase.html#sample_filled_slots-instance_method" title="TrackBase#sample_filled_slots (method)">#sample_filled_slots</a></span>, <span class='object_link'><a href="TrackBase.html#shuffle-instance_method" title="TrackBase#shuffle (method)">#shuffle</a></span>, <span class='object_link'><a href="TrackBase.html#shuffle_filled_slots-instance_method" title="TrackBase#shuffle_filled_slots (method)">#shuffle_filled_slots</a></span>, <span class='object_link'><a href="TrackBase.html#slice-instance_method" title="TrackBase#slice (method)">#slice</a></span>, <span class='object_link'><a href="TrackBase.html#space-instance_method" title="TrackBase#space (method)">#space</a></span>, <span class='object_link'><a href="TrackBase.html#space_every-instance_method" title="TrackBase#space_every (method)">#space_every</a></span>, <span class='object_link'><a href="TrackBase.html#take-instance_method" title="TrackBase#take (method)">#take</a></span>, <span class='object_link'><a href="TrackBase.html#trim-instance_method" title="TrackBase#trim (method)">#trim</a></span>, <span class='object_link'><a href="TrackBase.html#with_granularity-instance_method" title="TrackBase#with_granularity (method)">#with_granularity</a></span>, <span class='object_link'><a href="TrackBase.html#with_prob-instance_method" title="TrackBase#with_prob (method)">#with_prob</a></span>, <span class='object_link'><a href="TrackBase.html#with_timescale-instance_method" title="TrackBase#with_timescale (method)">#with_timescale</a></span>, <span class='object_link'><a href="TrackBase.html#without_prob-instance_method" title="TrackBase#without_prob (method)">#without_prob</a></span>, <span class='object_link'><a href="TrackBase.html#zip-instance_method" title="TrackBase#zip (method)">#zip</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="TrackBase.html#append-instance_method" title="TrackBase#append (method)">#append</a></span>, <span class='object_link'><a href="TrackBase.html#append_slot-instance_method" title="TrackBase#append_slot (method)">#append_slot</a></span>, <span class='object_link'><a href="TrackBase.html#beat_length-instance_method" title="TrackBase#beat_length (method)">#beat_length</a></span>, <span class='object_link'><a href="TrackBase.html#clear-instance_method" title="TrackBase#clear (method)">#clear</a></span>, <span class='object_link'><a href="TrackBase.html#clear_slot-instance_method" title="TrackBase#clear_slot (method)">#clear_slot</a></span>, <span class='object_link'><a href="TrackBase.html#combination-instance_method" title="TrackBase#combination (method)">#combination</a></span>, <span class='object_link'><a href="TrackBase.html#compact-instance_method" title="TrackBase#compact (method)">#compact</a></span>, <span class='object_link'><a href="TrackBase.html#copy_repr-instance_method" title="TrackBase#copy_repr (method)">#copy_repr</a></span>, <span class='object_link'><a href="TrackBase.html#cycle_to_length-instance_method" title="TrackBase#cycle_to_length (method)">#cycle_to_length</a></span>, <span class='object_link'><a href="TrackBase.html#drop-instance_method" title="TrackBase#drop (method)">#drop</a></span>, <span class='object_link'><a href="TrackBase.html#drop_every-instance_method" title="TrackBase#drop_every (method)">#drop_every</a></span>, <span class='object_link'><a href="TrackBase.html#drop_last-instance_method" title="TrackBase#drop_last (method)">#drop_last</a></span>, <span class='object_link'><a href="TrackBase.html#drop_x_of_y-instance_method" title="TrackBase#drop_x_of_y (method)">#drop_x_of_y</a></span>, <span class='object_link'><a href="TrackBase.html#each_cons-instance_method" title="TrackBase#each_cons (method)">#each_cons</a></span>, <span class='object_link'><a href="TrackBase.html#empty%3F-instance_method" title="TrackBase#empty? (method)">#empty?</a></span>, <span class='object_link'><a href="TrackBase.html#euclid-class_method" title="TrackBase.euclid (method)">euclid</a></span>, <span class='object_link'><a href="TrackBase.html#extract_every-instance_method" title="TrackBase#extract_every (method)">#extract_every</a></span>, <span class='object_link'><a href="TrackBase.html#extract_slots-instance_method" title="TrackBase#extract_slots (method)">#extract_slots</a></span>, <span class='object_link'><a href="TrackBase.html#extract_steps-instance_method" title="TrackBase#extract_steps (method)">#extract_steps</a></span>, <span class='object_link'><a href="TrackBase.html#extract_x_of_y-instance_method" title="TrackBase#extract_x_of_y (method)">#extract_x_of_y</a></span>, <span class='object_link'><a href="TrackBase.html#fill-instance_method" title="TrackBase#fill (method)">#fill</a></span>, <span class='object_link'><a href="TrackBase.html#filter_slots-instance_method" title="TrackBase#filter_slots (method)">#filter_slots</a></span>, <span class='object_link'><a href="TrackBase.html#filter_steps-instance_method" title="TrackBase#filter_steps (method)">#filter_steps</a></span>, <span class='object_link'><a href="TrackBase.html#from_grid-class_method" title="TrackBase.from_grid (method)">from_grid</a></span>, <span class='object_link'><a href="TrackBase.html#grouped_merge-instance_method" title="TrackBase#grouped_merge (method)">#grouped_merge</a></span>, <span class='object_link'><a href="TrackBase.html#grouped_zip-instance_method" title="TrackBase#grouped_zip (method)">#grouped_zip</a></span>, <span class='object_link'><a href="TrackBase.html#indexes_of_filled_slots-instance_method" title="TrackBase#indexes_of_filled_slots (method)">#indexes_of_filled_slots</a></span>, <span class='object_link'><a href="TrackBase.html#inspect-instance_method" title="TrackBase#inspect (method)">#inspect</a></span>, <span class='object_link'><a href="TrackBase.html#left_pad-instance_method" title="TrackBase#left_pad (method)">#left_pad</a></span>, <span class='object_link'><a href="TrackBase.html#ltrim-instance_method" title="TrackBase#ltrim (method)">#ltrim</a></span>, <span class='object_link'><a href="TrackBase.html#merge-instance_method" title="TrackBase#merge (method)">#merge</a></span>, <span class='object_link'><a href="TrackBase.html#mirror-instance_method" title="TrackBase#mirror (method)">#mirror</a></span>, <span class='object_link'><a href="TrackBase.html#mono%3F-instance_method" title="TrackBase#mono? (method)">#mono?</a></span>, <span class='object_link'><a href="TrackBase.html#mutate_each_slot-instance_method" title="TrackBase#mutate_each_slot (method)">#mutate_each_slot</a></span>, <span class='object_link'><a href="TrackBase.html#mutate_each_step-instance_method" title="TrackBase#mutate_each_step (method)">#mutate_each_step</a></span>, <span class='object_link'><a href="TrackBase.html#mutate_filled_slot-instance_method" title="TrackBase#mutate_filled_slot (method)">#mutate_filled_slot</a></span>, <span class='object_link'><a href="TrackBase.html#mutate_steps_in_slot-instance_method" title="TrackBase#mutate_steps_in_slot (method)">#mutate_steps_in_slot</a></span>, <span class='object_link'><a href="TrackBase.html#nth_filled_slot-instance_method" title="TrackBase#nth_filled_slot (method)">#nth_filled_slot</a></span>, <span class='object_link'><a href="TrackBase.html#num_slots-instance_method" title="TrackBase#num_slots (method)">#num_slots</a></span>, <span class='object_link'><a href="TrackBase.html#permutation-instance_method" title="TrackBase#permutation (method)">#permutation</a></span>, <span class='object_link'><a href="TrackBase.html#poly%3F-instance_method" title="TrackBase#poly? (method)">#poly?</a></span>, <span class='object_link'><a href="TrackBase.html#rand_dropout-instance_method" title="TrackBase#rand_dropout (method)">#rand_dropout</a></span>, <span class='object_link'><a href="TrackBase.html#reflect-instance_method" title="TrackBase#reflect (method)">#reflect</a></span>, <span class='object_link'><a href="TrackBase.html#repeat-instance_method" title="TrackBase#repeat (method)">#repeat</a></span>, <span class='object_link'><a href="TrackBase.html#replace_filled_slot-instance_method" title="TrackBase#replace_filled_slot (method)">#replace_filled_slot</a></span>, <span class='object_link'><a href="TrackBase.html#replace_slot-instance_method" title="TrackBase#replace_slot (method)">#replace_slot</a></span>, <span class='object_link'><a href="TrackBase.html#repr-instance_method" title="TrackBase#repr (method)">#repr</a></span>, <span class='object_link'><a href="TrackBase.html#rest-class_method" title="TrackBase.rest (method)">rest</a></span>, <span class='object_link'><a href="TrackBase.html#reverse-instance_method" title="TrackBase#reverse (method)">#reverse</a></span>, <span class='object_link'><a href="TrackBase.html#right-instance_method" title="TrackBase#right (method)">#right</a></span>, <span class='object_link'><a href="TrackBase.html#right_pad-instance_method" title="TrackBase#right_pad (method)">#right_pad</a></span>, <span class='object_link'><a href="TrackBase.html#rotate-instance_method" title="TrackBase#rotate (method)">#rotate</a></span>, <span class='object_link'><a href="TrackBase.html#rtrim-instance_method" title="TrackBase#rtrim (method)">#rtrim</a></span>, <span class='object_link'><a href="TrackBase.html#sample-instance_method" title="TrackBase#sample (method)">#sample</a></span>, <span class='object_link'><a href="TrackBase.html#sample_filled_slots-instance_method" title="TrackBase#sample_filled_slots (method)">#sample_filled_slots</a></span>, <span class='object_link'><a href="TrackBase.html#shuffle-instance_method" title="TrackBase#shuffle (method)">#shuffle</a></span>, <span class='object_link'><a href="TrackBase.html#shuffle_filled_slots-instance_method" title="TrackBase#shuffle_filled_slots (method)">#shuffle_filled_slots</a></span>, <span class='object_link'><a href="TrackBase.html#slice-instance_method" title="TrackBase#slice (method)">#slice</a></span>, <span class='object_link'><a href="TrackBase.html#space-instance_method" title="TrackBase#space (method)">#space</a></span>, <span class='object_link'><a href="TrackBase.html#space_every-instance_method" title="TrackBase#space_every (method)">#space_every</a></span>, <span class='object_link'><a href="TrackBase.html#take-instance_method" title="TrackBase#take (method)">#take</a></span>, <span class='object_link'><a href="TrackBase.html#trim-instance_method" title="TrackBase#trim (method)">#trim</a></span>, <span class='object_link'><a href="TrackBase.html#with_granularity-instance_method" title="TrackBase#with_granularity (method)">#with_granularity</a></span>, <span class='object_link'><a href="TrackBase.html#with_prob-instance_method" title="TrackBase#with_prob (method)">#with_prob</a></span>, <span class='object_link'><a href="TrackBase.html#with_timescale-instance_method" title="TrackBase#with_timescale (method)">#with_timescale</a></span>, <span class='object_link'><a href="TrackBase.html#without_prob-instance_method" title="TrackBase#without_prob (method)">#without_prob</a></span>, <span class='object_link'><a href="TrackBase.html#zip-instance_method" title="TrackBase#zip (method)">#zip</a></span></p>
 <div id="constructor_details" class="method_details_list">
   <h2>Constructor Details</h2>
   
     <div class="method_details first">
   <h3 class="signature first" id="initialize-instance_method">
   
-    #<strong>initialize</strong>(gridish, granularity: NoteLength::Eighth, timescale: 1)  &#x21d2; <tt><span class='object_link'><a href="" title="CCTrack (class)">CCTrack</a></span></tt> 
+    #<strong>initialize</strong>(*gridish, granularity: NoteLength::Eighth, timescale: 1)  &#x21d2; <tt><span class='object_link'><a href="" title="CCTrack (class)">CCTrack</a></span></tt> 
   
 
   
@@ -277,36 +278,32 @@ documentation for the basics of the grid, slots, and mutation methods.</p>
 converted into a proper grid, an array of &quot;slots&quot;. A slot is itself an
 array of <span class='object_link'><a href="CCStep.html" title="CCStep (class)">CCStep</a></span>s, which all trigger simultaneously for a duration of the
 <code>granularity</code>. A slot may be empty to represent a rest.</p>
-<p><code>gridish</code> may be:</p>
+<p>CCTrack itself is aliased to <code>CCT</code>, and <code>CCTrack.new</code> is aliased to <code>[]</code>,
+so you can instantiate a CCTrack with <code>CCT[...]</code>.</p>
+<p>The positional arguments may be some mix of:</p>
 <ul>
-<li>A single &quot;stepish&quot; value: a <span class='object_link'><a href="CCStep.html" title="CCStep (class)">CCStep</a></span> or a rest (nil, <code>:r</code>, <code>:rest</code>). Such
-values will result in a track with one slot containing that step (or a
-rest). For example:
-<pre class="code ruby"><code class="ruby"><span class='const'><span class='object_link'><a href="top-level-namespace.html#CCT-instance_method" title="#CCT (method)">CCT</a></span></span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="top-level-namespace.html#CC-instance_method" title="#CC (method)">CC</a></span></span><span class='lparen'>(</span><span class='int'>127</span><span class='comma'>,</span> <span class='int'>5</span><span class='rparen'>)</span><span class='rparen'>)</span>  <span class='comment'># grid is [[CC(127, 5)]]
-</span><span class='const'><span class='object_link'><a href="top-level-namespace.html#CCT-instance_method" title="#CCT (method)">CCT</a></span></span><span class='lparen'>(</span><span class='symbol'>:r</span><span class='rparen'>)</span>  <span class='comment'># grid is [[]]
+<li>&quot;Stepish&quot; values: a <span class='object_link'><a href="CCStep.html" title="CCStep (class)">CCStep</a></span> or a rest (nil, <code>:r</code>, <code>:rest</code>). Such values
+will be converted to a single slot containing that step (or a rest). For
+example:
+<pre class="code ruby"><code class="ruby"><span class='const'><span class='object_link'><a href="top-level-namespace.html#CCT-constant" title="CCT (constant)">CCT</a></span></span><span class='lbracket'>[</span><span class='const'><span class='object_link'><a href="top-level-namespace.html#CC-instance_method" title="#CC (method)">CC</a></span></span><span class='lparen'>(</span><span class='int'>127</span><span class='comma'>,</span> <span class='int'>5</span><span class='rparen'>)</span><span class='rbracket'>]</span>  <span class='comment'># grid is [[CC(127, 5)]]
+</span><span class='const'><span class='object_link'><a href="top-level-namespace.html#CCT-constant" title="CCT (constant)">CCT</a></span></span><span class='lbracket'>[</span><span class='const'><span class='object_link'><a href="top-level-namespace.html#CC-instance_method" title="#CC (method)">CC</a></span></span><span class='lparen'>(</span><span class='int'>127</span><span class='comma'>,</span> <span class='int'>5</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#CC-instance_method" title="#CC (method)">CC</a></span></span><span class='lparen'>(</span><span class='int'>127</span><span class='comma'>,</span> <span class='int'>20</span><span class='rparen'>)</span><span class='rbracket'>]</span>  <span class='comment'># grid is [[CC(127, 5)], [CC(127, 20)]]
+</span><span class='const'><span class='object_link'><a href="top-level-namespace.html#CCT-constant" title="CCT (constant)">CCT</a></span></span><span class='lbracket'>[</span><span class='const'><span class='object_link'><a href="top-level-namespace.html#CC-instance_method" title="#CC (method)">CC</a></span></span><span class='lparen'>(</span><span class='int'>127</span><span class='comma'>,</span> <span class='int'>5</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='symbol'>:r</span><span class='rbracket'>]</span>  <span class='comment'># grid is [[CC(127, 5)], []]
+</span><span class='const'><span class='object_link'><a href="top-level-namespace.html#CCT-constant" title="CCT (constant)">CCT</a></span></span><span class='lbracket'>[</span><span class='symbol'>:r</span><span class='rbracket'>]</span>  <span class='comment'># grid is [[]]
 </span></code></pre>
 </li>
-<li>A 1-dimensional array, either empty or containing &quot;stepish&quot; values. This
-will result in a track with one slot per element in the array, each of
-which contains the &quot;stepish&quot; value. For example:
-<pre class="code ruby"><code class="ruby"><span class='const'><span class='object_link'><a href="top-level-namespace.html#CCT-instance_method" title="#CCT (method)">CCT</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='const'><span class='object_link'><a href="top-level-namespace.html#CC-instance_method" title="#CC (method)">CC</a></span></span><span class='lparen'>(</span><span class='int'>127</span><span class='comma'>,</span> <span class='int'>5</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='symbol'>:r</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#CC-instance_method" title="#CC (method)">CC</a></span></span><span class='lparen'>(</span><span class='int'>127</span><span class='comma'>,</span> <span class='int'>10</span><span class='rparen'>)</span><span class='rbracket'>]</span><span class='rparen'>)</span>  <span class='comment'># grid is [ [CC(127, 5)], [], [CC(127, 10)] ]
-</span><span class='const'><span class='object_link'><a href="top-level-namespace.html#CCT-instance_method" title="#CCT (method)">CCT</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span>  <span class='comment'># grid is [[]]
-</span></code></pre>
-</li>
-<li>An array that contains arrays of &quot;stepish&quot; values, or some mix of such
-arrays and single &quot;stepish&quot; values. Subarrays will be grouped into a
-single slot, and the standalone &quot;stepish&quot; values will be converted to
-single-step slots. For example:
-<pre class="code ruby"><code class="ruby"><span class='const'><span class='object_link'><a href="top-level-namespace.html#CCT-instance_method" title="#CCT (method)">CCT</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='const'><span class='object_link'><a href="top-level-namespace.html#CC-instance_method" title="#CC (method)">CC</a></span></span><span class='lparen'>(</span><span class='int'>127</span><span class='comma'>,</span> <span class='int'>5</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='symbol'>:r</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='const'><span class='object_link'><a href="top-level-namespace.html#CC-instance_method" title="#CC (method)">CC</a></span></span><span class='lparen'>(</span><span class='int'>127</span><span class='comma'>,</span> <span class='int'>10</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#CC-instance_method" title="#CC (method)">CC</a></span></span><span class='lparen'>(</span><span class='int'>5</span><span class='comma'>,</span> <span class='int'>6</span><span class='rparen'>)</span><span class='rbracket'>]</span><span class='rbracket'>]</span><span class='rparen'>)</span>
-<span class='comment'># grid is [ [CC(127, 5)], [], [CC(127, 10), CC(5, 6)] ]
+<li>Arrays of &quot;stepish&quot; values. These are used as the contents of a slot; the
+values in an array will be grouped together into a slot in the track. For
+example:
+<pre class="code ruby"><code class="ruby"><span class='const'><span class='object_link'><a href="top-level-namespace.html#CCT-constant" title="CCT (constant)">CCT</a></span></span><span class='lbracket'>[</span><span class='lbracket'>[</span><span class='const'><span class='object_link'><a href="top-level-namespace.html#CC-instance_method" title="#CC (method)">CC</a></span></span><span class='lparen'>(</span><span class='int'>127</span><span class='comma'>,</span> <span class='int'>10</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#CC-instance_method" title="#CC (method)">CC</a></span></span><span class='lparen'>(</span><span class='int'>5</span><span class='comma'>,</span> <span class='int'>6</span><span class='rparen'>)</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='symbol'>:r</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#CC-instance_method" title="#CC (method)">CC</a></span></span><span class='lparen'>(</span><span class='int'>127</span><span class='comma'>,</span> <span class='int'>5</span><span class='rparen'>)</span><span class='rbracket'>]</span>
+<span class='comment'># grid is [ [CC(127, 10), CC(5, 6)], [], [CC(127, 5)] ]
 </span></code></pre>
 </li>
 </ul>
-<p>In the end, the grid conversion should be relatively natural. You can pass a
-single value to get a single-slot track. Or, if you pass an array, single
-values will get their own slot and values grouped into a subarray will share
+<p>In the end, the grid conversion should be relatively natural. Non-array
+values will get their own slot, and values grouped into an array will share
 a slot.</p>
-<p>Tracks must have at least one slot, though that slot may be empty (a rest).</p>
+<p>Tracks must have at least one slot, though that slot may be empty (a rest).
+So, <code>CCT[]</code> with no arguments is an error.</p>
 <p>A single slot cannot contain more than one step with the same <span class='object_link'><a href="CCStep.html#number-instance_method" title="CCStep#number (method)">number</a></span>. If that would happen, the step with the highest <span class='object_link'><a href="CCStep.html#value-instance_method" title="CCStep#value (method)">value</a></span> is chosen, and the other colliding steps are discarded.</p>
 
   </div>
@@ -320,12 +317,13 @@ a slot.</p>
         <span class='name'>gridish</span>
       
       
-        <span class='type'>(<tt>Array&lt;Array&lt;<span class='object_link'><a href="CCStep.html" title="CCStep (class)">CCStep</a></span>&gt;, <span class='object_link'><a href="CCStep.html" title="CCStep (class)">CCStep</a></span>, nil, :r, :rest&gt;</tt>, <tt><span class='object_link'><a href="CCStep.html" title="CCStep (class)">CCStep</a></span></tt>, <tt>nil</tt>, <tt>:r</tt>, <tt>:rest</tt>)</span>
+        <span class='type'>(<tt>Array&lt;<span class='object_link'><a href="CCStep.html" title="CCStep (class)">CCStep</a></span>&gt;</tt>, <tt><span class='object_link'><a href="CCStep.html" title="CCStep (class)">CCStep</a></span></tt>, <tt>nil</tt>, <tt>:r</tt>, <tt>:rest</tt>)</span>
       
       
       
         &mdash;
-        <div class='inline'><p>Defines the grid for the new track; see above.</p></div>
+        <div class='inline'><p>] Defines the grid for
+the new track; see above.</p></div>
       
     </li>
   
@@ -372,15 +370,15 @@ new track. Can be a <span class='object_link'><a href="NoteLength.html" title="N
       <pre class="lines">
 
 
-74
-75
-76
-77</pre>
+66
+67
+68
+69</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'cctrack.rb', line 74</span>
+      <pre class="code"><span class="info file"># File 'cctrack.rb', line 66</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_gridish'>gridish</span><span class='comma'>,</span> <span class='label'>granularity:</span> <span class='const'><span class='object_link'><a href="NoteLength.html" title="NoteLength (class)">NoteLength</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="NoteLength.html#Eighth-constant" title="NoteLength::Eighth (constant)">Eighth</a></span></span><span class='comma'>,</span> <span class='label'>timescale:</span> <span class='int'>1</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_gridish'>gridish</span><span class='comma'>,</span> <span class='label'>granularity:</span> <span class='const'><span class='object_link'><a href="NoteLength.html" title="NoteLength (class)">NoteLength</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="NoteLength.html#Eighth-constant" title="NoteLength::Eighth (constant)">Eighth</a></span></span><span class='comma'>,</span> <span class='label'>timescale:</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='comment'># Overridden purely to provide documentation.
 </span>  <span class='kw'>super</span>
 <span class='kw'>end</span></pre>
@@ -422,8 +420,8 @@ along a curve.</p>
       
       <pre class="example code"><code><span class='const'><span class='object_link'><a href="" title="CCTrack (class)">CCTrack</a></span></span><span class='period'>.</span><span class='id identifier rubyid_curve'>curve</span><span class='lparen'>(</span><span class='int'>127</span><span class='comma'>,</span> <span class='int'>50</span><span class='comma'>,</span> <span class='int'>80</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="Curves.html" title="Curves (module)">Curves</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Curves.html#UpLinear-constant" title="Curves::UpLinear (constant)">UpLinear</a></span></span><span class='comma'>,</span> <span class='int'>8</span><span class='rparen'>)</span>
 <span class='comment'># is equivalent to
-</span><span class='const'><span class='object_link'><a href="top-level-namespace.html#CCT-instance_method" title="#CCT (method)">CCT</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='const'><span class='object_link'><a href="top-level-namespace.html#CC-instance_method" title="#CC (method)">CC</a></span></span><span class='lparen'>(</span><span class='int'>127</span><span class='comma'>,</span> <span class='int'>50</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#CC-instance_method" title="#CC (method)">CC</a></span></span><span class='lparen'>(</span><span class='int'>127</span><span class='comma'>,</span> <span class='int'>54</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#CC-instance_method" title="#CC (method)">CC</a></span></span><span class='lparen'>(</span><span class='int'>127</span><span class='comma'>,</span> <span class='int'>58</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#CC-instance_method" title="#CC (method)">CC</a></span></span><span class='lparen'>(</span><span class='int'>127</span><span class='comma'>,</span> <span class='int'>62</span><span class='rparen'>)</span><span class='comma'>,</span>
-     <span class='const'><span class='object_link'><a href="top-level-namespace.html#CC-instance_method" title="#CC (method)">CC</a></span></span><span class='lparen'>(</span><span class='int'>127</span><span class='comma'>,</span> <span class='int'>67</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#CC-instance_method" title="#CC (method)">CC</a></span></span><span class='lparen'>(</span><span class='int'>127</span><span class='comma'>,</span> <span class='int'>71</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#CC-instance_method" title="#CC (method)">CC</a></span></span><span class='lparen'>(</span><span class='int'>127</span><span class='comma'>,</span> <span class='int'>75</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#CC-instance_method" title="#CC (method)">CC</a></span></span><span class='lparen'>(</span><span class='int'>127</span><span class='comma'>,</span> <span class='int'>80</span><span class='rparen'>)</span><span class='rbracket'>]</span><span class='rparen'>)</span></code></pre>
+</span><span class='const'><span class='object_link'><a href="top-level-namespace.html#CCT-constant" title="CCT (constant)">CCT</a></span></span><span class='lbracket'>[</span><span class='const'><span class='object_link'><a href="top-level-namespace.html#CC-instance_method" title="#CC (method)">CC</a></span></span><span class='lparen'>(</span><span class='int'>127</span><span class='comma'>,</span> <span class='int'>50</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#CC-instance_method" title="#CC (method)">CC</a></span></span><span class='lparen'>(</span><span class='int'>127</span><span class='comma'>,</span> <span class='int'>54</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#CC-instance_method" title="#CC (method)">CC</a></span></span><span class='lparen'>(</span><span class='int'>127</span><span class='comma'>,</span> <span class='int'>58</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#CC-instance_method" title="#CC (method)">CC</a></span></span><span class='lparen'>(</span><span class='int'>127</span><span class='comma'>,</span> <span class='int'>62</span><span class='rparen'>)</span><span class='comma'>,</span>
+    <span class='const'><span class='object_link'><a href="top-level-namespace.html#CC-instance_method" title="#CC (method)">CC</a></span></span><span class='lparen'>(</span><span class='int'>127</span><span class='comma'>,</span> <span class='int'>67</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#CC-instance_method" title="#CC (method)">CC</a></span></span><span class='lparen'>(</span><span class='int'>127</span><span class='comma'>,</span> <span class='int'>71</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#CC-instance_method" title="#CC (method)">CC</a></span></span><span class='lparen'>(</span><span class='int'>127</span><span class='comma'>,</span> <span class='int'>75</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#CC-instance_method" title="#CC (method)">CC</a></span></span><span class='lparen'>(</span><span class='int'>127</span><span class='comma'>,</span> <span class='int'>80</span><span class='rparen'>)</span><span class='rbracket'>]</span></code></pre>
     
   </div>
 <p class="tag_title">Parameters:</p>
@@ -541,13 +539,13 @@ will be added to every step in the track.</p></div>
       <pre class="lines">
 
 
-149
-150
-151
-152</pre>
+141
+142
+143
+144</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'cctrack.rb', line 149</span>
+      <pre class="code"><span class="info file"># File 'cctrack.rb', line 141</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_curve'>curve</span><span class='lparen'>(</span><span class='id identifier rubyid_cc_number'>cc_number</span><span class='comma'>,</span> <span class='id identifier rubyid_start_val'>start_val</span><span class='comma'>,</span> <span class='id identifier rubyid_end_val'>end_val</span><span class='comma'>,</span> <span class='id identifier rubyid_curve'>curve</span><span class='comma'>,</span> <span class='id identifier rubyid_length'>length</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="" title="CCTrack (class)">CCTrack</a></span></span><span class='period'>.</span><span class='id identifier rubyid_rest'><span class='object_link'><a href="TrackBase.html#rest-class_method" title="TrackBase.rest (method)">rest</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_length'>length</span><span class='rparen'>)</span>
@@ -680,6 +678,14 @@ of the slots in the resulting track. See above.</p></div>
       <pre class="lines">
 
 
+94
+95
+96
+97
+98
+99
+100
+101
 102
 103
 104
@@ -687,18 +693,10 @@ of the slots in the resulting track. See above.</p></div>
 106
 107
 108
-109
-110
-111
-112
-113
-114
-115
-116
-117</pre>
+109</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'cctrack.rb', line 102</span>
+      <pre class="code"><span class="info file"># File 'cctrack.rb', line 94</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_simple'>simple</span><span class='lparen'>(</span><span class='id identifier rubyid_cc_number'>cc_number</span><span class='comma'>,</span> <span class='id identifier rubyid_slots'>slots</span><span class='comma'>,</span> <span class='label'>granularity:</span> <span class='const'><span class='object_link'><a href="NoteLength.html" title="NoteLength (class)">NoteLength</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="NoteLength.html#Eighth-constant" title="NoteLength::Eighth (constant)">Eighth</a></span></span><span class='comma'>,</span> <span class='label'>timescale:</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_slots'>slots</span> <span class='op'>=</span> <span class='id identifier rubyid_slots'>slots</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_slot'>slot</span><span class='op'>|</span>
@@ -714,7 +712,7 @@ of the slots in the resulting track. See above.</p></div>
     <span class='kw'>end</span>
   <span class='kw'>end</span>
 
-  <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_slots'>slots</span><span class='comma'>,</span> <span class='label'>granularity:</span> <span class='id identifier rubyid_granularity'>granularity</span><span class='comma'>,</span> <span class='label'>timescale:</span> <span class='id identifier rubyid_timescale'>timescale</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_slots'>slots</span><span class='comma'>,</span> <span class='label'>granularity:</span> <span class='id identifier rubyid_granularity'>granularity</span><span class='comma'>,</span> <span class='label'>timescale:</span> <span class='id identifier rubyid_timescale'>timescale</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -900,6 +898,14 @@ and must be &gt; <code>slot_start_idx</code>.</p></div>
       <pre class="lines">
 
 
+180
+181
+182
+183
+184
+185
+186
+187
 188
 189
 190
@@ -912,18 +918,10 @@ and must be &gt; <code>slot_start_idx</code>.</p></div>
 197
 198
 199
-200
-201
-202
-203
-204
-205
-206
-207
-208</pre>
+200</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'cctrack.rb', line 188</span>
+      <pre class="code"><span class="info file"># File 'cctrack.rb', line 180</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_curve'>add_curve</span><span class='lparen'>(</span><span class='id identifier rubyid_cc_number'>cc_number</span><span class='comma'>,</span> <span class='id identifier rubyid_start_val'>start_val</span><span class='comma'>,</span> <span class='id identifier rubyid_end_val'>end_val</span><span class='comma'>,</span> <span class='id identifier rubyid_curve'>curve</span><span class='comma'>,</span> <span class='id identifier rubyid_slot_start_idx'>slot_start_idx</span><span class='comma'>,</span> <span class='id identifier rubyid_slot_end_idx'>slot_end_idx</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>IndexError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>slot start is &gt;= slot end</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_slot_start_idx'>slot_start_idx</span> <span class='op'>&gt;=</span> <span class='id identifier rubyid_slot_end_idx'>slot_end_idx</span>
