@@ -97,6 +97,32 @@ class PlayerTest < Test::Unit::TestCase
     use_midi_defaults
   end
 
+  def test_player_defaults
+    old_defaults = current_player_defaults
+
+    t = T[:c4]
+
+    use_player_defaults(midi: false)
+
+    p = Player.new(t)
+    assert_false p.midi
+
+    p = Player.new(t, midi: true)
+    assert_true p.midi
+
+
+    use_player_defaults(midi: true)
+
+    p = Player.new(t)
+    assert_true p.midi
+
+    p = Player.new(t, midi: false)
+    assert_false p.midi
+
+
+    use_player_defaults(**old_defaults)
+  end
+
   def test_vel
     assert_playback_events QT[:c4], [[:c4, 0, nil, 127]]
     assert_playback_events QT[S(:c4, vel: 64)], [[:c4, 0, nil, 64]]
