@@ -119,6 +119,40 @@ class AccumTest < Test::Unit::TestCase
     ], play_count: 9
   end
 
+  def test_independence
+    # Accumulation on two steps should be independent even if they share a note
+    t = QT[
+      S(:c4).accum(12, max: 36, mode: :freeze),
+      S(:c4).accum(-12, min: -36, mode: :freeze)
+    ]
+    assert_playback_events t, [
+      [:c4, 0, 2], # the first time through, the two are tied
+
+      [:c5, 2, 3],
+      [:c3, 3, 4],
+
+      [:c6, 4, 5],
+      [:c2, 5, nil]
+    ], play_count: 3
+
+    # Things should be independent even if the exact same step is used in
+    # multiple slots. In this case accumulation should trigger independently
+    # each time the step is used, which will result in both steps playing the
+    # same note each time (i.e., accumulation should not be doubled).
+    s = S(:c4).accum(12, max: 36, mode: :freeze)
+    t = QT[s, :r, s]
+    assert_playback_events t, [
+      [:c4, 0, 1],
+      [:c4, 2, 3],
+
+      [:c5, 3, 4],
+      [:c5, 5, 6],
+
+      [:c6, 6, 7],
+      [:c6, 8, nil]
+    ], play_count: 3
+  end
+
   def test_cctrack
     # Accumulation applies to the value of CCSteps.
     assert_playback_events CCT[CC(64, 5).accum(1, max: 3, mode: :freeze), granularity: :quarter], [
