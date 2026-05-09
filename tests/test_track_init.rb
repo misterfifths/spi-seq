@@ -22,6 +22,18 @@ class TrackInitTest < Test::Unit::TestCase
     assert_raises { T[] }
   end
 
+  def test_from_grid
+    assert_grid Track.from_grid(:r), [[]]
+    assert_grid Track.from_grid([]), [[]]
+    assert_grid Track.from_grid([[:a1]]), [[:a1]]
+    assert_grid Track.from_grid(:a1), [[:a1]]
+    assert_grid Track.from_grid([:a1]), [[:a1]]
+    assert_grid Track.from_grid([[:a1, :b2]]), [[:a1, :b2]]
+    assert_grid Track.from_grid([[:a1, :b2], [:c3]]), [[:a1, :b2], [:c3]]
+    assert_grid Track.from_grid([[:a1, :b2], :c3]), [[:a1, :b2], [:c3]]
+    assert_grid Track.from_grid([:a1, :b2, :c3]), [[:a1], [:b2], [:c3]]
+  end
+
   def test_granularity_and_timescale
     assert_gt T[:a1], NoteLength::Eighth, 1
 

@@ -146,6 +146,41 @@ class TrackBase
     alias [] new
   end
 
+  # Constructs a track with the given grid and attributes. This is equivalent
+  # to {#initialize} except that the grid definition `gridish` is passed as an
+  # array rather than `*args`. That makes it easier to do things like this:
+  #   Track.from_grid([:a1, :b2] + [:c4] * 5)
+  #   # equivalent to
+  #   T[:a1, :b1, :c4, :c4, :c4, :c4, :c4]
+  #
+  # The equivalent initializer call is a little awkward:
+  #   T[:a1, :b2, *[:c4] * 5]
+  #
+  # This method also accepts single step values:
+  #   Track.from_grid(:c4)
+  #   # is equivalent to
+  #   T[:c4]
+  #
+  # @param gridish [Array<Array<StepBase>, StepBase, nil, :r, :rest>,
+  #   Array<StepBase>, StepBase, nil, :r, :rest] (and other types on a per-
+  #   subclass basis) Defines the grid for the track. If this is an array, it
+  #   is passed a splat to {#initialize}. If it is a single element it is passed
+  #   as such to the initializer. See subclass initializers for acceptable
+  #   values and conversion rules.
+  # @param granularity [NoteLength, Number, Symbol] The {#granularity} for the
+  #   new track. Can be a {NoteLength} or a value understood by
+  #   {NoteLength.new}.
+  # @param timescale [Number] The {#timescale} for the new track.
+  # @return [TrackBase]
+  # @see #initialize
+  def self.from_grid(gridish, granularity: NoteLength::Eighth, timescale: 1)
+    if ExtApi.enumerable?(gridish) && !gridish.empty?
+      new(*gridish, granularity: granularity, timescale: timescale)
+    else
+      new(gridish, granularity: granularity, timescale: timescale)
+    end
+  end
+
   # Constructs a track with the given number of slots, each of which is empty
   # (i.e. a rest).
   # @param num_slots [Integer] The length of the new track in slots.
