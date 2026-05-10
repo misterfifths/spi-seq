@@ -124,15 +124,20 @@ class PlayerBase
   # a {Player}, if the prior track ended in a tied C4 and the new track begins
   # with a C4, that note will continue without interruption.
   #
+  # If you swap to another track, the accumulation state for the current track
+  # is cleared (i.e., if you later swap back to the same track, the accumulation
+  # of all of its steps will reset). If you call this with the same track as
+  # {#track}, accumulation is not reset.
+  #
   # @param new_track [TrackBase] The track to use on the next call to {#play} or
   #   {#sleep}.
   # @param reset_cycle [Boolean] If true, resets {#cycle} to 0.
   # @return [void]
   def swap_track(new_track, reset_cycle: false)
+    @accum_data&.clear unless @track.equal?(new_track)
+
     @track = new_track
     @cycle = 0 if reset_cycle
-
-    # TODO: clear accum_data?
   end
 
   # Inherits the state of another player, including the set of ongoing steps.

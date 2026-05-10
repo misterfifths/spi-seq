@@ -167,6 +167,50 @@ class AccumTest < Test::Unit::TestCase
     ], play_count: 3
   end
 
+  def test_swap_track
+    # Swapping to the same track should not reset accumulation
+    t = QT[S(:c4, gate: 0.5).accum(12, max: 36, mode: :freeze)]
+    p = player(t)
+    es = events do
+      p.play
+      p.play
+      p.swap_track(t)
+      p.play
+    end
+    assert_events es, [
+      [:c4, 0, 0.5],
+      [:c5, 1, 1.5],
+      [:c6, 2, 2.5]
+    ]
+
+    # But swapping to another track should
+    u = QT[S(:d4, gate: 0.5).accum(12, max: 36, mode: :freeze)]
+    p = player(t)
+    es = events do
+      p.play
+      p.play
+      p.swap_track(u)
+      p.play
+      p.play
+      p.swap_track(t)
+      p.play
+      p.play
+      p.swap_track(u)
+      p.play
+      p.play
+    end
+    assert_events es, [
+      [:c4, 0, 0.5],
+      [:c5, 1, 1.5],
+      [:d4, 2, 2.5],
+      [:d5, 3, 3.5],
+      [:c4, 4, 4.5],  # accumulation reset in t
+      [:c5, 5, 5.5],
+      [:d4, 6, 6.5],  # accumulation reset in u
+      [:d5, 7, 7.5]
+    ]
+  end
+
   def test_cctrack
     # Accumulation applies to the value of CCSteps.
     assert_playback_events CCT[CC(64, 5).accum(1, max: 3, mode: :freeze), granularity: :quarter], [
