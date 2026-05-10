@@ -119,6 +119,24 @@ class AccumTest < Test::Unit::TestCase
     ], play_count: 9
   end
 
+  def test_scale_interaction
+    # If a Track has a scale, and a step inside it has accumulation, the result
+    # of the accumulation should be snapped to the scale. We do a sort of
+    # "double snapping", in fact - the original note of the step is snapped to
+    # the scale, then the accumulation delta is applied, and the result is
+    # snapped again.
+    t = QT[S(:cs4, gate: 0.5).accum(1, max: 5, mode: :freeze), scale: Scale.full_scale(:c, :major)]
+    assert_playback_events t, [
+      [:d4, 0, 0.5],  # (cs -> d)
+      [:e4, 1, 1.5],  # (cs -> d) + 1 = ds -> e
+      [:e4, 2, 2.5],  # (cs -> d) + 2 = e
+      [:f4, 3, 3.5],  # (cs -> d) + 3 = f
+      [:g4, 4, 4.5],  # (cs -> d) + 4 = fs -> g
+      [:g4, 5, 5.5],  # (cs -> d) + 5 = g
+      [:g4, 6, 6.5]   # (maxed out)
+    ], play_count: 7
+  end
+
   def test_independence
     # Accumulation on two steps should be independent even if they share a note
     t = QT[
