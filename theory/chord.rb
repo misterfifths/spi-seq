@@ -244,26 +244,6 @@ class Chord
   end
 
 
-  # Voices the chord. That is, converts the {#intervals} to concrete notes,
-  # after potentially applying an inversion and a voicing technique.
-  #
-  # You can create and voice a chord in one shot using {.voiced} or the {C}
-  # helper function.
-  #
-  # @param root [MIDINote, String, Symbol, Integer] The root note upon which to
-  #   voice the chord. Must be a {MIDINote} or something understood by
-  #   {MIDINote.new}.
-  # @param voicing [Symbol] The voicing style to use. Valid values are the keys
-  #   of the {.VOICINGS} hash.
-  # @param invert [Integer] How many times to invert the chord's intervals
-  #   before applying the `voicing`.
-  # @return [Array<MIDINote>]
-  # @see C
-  def voice(root, voicing = :closed, invert: 0)
-    Chord.voice(self, root, voicing, inversion: invert)
-  end
-
-
   # @!group Manipulating intervals
 
   # Returns a new Chord with the given interval(s) added. The argument must be:

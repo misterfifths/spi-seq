@@ -97,30 +97,48 @@ class Chord
   SHELL_INTERVALS.freeze
   private_constant :SHELL_INTERVALS
 
-  # @private
-  def self.voice(chord, root, voicing = :closed, inversion: 0)
+
+  # @!group Voicing
+
+  # Voices the chord. That is, converts the {#intervals} to concrete notes,
+  # after potentially applying an inversion and a voicing technique.
+  #
+  # You can create and voice a chord in one shot using {.voiced} or the {C}
+  # helper function.
+  #
+  # @param root [MIDINote, String, Symbol, Integer] The root note upon which to
+  #   voice the chord. Must be a {MIDINote} or something understood by
+  #   {MIDINote.new}.
+  # @param voicing [Symbol] The voicing style to use. Valid values are the keys
+  #   of the {.VOICINGS} hash.
+  # @param invert [Integer] How many times to invert the chord's intervals
+  #   before applying the `voicing`.
+  # @return [Array<MIDINote>]
+  # @see C
+  def voice(root, voicing = :closed, invert: 0)
     root = MIDINote.new(root)
 
     # Inversions apply before voicing.
-    raise RangeError, "inversion must be >= 0" unless inversion >= 0
-    raise RangeError, "chord only has #{chord.intervals.length - 1} inversions" if inversion >= chord.intervals.length
-    if inversion > 0
-      intervals = chord.intervals.dup
-      shifted_intervals = intervals.shift(inversion).map! { |i| i + 12 }
+    raise RangeError, "inversion must be >= 0" unless invert >= 0
+    raise RangeError, "chord only has #{@intervals.length - 1} inversions" if invert >= @intervals.length
+
+    if invert > 0
+      intervals = @intervals.dup
+      shifted_intervals = intervals.shift(invert).map! { |i| i + 12 }
       intervals += shifted_intervals
 
       # Inversion may have duplicated an interval.
       intervals.sort!
       intervals.uniq!
     else
-      intervals = chord.intervals
+      intervals = @intervals
     end
 
     voice_val = VOICINGS[voicing]
     raise ArgumentError, "unknown voicing #{voicing}" if voice_val.nil?
     notes = case voice_val
     when Symbol
-      method(voice_val).call(intervals, root)
+      Chord.method(voice_val).call(intervals, root)
     else
       voice_val.call(intervals, root)
     end
