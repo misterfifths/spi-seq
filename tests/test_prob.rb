@@ -7,6 +7,7 @@ require_relative "player_test_helpers"
 require_relative "../player"
 require_relative "../prob"
 
+# Tests for step probabilities during playback
 class ProbTest < Test::Unit::TestCase
   include PlayerTestHelpers
 

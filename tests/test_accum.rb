@@ -7,13 +7,9 @@ require_relative "player_test_helpers"
 require_relative "../player"
 require_relative "../ccplayer"
 
+# Tests for accumulation during playback
 class AccumTest < Test::Unit::TestCase
   include PlayerTestHelpers
-
-  # min, max, delta, mode
-  # its own prob (just basics)
-  # interaction with step prob (and also if it has both probs)
-  # make sure it works as expected on CC tracks
 
   def setup
     use_bpm 60
