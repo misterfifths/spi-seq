@@ -4,9 +4,6 @@
 require_relative "test_helper"
 require_relative "../theory/arp"
 
-# TODO: missing degree tests
-# TODO: missing spread & extra_octaves tests
-
 class ArpTest < Test::Unit::TestCase
   def assert_arp(notes, order, result, **kwargs)
     assert_equal arp(notes, order, **kwargs), result

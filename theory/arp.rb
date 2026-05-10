@@ -153,7 +153,6 @@ module Arp
     notes = notes.to_a.to_a.dup.map! { |n| MIDINote.new(n) }  # rubocop:disable Lint/RedundantTypeConversion
     orig_notes = notes.dup
 
-    # TODO: where should this apply in relation to spread?
     extra_octaves.each do |octave_shift|
       orig_notes.each do |n|
         new_note = n.up(octave_shift)

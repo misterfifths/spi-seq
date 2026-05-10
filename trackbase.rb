@@ -1196,7 +1196,6 @@ class TrackBase
   # @return [TrackBase]
   # @see #sample_filled_slots
   def sample(n)
-    # TODO: does this use spi's rng?
     idxs = sample_enum(0...@grid.length, n).sort
     mutate(grid: @grid.values_at(*idxs))
   end
