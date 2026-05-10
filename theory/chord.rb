@@ -176,6 +176,8 @@ class Chord
   ABBREVS.freeze
 
 
+  # @!group Initialization
+
   # Creates a new Chord. The argument may be one of two things:
   # 1. An abbreviated name of a chord (Symbol or String) as found in the keys of
   #    the {.ABBREVS} hash. This class understands all of the same chord names
@@ -220,6 +222,9 @@ class Chord
     @intervals.freeze
   end
 
+
+  # @!group Voicing
+
   # Returns an array of {MIDINote}s that express a named chord on the given
   # root note, using a particular voicing style and inversion. A shortcut for
   # creating a {Chord} and immediately {Chord#voice voicing} it.
@@ -258,6 +263,8 @@ class Chord
     Chord.voice(self, root, voicing, inversion: invert)
   end
 
+
+  # @!group Manipulating intervals
 
   # Returns a new Chord with the given interval(s) added. The argument must be:
   # 1. An {Interval}.
@@ -458,6 +465,8 @@ class Chord
 
   alias sharp9 sharp_nine
 
+
+  # @!group Common chords
 
   # Returns a major triad chord.
   # @return [Chord]
@@ -742,6 +751,7 @@ class Chord
 
   # Returns a string representation of the chord.
   # @return [String]
+  # @private
   def to_s
     "<Chord #{@intervals}>"
   end
