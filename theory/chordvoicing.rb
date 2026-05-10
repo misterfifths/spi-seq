@@ -5,9 +5,7 @@ require_relative "chord"
 require_relative "interval"
 require_relative "midinote"
 
-# Provides functionality for concretely expressing {Chord}s as an array of
-# {MIDINote}s. See {.voice}.
-module ChordVoicing
+class Chord
   VOICING_DEFS = {
     %i[closed]                  => :voice_closed,
     %i[rootless]                => :voice_rootless,
@@ -87,7 +85,7 @@ module ChordVoicing
   #   octave.
   #
   # (Note that there are aliases for many of the above styles; print the result
-  # of `ChordVoicing::VOICINGS.keys` to see all possible names.)
+  # of `Chord::VOICINGS.keys` to see all possible names.)
   VOICINGS = {}  # rubocop:disable Style/MutableConstant
   VOICING_DEFS.each do |names, val|
     names.each { |name| VOICINGS[name] = val }
@@ -99,25 +97,7 @@ module ChordVoicing
   SHELL_INTERVALS.freeze
   private_constant :SHELL_INTERVALS
 
-  # Voices a {Chord} in a particular style on a root note. That is, converts
-  # the intervals in the chord to concrete notes, after potentially applying
-  # an inversion and a voicing technique.
-  #
-  # It is probably more convenient to create a {Chord} and call {Chord#voice
-  # voice} on it, rather than using this method. Or, to create and immediately
-  # voice a chord, you can use the {C} helper function.
-  #
-  # @param chord [Chord] The chord to voice.
-  # @param root [MIDINote, String, Symbol, Integer] The root note upon which to
-  #   voice the chord. Must be a {MIDINote} or something understood by
-  #   {MIDINote.new}.
-  # @param voicing [Symbol] The voicing style to use. Valid values are the keys
-  #   of the {.VOICINGS} hash.
-  # @param inversion [Integer] How many times to invert `chord`'s intervals
-  #   before applying the `voicing`.
-  # @return [Array<MIDINote>]
-  # @see Chord#voice
-  # @see C
+  # @private
   def self.voice(chord, root, voicing = :closed, inversion: 0)
     root = MIDINote.new(root)
 
