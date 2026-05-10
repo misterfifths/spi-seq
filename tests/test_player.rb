@@ -36,13 +36,18 @@ class PlayerTest < Test::Unit::TestCase
     assert_sleep T[:c4, :d4, granularity: :half, timescale: 0.5]
     assert_sleep T[:c4, :d4, granularity: :half, timescale: 0.125]
 
-    # A sleep should terminate held ties.
+    # A sleep should terminate held ties, and if that note plays again
+    # immediately after the sleep, it should be re-sent.
     p = player(T[:c4, :c4, granularity: :quarter])
     es = events do
       p.play
       p.sleep
+      p.play
     end
-    assert_events es, [[:c4, 0, 2]]
+    assert_events es, [
+      [:c4, 0, 2],
+      [:c4, 4, nil]
+    ]
   end
 
   def test_basics

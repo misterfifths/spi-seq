@@ -41,7 +41,6 @@ end
 
 
 # TODO: probably special-case Steps with a 0 gate
-# TODO: probably `sleep` should reset @prev_steps?
 
 
 # A Player plays a {Track} by sending its {Step}s' notes over MIDI or playing
@@ -338,6 +337,8 @@ class Player < PlayerBase
       @active_synth_nodes.each_value { |node| ExtApi.kill(node) }
       @active_synth_nodes.clear
     end
+
+    @prev_steps&.clear
   end
 
   # Begins playback of the given Step, which is assumed to be from @track.
