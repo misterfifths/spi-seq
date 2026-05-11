@@ -71,6 +71,28 @@ require_relative "utils/misc_utils"
 # uses a single-slot rest {CCTrack} instead but is otherwise identical to this
 # one.
 #
+# @example Simple playback
+#   t = T[:c4, :d4, :e4, :f4]
+#   track_live_loop :t, t
+#
+# @example Changing the track every iteration
+#   t = T[:c4, :d4, :e4, :f4]
+#   track_live_loop :t do
+#     # This block will run before each cycle of playback. And since it returns
+#     # a Track, playback will switch to it. Each cycle will get a different
+#     # random arrangement of slots.
+#     t.shuffle
+#   end
+#
+# @example Varying playback based on cycle
+#   t = T[:c4, :d4, :e4, :f4]
+#   track_live_loop :t do |cycle:|
+#     # `cycle` increases after every round of playback, `gate` here will step
+#     # up to 1.0 every 10 cycles, then reset.
+#     gate = ((cycle + 1) % 10) / 10.0
+#     t.gate(gate)
+#   end
+#
 # @param loop_name [Symbol] The name of the live loop.
 # @param track [Track, CCTrack] The track that this loop will play, or nil to
 #   play a single-slot {Track} containing only a rest (in which case you will
@@ -118,6 +140,9 @@ require_relative "utils/misc_utils"
 # @param init [Object] The initial value to pass to the `arg` parameter of the
 #   block.
 # @yield See the potential parameters to the block above.
+# @yieldreturn [void, Object, Track, CCTrack] A value to pass to the next
+#   iteration of the block as the `arg` argument, and potentially a track to
+#   switch to. See above.
 # @return [void]
 def track_live_loop(loop_name, track = nil, start_muted: nil,
                     fade_in: false, fade_out: false,
