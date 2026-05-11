@@ -63,7 +63,10 @@ module ExtApi
       :live_loop, :in_thread,
       :get, :set,
       :cue, :sync,
-      :get_event  # undocumented; see TrackRecorder for some notes
+      :get_event,  # undocumented; see TrackRecorder for some notes
+
+      # Only for tests
+      :degree
     ].each do |fwd|
       define_method(fwd) do |*args, **kwargs, &block|
         m = @spi.nil? ? ExtApiStubs.method(fwd) : @spi.method(fwd)

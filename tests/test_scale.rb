@@ -100,6 +100,8 @@ class ScaleTest < Test::Unit::TestCase
         assert_equal res, Scale.degree(d.to_s, :c4, :major)
         assert_equal res, Scale.degree(d.to_s.upcase, :c4, :major)
         assert_equal res, Scale.degree(d.to_s.upcase.to_sym, :c4, :major)
+
+        assert_equal res, N(ExtApi.degree(d, :c4, :major)) if ExtApi.in_sonic_pi?
       end
     end
 
