@@ -294,6 +294,11 @@ class CCTrack < TrackBase
   end
 end
 
+
+# @!group Class aliases
+
 # An alias for the {CCTrack} class. You can easily make a new instance using the
 # {CCTrack.initialize []} method, like `CCT[:c4, :d4]`.
 CCT = CCTrack
+
+# @!endgroup

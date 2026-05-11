@@ -1689,6 +1689,11 @@ class Track < TrackBase
   end
 end
 
+
+# @!group Class aliases
+
 # An alias for the {Track} class. You can easily make a new instance using the
 # {Track.initialize []} method, like `T[:c4, :d4]`.
 T = Track
+
+# @!endgroup

@@ -728,6 +728,8 @@ class Chord
     new(intervals)
   end
 
+  # @!endgroup
+
 
   # Returns a string representation of the chord.
   # @return [String]
@@ -738,6 +740,10 @@ class Chord
 end
 
 
+# @!group Class aliases
+
 # An alias for the {Chord} class since Sonic Pi already has a class with that
-# name.
+# name. See also {C}, a helper that creates and immediately voices a chord.
 Ch = Chord
+
+# @!endgroup

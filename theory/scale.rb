@@ -450,6 +450,10 @@ class Scale
 end
 
 
+# @!group Class aliases
+
 # An alias for the {Scale} class since Sonic Pi already has a class with that
-# name.
+# name. See also {SC}, an alias for the initializer.
 Sc = Scale
+
+# @!endgroup
