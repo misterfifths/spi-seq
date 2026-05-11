@@ -243,7 +243,7 @@ class Scale
     raise ArgumentError, "scale does not contain #{relative_tonic}" if tonic_idx.nil?
 
     i = tonic_idx + steps
-    raise RangeError, "scale does not contain a note #{n} steps from #{relative_tonic}" if i < 0 || i >= @notes.length
+    raise RangeError, "scale does not contain a note #{steps} steps from #{relative_tonic}" if i < 0 || i >= @notes.length
     @notes[i]
   end
 
