@@ -794,6 +794,10 @@ first slot.</p>
 track will seamlessly continue any ongoing steps. For instance, when using
 a <span class='object_link'><a href="Player.html" title="Player (class)">Player</a></span>, if the prior track ended in a tied C4 and the new track begins
 with a C4, that note will continue without interruption.</p>
+<p>If you swap to another track, the accumulation state for the current track
+is cleared (i.e., if you later swap back to the same track, the accumulation
+of all of its steps will reset). If you call this with the same track as
+<span class='object_link'><a href="#track-instance_method" title="PlayerBase#track (method)">#track</a></span>, accumulation is not reset.</p>
 
   </div>
 </div>
@@ -841,22 +845,22 @@ with a C4, that note will continue without interruption.</p>
       <pre class="lines">
 
 
-131
-132
-133
-134
-135
-136</pre>
+136
+137
+138
+139
+140
+141</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'playerbase.rb', line 131</span>
+      <pre class="code"><span class="info file"># File 'playerbase.rb', line 136</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_swap_track'>swap_track</span><span class='lparen'>(</span><span class='id identifier rubyid_new_track'>new_track</span><span class='comma'>,</span> <span class='label'>reset_cycle:</span> <span class='kw'>false</span><span class='rparen'>)</span>
+  <span class='ivar'>@accum_data</span><span class='op'>&amp;.</span><span class='id identifier rubyid_clear'>clear</span> <span class='kw'>unless</span> <span class='ivar'>@track</span><span class='period'>.</span><span class='id identifier rubyid_equal?'>equal?</span><span class='lparen'>(</span><span class='id identifier rubyid_new_track'>new_track</span><span class='rparen'>)</span>
+
   <span class='ivar'>@track</span> <span class='op'>=</span> <span class='id identifier rubyid_new_track'>new_track</span>
   <span class='ivar'>@cycle</span> <span class='op'>=</span> <span class='int'>0</span> <span class='kw'>if</span> <span class='id identifier rubyid_reset_cycle'>reset_cycle</span>
-
-  <span class='comment'># TODO: clear accum_data?
-</span><span class='kw'>end</span></pre>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -867,6 +871,7 @@ with a C4, that note will continue without interruption.</p>
 </div>
 
       
+
     </div>
   </body>
 </html>

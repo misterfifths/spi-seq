@@ -84,7 +84,7 @@
 <p class="children">
   
     
-      <strong class="modules">Modules:</strong> <span class='object_link'><a href="Arp.html" title="Arp (module)">Arp</a></span>, <span class='object_link'><a href="ChordVoicing.html" title="ChordVoicing (module)">ChordVoicing</a></span>, <span class='object_link'><a href="Curves.html" title="Curves (module)">Curves</a></span>, <span class='object_link'><a href="Easings.html" title="Easings (module)">Easings</a></span>, <span class='object_link'><a href="TrackRecorder.html" title="TrackRecorder (module)">TrackRecorder</a></span>
+      <strong class="modules">Modules:</strong> <span class='object_link'><a href="Arp.html" title="Arp (module)">Arp</a></span>, <span class='object_link'><a href="Curves.html" title="Curves (module)">Curves</a></span>, <span class='object_link'><a href="Easings.html" title="Easings (module)">Easings</a></span>, <span class='object_link'><a href="TrackRecorder.html" title="TrackRecorder (module)">TrackRecorder</a></span>
     
   
     
@@ -95,7 +95,7 @@
 
   
     <h2>
-      Constant Summary
+      Class aliases
       <small><a href="#" class="constants_summary_toggle">collapse</a></small>
     </h2>
 
@@ -135,7 +135,7 @@
           <div class="docstring">
   <div class="discussion">
     <p>An alias for the <span class='object_link'><a href="Chord.html" title="Chord (class)">Chord</a></span> class since Sonic Pi already has a class with that
-name.</p>
+name. See also <span class='object_link'><a href="#C-instance_method" title="#C (method)">#C</a></span>, a helper that creates and immediately voices a chord.</p>
 
   </div>
 </div>
@@ -150,7 +150,7 @@ name.</p>
           <div class="docstring">
   <div class="discussion">
     <p>An alias for the <span class='object_link'><a href="Scale.html" title="Scale (class)">Scale</a></span> class since Sonic Pi already has a class with that
-name.</p>
+name. See also <span class='object_link'><a href="#SC-instance_method" title="#SC (method)">#SC</a></span>, an alias for the initializer.</p>
 
   </div>
 </div>
@@ -901,9 +901,9 @@ name.</p>
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p>Returns an array of <span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span>s that express a named chord on the given root
-note, using a particular voicing style and inversion. A shortcut for creating
-a <span class='object_link'><a href="Chord.html" title="Chord (class)">Chord</a></span> and immediately <span class='object_link'><a href="Chord.html#voice-instance_method" title="Chord#voice (method)">voicing</a></span> it.</p>
+    <p>Returns an array of <span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span>s that express a named chord on the given
+root note, using a particular voicing style and inversion. A shortcut for
+creating a <span class='object_link'><a href="Chord.html" title="Chord (class)">Chord</a></span> and immediately <span class='object_link'><a href="Chord.html#voice-instance_method" title="Chord#voice (method)">voicing</a></span> it.</p>
 
   </div>
 </div>
@@ -921,7 +921,8 @@ a <span class='object_link'><a href="Chord.html" title="Chord (class)">Chord</a>
       
       
         &mdash;
-        <div class='inline'><p>The root note of the chord.</p></div>
+        <div class='inline'><p>The root note of the chord.
+May be a <span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span> or anything understood by <span class='object_link'><a href="MIDINote.html#new-class_method" title="MIDINote.new (method)">MIDINote.new</a></span>.</p></div>
       
     </li>
   
@@ -952,8 +953,8 @@ a <span class='object_link'><a href="Chord.html" title="Chord (class)">Chord</a>
       
       
         &mdash;
-        <div class='inline'><p>The voicing style to use, a value accepted by
-<span class='object_link'><a href="ChordVoicing.html#voice-class_method" title="ChordVoicing.voice (method)">ChordVoicing.voice</a></span>.</p></div>
+        <div class='inline'><p>The voicing style to use, a value accepted
+by <span class='object_link'><a href="Chord.html#voice-instance_method" title="Chord#voice (method)">Chord#voice</a></span>.</p></div>
       
     </li>
   
@@ -969,8 +970,8 @@ a <span class='object_link'><a href="Chord.html" title="Chord (class)">Chord</a>
       
       
         &mdash;
-        <div class='inline'><p>The number of inversions to apply to the chord before
-voicing it.</p></div>
+        <div class='inline'><p>The number of inversions to apply to the chord
+before voicing it.</p></div>
       
     </li>
   
@@ -995,8 +996,6 @@ voicing it.</p></div>
     
       <li><span class='object_link'><a href="Chord.html#new-class_method" title="Chord.new (method)">Chord.new</a></span></li>
     
-      <li><span class='object_link'><a href="ChordVoicing.html#voice-class_method" title="ChordVoicing.voice (method)">ChordVoicing.voice</a></span></li>
-    
       <li><span class='object_link'><a href="Chord.html#voice-instance_method" title="Chord#voice (method)">Chord#voice</a></span></li>
     
   </ul>
@@ -1007,15 +1006,15 @@ voicing it.</p></div>
       <pre class="lines">
 
 
-22
-23
-24</pre>
+10
+11
+12</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 22</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 10</span>
 
 <span class='kw'>def</span> <span class='const'>C</span><span class='lparen'>(</span><span class='id identifier rubyid_root'><span class='object_link'><a href="" title="Top Level Namespace (root)">root</a></span></span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_voicing'>voicing</span> <span class='op'>=</span> <span class='symbol'>:closed</span><span class='comma'>,</span> <span class='label'>invert:</span> <span class='int'>0</span><span class='rparen'>)</span>
-  <span class='const'><span class='object_link'><a href="Chord.html" title="Chord (class)">Chord</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Chord.html#new-class_method" title="Chord.new (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_voice'><span class='object_link'><a href="Chord.html#voice-instance_method" title="Chord#voice (method)">voice</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_root'><span class='object_link'><a href="" title="Top Level Namespace (root)">root</a></span></span><span class='comma'>,</span> <span class='id identifier rubyid_voicing'>voicing</span><span class='comma'>,</span> <span class='label'>invert:</span> <span class='id identifier rubyid_invert'>invert</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="Chord.html" title="Chord (class)">Chord</a></span></span><span class='period'>.</span><span class='id identifier rubyid_voiced'><span class='object_link'><a href="Chord.html#voiced-class_method" title="Chord.voiced (method)">voiced</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_root'><span class='object_link'><a href="" title="Top Level Namespace (root)">root</a></span></span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_voicing'>voicing</span><span class='comma'>,</span> <span class='label'>invert:</span> <span class='id identifier rubyid_invert'>invert</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1309,12 +1308,12 @@ you can just use <span class='object_link'><a href="#track_live_loop-instance_me
       <pre class="lines">
 
 
-283
-284
-285</pre>
+308
+309
+310</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track_live_loop.rb', line 283</span>
+      <pre class="code"><span class="info file"># File 'track_live_loop.rb', line 308</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_cc_track_live_loop'>cc_track_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_track'>track</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_track_live_loop'><span class='object_link'><a href="#track_live_loop-instance_method" title="#track_live_loop (method)">track_live_loop</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_track'>track</span> <span class='op'>||</span> <span class='const'><span class='object_link'><a href="CCTrack.html" title="CCTrack (class)">CCTrack</a></span></span><span class='period'>.</span><span class='id identifier rubyid_rest'><span class='object_link'><a href="TrackBase.html#rest-class_method" title="TrackBase.rest (method)">rest</a></span></span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span>
@@ -2927,7 +2926,40 @@ one.</p>
   </div>
 </div>
 <div class="tags">
-  <p class="tag_title">Parameters:</p>
+  
+  <div class="examples">
+    <h4 class="tag_title">Examples:</h4>
+    
+      
+        <h5 class="example_title"><div class='inline'><p>Simple playback</p></div></h5>
+      
+      <pre class="example code"><code><span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#T-constant" title="T (constant)">T</a></span></span><span class='lbracket'>[</span><span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:d4</span><span class='comma'>,</span> <span class='symbol'>:e4</span><span class='comma'>,</span> <span class='symbol'>:f4</span><span class='rbracket'>]</span>
+<span class='id identifier rubyid_track_live_loop'>track_live_loop</span> <span class='symbol'>:t</span><span class='comma'>,</span> <span class='id identifier rubyid_t'>t</span></code></pre>
+    
+      
+        <h5 class="example_title"><div class='inline'><p>Changing the track every iteration</p></div></h5>
+      
+      <pre class="example code"><code><span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#T-constant" title="T (constant)">T</a></span></span><span class='lbracket'>[</span><span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:d4</span><span class='comma'>,</span> <span class='symbol'>:e4</span><span class='comma'>,</span> <span class='symbol'>:f4</span><span class='rbracket'>]</span>
+<span class='id identifier rubyid_track_live_loop'>track_live_loop</span> <span class='symbol'>:t</span> <span class='kw'>do</span>
+  <span class='comment'># This block will run before each cycle of playback. And since it returns
+</span>  <span class='comment'># a Track, playback will switch to it. Each cycle will get a different
+</span>  <span class='comment'># random arrangement of slots.
+</span>  <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_shuffle'>shuffle</span>
+<span class='kw'>end</span></code></pre>
+    
+      
+        <h5 class="example_title"><div class='inline'><p>Varying playback based on cycle</p></div></h5>
+      
+      <pre class="example code"><code><span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="#T-constant" title="T (constant)">T</a></span></span><span class='lbracket'>[</span><span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:d4</span><span class='comma'>,</span> <span class='symbol'>:e4</span><span class='comma'>,</span> <span class='symbol'>:f4</span><span class='rbracket'>]</span>
+<span class='id identifier rubyid_track_live_loop'>track_live_loop</span> <span class='symbol'>:t</span> <span class='kw'>do</span> <span class='op'>|</span><span class='label'>cycle:</span><span class='op'>|</span>
+  <span class='comment'># `cycle` increases after every round of playback, `gate` here will step
+</span>  <span class='comment'># up to 1.0 every 10 cycles, then reset.
+</span>  <span class='id identifier rubyid_gate'>gate</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='lparen'>(</span><span class='id identifier rubyid_cycle'>cycle</span> <span class='op'>+</span> <span class='int'>1</span><span class='rparen'>)</span> <span class='op'>%</span> <span class='int'>10</span><span class='rparen'>)</span> <span class='op'>/</span> <span class='float'>10.0</span>
+  <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_gate'>gate</span><span class='lparen'>(</span><span class='id identifier rubyid_gate'>gate</span><span class='rparen'>)</span>
+<span class='kw'>end</span></code></pre>
+    
+  </div>
+<p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -3216,6 +3248,24 @@ block.</p></div>
     </li>
   
 </ul>
+<p class="tag_title">Yield Returns:</p>
+<ul class="yieldreturn">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>void</tt>, <tt>Object</tt>, <tt><span class='object_link'><a href="Track.html" title="Track (class)">Track</a></span></tt>, <tt><span class='object_link'><a href="CCTrack.html" title="CCTrack (class)">CCTrack</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>A value to pass to the next
+iteration of the block as the <code>arg</code> argument, and potentially a track to
+switch to. See above.</p></div>
+      
+    </li>
+  
+</ul>
 <p class="tag_title">Raises:</p>
 <ul class="raise">
   
@@ -3236,31 +3286,6 @@ block.</p></div>
       <pre class="lines">
 
 
-122
-123
-124
-125
-126
-127
-128
-129
-130
-131
-132
-133
-134
-135
-136
-137
-138
-139
-140
-141
-142
-143
-144
-145
-146
 147
 148
 149
@@ -3384,10 +3409,35 @@ block.</p></div>
 267
 268
 269
-270</pre>
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track_live_loop.rb', line 122</span>
+      <pre class="code"><span class="info file"># File 'track_live_loop.rb', line 147</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_track_live_loop'>track_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_track'>track</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>start_muted:</span> <span class='kw'>nil</span><span class='comma'>,</span>
                     <span class='label'>fade_in:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>fade_out:</span> <span class='kw'>false</span><span class='comma'>,</span>
@@ -3899,6 +3949,7 @@ are Tracks) scale of <code>t1</code>. Strict track merging is off by default.</p
 </div>
 
       
+
     </div>
   </body>
 </html>

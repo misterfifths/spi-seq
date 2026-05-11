@@ -607,8 +607,7 @@ details.</p></div>
 218
 219
 220
-221
-222</pre>
+221</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'theory/arp.rb', line 143</span>
@@ -626,8 +625,7 @@ details.</p></div>
 </span>  <span class='id identifier rubyid_notes'>notes</span> <span class='op'>=</span> <span class='id identifier rubyid_notes'>notes</span><span class='period'>.</span><span class='id identifier rubyid_to_a'>to_a</span><span class='period'>.</span><span class='id identifier rubyid_to_a'>to_a</span><span class='period'>.</span><span class='id identifier rubyid_dup'>dup</span><span class='period'>.</span><span class='id identifier rubyid_map!'>map!</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_n'>n</span><span class='op'>|</span> <span class='const'><span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="MIDINote.html#new-class_method" title="MIDINote.new (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span> <span class='rbrace'>}</span>  <span class='comment'># rubocop:disable Lint/RedundantTypeConversion
 </span>  <span class='id identifier rubyid_orig_notes'>orig_notes</span> <span class='op'>=</span> <span class='id identifier rubyid_notes'>notes</span><span class='period'>.</span><span class='id identifier rubyid_dup'>dup</span>
 
-  <span class='comment'># TODO: where should this apply in relation to spread?
-</span>  <span class='id identifier rubyid_extra_octaves'>extra_octaves</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_octave_shift'>octave_shift</span><span class='op'>|</span>
+  <span class='id identifier rubyid_extra_octaves'>extra_octaves</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_octave_shift'>octave_shift</span><span class='op'>|</span>
     <span class='id identifier rubyid_orig_notes'>orig_notes</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_n'>n</span><span class='op'>|</span>
       <span class='id identifier rubyid_new_note'>new_note</span> <span class='op'>=</span> <span class='id identifier rubyid_n'>n</span><span class='period'>.</span><span class='id identifier rubyid_up'>up</span><span class='lparen'>(</span><span class='id identifier rubyid_octave_shift'>octave_shift</span><span class='rparen'>)</span>
       <span class='id identifier rubyid_notes'>notes</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_new_note'>new_note</span> <span class='kw'>unless</span> <span class='id identifier rubyid_notes'>notes</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_new_note'>new_note</span><span class='rparen'>)</span>
@@ -703,6 +701,7 @@ details.</p></div>
 </div>
 
       
+
     </div>
   </body>
 </html>
