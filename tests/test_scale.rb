@@ -77,6 +77,44 @@ class ScaleTest < Test::Unit::TestCase
     assert_raises { sc.degree_of(:d6, relative_tonic: :c3) }
   end
 
+  def test_degree_symbols
+    [
+      [:c4,  1, :p1, :pi, :dd2, :ddii],
+      [:cs4, :a1, :ai, :d2, :dii],
+      [:d4,  2, :p2, :pii, :aa1, :aai, :dd3, :ddiii],
+      [:ds4, :a2, :aii, :d3, :diii, :dd4, :ddiv],
+      [:e4, 3, :p3, :piii, :aa2, :aaii, :d4, :div],
+      [:f4, 4, :p4, :piv, :a3, :aiii, :dd5, :ddv],
+      [:fs4, :a4, :aiv, :d5, :dv],
+      [:g4, 5, :p5, :pv, :aa4, :aaiv, :dd6, :ddvi],
+      [:gs4, :a5, :av, :d6, :dvi],
+      [:a4, 6, :p6, :pvi, :aa5, :aav, :dd7, :ddvii],
+      [:as4, :a6, :avi, :d7, :dvii, :dd8, :ddviii],
+      [:b4, 7, :p7, :pvii, :aa6, :aavi, :d8, :dviii],
+      [:c5, 8, :p8, :pviii, :a7, :avii, :dd9, :ddix],
+      [:cs5, :a8, :aviii, :aa7, :aavii, :d9, :dix],
+      [:d5, 9, :p9, :aa8, :aaviii, :dd10, :ddx]
+    ].each do |res, *degrees|
+      degrees.each do |d|
+        assert_equal res, Scale.degree(d, :c4, :major)
+        assert_equal res, Scale.degree(d.to_s, :c4, :major)
+        assert_equal res, Scale.degree(d.to_s.upcase, :c4, :major)
+        assert_equal res, Scale.degree(d.to_s.upcase.to_sym, :c4, :major)
+      end
+    end
+
+    assert_raises(ArgumentError) { Scale.degree(:nope, :c4, :major) }
+    assert_raises(ArgumentError) { Scale.degree(:do, :c4, :major) }
+
+    # The prefixes are parsed greedily, so this reads as double diminished
+    # without a number.
+    assert_raises(ArgumentError) { Scale.degree(:dd, :c4, :major) }
+
+    # This one will parse, but the scale does not contain a 500th degree, so
+    # we get a range error instead.
+    assert_raises(RangeError) { Scale.degree(:ddd, :c4, :major) }
+  end
+
   def test_snap
     s = Scale.full_scale(:c, :major)
 

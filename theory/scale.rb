@@ -247,24 +247,138 @@ class Scale
     @notes[i]
   end
 
-  # Returns the note in the scale that is `n` degrees from `relative_tonic`. If
+  ROMAN_NUMS = {
+    "i" => 1,
+    "v" => 5,
+    "x" => 10,
+    "l" => 50,
+    "c" => 100,
+    "d" => 500,
+    "m" => 1000
+  }.freeze
+  private_constant :ROMAN_NUMS
+
+  private_class_method def self.roman_to_int(s)
+    raise ArgumentError, "string must not be empty" if s.empty?
+
+    # This is very lenient, but isn't worth thinking about too much.
+
+    s = s.downcase
+    res = 0
+    i = 0
+    loop do
+      break if i >= s.length
+
+      val = ROMAN_NUMS[s[i]]
+      raise ArgumentError, "invalid Roman numeral string #{s}" if val.nil?
+      if i < s.length - 1
+        # Check if we're less than the next number (like "IX") and if so, add
+        # the difference and skip past that character.
+        next_val = ROMAN_NUMS[s[i + 1]]
+        raise ArgumentError, "invalid Roman numeral string #{s}" if next_val.nil?
+
+        if val < next_val
+          res += next_val - val
+          i += 2
+          next
+        end
+      end
+
+      res += val
+      i += 1
+    end
+
+    res
+  end
+
+  # Parses a degree number, string, or symbol into its integer value and a
+  # semitone shift. Returns [number, semitones].
+  # @private
+  def self.parse_degree(d)
+    return [d.to_i, 0] if d.is_a?(Numeric)
+    raise TypeError, "degree must be a number, symbol, or string" unless d.is_a?(String) || d.is_a?(Symbol)
+
+    d = d.to_s.downcase
+    mod = 0
+    if d.start_with?("aa")
+      mod = 2
+      d = d[2..]
+    elsif d.start_with?("dd")
+      mod = -2
+      d = d[2..]
+    elsif d.start_with?("a")
+      mod = 1
+      d = d[1..]
+    elsif d.start_with?("d")
+      mod = -1
+      d = d[1..]
+    elsif d.start_with?("p")
+      d = d[1..]
+    end
+
+    raise ArgumentError, "no number component to degree" if d.empty?
+
+    begin
+      num = Integer(d)
+    rescue ArgumentError
+      num = roman_to_int(d)
+    end
+
+    [num, mod]
+  end
+
+  # Returns the note in the scale that is `d` degrees from `relative_tonic`. If
   # `relative_tonic` is nil (the default), the tonic of the scale will be used
   # instead. Raises an ArgumentError if the scale does not contain
-  # `relative_tonic`, or if `n` is a degree beyond the bounds of the scale.
+  # `relative_tonic`, or if `d` is a degree beyond the bounds of the scale.
   #
-  # `n` may be negative, which can be useful if `relative_tonic` is not the
-  # tonic of the scale. A degree of -1 is taken to be one note below the tonic
-  # on the scale.
+  # `d` may be an integer (a number of degrees), or a string or symbol. Those
+  # take the form of a number (decimal digits or Roman numeral), optionally
+  # prefixed by "a", "d", "aa", "dd", or "p" for augmented, diminished, doubly
+  # augmented or diminished, or perfect (unchanged). Symbols and strings are
+  # case-insensitive. For example, `:Aiv` is the augmented fourth degree.
   #
-  # @param n [Integer]
+  # `d` may be a negative integer, which can be useful if `relative_tonic` is
+  # not the tonic of the scale. A degree of -1 is taken to be one note below the
+  # tonic on the scale.
+  #
+  # Note that, unlike Sonic Pi's `degree` function, this will only return notes
+  # within the octave range of the scale on which it is called. See the class
+  # method {.degree} for a less bounded version.
+  #
+  # @param d [Integer, Symbol, String]
   # @param relative_tonic [MIDINote, String, Symbol, Integer, nil]
   # @return [MIDINote]
-  def degree(n, relative_tonic: nil)
+  # @see .degree
+  def degree(d, relative_tonic: nil)
+    n, mod = Scale.parse_degree(d)
+
     raise RangeError, "degree 0 is undefined" if n == 0
 
     steps = n
     steps -= 1 if steps > 0
-    note_at_step(relative_tonic || @tonic, steps)
+    note_at_step(relative_tonic || @tonic, steps) + mod
+  end
+
+  # Returns a note on a scale that is `d` degrees away from `tonic`. This is
+  # equivalent to calling {#degree} on the result of {.full_scale}.
+  #
+  # This is analogous to Sonic Pi's `degree`, though note that it won't return
+  # notes outside of the MIDI scale.
+  #
+  # @param d [Integer, Symbol, String] The requested degree. See {#degree} for
+  #   details.
+  # @param tonic [MIDINote, String, Symbol, Integer, nil] The root of the scale.
+  #   May be a {MIDINote} or anything understood by {MIDINote.new}.
+  # @param scale_name [Symbol, String] The name of the scale to use, one of the
+  #   keys of the {.SCALES} hash. This class understands all of the same scale
+  #   names as Sonic Pi's `scale` function and more.
+  # @return [MIDINote]
+  # @see .full_scale
+  # @see #degree
+  def self.degree(d, tonic, scale_name)
+    scale = full_scale(tonic, scale_name)
+    scale.degree(d, relative_tonic: tonic)
   end
 
   # Returns the number of steps on the scale between the given notes. Raises an
