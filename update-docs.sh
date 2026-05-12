@@ -14,10 +14,18 @@ tar cf docs.tar docs
 git checkout gh-pages
 
 tar xf docs.tar
-rm docs.tar
 
-git add docs
-git commit -m 'Update documentation'
+if [ -z "$(git status --porcelain --untracked-files=no)" ]; then
+    echo 'no updates!'
+else
+    git add docs
+    git commit -m 'Update documentation'
+    echo 'committed! now push the gh-pages branch.'
+fi
+
 git checkout master
 
-echo 'done! now push the gh-pages branch.'
+# Since docs is ignored on master, switching will have blown away our
+# copy. Restore it.
+tar xf docs.tar
+rm docs.tar
