@@ -341,6 +341,28 @@ of <code>Chord::VOICINGS.keys</code> to see all possible names.)</p>
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#degree-class_method" title="degree (class method)">.<strong>degree</strong>(d, tonic, scale_name, number_of_notes = 4, voicing = :closed, invert: 0)  &#x21d2; Array&lt;MIDINote&gt; </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a set of notes for a chord of the given degree on a scale.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#voiced-class_method" title="voiced (class method)">.<strong>voiced</strong>(root, name, voicing = :closed, invert: 0)  &#x21d2; Array&lt;MIDINote&gt; </a>
     
 
@@ -2277,6 +2299,291 @@ German, French, or Italian.</p></div>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_aug_triad'>aug_triad</span>
   <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='qsymbols_beg'>%i[</span><span class='tstring_content'>P1</span><span class='words_sep'> </span><span class='tstring_content'>M3</span><span class='words_sep'> </span><span class='tstring_content'>A5</span><span class='tstring_end'>]</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="degree-class_method">
+  
+    .<strong>degree</strong>(d, tonic, scale_name, number_of_notes = 4, voicing = :closed, invert: 0)  &#x21d2; <tt>Array&lt;<span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span>&gt;</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a set of notes for a chord of the given degree on a scale. The root
+note of the chord is the note at degree <code>d</code> on the scale starting at
+<code>tonic</code>. From there, subsequent thirds (major or minor) on the scale are
+added.</p>
+<p>This process ends when <code>number_of_notes</code> notes have been accumulated, or
+when the next third is not on the scale. So, on non-diatonic scales (e.g.
+pentatonic), which are not built on thirds, this function has limited
+utility. For example, it is not possible to build a chord on the second
+degree of C major pentatonic; the root is D, but there is no third after
+D on the scale.</p>
+<p>This is equivalent to Sonic Pi's <code>chord_degree</code> on diatonic scales, though
+it does add <code>voicing</code>.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <h4 class="tag_title">Examples:</h4>
+    
+      
+      <pre class="example code"><code><span class='const'><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></span><span class='period'>.</span><span class='id identifier rubyid_degree'>degree</span><span class='lparen'>(</span><span class='symbol'>:i</span><span class='comma'>,</span> <span class='symbol'>:a3</span><span class='comma'>,</span> <span class='symbol'>:major</span><span class='rparen'>)</span>  <span class='comment'># [:a3, :cs4, :e4, :gs4] - A3 maj7
+</span><span class='const'><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></span><span class='period'>.</span><span class='id identifier rubyid_degree'>degree</span><span class='lparen'>(</span><span class='symbol'>:ii</span><span class='comma'>,</span> <span class='symbol'>:a3</span><span class='comma'>,</span> <span class='symbol'>:major</span><span class='comma'>,</span> <span class='int'>5</span><span class='rparen'>)</span>  <span class='comment'># [:b3, :d4, :fs4, :a4, :cs5] - B3 min9
+</span><span class='const'><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></span><span class='period'>.</span><span class='id identifier rubyid_degree'>degree</span><span class='lparen'>(</span><span class='symbol'>:vii</span><span class='comma'>,</span> <span class='symbol'>:g4</span><span class='comma'>,</span> <span class='symbol'>:major</span><span class='comma'>,</span> <span class='int'>3</span><span class='rparen'>)</span>  <span class='comment'># [:fs5, :a5, :c6] - F#5 dim
+</span>
+<span class='const'><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></span><span class='period'>.</span><span class='id identifier rubyid_degree'>degree</span><span class='lparen'>(</span><span class='symbol'>:v</span><span class='comma'>,</span> <span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:major</span><span class='comma'>,</span> <span class='int'>3</span><span class='comma'>,</span> <span class='symbol'>:drop2</span><span class='rparen'>)</span>  <span class='comment'># [:b3, :g4, :d5] - G4 maj, drop2 voicing
+</span>
+<span class='comment'># Probably best avoided on non-diatonic scales:
+</span><span class='const'><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></span><span class='period'>.</span><span class='id identifier rubyid_degree'>degree</span><span class='lparen'>(</span><span class='int'>2</span><span class='comma'>,</span> <span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:major_pentatonic</span><span class='comma'>,</span> <span class='int'>5</span><span class='rparen'>)</span>  <span class='comment'># [:d4]; see above</span></code></pre>
+    
+  </div>
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>d</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>, <tt><span class='object_link'>String</span></tt>, <tt><span class='object_link'>Symbol</span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The chord degree. May be an integer or
+a Roman numeral string or symbol (e.g. <code>:ii</code> or &quot;ix&quot;). Must be &gt; 0.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>tonic</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span></tt>, <tt><span class='object_link'>String</span></tt>, <tt><span class='object_link'>Symbol</span></tt>, <tt>Integer</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The root note of the scale.
+May be a <span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span> or any value understood by <span class='object_link'><a href="MIDINote.html#new-class_method" title="MIDINote.new (method)">MIDINote.new</a></span>.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>scale_name</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'>Symbol</span></tt>, <tt><span class='object_link'>String</span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The name of the scale to use, one of the
+keys of the <span class='object_link'><a href="Scale.html#SCALES-constant" title="Scale::SCALES (constant)">Scale::SCALES</a></span> hash. All the scale name recognized by Sonic
+Pi's <code>scale</code> function are supported and more.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>number_of_notes</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>4</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The number of notes from the chord to
+return. This function will never return notes outside of the MIDI range
+(0 - 127), or notes that are not on the scale, so the result may contain
+fewer than this many elements.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>voicing</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'>Symbol</span></tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>:closed</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The voicing style to use. Valid values are the keys
+of the <span class='object_link'><a href="#VOICINGS-constant" title="Chord::VOICINGS (constant)">VOICINGS</a></span> hash.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>invert</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>0</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>How many times to invert the chord's intervals
+before applying the <code>voicing</code>. This must be &lt; <code>number_of_notes</code>.</p></div>
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Array&lt;<span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span>&gt;</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>RangeError</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><span class='object_link'><a href="#voice-instance_method" title="Chord#voice (method)">#voice</a></span></li>
+    
+      <li><span class='object_link'><a href="Scale.html#degree-class_method" title="Scale.degree (method)">Scale.degree</a></span></li>
+    
+  </ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'theory/chordvoicing.rb', line 193</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_degree'>degree</span><span class='lparen'>(</span><span class='id identifier rubyid_d'>d</span><span class='comma'>,</span> <span class='id identifier rubyid_tonic'>tonic</span><span class='comma'>,</span> <span class='id identifier rubyid_scale_name'>scale_name</span><span class='comma'>,</span> <span class='id identifier rubyid_number_of_notes'>number_of_notes</span> <span class='op'>=</span> <span class='int'>4</span><span class='comma'>,</span> <span class='id identifier rubyid_voicing'>voicing</span> <span class='op'>=</span> <span class='symbol'>:closed</span><span class='comma'>,</span> <span class='label'>invert:</span> <span class='int'>0</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>RangeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>chord only has </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_number_of_notes'>number_of_notes</span> <span class='op'>-</span> <span class='int'>1</span><span class='embexpr_end'>}</span><span class='tstring_content'> inversions</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_invert'>invert</span> <span class='op'>&gt;=</span> <span class='id identifier rubyid_number_of_notes'>number_of_notes</span>
+
+  <span class='comment'># Scale#degree accepts degrees like :aii, but we can accept only non-
+</span>  <span class='comment'># prefixed numbers so that we wind up with root note that is actually on the
+</span>  <span class='comment'># scale.
+</span>  <span class='id identifier rubyid_n'>n</span><span class='comma'>,</span> <span class='id identifier rubyid_mod'>mod</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Scale.html" title="Scale (class)">Scale</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse_degree'>parse_degree</span><span class='lparen'>(</span><span class='id identifier rubyid_d'>d</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>invalid degree </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_d'>d</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_mod'>mod</span> <span class='op'>!=</span> <span class='int'>0</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>RangeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>degree must be &gt; 0</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_n'>n</span> <span class='op'>&lt;=</span> <span class='int'>0</span>
+
+  <span class='id identifier rubyid_scale'>scale</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Scale.html" title="Scale (class)">Scale</a></span></span><span class='period'>.</span><span class='id identifier rubyid_full_scale'><span class='object_link'><a href="Scale.html#full_scale-class_method" title="Scale.full_scale (method)">full_scale</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_tonic'>tonic</span><span class='comma'>,</span> <span class='id identifier rubyid_scale_name'>scale_name</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_root'><span class='object_link'><a href="top-level-namespace.html" title="Top Level Namespace (root)">root</a></span></span> <span class='op'>=</span> <span class='id identifier rubyid_scale'>scale</span><span class='period'>.</span><span class='id identifier rubyid_degree'>degree</span><span class='lparen'>(</span><span class='id identifier rubyid_d'>d</span><span class='comma'>,</span> <span class='label'>relative_tonic:</span> <span class='id identifier rubyid_tonic'>tonic</span><span class='rparen'>)</span>
+
+  <span class='comment'># Select subsequent 3rds (major or minor), until we hit one that is not on
+</span>  <span class='comment'># the scale. Note that outside of diatonic scales this behavior differs
+</span>  <span class='comment'># quite a bit from Sonic Pi, which just selects every other note on the
+</span>  <span class='comment'># scale. Our behavior seems more sensible.
+</span>  <span class='id identifier rubyid_maj3'>maj3</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Interval.html" title="Interval (class)">Interval</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Interval.html#new-class_method" title="Interval.new (method)">new</a></span></span><span class='lparen'>(</span><span class='symbol'>:M3</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_min3'>min3</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Interval.html" title="Interval (class)">Interval</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Interval.html#new-class_method" title="Interval.new (method)">new</a></span></span><span class='lparen'>(</span><span class='symbol'>:m3</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_notes'>notes</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='id identifier rubyid_root'><span class='object_link'><a href="top-level-namespace.html" title="Top Level Namespace (root)">root</a></span></span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_intervals'>intervals</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='const'><span class='object_link'><a href="Interval.html" title="Interval (class)">Interval</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Interval.html#new-class_method" title="Interval.new (method)">new</a></span></span><span class='lparen'>(</span><span class='symbol'>:P1</span><span class='rparen'>)</span><span class='rbracket'>]</span>
+  <span class='lparen'>(</span><span class='id identifier rubyid_number_of_notes'>number_of_notes</span> <span class='op'>-</span> <span class='int'>1</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_times'>times</span> <span class='kw'>do</span>
+    <span class='id identifier rubyid_n'>n</span> <span class='op'>=</span> <span class='id identifier rubyid_notes'>notes</span><span class='lbracket'>[</span><span class='op'>-</span><span class='int'>1</span><span class='rbracket'>]</span> <span class='op'>+</span> <span class='id identifier rubyid_maj3'>maj3</span>
+    <span class='kw'>if</span> <span class='id identifier rubyid_scale'>scale</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span>
+      <span class='id identifier rubyid_notes'>notes</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_n'>n</span>
+      <span class='id identifier rubyid_intervals'>intervals</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_intervals'>intervals</span><span class='lbracket'>[</span><span class='op'>-</span><span class='int'>1</span><span class='rbracket'>]</span> <span class='op'>+</span> <span class='id identifier rubyid_maj3'>maj3</span>
+    <span class='kw'>else</span>
+      <span class='id identifier rubyid_n'>n</span> <span class='op'>=</span> <span class='id identifier rubyid_notes'>notes</span><span class='lbracket'>[</span><span class='op'>-</span><span class='int'>1</span><span class='rbracket'>]</span> <span class='op'>+</span> <span class='id identifier rubyid_min3'>min3</span>
+      <span class='kw'>break</span> <span class='kw'>unless</span> <span class='id identifier rubyid_scale'>scale</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span>
+      <span class='id identifier rubyid_notes'>notes</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_n'>n</span>
+      <span class='id identifier rubyid_intervals'>intervals</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_intervals'>intervals</span><span class='lbracket'>[</span><span class='op'>-</span><span class='int'>1</span><span class='rbracket'>]</span> <span class='op'>+</span> <span class='id identifier rubyid_min3'>min3</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+
+  <span class='comment'># A slightly silly round-trip between notes &amp; intervals, but this lets us
+</span>  <span class='comment'># piggyback on chord voicing.
+</span>  <span class='id identifier rubyid_chord'>chord</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-class_method" title="Chord.new (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_intervals'>intervals</span><span class='rparen'>)</span>
+
+  <span class='comment'># Note that since we may have wound up with fewer notes than
+</span>  <span class='comment'># `number_of_notes`, `invert` may now be &gt; notes.length. Quite the edge
+</span>  <span class='comment'># case; I&#39;m just going to take it down to the minimum.
+</span>  <span class='id identifier rubyid_invert'>invert</span> <span class='op'>=</span> <span class='id identifier rubyid_intervals'>intervals</span><span class='period'>.</span><span class='id identifier rubyid_length'>length</span> <span class='op'>-</span> <span class='int'>1</span> <span class='kw'>if</span> <span class='id identifier rubyid_invert'>invert</span> <span class='op'>&gt;=</span> <span class='id identifier rubyid_intervals'>intervals</span><span class='period'>.</span><span class='id identifier rubyid_length'>length</span>
+  <span class='id identifier rubyid_chord'>chord</span><span class='period'>.</span><span class='id identifier rubyid_voice'>voice</span><span class='lparen'>(</span><span class='id identifier rubyid_root'><span class='object_link'><a href="top-level-namespace.html" title="Top Level Namespace (root)">root</a></span></span><span class='comma'>,</span> <span class='id identifier rubyid_voicing'>voicing</span><span class='comma'>,</span> <span class='label'>invert:</span> <span class='id identifier rubyid_invert'>invert</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
