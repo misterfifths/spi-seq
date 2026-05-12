@@ -66,7 +66,7 @@ module ExtApi
       :get_event,  # undocumented; see TrackRecorder for some notes
 
       # Only for tests
-      :degree
+      :degree, :chord_degree
     ].each do |fwd|
       define_method(fwd) do |*args, **kwargs, &block|
         m = @spi.nil? ? ExtApiStubs.method(fwd) : @spi.method(fwd)

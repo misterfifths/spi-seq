@@ -147,6 +147,94 @@ class Chord
     notes
   end
 
+  # Returns a set of notes for a chord of the given degree on a scale. The root
+  # note of the chord is the note at degree `d` on the scale starting at
+  # `tonic`. From there, subsequent thirds (major or minor) on the scale are
+  # added.
+  #
+  # This process ends when `number_of_notes` notes have been accumulated, or
+  # when the next third is not on the scale. So, on non-diatonic scales (e.g.
+  # pentatonic), which are not built on thirds, this function has limited
+  # utility. For example, it is not possible to build a chord on the second
+  # degree of C major pentatonic; the root is D, but there is no third after
+  # D on the scale.
+  #
+  # This is equivalent to Sonic Pi's `chord_degree` on diatonic scales, though
+  # it does add `voicing`.
+  #
+  # @example
+  #   Chord.degree(:i, :a3, :major)  # [:a3, :cs4, :e4, :gs4] - A3 maj7
+  #   Chord.degree(:ii, :a3, :major, 5)  # [:b3, :d4, :fs4, :a4, :cs5] - B3 min9
+  #   Chord.degree(:vii, :g4, :major, 3)  # [:fs5, :a5, :c6] - F#5 dim
+  #
+  #   Chord.degree(:v, :c4, :major, 3, :drop2)  # [:b3, :g4, :d5] - G4 maj, drop2 voicing
+  #
+  #   # Probably best avoided on non-diatonic scales:
+  #   Chord.degree(2, :c4, :major_pentatonic, 5)  # [:d4]; see above
+  #
+  # @param d [Integer, String, Symbol] The chord degree. May be an integer or
+  #   a Roman numeral string or symbol (e.g. `:ii` or "ix"). Must be > 0.
+  # @param tonic [MIDINote, String, Symbol, Integer] The root note of the scale.
+  #   May be a {MIDINote} or any value understood by {MIDINote.new}.
+  # @param scale_name [Symbol, String] The name of the scale to use, one of the
+  #   keys of the {Scale.SCALES} hash. All the scale name recognized by Sonic
+  #   Pi's `scale` function are supported and more.
+  # @param number_of_notes [Integer] The number of notes from the chord to
+  #   return. This function will never return notes outside of the MIDI range
+  #   (0 - 127), or notes that are not on the scale, so the result may contain
+  #   fewer than this many elements.
+  # @param voicing [Symbol] The voicing style to use. Valid values are the keys
+  #   of the {.VOICINGS} hash.
+  # @param invert [Integer] How many times to invert the chord's intervals
+  #   before applying the `voicing`. This must be < `number_of_notes`.
+  # @return [Array<MIDINote>]
+  # @see #voice
+  # @see Scale.degree
+  def self.degree(d, tonic, scale_name, number_of_notes = 4, voicing = :closed, invert: 0)
+    raise RangeError, "chord only has #{number_of_notes - 1} inversions" if invert >= number_of_notes
+
+    # Scale#degree accepts degrees like :aii, but we can accept only non-
+    # prefixed numbers so that we wind up with root note that is actually on the
+    # scale.
+    n, mod = Scale.parse_degree(d)
+    raise ArgumentError, "invalid degree #{d}" if mod != 0
+    raise RangeError, "degree must be > 0" if n <= 0
+
+    scale = Scale.full_scale(tonic, scale_name)
+    root = scale.degree(d, relative_tonic: tonic)
+
+    # Select subsequent 3rds (major or minor), until we hit one that is not on
+    # the scale. Note that outside of diatonic scales this behavior differs
+    # quite a bit from Sonic Pi, which just selects every other note on the
+    # scale. Our behavior seems more sensible.
+    maj3 = Interval.new(:M3)
+    min3 = Interval.new(:m3)
+    notes = [root]
+    intervals = [Interval.new(:P1)]
+    (number_of_notes - 1).times do
+      n = notes[-1] + maj3
+      if scale.include?(n)
+        notes << n
+        intervals << intervals[-1] + maj3
+      else
+        n = notes[-1] + min3
+        break unless scale.include?(n)
+        notes << n
+        intervals << intervals[-1] + min3
+      end
+    end
+
+    # A slightly silly round-trip between notes & intervals, but this lets us
+    # piggyback on chord voicing.
+    chord = Chord.new(intervals)
+
+    # Note that since we may have wound up with fewer notes than
+    # `number_of_notes`, `invert` may now be > notes.length. Quite the edge
+    # case; I'm just going to take it down to the minimum.
+    invert = intervals.length - 1 if invert >= intervals.length
+    chord.voice(root, voicing, invert: invert)
+  end
+
 
   # These voicing methods receive an array of Intervals which will be uniq'd and
   # sorted low to high. They should return an array of MIDINotes that are also
