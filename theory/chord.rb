@@ -41,7 +41,7 @@ class Chord
     %i[major6  maj6  M6 6]    => :major_sixth,
     %i[major7  maj7  M7]      => :major_seventh,
     %i[major9  maj9  M9]      => :major_ninth,
-    %i[major11 maj11 M11 11]  => :major_eleventh,
+    %i[major11 maj11 M11]     => :major_eleventh,
     %i[major13 maj13 M13]     => :major_thirteenth,
 
     %i[minor   min   m]       => :minor_triad,
@@ -95,7 +95,7 @@ class Chord
        dompar]                => :dom_parallel,
     %i[dom7 v7 7]             => :dom_seventh,
     %i[dom9 v9 9]             => :dom_ninth,
-    %i[dom11 v11]             => :dom_eleventh,
+    %i[dom11 v11 11]          => :dom_eleventh,
     %i[dom13 v13 13]          => :dom_thirteenth,
 
     %i[fifth P5 5 power]      => :fifth,
