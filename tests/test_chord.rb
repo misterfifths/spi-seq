@@ -6,6 +6,112 @@ require_relative "../theory/chord"
 require_relative "../extapi"
 
 class ChordTest < Test::Unit::TestCase
+  def test_initializer
+    assert_equal Chord.new([:P1]).intervals, [:P1]
+    assert_equal Chord.new([:P1, :M3]).intervals, [:P1, :M3]
+
+    # Duplicates are removed
+    assert_equal Chord.new([:P1, :M3, :P1]).intervals, [:P1, :M3]
+    assert_equal Chord.new([:P1, :M3, :P1, :M3]).intervals, [:P1, :M3]
+
+    # Intervals are always sorted
+    assert_equal Chord.new([:M3, :P1, :m3]).intervals, [:P1, :m3, :M3]
+
+    # Numbers are taken as major/perfect interval numbers
+    assert_equal Chord.new([1, 3, 5]).intervals, [:P1, :M3, :P5]
+  end
+
+  def test_append_remove
+    c = Chord.new([:P1, :m3])
+    c += :P5
+    assert_equal c.intervals, [:P1, :m3, :P5]
+    c = c.without(:P1)
+    assert_equal c.intervals, [:m3, :P5]
+    assert_raises(ArgumentError) { c.without(:P1) }
+
+    # No duplicates
+    c = Chord.new([:P1, :m3])
+    c += :m3
+    assert_equal c.intervals, [:P1, :m3]
+
+    # Intervals are always sorted
+    c = Chord.new([:m3, :P5])
+    c += :P1
+    assert_equal c.intervals, [:P1, :m3, :P5]
+
+    # Adding other chords or enumerables
+    c = Chord.new([:P1]) + [:P5, :m3]
+    assert_equal c.intervals, [:P1, :m3, :P5]
+    c = Chord.new([:P1]) + Chord.new([:P5, :m3])
+    assert_equal c.intervals, [:P1, :m3, :P5]
+
+    # Integers -> major or perfect
+    c = Chord.new([:P1, :m3])
+    c += 5
+    assert_equal c.intervals, [:P1, :m3, :P5]
+    c += 3
+    assert_equal c.intervals, [:P1, :m3, :M3, :P5]
+  end
+
+  def test_suspend
+    assert_equal Chord.new([:P1, :m3]).sus4.intervals, [:P1, :P4]
+    assert_equal Chord.new([:P1, :M3]).sus4.intervals, [:P1, :P4]
+    assert_equal Chord.new([:P1, :M3, :P4]).sus4.intervals, [:P1, :P4]  # no duplicates
+    assert_raises(ArgumentError) { Chord.new([:P1, :m3, :M3]).sus4 }
+    assert_raises(ArgumentError) { Chord.new([:P1]).sus4 }
+
+    assert_equal Chord.new([:P1, :m3]).sus2.intervals, [:P1, :M2]
+    assert_equal Chord.new([:P1, :M3]).sus2.intervals, [:P1, :M2]
+    assert_equal Chord.new([:P1, :M3, :M2]).sus2.intervals, [:P1, :M2]  # no duplicates
+    assert_raises(ArgumentError) { Chord.new([:P1, :m3, :M3]).sus2 }
+    assert_raises(ArgumentError) { Chord.new([:P1]).sus2 }
+
+    assert_equal Chord.new([:P1, :m3]).sus9.intervals, [:P1, :P4, :M9]
+    assert_equal Chord.new([:P1, :M3]).sus9.intervals, [:P1, :P4, :M9]
+    assert_equal Chord.new([:P1, :M3, :P4, :M9]).sus9.intervals, [:P1, :P4, :M9]  # no duplicates
+    assert_raises(ArgumentError) { Chord.new([:P1, :m3, :M3]).sus9 }
+    assert_raises(ArgumentError) { Chord.new([:P1]).sus9 }
+  end
+
+  def test_flat_sharp
+    assert_equal Chord.new([:M3]).flat(3).intervals, [:m3]
+    assert_equal Chord.new([:M3]).flat(:M3).intervals, [:m3]
+    assert_equal Chord.new([:P5]).flat(5).intervals, [:d5]
+    assert_equal Chord.new([:P5]).flat(:P5).intervals, [:d5]
+    assert_raises(ArgumentError) { Chord.new([:P5]).flat(2) }
+
+    assert_equal Chord.new([:M3]).sharp(3).intervals, [:A3]
+    assert_equal Chord.new([:M3]).sharp(:M3).intervals, [:A3]
+    assert_equal Chord.new([:P5]).sharp(5).intervals, [:A5]
+    assert_equal Chord.new([:P5]).sharp(:P5).intervals, [:A5]
+    assert_raises(ArgumentError) { Chord.new([:P5]).sharp(2) }
+
+    assert_equal Chord.new([:M3]).sharp3.intervals, [:A3]
+    assert_raises(ArgumentError) { Chord.new([:m3]).sharp3 }
+    assert_equal Chord.new([:M3]).flat3.intervals, [:m3]
+    assert_raises(ArgumentError) { Chord.new([:m3]).flat3 }
+
+    assert_equal Chord.new([:P5]).sharp5.intervals, [:A5]
+    assert_raises(ArgumentError) { Chord.new([:m5]).sharp5 }
+    assert_equal Chord.new([:P5]).flat5.intervals, [:d5]
+    assert_raises(ArgumentError) { Chord.new([:m5]).flat5 }
+
+    assert_equal Chord.new([:M9]).sharp9.intervals, [:A9]
+    assert_raises(ArgumentError) { Chord.new([:m9]).sharp9 }
+    assert_equal Chord.new([:M9]).flat9.intervals, [:m9]
+    assert_raises(ArgumentError) { Chord.new([:m9]).flat9 }
+  end
+
+  def test_basics
+    # Spot checks of chord abbreviations; we test more thoroughly in Sonic Pi.
+    assert_equal Chord.new(:major9).intervals, [:P1, :M3, :P5, :M7, :M9]
+    assert_equal Chord.major_ninth.flat5.intervals, [:P1, :M3, :d5, :M7, :M9]
+
+    assert_equal Chord.new(:power).intervals, [:P1, :P5]
+    assert_equal Chord.new(:power2).intervals, [:P1, :P5, :M9]
+    assert_equal Chord.new(:fr6).intervals, [:P1, :M3, :d5, :A6]
+  end
+
   MAJOR_CHORD_DEGREES = [
     :major,
     :minor,
