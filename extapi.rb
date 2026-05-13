@@ -63,10 +63,7 @@ module ExtApi
       :live_loop, :in_thread,
       :get, :set,
       :cue, :sync,
-      :get_event,  # undocumented; see TrackRecorder for some notes
-
-      # Only for tests
-      :degree, :chord_degree
+      :get_event  # undocumented; see TrackRecorder for some notes
     ].each do |fwd|
       define_method(fwd) do |*args, **kwargs, &block|
         m = @spi.nil? ? ExtApiStubs.method(fwd) : @spi.method(fwd)
@@ -89,9 +86,14 @@ module ExtApi
       # not derive from (either) Enumerable, so we need to check for it
       # manually. You must make sure to call `to_a` on SPVectors before calling
       # Enumerable methods on them!
-
       def enumerable?(e)
         e.is_a?(::Enumerable) || e.is_a?(SonicPi::Core::SPVector)
+      end
+
+      # Make a direct call to a method in the Sonic Pi context. Only for use by
+      # tests, to call methods that would not otherwise be exposed on ExtApi.
+      def spi_call(method, *args, **kwargs, &block)
+        @spi.send(method, *args, **kwargs, &block)
       end
     rescue NameError
       def enumerable?(e)
