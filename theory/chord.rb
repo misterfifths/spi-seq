@@ -190,7 +190,7 @@ class Chord
       raise ArgumentError, "unknown chord name #{intervals_or_name}" if abbrev_val.nil?
 
       return method(abbrev_val).call if abbrev_val.is_a?(Symbol)
-      abbrev_val.call
+      return abbrev_val.call
     end
 
     super
