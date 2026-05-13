@@ -7,8 +7,8 @@ require_relative "chordvoicing"
 # @!group Music theory
 
 # (see Chord.voiced)
-def C(root, name, voicing = :closed, invert: 0)
-  Chord.voiced(root, name, voicing, invert: invert)
+def C(root, name, voicing = :closed, num_octaves: 1, invert: 0)
+  Chord.voiced(root, name, voicing, num_octaves: num_octaves, invert: invert)
 end
 
 # @!endgroup
@@ -234,13 +234,16 @@ class Chord
   #   {Chord.new}.
   # @param voicing [Symbol, String] The voicing style to use, a value accepted
   #   by {Chord#voice}.
+  # @param num_octaves [Integer] How many octaves of the chord to express. This
+  #   many copies of the chord's intervals will be added, each an octave higher,
+  #   before inverting and voicing.
   # @param invert [Integer] The number of inversions to apply to the chord
   #   before voicing it.
   # @return [Array<MIDINote>]
   # @see Chord.new
   # @see Chord#voice
-  def self.voiced(root, name, voicing = :closed, invert: 0)
-    new(name).voice(root, voicing, invert: invert)
+  def self.voiced(root, name, voicing = :closed, num_octaves: 1, invert: 0)
+    new(name).voice(root, voicing, num_octaves: num_octaves, invert: invert)
   end
 
 

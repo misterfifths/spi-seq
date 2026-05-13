@@ -111,27 +111,39 @@ class Chord
   #   {MIDINote.new}.
   # @param voicing [Symbol] The voicing style to use. Valid values are the keys
   #   of the {.VOICINGS} hash.
+  # @param num_octaves [Integer] How many octaves of the chord to express. This
+  #   many copies of the chord's intervals will be added, each an octave higher,
+  #   before inverting and voicing. Note that combining this with inversion is
+  #   likely to result in duplicate intervals, which will not result in
+  #   duplicate notes in the output.
   # @param invert [Integer] How many times to invert the chord's intervals
   #   before applying the `voicing`.
   # @return [Array<MIDINote>]
   # @see C
-  def voice(root, voicing = :closed, invert: 0)
+  def voice(root, voicing = :closed, num_octaves: 1, invert: 0)
+    raise RangeError, "inversion must be >= 0" unless invert >= 0
+
     root = MIDINote.new(root)
 
+    intervals = []
+    num_octaves.times do |octave|
+      @intervals.each do |interval|
+        intervals << interval + 12 * octave
+      end
+    end
+    intervals.sort!
+    intervals.uniq!
+
     # Inversions apply before voicing.
-    raise RangeError, "inversion must be >= 0" unless invert >= 0
-    raise RangeError, "chord only has #{@intervals.length - 1} inversions" if invert >= @intervals.length
+    raise RangeError, "chord only has #{intervals.length - 1} inversions" if invert >= intervals.length
 
     if invert > 0
-      intervals = @intervals.dup
       shifted_intervals = intervals.shift(invert).map! { |i| i + 12 }
       intervals += shifted_intervals
 
       # Inversion may have duplicated an interval.
       intervals.sort!
       intervals.uniq!
-    else
-      intervals = @intervals
     end
 
     voice_val = VOICINGS[voicing]
