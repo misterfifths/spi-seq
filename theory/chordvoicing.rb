@@ -4,6 +4,7 @@ require "forwardable"
 require_relative "chord"
 require_relative "interval"
 require_relative "midinote"
+require_relative "scale"
 
 # @!group Music theory
 
