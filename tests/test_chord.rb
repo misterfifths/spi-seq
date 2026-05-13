@@ -126,4 +126,50 @@ class ChordTest < Test::Unit::TestCase
     assert_raises(ArgumentError) { Chord.degree(:ai, :c4, :major) }
     assert_raises(ArgumentError) { Chord.degree(:div, :c4, :major) }
   end
+
+  def try_spi_chord(root, name, *args, **kwargs)
+    return nil unless ExtApi.in_sonic_pi?
+
+    begin
+      ns = ExtApi.spi_call(:chord, root, name, *args, **kwargs)
+      ns.to_a.map { |n| N(n) }
+    rescue RuntimeError
+      nil
+    end
+  end
+
+  def assert_eq_spi_chord(root, name, *args, sort: false, **kwargs)
+    us = Chord.voiced(root, name, *args, **kwargs)
+    them = try_spi_chord(root, name, *args, **kwargs)
+    them.sort! if sort
+    assert_equal them, us, "#{root} #{name} #{args.inspect} #{kwargs.inspect}"
+  end
+
+  def test_chords_vs_sonic_pi
+    return unless ExtApi.in_sonic_pi?
+
+    Chord::ABBREVS.each_key do |name|
+      spi_chord = try_spi_chord(:c4, name)
+      next if spi_chord.nil?  # Skip names Sonic Pi doesn't know.
+      num_notes = spi_chord.length
+
+      [:c4, :a4, :fs2].each do |root|
+        assert_eq_spi_chord root, name
+
+        1.upto(num_notes - 1) do |invert|
+          assert_eq_spi_chord root, name, invert: invert
+        end
+
+        2.upto(4) do |octaves|
+          # Sonic Pi doesn't use the order we do for extra octaves, so sort.
+          assert_eq_spi_chord root, name, sort: true, num_octaves: octaves
+        end
+
+        # Since Sonic Pi's ordering is weird with num_octaves, we can't really
+        # test invert + num_octaves (the inversion relies on the order). Also
+        # Sonic Pi returns duplicate notes when you mix the two, so it's not
+        # likely that gets much use.
+      end
+    end
+  end
 end
