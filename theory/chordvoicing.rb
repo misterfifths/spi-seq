@@ -5,6 +5,15 @@ require_relative "chord"
 require_relative "interval"
 require_relative "midinote"
 
+# @!group Music theory
+
+# (see Chord.voiced)
+def C(root, name, voicing = :closed, num_octaves: 1, invert: 0)
+  Chord.voiced(root, name, voicing, num_octaves: num_octaves, invert: invert)
+end
+
+# @!endgroup
+
 class Chord
   VOICING_DEFS = {
     %i[closed]                  => :voice_closed,
@@ -100,6 +109,27 @@ class Chord
 
   # @!group Voicing
 
+  # Returns an array of {MIDINote}s that express a named chord on the given
+  # root note, using a particular voicing style and inversion. A shortcut for
+  # creating a {Chord} and immediately {Chord#voice voicing} it.
+  # @param root [MIDINote, String, Symbol, Integer] The root note of the chord.
+  #   May be a {MIDINote} or anything understood by {MIDINote.new}.
+  # @param name [Symbol, String] The name of the chord, a value accepted by
+  #   {Chord.new}.
+  # @param voicing [Symbol, String] The voicing style to use, a value accepted
+  #   by {Chord#voice}.
+  # @param num_octaves [Integer] How many octaves of the chord to express. This
+  #   many copies of the chord's intervals will be added, each an octave higher,
+  #   before inverting and voicing.
+  # @param invert [Integer] The number of inversions to apply to the chord
+  #   before voicing it.
+  # @return [Array<MIDINote>]
+  # @see Chord.new
+  # @see Chord#voice
+  def self.voiced(root, name, voicing = :closed, num_octaves: 1, invert: 0)
+    new(name).voice(root, voicing, num_octaves: num_octaves, invert: invert)
+  end
+
   # Voices the chord. That is, converts the {#intervals} to concrete notes,
   # after potentially applying an inversion and a voicing technique.
   #
@@ -120,6 +150,7 @@ class Chord
   #   before applying the `voicing`.
   # @return [Array<MIDINote>]
   # @see C
+  # @see .voiced
   def voice(root, voicing = :closed, num_octaves: 1, invert: 0)
     raise RangeError, "inversion must be >= 0" unless invert >= 0
 
