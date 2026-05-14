@@ -7,6 +7,7 @@ require_relative "../theory/interval"
 class IntervalTest < Test::Unit::TestCase
   def assert_attrs(i, size, quality, number, sym, octave_span = 1, simple_interval = nil)
     assert_equal i.size, size
+    assert_equal i.to_i, size
     assert_equal i.quality, quality
     assert_equal i.number, number
     assert_equal i.to_sym, sym
@@ -227,6 +228,9 @@ class IntervalTest < Test::Unit::TestCase
 
     assert_attrs aug1 * 12 + aug1, 13, :minor, 9, :m9, 2, :m2
     assert_attrs aug1 * 12 + aug1 + 1, 14, :major, 9, :M9, 2, :M2
+
+    assert_attrs aug1 - 1, 0, :perfect, 1, :P1
+    assert_attrs Interval.new(:A6) - 2, 8, :minor, 6, :m6
 
     # Doesn't seem worth testing division.
   end
