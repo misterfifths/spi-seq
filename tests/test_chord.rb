@@ -100,6 +100,10 @@ class ChordTest < Test::Unit::TestCase
     assert_raises(ArgumentError) { Chord.new([:m9]).sharp9 }
     assert_equal Chord.new([:M9]).flat9.intervals, [:m9]
     assert_raises(ArgumentError) { Chord.new([:m9]).flat9 }
+
+    # No duplicates
+    assert_equal Chord.new([:M9, :m9]).flat9.intervals, [:m9]
+    assert_equal Chord.new([:M9, :A9]).sharp9.intervals, [:A9]
   end
 
   def test_basics
