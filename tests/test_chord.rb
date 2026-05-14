@@ -19,6 +19,10 @@ class ChordTest < Test::Unit::TestCase
 
     # Numbers are taken as major/perfect interval numbers
     assert_equal Chord.new([1, 3, 5]).intervals, [:P1, :M3, :P5]
+
+    # Chords can't be empty
+    assert_raises(ArgumentError) { Chord.new([]) }
+    assert_raises(ArgumentError) { Chord.new([:P1]).without(1) }
   end
 
   def test_append_remove

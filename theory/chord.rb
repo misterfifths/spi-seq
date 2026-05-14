@@ -10,7 +10,8 @@ require_relative "chordvoicing"
 # {Ch}.
 #
 # Enumerable over its {#intervals}, and has most of the read-only methods of
-# Array.
+# Array. The intervals are always sorted ascending and will never contain
+# duplicates, even if a mutation might produce one.
 #
 # Note that this class only represents the intervals; it does not track a root
 # note or inversions. Instances can be concretely expressed (i.e., converted to
@@ -235,6 +236,7 @@ class Chord
   # 2. An array of {Interval}s, symbols, strings, or numbers that represent the
   #    intervals that define the chord. Non-Interval values must be things
   #    understood by {Interval.new}; they will be passed to it for conversion.
+  #    Such an array must have at least one element.
   #
   # To create and immediately {#voice voice} a chord, you can use {.voiced} or
   # the {C} helper function.
@@ -267,6 +269,9 @@ class Chord
         Interval.new(i)
       end
     end
+
+    raise ArgumentError, "a Chord must have at least one interval" if @intervals.empty?
+
     @intervals.sort!
     @intervals.uniq!
     @intervals.freeze
@@ -318,7 +323,9 @@ class Chord
   # 2. A String or Symbol, which must be the abbreviated name of an Interval.
   # 3. A number, which is taken as the number of a major or perfect Interval.
   #
-  # Raises an ArgumentError if the chord does not contain the given interval.
+  # Raises an ArgumentError if the chord does not contain the given interval, or
+  # if the interval to remove is the only one in the chord.
+  #
   # @param interval [Interval, String, Symbol, Integer]
   # @return [Chord]
   def remove(interval)
