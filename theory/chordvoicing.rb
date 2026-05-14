@@ -60,47 +60,52 @@ class Chord
   private_constant :VOICING_DEFS
 
   # Blow VOICING_DEFS up into a 1-d map from names.
-
-  # A hash of the voicing styles supported by this class. The keys of this hash
-  # are the valid values to pass to {.voice}.
-  #
-  # Valid voicing styles:
-  # - `:closed`: The simplest voicing: uses the intervals in the chord as-is.
-  # - `:rootless`: The same as closed voicing, but omits the root note.
-  # - `:shell`: Only the root, thirds, and seventh intervals are included.
-  # - `:drop2`: Applies a closed voicing, then drops the 2nd highest note in the
-  #   result an octave.
-  # - `:drop3`: Same as drop2, but drops the third highest note.
-  # - `:drop23`: Combines drop2 and drop3.
-  # - `:drop24`: drop2, and also drops the 4th highest note.
-  # - `:drop34`: drop3, and also drops the 4th highest note.
-  # - `:drop4`: Like drop2, but only drops the 4th highest note.
-  # - `:double_root`: Applies a closed voicing, then adds a note that is an
-  #   octave below the root note.
-  # - `:double_root_up`: Like double_root, but adds the root note an octave up.
-  # - `:double_bass`: Applies a closed voicing, then adds a note that is an
-  #   octave below the lowest note in the result. This will be identical to
-  #   double_root unless there is an inversion.
-  # - `:double_bass_up`: Like double_bass, but adds the new note an octave up.
-  # - `:double3`: Applies a closed voicing, then, if there is a third in the
-  #   chord, adds a note that is an octave below that.
-  # - `:double3_up`: Same as double 3, but adds the new note an octave up.
-  # - `:double5`: Same as double3, but looks for a fifth in the chord.
-  # - `:double5_up`: Same as double3_up, but looks for a fifth in the chord.
-  # - `:open`: Applies a closed voicing, then raises the second-lowest note an
-  #   octave.
-  # - `:open2`: Applies a closed voicing, then raises the lowest note an octave
-  #   and lowers the third lowest note an octave.
-  # - `:open3`: Applies a closed voicing, then lowers the second-lowest note an
-  #   octave.
-  #
-  # (Note that there are aliases for many of the above styles; print the result
-  # of `Chord::VOICINGS.keys` to see all possible names.)
   VOICINGS = {}  # rubocop:disable Style/MutableConstant
   VOICING_DEFS.each do |names, val|
     names.each { |name| VOICINGS[name] = val }
   end
   VOICINGS.freeze
+  private_constant :VOICINGS
+
+  # The names of all voicing styles supported by this class. These are the valid
+  # values to pass to {.voice}.
+  #
+  # Valid voicing styles:
+  # - `closed`: The simplest voicing: uses the intervals in the chord as-is.
+  # - `rootless`: The same as closed voicing, but omits the root note.
+  # - `shell`: Only the root, thirds, and seventh intervals are included.
+  # - `drop2`: Applies a closed voicing, then drops the 2nd highest note in the
+  #   result an octave.
+  # - `drop3`: Same as drop2, but drops the third highest note.
+  # - `drop23`: Combines drop2 and drop3.
+  # - `drop24`: drop2, and also drops the 4th highest note.
+  # - `drop34`: drop3, and also drops the 4th highest note.
+  # - `drop4`: Like drop2, but only drops the 4th highest note.
+  # - `double_root`: Applies a closed voicing, then adds a note that is an
+  #   octave below the root note.
+  # - `double_root_up`: Like double_root, but adds the root note an octave up.
+  # - `double_bass`: Applies a closed voicing, then adds a note that is an
+  #   octave below the lowest note in the result. This will be identical to
+  #   double_root unless there is an inversion.
+  # - `double_bass_up`: Like double_bass, but adds the new note an octave up.
+  # - `double3`: Applies a closed voicing, then, if there is a third in the
+  #   chord, adds a note that is an octave below that.
+  # - `double3_up`: Same as double 3, but adds the new note an octave up.
+  # - `double5`: Same as double3, but looks for a fifth in the chord.
+  # - `double5_up`: Same as double3_up, but looks for a fifth in the chord.
+  # - `open`: Applies a closed voicing, then raises the second-lowest note an
+  #   octave.
+  # - `open2`: Applies a closed voicing, then raises the lowest note an octave
+  #   and lowers the third lowest note an octave.
+  # - `open3`: Applies a closed voicing, then lowers the second-lowest note an
+  #   octave.
+  #
+  # Note that there are aliases for many of the above styles; print this array
+  # to see all possible names.
+  #
+  # @return [Array<Symbol>]
+  VOICING_STYLES = VOICINGS.keys.to_a.freeze
+
 
   # TODO: use expressible_as instead? what about the P1?
   SHELL_INTERVALS = [:P1, :d3, :m3, :M3, :A3, :d7, :m7, :M7, :A7].map { |i| Interval.new(i) }
@@ -140,8 +145,8 @@ class Chord
   # @param root [MIDINote, String, Symbol, Integer] The root note upon which to
   #   voice the chord. Must be a {MIDINote} or something understood by
   #   {MIDINote.new}.
-  # @param voicing [Symbol] The voicing style to use. Valid values are the keys
-  #   of the {.VOICINGS} hash.
+  # @param voicing [Symbol] The voicing style to use. Valid values are listed in
+  #   the {.VOICING_STYLES} array.
   # @param num_octaves [Integer] How many octaves of the chord to express. This
   #   many copies of the chord's intervals will be added, each an octave higher,
   #   before inverting and voicing. Note that combining this with inversion is
@@ -227,8 +232,8 @@ class Chord
   #   return. This function will never return notes outside of the MIDI range
   #   (0 - 127), or notes that are not on the scale, so the result may contain
   #   fewer than this many elements.
-  # @param voicing [Symbol] The voicing style to use. Valid values are the keys
-  #   of the {.VOICINGS} hash.
+  # @param voicing [Symbol] The voicing style to use. Valid values are listed in
+  #   the {.VOICING_STYLES} array
   # @param invert [Integer] How many times to invert the chord's intervals
   #   before applying the `voicing`. This must be < `number_of_notes`.
   # @return [Array<MIDINote>]

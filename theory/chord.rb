@@ -155,9 +155,15 @@ class Chord
   private_constant :ABBREV_DEFS
 
   # Blow ABBREV_DEFS up into a 1-d map from names.
+  ABBREVS = {}  # rubocop:disable Style/MutableConstant
+  ABBREV_DEFS.each do |names, val|
+    names.each { |name| ABBREVS[name] = val }
+  end
+  ABBREVS.freeze
+  private_constant :ABBREVS
 
-  # A hash of the chord names supported by this class. The keys of this hash
-  # are valid values to pass to {#initialize}.
+  # All chord names supported by this class. The keys of this hash are valid
+  # values to pass to {Chord.new}.
   #
   # Valid chord names:
   # - `maj`: Major triad
@@ -212,21 +218,19 @@ class Chord
   # `m7+5-9`, `m7-9`, `9sus4`, `m11`, `7-9`, `7-10`, `7-11`, `7-13`, `7+5-9`,
   # `7sus2`, `7sus4`, `11`, `9+5`, `m9+5`
   #
-  # Note that there are aliases for many of the above names; print the result
-  # of `Chord::ABBREVS.keys` to see all possible names. This class understands
-  # all of the same chord names as Sonic Pi's `chord` function and more.
-  ABBREVS = {}  # rubocop:disable Style/MutableConstant
-  ABBREV_DEFS.each do |names, val|
-    names.each { |name| ABBREVS[name] = val }
-  end
-  ABBREVS.freeze
+  # Note that there are aliases for many of the above names; print this array to
+  # see all possible names. This class understands all of the same chord names
+  # as Sonic Pi's `chord` function and more.
+  #
+  # @return [Array<Symbol>]
+  CHORD_NAMES = ABBREVS.keys.to_a.freeze
 
 
   # @!group Initialization
 
   # Creates a new Chord. The argument may be one of two things:
-  # 1. An abbreviated name of a chord (Symbol or String) as found in the keys of
-  #    the {.ABBREVS} hash. This class understands all of the same chord names
+  # 1. An abbreviated name of a chord (Symbol or String) as found in the
+  #    {.CHORD_NAMES} array. This class understands all of the same chord names
   #    as Sonic Pi's `chord` function and more.
   # 2. An array of {Interval}s, symbols, strings, or numbers that represent the
   #    intervals that define the chord. Non-Interval values must be things

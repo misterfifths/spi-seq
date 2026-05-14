@@ -255,7 +255,7 @@ class ChordTest < Test::Unit::TestCase
   def test_chords_vs_sonic_pi
     return unless ExtApi.in_sonic_pi?
 
-    Chord::ABBREVS.each_key do |name|
+    Chord::CHORD_NAMES.each do |name|
       spi_chord = try_spi_chord(:c4, name)
       next if spi_chord.nil?  # Skip names Sonic Pi doesn't know.
       num_notes = spi_chord.length
