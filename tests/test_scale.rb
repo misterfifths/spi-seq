@@ -3,6 +3,7 @@
 
 require_relative "test_helper"
 require_relative "../theory/scale"
+require_relative "../extapi"
 
 class ScaleTest < Test::Unit::TestCase
   def test_basics
@@ -132,6 +133,33 @@ class ScaleTest < Test::Unit::TestCase
     assert_equal s.snap(:cs4), :d4
     assert_equal s.snap(:eb4), :e4
     assert_equal s.snap(:bs4), :c5
+  end
+
+  def try_spi_scale(tonic, name, num_octaves: 1)
+    return nil unless ExtApi.in_sonic_pi?
+
+    begin
+      ns = ExtApi.spi_call(:scale, tonic, name, num_octaves: num_octaves)
+      ns.to_a.map { |n| N(n) }
+    rescue SonicPi::Scale::InvalidScaleError
+      nil
+    end
+  end
+
+  def test_vs_sonic_pi
+    return unless ExtApi.in_sonic_pi?
+
+    Scale::SCALES.each_key do |scale_name|
+      next if try_spi_scale(:c4, scale_name).nil?  # Skip names Sonic Pi doesn't know
+
+      [:c4, :a4, :fs2].each do |tonic|
+        1.upto(4) do |num_octaves|
+          spi_scale = try_spi_scale(tonic, scale_name, num_octaves: num_octaves)
+          our_scale = Scale.new(tonic, scale_name, num_octaves: num_octaves)
+          assert_equal spi_scale, our_scale.notes
+        end
+      end
+    end
   end
 
   def assert_repr(sc)

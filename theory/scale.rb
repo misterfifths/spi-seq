@@ -180,8 +180,8 @@ class Scale
   # @param tonic [MIDINote, String, Symbol, Integer] The root note of the scale.
   #   A {MIDINote} or one of the values understood by {MIDINote.new}.
   # @param name [Symbol, String] The name of the scale to use, one of the keys
-  #   of the {.SCALES} hash. This class understands all of the same scale names
-  #   as Sonic Pi's `scale` function and more.
+  #   of the {.SCALES} hash. This class understands most of the same scale names
+  #   as Sonic Pi's `scale` function and some it doesn't.
   # @param num_octaves [Integer] The resulting instance will have notes
   #   belonging to this many octaves of the scale.
   # @param clamp_to_midi [Boolean] If true, only notes in the MIDI range of 0 -
@@ -371,8 +371,8 @@ class Scale
   # @param tonic [MIDINote, String, Symbol, Integer, nil] The root of the scale.
   #   May be a {MIDINote} or anything understood by {MIDINote.new}.
   # @param scale_name [Symbol, String] The name of the scale to use, one of the
-  #   keys of the {.SCALES} hash. This class understands all of the same scale
-  #   names as Sonic Pi's `scale` function and more.
+  #   keys of the {.SCALES} hash. This class understands most of the same scale
+  #   names as Sonic Pi's `scale` function and some it doesn't.
   # @return [MIDINote]
   # @see .full_scale
   # @see #degree
