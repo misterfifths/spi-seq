@@ -84,8 +84,7 @@ class Chord
     %i[dim11 -11]             => :dim_eleventh,
     %i[dim13 -13]             => :dim_thirteenth,
 
-    %i[halfdim halfdim7
-       m7b5 m7-5]             => :halfdim_seventh,
+    %i[halfdim halfdim7]      => :halfdim_seventh,
     %i[halfdim9]              => :halfdim_ninth,
     %i[halfdim11]             => :halfdim_eleventh,
     %i[halfdim13]             => :halfdim_thirteenth,
@@ -99,7 +98,58 @@ class Chord
     %i[dom13 v13 13]          => :dom_thirteenth,
 
     %i[fifth P5 5 power]      => :fifth,
-    %i[power2]                => -> { Chord.fifth(2) }
+    %i[power2]                => -> { Chord.fifth(2) },
+
+
+    # Rather inconsistent names from Sonic Pi
+
+    %i[1]                     => -> { Chord.new([:P1]) },
+
+    %i[add2]                  => -> { Chord.major_triad.add(2) },
+    %i[add4]                  => -> { Chord.major_triad.add(4) },
+    %i[add9]                  => -> { Chord.major_triad.add(9) },
+    %i[add11]                 => -> { Chord.major_triad.add(11) },
+    %i[add13]                 => -> { Chord.major_triad.add(13) },
+    %i[sus2]                  => -> { Chord.major_triad.sus2 },
+    %i[sus4]                  => -> { Chord.major_triad.sus4 },
+    %i[6*9]                   => -> { Chord.major_sixth.add(9) },
+
+    %i[madd2]                 => -> { Chord.minor_triad.add(2) },
+    %i[madd4]                 => -> { Chord.minor_triad.add(4) },
+    %i[madd9]                 => -> { Chord.minor_triad.add(9) },
+    %i[madd11]                => -> { Chord.minor_triad.add(11) },
+    %i[madd13]                => -> { Chord.minor_triad.add(13) },
+    %i[m+5]                   => -> { Chord.minor_triad.sharp5 },
+    %i[m6*9]                  => -> { Chord.minor_sixth.add(9) },
+    %i[m7+5]                  => -> { Chord.minor_seventh.sharp5 },
+    %i[m7+5-9]                => -> { Chord.minor_seventh.sharp5.add(:m9) },
+    %i[m7-9]                  => -> { Chord.minor_seventh.add(:m9) },
+    %i[m7+9]                  => :minor_ninth,
+    %i[9sus4]                 => -> { Chord.minor_ninth.sus4 },
+    %i[m11+]                  => -> { Chord.minor_eleventh.sharp(11) },
+
+    %i[7-5]                   => -> { Chord.new(%i[P1 M3 d5 A6]) },  # Same as fr6. No idea.
+    %i[7-9]                   => -> { Chord.dom_seventh.add(:m9) },
+    %i[7-10]                  => -> { Chord.dom_seventh.add(:m10) },
+    %i[7-11]                  => -> { Chord.dom_seventh.add(:d11) },
+    %i[7-13]                  => -> { Chord.dom_seventh.add(:m13) },
+    %i[7+5-9]                 => -> { Chord.dom_seventh.sharp5.add(:m9) },
+    %i[7sus2]                 => -> { Chord.dom_seventh.sus2 },
+    %i[7sus4]                 => -> { Chord.dom_seventh.sus4 },
+    %i[11+]                   => -> { Chord.dom_eleventh.sharp(11) },
+
+    %i[augmented a]           => :aug_triad,
+    %i[7+5]                   => :aug_seventh,
+
+    %i[diminished i]          => :dim_triad,
+    %i[diminished7 i7]        => :dim_seventh,
+
+    %i[halfdiminished m7b5
+       m7-5]                  => :halfdim_seventh,
+
+    # I have no idea what these are supposed to be.
+    %i[9+5]                   => -> { Chord.new(%i[P1 m7 m9]) },
+    %i[m9+5]                  => -> { Chord.new(%i[P1 m7 M9]) }
   }.freeze
   ABBREV_DEFS.each_key { |names| names.freeze }
   private_constant :ABBREV_DEFS
@@ -155,6 +205,12 @@ class Chord
   # - `dom13`: Dominant 13th
   # - `power`: Power chord (root + fifth)
   # - `power2`: Power chord spanning two octaves
+  #
+  # And some abbreviations from Sonic Pi:
+  # `1`, `add2`, `add4`, `add9`, `add11`, `add13`, `sus2`, `sus4`, `6*9`,
+  # `madd2`, `madd4`, `madd9`, `madd11`, `madd13`, `m+5`, `m6*9`, `m7+5`,
+  # `m7+5-9`, `m7-9`, `9sus4`, `m11`, `7-9`, `7-10`, `7-11`, `7-13`, `7+5-9`,
+  # `7sus2`, `7sus4`, `11`, `9+5`, `m9+5`
   #
   # Note that there are aliases for many of the above names; print the result
   # of `Chord::ABBREVS.keys` to see all possible names. This class understands

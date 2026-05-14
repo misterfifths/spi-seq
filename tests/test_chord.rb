@@ -244,10 +244,11 @@ class ChordTest < Test::Unit::TestCase
     end
   end
 
-  def assert_eq_spi_chord(root, name, *args, sort: false, **kwargs)
+  def assert_eq_spi_chord(root, name, *args, sort: false, uniq: false, **kwargs)
     us = Chord.voiced(root, name, *args, **kwargs)
     them = try_spi_chord(root, name, *args, **kwargs)
     them.sort! if sort
+    them.uniq! if uniq
     assert_equal them, us, "#{root} #{name} #{args.inspect} #{kwargs.inspect}"
   end
 
@@ -263,12 +264,15 @@ class ChordTest < Test::Unit::TestCase
         assert_eq_spi_chord root, name
 
         1.upto(num_notes - 1) do |invert|
-          assert_eq_spi_chord root, name, invert: invert
+          # Sonic Pi will duplicate notes in an inversion.
+          assert_eq_spi_chord root, name, uniq: true, invert: invert
         end
 
         2.upto(4) do |octaves|
           # Sonic Pi doesn't use the order we do for extra octaves, so sort.
-          assert_eq_spi_chord root, name, sort: true, num_octaves: octaves
+          # It will also, in some circumstances (e.g. 7-11 chord, 2 octaves),
+          # duplicate notes.
+          assert_eq_spi_chord root, name, sort: true, uniq: true, num_octaves: octaves
         end
 
         # Since Sonic Pi's ordering is weird with num_octaves, we can't really
@@ -276,6 +280,11 @@ class ChordTest < Test::Unit::TestCase
         # Sonic Pi returns duplicate notes when you mix the two, so it's not
         # likely that gets much use.
       end
+    end
+
+    # We should understand all the names that Sonic Pi does.
+    ExtApi.spi_call(:chord_names).to_a.each do |name|
+      assert_nothing_raised("should support chord #{name}") { Chord.new(name) }
     end
   end
 end
