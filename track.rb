@@ -806,7 +806,7 @@ class Track < TrackBase
   # @param tonic [String, Symbol] The pitch class for the root note of the
   #   scale, e.g. `:c`.
   # @param scale_name [Symbol, String] The name of the scale to use, one of the
-  #   keys of the {Scale.SCALES} hash.
+  #   values in {Scale.SCALE_NAMES}.
   # @return [Track]
   # @see #scale
   # @see Scale.full_scale

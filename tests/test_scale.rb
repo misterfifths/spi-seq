@@ -149,7 +149,7 @@ class ScaleTest < Test::Unit::TestCase
   def test_vs_sonic_pi
     return unless ExtApi.in_sonic_pi?
 
-    Scale::SCALES.each_key do |scale_name|
+    Scale::SCALE_NAMES.each do |scale_name|
       next if try_spi_scale(:c4, scale_name).nil?  # Skip names Sonic Pi doesn't know
 
       [:c4, :a4, :fs2].each do |tonic|

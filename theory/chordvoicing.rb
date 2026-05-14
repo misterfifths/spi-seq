@@ -226,8 +226,8 @@ class Chord
   # @param tonic [MIDINote, String, Symbol, Integer] The root note of the scale.
   #   May be a {MIDINote} or any value understood by {MIDINote.new}.
   # @param scale_name [Symbol, String] The name of the scale to use, one of the
-  #   keys of the {Scale.SCALES} hash. All the scale name recognized by Sonic
-  #   Pi's `scale` function are supported and more.
+  #   values in {Scale.SCALE_NAMES}. Most of the scale name recognized by Sonic
+  #   Pi's `scale` function are supported, and some others.
   # @param number_of_notes [Integer] The number of notes from the chord to
   #   return. This function will never return notes outside of the MIDI range
   #   (0 - 127), or notes that are not on the scale, so the result may contain

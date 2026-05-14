@@ -33,7 +33,7 @@ class Scale
   include Enumerable
   extend Forwardable
 
-  # The name of the scale, one of the keys in {SCALES}.
+  # The name of the scale, one of the names in {SCALE_NAMES}.
   # @return [Symbol]
   attr_reader :name
 
@@ -61,8 +61,6 @@ class Scale
                  :each, :[], :slice, :length, :size, :last, :to_a, :to_ary,
                  :values_at, :empty?
 
-  # A hash of the scales supported by this class. The keys of this hash are the
-  # valid values to pass to {#initialize}.
   SCALES = lambda do
     # These scale definitions are taken from Overtone,
     # https://github.com/overtone/overtone
@@ -171,6 +169,33 @@ class Scale
 
     scales
   end.call
+  private_constant :SCALES
+
+  # The names of all scales supported by this class. These are the valid values
+  # to pass to {#initialize}.
+  #
+  # Valid scale names: `diatonic`, `ionian`, `major`, `dorian`, `phrygian`,
+  # `lydian`, `mixolydian`, `aeolian`, `minor`, `locrian`, `hex_major6`,
+  # `hex_dorian`, `hex_phrygian`, `hex_major7`, `hex_sus`, `hex_aeolian`,
+  # `minor_pentatonic`, `yu`, `major_pentatonic`, `gong`, `egyptian`, `shang`,
+  # `jiao`, `pentatonic`, `zhi`, `ritusen`, `whole_tone`, `whole`, `chromatic`,
+  # `harmonic_minor`, `melodic_minor_asc`, `hungarian_minor`, `octatonic`,
+  # `messiaen1`, `messiaen2`, `messiaen3`, `messiaen4`, `messiaen5`,
+  # `messiaen6`, `messiaen7`, `super_locrian`, `hirajoshi`, `kumoi`,
+  # `neapolitan_major`, `bartok`, `bhairav`, `locrian_major`, `ahirbhairav`,
+  # `enigmatic`, `neapolitan_minor`, `pelog`, `augmented2`, `scriabin`,
+  # `harmonic_major`, `melodic_minor_desc`, `romanian_minor`, `hindu`, `iwato`,
+  # `melodic_minor`, `diminished2`, `marva`, `melodic_major`, `indian`,
+  # `spanish`, `prometheus`, `diminished`, `todi`, `leading_whole`, `augmented`,
+  # `purvi`, `chinese`, `lydian_minor`.
+  #
+  # Note that there are also aliases for some of the above names; print this
+  # array to see all possibilities. This class supports all of the integral
+  # scales that Sonic Pi does; it does not handle the Turkish scales with
+  # fractional intervals.
+  #
+  # @return [Array<Symbol>]
+  SCALE_NAMES = SCALES.keys.to_a.freeze
 
 
   # Creates a new Scale.
@@ -179,8 +204,8 @@ class Scale
   #
   # @param tonic [MIDINote, String, Symbol, Integer] The root note of the scale.
   #   A {MIDINote} or one of the values understood by {MIDINote.new}.
-  # @param name [Symbol, String] The name of the scale to use, one of the keys
-  #   of the {.SCALES} hash. This class understands most of the same scale names
+  # @param name [Symbol, String] The name of the scale to use, one of the values
+  #   in {.SCALE_NAMES}. This class understands most of the same scale names
   #   as Sonic Pi's `scale` function and some it doesn't.
   # @param num_octaves [Integer] The resulting instance will have notes
   #   belonging to this many octaves of the scale.
@@ -210,7 +235,7 @@ class Scale
   # @param tonic [String, Symbol] The pitch class for the root note of the
   #   scale, e.g. `:c`.
   # @param scale_name [Symbol, String] The name of the scale to use, one of the
-  #   keys of the {.SCALES} hash.
+  #   values in {.SCALE_NAMES}.
   # @return [Scale]
   # @see Track#scale
   def self.full_scale(tonic, scale_name)
@@ -371,7 +396,7 @@ class Scale
   # @param tonic [MIDINote, String, Symbol, Integer, nil] The root of the scale.
   #   May be a {MIDINote} or anything understood by {MIDINote.new}.
   # @param scale_name [Symbol, String] The name of the scale to use, one of the
-  #   keys of the {.SCALES} hash. This class understands most of the same scale
+  #   values in {.SCALE_NAMES}. This class understands most of the same scale
   #   names as Sonic Pi's `scale` function and some it doesn't.
   # @return [MIDINote]
   # @see .full_scale
