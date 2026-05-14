@@ -567,7 +567,7 @@ name. See also <span class='object_link'><a href="#SC-instance_method" title="#S
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="top-level-namespace.html#C-instance_method" title="#C (instance method)">#<strong>C</strong>(root, name, voicing = :closed, invert: 0)  &#x21d2; Array&lt;MIDINote&gt; </a>
+      <a href="top-level-namespace.html#C-instance_method" title="#C (instance method)">#<strong>C</strong>(root, name, voicing = :closed, num_octaves: 1, invert: 0)  &#x21d2; Array&lt;MIDINote&gt; </a>
     
 
     
@@ -893,7 +893,7 @@ name. See also <span class='object_link'><a href="#SC-instance_method" title="#S
       <div class="method_details ">
   <h3 class="signature " id="C-instance_method">
   
-    #<strong>C</strong>(root, name, voicing = :closed, invert: 0)  &#x21d2; <tt>Array&lt;<span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span>&gt;</tt> 
+    #<strong>C</strong>(root, name, voicing = :closed, num_octaves: 1, invert: 0)  &#x21d2; <tt>Array&lt;<span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span>&gt;</tt> 
   
 
   
@@ -960,6 +960,24 @@ by <span class='object_link'><a href="Chord.html#voice-instance_method" title="C
   
     <li>
       
+        <span class='name'>num_octaves</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>1</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>How many octaves of the chord to express. This
+many copies of the chord's intervals will be added, each an octave higher,
+before inverting and voicing.</p></div>
+      
+    </li>
+  
+    <li>
+      
         <span class='name'>invert</span>
       
       
@@ -1006,15 +1024,15 @@ before voicing it.</p></div>
       <pre class="lines">
 
 
-10
-11
-12</pre>
+12
+13
+14</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 10</span>
+      <pre class="code"><span class="info file"># File 'theory/chordvoicing.rb', line 12</span>
 
-<span class='kw'>def</span> <span class='const'>C</span><span class='lparen'>(</span><span class='id identifier rubyid_root'><span class='object_link'><a href="" title="Top Level Namespace (root)">root</a></span></span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_voicing'>voicing</span> <span class='op'>=</span> <span class='symbol'>:closed</span><span class='comma'>,</span> <span class='label'>invert:</span> <span class='int'>0</span><span class='rparen'>)</span>
-  <span class='const'><span class='object_link'><a href="Chord.html" title="Chord (class)">Chord</a></span></span><span class='period'>.</span><span class='id identifier rubyid_voiced'><span class='object_link'><a href="Chord.html#voiced-class_method" title="Chord.voiced (method)">voiced</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_root'><span class='object_link'><a href="" title="Top Level Namespace (root)">root</a></span></span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_voicing'>voicing</span><span class='comma'>,</span> <span class='label'>invert:</span> <span class='id identifier rubyid_invert'>invert</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='const'>C</span><span class='lparen'>(</span><span class='id identifier rubyid_root'><span class='object_link'><a href="" title="Top Level Namespace (root)">root</a></span></span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_voicing'>voicing</span> <span class='op'>=</span> <span class='symbol'>:closed</span><span class='comma'>,</span> <span class='label'>num_octaves:</span> <span class='int'>1</span><span class='comma'>,</span> <span class='label'>invert:</span> <span class='int'>0</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="Chord.html" title="Chord (class)">Chord</a></span></span><span class='period'>.</span><span class='id identifier rubyid_voiced'><span class='object_link'><a href="Chord.html#voiced-class_method" title="Chord.voiced (method)">voiced</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_root'><span class='object_link'><a href="" title="Top Level Namespace (root)">root</a></span></span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_voicing'>voicing</span><span class='comma'>,</span> <span class='label'>num_octaves:</span> <span class='id identifier rubyid_num_octaves'>num_octaves</span><span class='comma'>,</span> <span class='label'>invert:</span> <span class='id identifier rubyid_invert'>invert</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
