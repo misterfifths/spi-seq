@@ -135,31 +135,46 @@ class NoteLength
     NoteLength.new(@next_longer)
   end
 
+  private def delegate_comp(method, other)
+    case other
+    when NoteLength, Numeric
+      @float_val.send(method, other.to_f)
+    when Symbol
+      begin
+        @float_val.send(method, NoteLength.new(other).to_f)
+      rescue ArgumentError
+        false
+      end
+    else
+      raise TypeError, "cannot compare a NoteLength to #{other.inspect}"
+    end
+  end
+
   # Compares this NoteLength to another, or a numeric value.
   # @param other [NoteLength, #to_f]
   # @return [Boolean]
   def <(other)
-    @float_val < other.to_f
+    delegate_comp(:<, other)
   end
 
   # (see #<)
   def <=(other)
-    @float_val <= other.to_f
+    delegate_comp(:<=, other)
   end
 
   # (see #<)
   def >(other)
-    @float_val > other.to_f
+    delegate_comp(:>, other)
   end
 
   # (see #<)
   def >=(other)
-    @float_val >= other.to_f
+    delegate_comp(:>=, other)
   end
 
   # (see #<)
   def ==(other)
-    @sym == other.to_sym
+    delegate_comp(:==, other)
   end
 
   alias eql? ==
