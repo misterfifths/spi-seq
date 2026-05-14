@@ -30,7 +30,7 @@ class NoteLength
     when Numeric
       from_number(length)
     else
-      raise TypeError, "Invalid note length #{f}"
+      raise TypeError, "Invalid note length #{length}"
     end
 
     @cache[length] = instance
