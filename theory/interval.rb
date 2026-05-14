@@ -404,7 +404,7 @@ class Interval < Numeric
 
   # @private
   def hash
-    @sym.hash
+    @size.hash
   end
 
   # @private
