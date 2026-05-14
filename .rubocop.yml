@@ -64,6 +64,7 @@ Lint/BinaryOperatorWithIdenticalOperands:
   Exclude:
     - 'tests/test_midinote.rb'
     - 'tests/test_interval.rb'
+    - 'tests/test_notelength.rb'
 
 Lint/AmbiguousOperator:
   Exclude:
