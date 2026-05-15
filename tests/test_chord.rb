@@ -13,6 +13,7 @@ class ChordTest < Test::Unit::TestCase
     # Duplicates are removed
     assert_equal Chord.new([:P1, :M3, :P1]).intervals, [:P1, :M3]
     assert_equal Chord.new([:P1, :M3, :P1, :M3]).intervals, [:P1, :M3]
+    assert_equal Chord.new([:A1, :m2, :P5, :d6]).intervals, [:m2, :P5]
 
     # Intervals are always sorted
     assert_equal Chord.new([:M3, :P1, :m3]).intervals, [:P1, :m3, :M3]
