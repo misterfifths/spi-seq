@@ -144,6 +144,8 @@ class Interval < Numeric
   # `:dim`. Note that not every combination number/size and quality is valid -
   # e.g. there is no such thing as a major 5th interval.
   #
+  # @param args [Symbol, String, nil] The abbreviated name of an interval.
+  #   Optional; you may use some combination of keyword arguments instead.
   # @param number [Integer, nil]
   # @param size [Integer, nil]
   # @param quality [:perfect, :major, :minor, :aug, :dim, nil]
@@ -156,6 +158,7 @@ class Interval < Numeric
     if !args.empty?
       raise ArgumentError, "expected at most one positional argument, an interval name" if args.length > 1
       raise ArgumentError, "no keyword arguments may be given with an interval name" if number || size || quality
+      raise TypeError, "the positional argument must be a symbol or string" unless args[0].is_a?(Symbol) || args[0].is_a?(String)
 
       name = args[0].to_sym
       instance = @name_cache[name]
