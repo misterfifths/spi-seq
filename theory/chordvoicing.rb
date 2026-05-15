@@ -122,8 +122,7 @@ class Chord
   VOICING_STYLES = VOICINGS.keys.to_a.freeze
 
 
-  # TODO: use expressible_as instead? what about the P1?
-  SHELL_INTERVALS = [:P1, :d3, :m3, :M3, :A3, :d7, :m7, :M7, :A7].map { |i| Interval.new(i) }
+  SHELL_INTERVALS = [:P1, :m3, :M3, :m7, :M7].map { |i| Interval.new(i) }
   SHELL_INTERVALS.freeze
   private_constant :SHELL_INTERVALS
 
