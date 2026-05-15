@@ -126,4 +126,105 @@ class ChordVoicingTest < Test::Unit::TestCase
     assert_raises(ArgumentError) { Chord.degree(:ai, :c4, :major) }
     assert_raises(ArgumentError) { Chord.degree(:div, :c4, :major) }
   end
+
+  def test_closed
+    assert_equal C(:c4, :maj), %i[c4 e4 g4]
+    assert_equal C(:c4, :maj, invert: 1), %i[e4 g4 c5]
+    assert_equal C(:c4, :maj, invert: 2), %i[g4 c5 e5]
+    assert_equal C(:c4, :maj, num_octaves: 2), %i[c4 e4 g4 c5 e5 g5]
+    assert_equal C(:c4, :maj, num_octaves: 2, invert: 2), %i[g4 c5 e5 g5]  # duplicates dropped
+  end
+
+  def test_rootless
+    assert_equal C(:c4, :maj, :rootless), %i[e4 g4]
+
+    # Inversion happens before voicing, so these no longer have a P1 to drop
+    assert_equal C(:c4, :maj, :rootless, invert: 1), %i[e4 g4 c5]
+    assert_equal C(:c4, :maj, :rootless, invert: 2), %i[g4 c5 e5]
+
+    assert_equal C(:c4, :maj, :rootless, num_octaves: 2), %i[e4 g4 c5 e5 g5]
+
+    assert_equal Chord.new([:P1]).voice(:c4, :rootless), []  # TODO: questionable
+  end
+
+  def test_shell
+    assert_equal(Chord.new(%i[P1 m2 M3 m3 A3 P5 d7 m7 M7 M9]).voice(:c4, :shell),
+                 %i[P1 m3 M3 m7 M7].map { |i| N(:c4) + Interval.new(i) })
+  end
+
+  def test_drop
+    # C4 maj9 => %i[c4 e4 g4 b4 d5]
+    assert_equal C(:c4, :maj9, :drop2), %i[b3 c4 e4 g4 d5]
+    assert_equal C(:c4, :maj9, :drop3), %i[g3 c4 e4 b4 d5]
+    assert_equal C(:c4, :maj9, :drop4), %i[e3 c4 g4 b4 d5]
+    assert_equal C(:c4, :maj9, :drop23), %i[g3 b3 c4 e4 d5]
+    assert_equal C(:c4, :maj9, :drop24), %i[e3 b3 c4 g4 d5]
+    assert_equal C(:c4, :maj9, :drop34), %i[e3 g3 c4 b4 d5]
+
+    # No effect if there aren't enough notes
+    assert_equal Chord.new([:P1]).voice(:c4, :drop2), [:c4]
+    assert_equal Chord.new([:P1]).voice(:c4, :drop3), [:c4]
+    assert_equal Chord.new([:P1]).voice(:c4, :drop4), [:c4]
+    assert_equal Chord.new([:P1]).voice(:c4, :drop23), [:c4]
+    assert_equal Chord.new([:P1]).voice(:c4, :drop24), [:c4]
+    assert_equal Chord.new([:P1]).voice(:c4, :drop34), [:c4]
+
+    # The duplicate e4 is dropped
+    assert_equal C(:c4, :maj, :drop2, num_octaves: 2), %i[c4 e4 g4 c5 g5]
+
+    # Here the duplicate c5=>c4 (position 3) is dropped, but the g4 (position 4)
+    # still becomes a g3
+    assert_equal C(:c4, :maj, :drop34, num_octaves: 2), %i[g3 c4 e4 e5 g5]
+  end
+
+  def test_double_root_double_bass
+    assert_equal C(:c4, :maj, :double_root), %i[c3 c4 e4 g4]
+    assert_equal C(:c4, :maj, :double_root_up), %i[c4 e4 g4 c5]
+    assert_equal C(:c4, :maj, :double_bass), %i[c3 c4 e4 g4]
+    assert_equal C(:c4, :maj, :double_bass_up), %i[c4 e4 g4 c5]
+
+    # Things differ with inversions; double_root does nothing in that case since
+    # the root won't be in the result.
+    assert_equal C(:c4, :maj, :double_root, invert: 1), %i[e4 g4 c5]
+    assert_equal C(:c4, :maj, :double_root_up, invert: 1), %i[e4 g4 c5]
+
+    # double_bass always effects the lowest note regardless
+    assert_equal C(:c4, :maj, :double_bass, invert: 1), %i[e3 e4 g4 c5]
+    assert_equal C(:c4, :maj, :double_bass_up, invert: 1), %i[e4 g4 c5 e5]
+  end
+
+  def test_double_intervals
+    assert_equal C(:c4, :maj, :double3), %i[e3 c4 e4 g4]
+    assert_equal C(:c4, :min, :double3), %i[ds3 c4 ds4 g4]
+    assert_equal C(:c4, :maj, :double3_up), %i[c4 e4 g4 e5]
+    assert_equal C(:c4, :min, :double3_up), %i[c4 ds4 g4 ds5]
+    assert_equal Chord.new(%i[P1 A3 P5]).voice(:c4, :double3), %i[c4 f4 g4]  # no effect
+    assert_equal Chord.new(%i[P1 P5]).voice(:c4, :double3), %i[c4 g4]  # no effect
+
+    assert_equal C(:c4, :maj, :double5), %i[g3 c4 e4 g4]
+    assert_equal C(:c4, :maj, :double5_up), %i[c4 e4 g4 g5]
+    assert_equal Chord.new(%i[P1 M3 A5]).voice(:c4, :double5), %i[c4 e4 gs4]  # no effect
+    assert_equal Chord.new(%i[P1 M3]).voice(:c4, :double5), %i[c4 e4]  # no effect
+
+    assert_equal C(:c4, :maj7, :double7), %i[b3 c4 e4 g4 b4]
+    assert_equal C(:c4, :min7, :double7), %i[as3 c4 ds4 g4 as4]
+    assert_equal C(:c4, :maj7, :double7_up), %i[c4 e4 g4 b4 b5]
+    assert_equal C(:c4, :min7, :double7_up), %i[c4 ds4 g4 as4 as5]
+    assert_equal Chord.new(%i[P1 A7]).voice(:c4, :double7), %i[c4 c5]  # no effect
+    assert_equal Chord.new(%i[P1 P5]).voice(:c4, :double7), %i[c4 g4]  # no effect
+  end
+
+  def test_open
+    # Raise the 2nd lowest note an octave.
+    assert_equal C(:c4, :maj7, :open), %i[c4 g4 b4 e5]
+    assert_equal Chord.new([:P1]).voice(:c4, :open), [:c4]  # no effect
+
+    # Raise the lowest note an octave and lower the third lowest note an octave.
+    assert_equal C(:c4, :maj7, :open2), %i[g3 e4 b4 c5]
+    assert_equal Chord.new([:P1]).voice(:c4, :open2), [:c5]
+
+    # Lower the 2nd lowest note an octave.
+    assert_equal C(:c4, :maj7, :open3), %i[e3 c4 g4 b4]
+    assert_equal Chord.new([:P1]).voice(:c4, :open3), [:c4]  # no effect
+  end
 end
