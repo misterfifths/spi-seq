@@ -170,7 +170,7 @@ class Track < TrackBase
     notes = Arp.arpeggiate(notes, direction, spread: spread, extra_octaves: extra_octaves)
     if pulses.nil?
       grid = notes.map { |n| [Step.new(n)] }
-      new(grid, granularity: granularity, timescale: timescale)
+      new(*grid, granularity: granularity, timescale: timescale)
     else
       raise TypeError, "pulses and length must both be nil or both be integers" if length.nil?
       euclid(notes, pulses, length, rotate: rotate, full_cycle: full_cycle, granularity: granularity, timescale: timescale)
