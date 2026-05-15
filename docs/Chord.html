@@ -224,12 +224,8 @@ result an octave.</li>
 <li><code>drop23</code>: Combines drop2 and drop3.</li>
 <li><code>drop24</code>: Combines drop2 and drop4.</li>
 <li><code>drop34</code>: Combines drop3 and drop4.</li>
-<li><code>double_root</code>: Applies a closed voicing, then adds a note that is an
-octave below the root note.</li>
-<li><code>double_root_up</code>: Like double_root, but adds the root note an octave up.</li>
 <li><code>double_bass</code>: Applies a closed voicing, then adds a note that is an
-octave below the lowest note in the result. This will be identical to
-double_root unless there is an inversion.</li>
+octave below the lowest note in the result.</li>
 <li><code>double_bass_up</code>: Like double_bass, but adds the new note an octave up.</li>
 <li><code>double3</code>: Applies a closed voicing, then, if there is a (major or minor)
 third in the chord, adds a note that is an octave below that.</li>
@@ -2509,6 +2505,11 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
       <pre class="lines">
 
 
+252
+253
+254
+255
+256
 257
 258
 259
@@ -2547,15 +2548,10 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
 292
 293
 294
-295
-296
-297
-298
-299
-300</pre>
+295</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chordvoicing.rb', line 257</span>
+      <pre class="code"><span class="info file"># File 'theory/chordvoicing.rb', line 252</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_degree'>degree</span><span class='lparen'>(</span><span class='id identifier rubyid_d'>d</span><span class='comma'>,</span> <span class='id identifier rubyid_tonic'>tonic</span><span class='comma'>,</span> <span class='id identifier rubyid_scale_name'>scale_name</span><span class='comma'>,</span> <span class='id identifier rubyid_number_of_notes'>number_of_notes</span> <span class='op'>=</span> <span class='int'>4</span><span class='comma'>,</span> <span class='id identifier rubyid_voicing'>voicing</span> <span class='op'>=</span> <span class='symbol'>:closed</span><span class='comma'>,</span> <span class='label'>invert:</span> <span class='int'>0</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>RangeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>chord only has </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_number_of_notes'>number_of_notes</span> <span class='op'>-</span> <span class='int'>1</span><span class='embexpr_end'>}</span><span class='tstring_content'> inversions</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_invert'>invert</span> <span class='op'>&gt;=</span> <span class='id identifier rubyid_number_of_notes'>number_of_notes</span>
@@ -4574,12 +4570,12 @@ before voicing it.</p></div>
       <pre class="lines">
 
 
-150
-151
-152</pre>
+145
+146
+147</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chordvoicing.rb', line 150</span>
+      <pre class="code"><span class="info file"># File 'theory/chordvoicing.rb', line 145</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_voiced'>voiced</span><span class='lparen'>(</span><span class='id identifier rubyid_root'><span class='object_link'><a href="top-level-namespace.html" title="Top Level Namespace (root)">root</a></span></span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_voicing'>voicing</span> <span class='op'>=</span> <span class='symbol'>:closed</span><span class='comma'>,</span> <span class='label'>num_octaves:</span> <span class='int'>1</span><span class='comma'>,</span> <span class='label'>invert:</span> <span class='int'>0</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_voice'>voice</span><span class='lparen'>(</span><span class='id identifier rubyid_root'><span class='object_link'><a href="top-level-namespace.html" title="Top Level Namespace (root)">root</a></span></span><span class='comma'>,</span> <span class='id identifier rubyid_voicing'>voicing</span><span class='comma'>,</span> <span class='label'>num_octaves:</span> <span class='id identifier rubyid_num_octaves'>num_octaves</span><span class='comma'>,</span> <span class='label'>invert:</span> <span class='id identifier rubyid_invert'>invert</span><span class='rparen'>)</span>
@@ -5603,6 +5599,11 @@ before applying the <code>voicing</code>.</p></div>
       <pre class="lines">
 
 
+170
+171
+172
+173
+174
 175
 176
 177
@@ -5635,15 +5636,10 @@ before applying the <code>voicing</code>.</p></div>
 204
 205
 206
-207
-208
-209
-210
-211
-212</pre>
+207</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chordvoicing.rb', line 175</span>
+      <pre class="code"><span class="info file"># File 'theory/chordvoicing.rb', line 170</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_voice'>voice</span><span class='lparen'>(</span><span class='id identifier rubyid_root'><span class='object_link'><a href="top-level-namespace.html" title="Top Level Namespace (root)">root</a></span></span><span class='comma'>,</span> <span class='id identifier rubyid_voicing'>voicing</span> <span class='op'>=</span> <span class='symbol'>:closed</span><span class='comma'>,</span> <span class='label'>num_octaves:</span> <span class='int'>1</span><span class='comma'>,</span> <span class='label'>invert:</span> <span class='int'>0</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>RangeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>inversion must be &gt;= 0</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_invert'>invert</span> <span class='op'>&gt;=</span> <span class='int'>0</span>

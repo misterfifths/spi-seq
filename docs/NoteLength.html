@@ -624,6 +624,19 @@ constants defined on this class.</p>
     </li>
   
 </ul>
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>ArgumentError</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
 
 </div><table class="source_code">
   <tr>
@@ -666,18 +679,18 @@ constants defined on this class.</p>
   <span class='id identifier rubyid_instance'>instance</span> <span class='op'>=</span> <span class='ivar'>@cache</span><span class='lbracket'>[</span><span class='id identifier rubyid_length'>length</span><span class='rbracket'>]</span>
   <span class='kw'>return</span> <span class='id identifier rubyid_instance'>instance</span> <span class='kw'>unless</span> <span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
 
-  <span class='id identifier rubyid_instance'>instance</span> <span class='op'>=</span> <span class='kw'>case</span> <span class='id identifier rubyid_length'>length</span>
-  <span class='kw'>when</span> <span class='const'>Symbol</span>
-    <span class='kw'>super</span>
-  <span class='kw'>when</span> <span class='const'>Numeric</span>
-    <span class='id identifier rubyid_from_number'>from_number</span><span class='lparen'>(</span><span class='id identifier rubyid_length'>length</span><span class='rparen'>)</span>
-  <span class='kw'>else</span>
-    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Invalid note length </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_length'>length</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
-  <span class='kw'>end</span>
+  <span class='comment'># Every possible value other than symbols will be cached (and symbols are
+</span>  <span class='comment'># only uncached until we make the constants below), so anything else is an
+</span>  <span class='comment'># error here.
+</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Invalid note length </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_length'>length</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_length'>length</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Symbol</span><span class='rparen'>)</span>
+
+  <span class='id identifier rubyid_instance'>instance</span> <span class='op'>=</span> <span class='kw'>super</span>
 
   <span class='ivar'>@cache</span><span class='lbracket'>[</span><span class='id identifier rubyid_length'>length</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_instance'>instance</span>
   <span class='ivar'>@cache</span><span class='lbracket'>[</span><span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_instance'>instance</span>
   <span class='ivar'>@cache</span><span class='lbracket'>[</span><span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_instance'>instance</span>
+  <span class='ivar'>@cache</span><span class='lbracket'>[</span><span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_instance'>instance</span> <span class='kw'>if</span> <span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span> <span class='op'>==</span> <span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span>
 
   <span class='id identifier rubyid_instance'>instance</span>
 <span class='kw'>end</span></pre>
@@ -744,12 +757,12 @@ constants defined on this class.</p>
       <pre class="lines">
 
 
-156
-157
-158</pre>
+132
+133
+134</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 156</span>
+      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 132</span>
 
 <span class='kw'>def</span> <span class='op'>&lt;</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_delegate_comp'>delegate_comp</span><span class='lparen'>(</span><span class='symbol'>:&lt;</span><span class='comma'>,</span> <span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
@@ -811,12 +824,12 @@ constants defined on this class.</p>
       <pre class="lines">
 
 
-161
-162
-163</pre>
+137
+138
+139</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 161</span>
+      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 137</span>
 
 <span class='kw'>def</span> <span class='op'>&lt;=</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_delegate_comp'>delegate_comp</span><span class='lparen'>(</span><span class='symbol'>:&lt;=</span><span class='comma'>,</span> <span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
@@ -882,12 +895,12 @@ constants defined on this class.</p>
       <pre class="lines">
 
 
-176
-177
-178</pre>
+152
+153
+154</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 176</span>
+      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 152</span>
 
 <span class='kw'>def</span> <span class='op'>==</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_delegate_comp'>delegate_comp</span><span class='lparen'>(</span><span class='symbol'>:==</span><span class='comma'>,</span> <span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
@@ -949,12 +962,12 @@ constants defined on this class.</p>
       <pre class="lines">
 
 
-166
-167
-168</pre>
+142
+143
+144</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 166</span>
+      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 142</span>
 
 <span class='kw'>def</span> <span class='op'>&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_delegate_comp'>delegate_comp</span><span class='lparen'>(</span><span class='symbol'>:&gt;</span><span class='comma'>,</span> <span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
@@ -1016,12 +1029,12 @@ constants defined on this class.</p>
       <pre class="lines">
 
 
-171
-172
-173</pre>
+147
+148
+149</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 171</span>
+      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 147</span>
 
 <span class='kw'>def</span> <span class='op'>&gt;=</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_delegate_comp'>delegate_comp</span><span class='lparen'>(</span><span class='symbol'>:&gt;=</span><span class='comma'>,</span> <span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
@@ -1083,13 +1096,13 @@ whole note length.</p>
       <pre class="lines">
 
 
-133
-134
-135
-136</pre>
+109
+110
+111
+112</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 133</span>
+      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 109</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_double'>double</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>No supported note length longer than </span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='ivar'>@next_longer</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
@@ -1152,13 +1165,13 @@ a sixty-fourth note length.</p>
       <pre class="lines">
 
 
-124
-125
-126
-127</pre>
+100
+101
+102
+103</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 124</span>
+      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 100</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_halve'>halve</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>No supported note length shorter than </span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='ivar'>@next_shorter</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
@@ -1206,12 +1219,12 @@ a sixty-fourth note length.</p>
       <pre class="lines">
 
 
-219
-220
-221</pre>
+195
+196
+197</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 219</span>
+      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 195</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_inspect'>inspect</span>
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&lt;NoteLength </span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='embexpr_end'>}</span><span class='tstring_content'>&gt;</span><span class='tstring_end'>&quot;</span></span>
@@ -1258,12 +1271,12 @@ a sixty-fourth note length.</p>
       <pre class="lines">
 
 
-225
-226
-227</pre>
+201
+202
+203</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 225</span>
+      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 201</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_repr'>repr</span>
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@sym</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
@@ -1328,12 +1341,12 @@ to get between the two.</p>
       <pre class="lines">
 
 
-193
-194
-195</pre>
+169
+170
+171</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 193</span>
+      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 169</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_steps_to'>steps_to</span><span class='lparen'>(</span><span class='id identifier rubyid_other_note_length'>other_note_length</span><span class='rparen'>)</span>
   <span class='lparen'>(</span><span class='ivar'>@log2</span> <span class='op'>-</span> <span class='id identifier rubyid_other_note_length'>other_note_length</span><span class='period'>.</span><span class='id identifier rubyid_log2'>log2</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_abs'>abs</span>
@@ -1385,12 +1398,12 @@ to get between the two.</p>
       <pre class="lines">
 
 
-200
-201
-202</pre>
+176
+177
+178</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 200</span>
+      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 176</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_f'>to_f</span>
   <span class='ivar'>@float_val</span>
@@ -1437,12 +1450,12 @@ to get between the two.</p>
       <pre class="lines">
 
 
-214
-215
-216</pre>
+190
+191
+192</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 214</span>
+      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 190</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_s'>to_s</span>
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='ivar'>@desc</span><span class='embexpr_end'>}</span><span class='tstring_content'>/</span><span class='embexpr_beg'>#{</span><span class='ivar'>@float_val</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
@@ -1489,12 +1502,12 @@ to get between the two.</p>
       <pre class="lines">
 
 
-208
-209
-210</pre>
+184
+185
+186</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 208</span>
+      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 184</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_sym'>to_sym</span>
   <span class='ivar'>@sym</span>
