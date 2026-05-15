@@ -177,18 +177,10 @@ class ChordVoicingTest < Test::Unit::TestCase
     assert_equal C(:c4, :maj, :drop34, num_octaves: 2), %i[g3 c4 e4 e5 g5]
   end
 
-  def test_double_root_double_bass
-    assert_equal C(:c4, :maj, :double_root), %i[c3 c4 e4 g4]
-    assert_equal C(:c4, :maj, :double_root_up), %i[c4 e4 g4 c5]
+  def test_double_bass
     assert_equal C(:c4, :maj, :double_bass), %i[c3 c4 e4 g4]
     assert_equal C(:c4, :maj, :double_bass_up), %i[c4 e4 g4 c5]
 
-    # Things differ with inversions; double_root does nothing in that case since
-    # the root won't be in the result.
-    assert_equal C(:c4, :maj, :double_root, invert: 1), %i[e4 g4 c5]
-    assert_equal C(:c4, :maj, :double_root_up, invert: 1), %i[e4 g4 c5]
-
-    # double_bass always effects the lowest note regardless
     assert_equal C(:c4, :maj, :double_bass, invert: 1), %i[e3 e4 g4 c5]
     assert_equal C(:c4, :maj, :double_bass_up, invert: 1), %i[e4 g4 c5 e5]
   end

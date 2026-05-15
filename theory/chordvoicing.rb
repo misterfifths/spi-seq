@@ -30,11 +30,11 @@ class Chord
        drop34]                  => ->(intervals, root) { voice_drop(intervals, root, 3, 4) },
     %i[drop_four drop_4 drop4]  => ->(intervals, root) { voice_drop(intervals, root, 4) },
     %i[double_root
-       double_root_down]        => ->(intervals, root) { voice_double_root(intervals, root, -12) },
-    %i[double_root_up]          => ->(intervals, root) { voice_double_root(intervals, root, 12) },
-    %i[double_bass
+       double_root_down
+       double_bass
        double_bass_down]        => ->(intervals, root) { voice_double_bass(intervals, root, -12) },
-    %i[double_bass_up]          => ->(intervals, root) { voice_double_bass(intervals, root, 12) },
+    %i[double_root_up
+       double_bass_up]          => ->(intervals, root) { voice_double_bass(intervals, root, 12) },
     %i[double_third double_three
        double_3 double3
        double_third_down
@@ -91,12 +91,8 @@ class Chord
   # - `drop23`: Combines drop2 and drop3.
   # - `drop24`: Combines drop2 and drop4.
   # - `drop34`: Combines drop3 and drop4.
-  # - `double_root`: Applies a closed voicing, then adds a note that is an
-  #   octave below the root note.
-  # - `double_root_up`: Like double_root, but adds the root note an octave up.
   # - `double_bass`: Applies a closed voicing, then adds a note that is an
-  #   octave below the lowest note in the result. This will be identical to
-  #   double_root unless there is an inversion.
+  #   octave below the lowest note in the result.
   # - `double_bass_up`: Like double_bass, but adds the new note an octave up.
   # - `double3`: Applies a closed voicing, then, if there is a (major or minor)
   #   third in the chord, adds a note that is an octave below that.
@@ -340,18 +336,8 @@ class Chord
     notes
   end
 
-  # Doubles the root note, offset by the given number of semitones.
-  private_class_method def self.voice_double_root(intervals, root, shift)
-    notes = voice_closed(intervals, root)
-    notes.append(root + shift) if notes.include?(root)
-    notes.sort!
-    notes.uniq!
-    notes
-  end
-
   # Doubles the lowest note in the closed voicing, offset by the given number of
-  # semitones. Note that this will be equivalent to doubling the root note
-  # unless there's an inversion.
+  # semitones.
   private_class_method def self.voice_double_bass(intervals, root, shift)
     notes = voice_closed(intervals, root)
     notes.append(notes[0] + shift)
