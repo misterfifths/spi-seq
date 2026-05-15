@@ -466,3 +466,37 @@ class Interval < Numeric
     @sym
   end
 end
+
+
+# Some overrides so equality works when a string or symbol is on the left.
+# Note that comparison to left-hand side numerics already works because the
+# Interval will be coerced automatically.
+# @private
+class Symbol
+  alias _orig_eql eql?
+  def eql?(other)
+    return other == self if other.instance_of?(Interval)
+    _orig_eql(other)
+  end
+
+  alias _orig_eql_op ==
+  def ==(other)
+    return other == self if other.instance_of?(Interval)
+    _orig_eql_op(other)
+  end
+end
+
+# @private
+class String
+  alias _interval_orig_eql eql?
+  def eql?(other)
+    return other == self if other.instance_of?(Interval)
+    _interval_orig_eql(other)
+  end
+
+  alias _interval_orig_eql_op ==
+  def ==(other)
+    return other == self if other.instance_of?(Interval)
+    _interval_orig_eql_op(other)
+  end
+end
