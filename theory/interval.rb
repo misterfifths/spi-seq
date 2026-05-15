@@ -19,7 +19,9 @@
 # a number of octaves ({#octave_span}) and the simple interval they represent on
 # top of that number of octaves ({#simple_interval}). When possible,
 # `simple_interval` will have the same quality as the compound interval it
-# belongs to.
+# belongs to. Note that intervals that are a multiple of an octave (e.g. P8 or
+# A7) will have a `simple_interval` of P1, even if they are not technically
+# compound.
 #
 # Intervals can be compared to:
 # - Other Interval instances
@@ -47,7 +49,8 @@ class Interval < Numeric
   # If this interval spans more than one octave, this is the interval that
   # remains after those octaves. E.g. for a M10 interval, which is 16 semitones,
   # this value is a M3, accounting for the 4 additional semitones after the
-  # octave. If this interval is not compound, this is just `self`.
+  # octave. If this interval is not compound this is just `self`, except for
+  # P8 and A7 for which this is P1.
   # @return [Interval]
   attr_reader :simple_interval
 
@@ -231,7 +234,7 @@ class Interval < Numeric
     super()
 
     @size = size.to_i
-    raise RangeError, "interval size must be > 0" if @size < 0
+    raise RangeError, "interval size must be >= 0" if @size < 0
 
     num_octaves = @size / 12
     intra_octave_semitones = @size % 12
@@ -255,12 +258,14 @@ class Interval < Numeric
     @sym = :"#{QUALITY_PREFIXES[@quality]}#{number}"
 
     @octave_span = num_octaves + 1
-    if @sym == :d9
-      # d9 has an octave_span of 1, but we don't want it to be its own
-      # simple_interval since its number is > 8. Generally we'd like
-      # simple_interval to have the same quality as self, but we have to special
-      # case this one.
-      @simple_interval = Interval.new(:P8)
+    if @sym != :P1 && intra_octave_semitones == 12
+      # Exact multiples of an octave are funny. P8 & A7 are simple (number < 8);
+      # d9 is technically compound though it's the same size. We want all of
+      # them to have a simple_interval of a first so that they'll be considered
+      # with things like shell chord voicing. So this is an unfortunate special
+      # case where intervals with `simple?` true are not their own
+      # simple_interval, and the qualities might not match.
+      @simple_interval = Interval.new(:P1)
     elsif @octave_span == 1
       @simple_interval = self
     else

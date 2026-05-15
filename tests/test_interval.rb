@@ -104,8 +104,8 @@ class IntervalTest < Test::Unit::TestCase
     assert_raises(ArgumentError) { Interval.new(size: 11, quality: :minor) }
     assert_raises(ArgumentError) { Interval.new(size: 11, quality: :aug) }
 
-    assert_new 12, :perfect, 8, :P8
-    assert_new 12, :aug, 7, :A7
+    assert_new 12, :perfect, 8, :P8, 1, :P1
+    assert_new 12, :aug, 7, :A7, 1, :P1
     assert_raises(ArgumentError) { Interval.new(size: 12, quality: :major) }
     assert_raises(ArgumentError) { Interval.new(size: 12, quality: :minor) }
     # 12 semitones with diminished quality is valid but compound (d9)
@@ -122,7 +122,7 @@ class IntervalTest < Test::Unit::TestCase
   end
 
   def test_compound_intervals
-    assert_compound 12, :dim, 9, :d9, 1, :P8
+    assert_compound 12, :dim, 9, :d9, 1, :P1
 
     assert_compound 13, :minor, 9, :m9, 2, :m2
     assert_compound 13, :aug, 8, :A8, 2, :A1
@@ -157,8 +157,8 @@ class IntervalTest < Test::Unit::TestCase
     assert_compound 23, :major, 14, :M14, 2, :M7
     assert_compound 23, :dim, 15, :d15, 2, :d8
 
-    assert_compound 24, :perfect, 15, :P15, 2, :P8
-    assert_compound 24, :aug, 14, :A14, 2, :A7
+    assert_compound 24, :perfect, 15, :P15, 2, :P1
+    assert_compound 24, :aug, 14, :A14, 2, :P1
 
     assert_compound 25, :aug, 15, :A15, 3, :A1
   end
@@ -187,7 +187,7 @@ class IntervalTest < Test::Unit::TestCase
     assert_def_qual_for_size 9, :major, 6, :M6
     assert_def_qual_for_size 10, :minor, 7, :m7
     assert_def_qual_for_size 11, :major, 7, :M7
-    assert_def_qual_for_size 12, :perfect, 8, :P8
+    assert_def_qual_for_size 12, :perfect, 8, :P8, 1, :P1
 
     assert_def_qual_for_num 0, :perfect, 1, :P1
     assert_def_qual_for_num 2, :major, 2, :M2
@@ -196,7 +196,7 @@ class IntervalTest < Test::Unit::TestCase
     assert_def_qual_for_num 7, :perfect, 5, :P5
     assert_def_qual_for_num 9, :major, 6, :M6
     assert_def_qual_for_num 11, :major, 7, :M7
-    assert_def_qual_for_num 12, :perfect, 8, :P8
+    assert_def_qual_for_num 12, :perfect, 8, :P8, 1, :P1
     assert_def_qual_for_num 14, :major, 9, :M9, 2, :M2
     assert_def_qual_for_num 16, :major, 10, :M10, 2, :M3
     assert_def_qual_for_num 17, :perfect, 11, :P11, 2, :P4
@@ -221,10 +221,10 @@ class IntervalTest < Test::Unit::TestCase
     assert_attrs aug1 + 8, 9, :major, 6, :M6
     assert_attrs aug1 + 9, 10, :minor, 7, :m7
     assert_attrs aug1 + 10, 11, :major, 7, :M7
-    assert_attrs aug1 + 11, 12, :perfect, 8, :P8
+    assert_attrs aug1 + 11, 12, :perfect, 8, :P8, 1, :P1
 
     assert_attrs aug1 * 7, 7, :perfect, 5, :P5
-    assert_attrs aug1 * 12, 12, :perfect, 8, :P8
+    assert_attrs aug1 * 12, 12, :perfect, 8, :P8, 1, :P1
 
     assert_attrs aug1 * 12 + aug1, 13, :minor, 9, :m9, 2, :m2
     assert_attrs aug1 * 12 + aug1 + 1, 14, :major, 9, :M9, 2, :M2
