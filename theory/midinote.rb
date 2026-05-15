@@ -432,30 +432,30 @@ end
 #
 # @private
 class Symbol
-  alias _orig_eql eql?
+  alias _midinote_orig_eql eql?
   def eql?(other)
     return other == self if other.instance_of?(MIDINote)
-    _orig_eql(other)
+    _midinote_orig_eql(other)
   end
 
-  alias _orig_eql_op ==
+  alias _midinote_orig_eql_op ==
   def ==(other)
     return other == self if other.instance_of?(MIDINote)
-    _orig_eql_op(other)
+    _midinote_orig_eql_op(other)
   end
 end
 
 # @private
 class String
-  alias _orig_eql eql?
+  alias _midinote_orig_eql eql?
   def eql?(other)
     return other == self if other.instance_of?(MIDINote)
-    _orig_eql(other)
+    _midinote_orig_eql(other)
   end
 
-  alias _orig_eql_op ==
+  alias _midinote_orig_eql_op ==
   def ==(other)
     return other == self if other.instance_of?(MIDINote)
-    _orig_eql_op(other)
+    _midinote_orig_eql_op(other)
   end
 end
