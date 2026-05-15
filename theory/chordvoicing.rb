@@ -40,19 +40,19 @@ class Chord
        double_third_down
        double_three_down
        double_3_down
-       double3_down]            => ->(intervals, root) { voice_double_interval_num(intervals, root, 3, -12) },
+       double3_down]            => ->(intervals, root) { voice_double_interval(intervals, root, %i[m3 M3], -12) },
     %i[double_third_up
        double_three_up
-       double_3_up double3_up]  => ->(intervals, root) { voice_double_interval_num(intervals, root, 3, 12) },
+       double_3_up double3_up]  => ->(intervals, root) { voice_double_interval(intervals, root, %i[m3 M3], 12) },
     %i[double_fifth double_five
        double_5 double5
        double_fifth_down
        double_five_down
        double_5_down
-       double5_down]            => ->(intervals, root) { voice_double_interval_num(intervals, root, 5, -12) },
+       double5_down]            => ->(intervals, root) { voice_double_interval(intervals, root, [:P5], -12) },
     %i[double_fifth_up
        double_five_up
-       double_5_up double5_up]  => ->(intervals, root) { voice_double_interval_num(intervals, root, 5, 12) },
+       double_5_up double5_up]  => ->(intervals, root) { voice_double_interval(intervals, root, [:P5], 12) },
     %i[open]                    => :voice_open,
     %i[open2]                   => :voice_open2,
     %i[open3]                   => :voice_open3
@@ -77,10 +77,10 @@ class Chord
   # - `drop2`: Applies a closed voicing, then drops the 2nd highest note in the
   #   result an octave.
   # - `drop3`: Same as drop2, but drops the third highest note.
+  # - `drop4`: Sane as drop2, but only drops the 4th highest note.
   # - `drop23`: Combines drop2 and drop3.
-  # - `drop24`: drop2, and also drops the 4th highest note.
-  # - `drop34`: drop3, and also drops the 4th highest note.
-  # - `drop4`: Like drop2, but only drops the 4th highest note.
+  # - `drop24`: Combines drop2 and drop4.
+  # - `drop34`: Combines drop3 and drop4.
   # - `double_root`: Applies a closed voicing, then adds a note that is an
   #   octave below the root note.
   # - `double_root_up`: Like double_root, but adds the root note an octave up.
@@ -88,11 +88,12 @@ class Chord
   #   octave below the lowest note in the result. This will be identical to
   #   double_root unless there is an inversion.
   # - `double_bass_up`: Like double_bass, but adds the new note an octave up.
-  # - `double3`: Applies a closed voicing, then, if there is a third in the
-  #   chord, adds a note that is an octave below that.
+  # - `double3`: Applies a closed voicing, then, if there is a (major or minor)
+  #   third in the chord, adds a note that is an octave below that.
   # - `double3_up`: Same as double 3, but adds the new note an octave up.
-  # - `double5`: Same as double3, but looks for a fifth in the chord.
-  # - `double5_up`: Same as double3_up, but looks for a fifth in the chord.
+  # - `double5`: Same as double3, but looks for a perfect fifth in the chord.
+  # - `double5_up`: Same as double3_up, but looks for a perfect fifth in the
+  #   chord.
   # - `open`: Applies a closed voicing, then raises the second-lowest note an
   #   octave.
   # - `open2`: Applies a closed voicing, then raises the lowest note an octave
@@ -346,14 +347,16 @@ class Chord
     notes
   end
 
-  # Doubles the note corresponding to the given interval number (in any
-  # alteration), offset by the given number of semitones. Equivalent to a closed
-  # voicing if there is no such interval in the chord.
-  private_class_method def self.voice_double_interval_num(intervals, root, doubled_num, shift)
+  # Doubles all notes corresponding to the given intervals (double_ints), offset
+  # by the given number of semitones. Equivalent to a closed voicing if none of
+  # the target intervals are in the chord.
+  private_class_method def self.voice_double_interval(intervals, root, double_ints, shift)
+    double_ints = double_ints.map { |i| Interval.new(i) }
+
     notes = []
     intervals.each do |i|
       notes << root + i
-      notes << root + i + shift if i.expressible_as(doubled_num)
+      notes << root + i + shift if double_ints.include?(i)
     end
     notes.sort!
     notes.uniq!
