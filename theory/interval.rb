@@ -362,10 +362,12 @@ class Interval < Numeric
       begin
         @size.send(method, Interval.new(other))
       rescue ArgumentError
-        false
+        return false if method == :==
+        raise
       end
     else
-      raise TypeError, "cannot compare an Interval to #{other.inspect}"
+      return false if method == :==
+      raise ArgumentError, "cannot compare an Interval to #{other.inspect}"
     end
   end
 

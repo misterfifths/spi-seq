@@ -136,6 +136,11 @@ class NoteLengthTest < Test::Unit::TestCase
     # Comparisons to float values that aren't valid lengths should work
     assert NoteLength::Whole < 10
     assert NoteLength::Eighth > 0
+
+    # Comparisons against non-NoteLength values
+    assert NoteLength::Whole == 4
+    assert NoteLength::Whole != []
+    assert_raises(ArgumentError) { NoteLength::Whole > [] }
   end
 
   def test_repr

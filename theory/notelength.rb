@@ -119,10 +119,12 @@ class NoteLength
       begin
         @float_val.send(method, NoteLength.new(other).to_f)
       rescue ArgumentError
-        false
+        return false if method == :==
+        raise
       end
     else
-      raise TypeError, "cannot compare a NoteLength to #{other.inspect}"
+      return false if method == :==
+      raise ArgumentError, "cannot compare a NoteLength to #{other.inspect}"
     end
   end
 

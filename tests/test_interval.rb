@@ -316,6 +316,11 @@ class IntervalTest < Test::Unit::TestCase
     assert_equal Interval.new(size: 8, quality: :minor), Interval.new(number: 5, quality: :aug)
     assert_equal Interval.new(size: 8, quality: :minor), :A5
     assert_equal Interval.new(size: 8, quality: :minor), 8
+
+    # Comparison against non-Intervals
+    assert Interval.new(:A1) == 1.0  # rubocop:disable Lint/FloatComparison
+    assert Interval.new(:P1) != []
+    assert_raises(ArgumentError) { Interval.new(:P1) > [] }
   end
 
   def test_attrs
