@@ -250,4 +250,47 @@ class TrackInitTest < Test::Unit::TestCase
     assert_gt Track.euclid([:c4], 3, 4, timescale: 2), :eighth, 2
     assert_gt Track.euclid([:c4], 3, 4, granularity: :half, timescale: 2), :half, 2
   end
+
+  def test_arp
+    # .arp(notes, direction = Arp::Up, spread: 0, extra_octaves: [], pulses: nil, length: nil, rotate: 0, full_cycle: true, granularity: NoteLength::Eighth, timescale: 1)
+
+    directions = [:up, :alterninout]
+    spreads = (0..2).to_a
+    extra_octaves = [[], [1], [-2, 1]]
+    ns = %i[c4 c6 c5]
+
+    directions.each do |direction|
+      spreads.each do |spread|
+        extra_octaves.each do |extra_octaves|
+          # With no Euclid stuff, arp should just act like making a track with
+          # the result of the arpeggiated notes.
+          arped_ns = Arp.arpeggiate(ns, direction, spread: spread, extra_octaves: extra_octaves)
+          assert_grid Track.arp(ns, direction, spread: spread, extra_octaves: extra_octaves),
+                      Track.new(*arped_ns).grid
+
+          0.upto(4) do |pulses|
+            1.upto(3) do |length|
+              0.upto(3) do |rotate|
+                # With Euclid arguments, acts like applying Track.euclid to the
+                # arpeggiated notes.
+                arp_track = Track.arp(ns, direction, spread: spread, extra_octaves: extra_octaves,
+                                      pulses: pulses, length: length, rotate: rotate)
+                euc_track = Track.euclid(arped_ns, pulses, length, rotate: rotate, full_cycle: true)
+                assert_grid arp_track, euc_track.grid
+
+                arp_track = Track.arp(ns, direction, spread: spread, extra_octaves: extra_octaves,
+                                      pulses: pulses, length: length, rotate: rotate, full_cycle: false)
+                euc_track = Track.euclid(arped_ns, pulses, length, rotate: rotate)
+                assert_grid arp_track, euc_track.grid
+              end
+            end
+          end
+        end
+      end
+    end
+
+    assert_gt Track.arp([:c4], granularity: :whole), :whole, 1
+    assert_gt Track.arp([:c4], timescale: 2), :eighth, 2
+    assert_gt Track.arp([:c4], granularity: :half, timescale: 2), :half, 2
+  end
 end
