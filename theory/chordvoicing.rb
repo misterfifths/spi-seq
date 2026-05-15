@@ -53,6 +53,16 @@ class Chord
     %i[double_fifth_up
        double_five_up
        double_5_up double5_up]  => ->(intervals, root) { voice_double_interval(intervals, root, [:P5], 12) },
+    %i[double_seventh
+       double_seven double_7
+       double7
+       double_seventh_down
+       double_seven_down
+       double_7_down
+       double7_down]            => ->(intervals, root) { voice_double_interval(intervals, root, %i[m7 M7], -12) },
+    %i[double_seventh_up
+       double_seven_up
+       double_7_up double7_up]  => ->(intervals, root) { voice_double_interval(intervals, root, %i[m7 M7], 12) },
     %i[open]                    => :voice_open,
     %i[open2]                   => :voice_open2,
     %i[open3]                   => :voice_open3
@@ -94,6 +104,10 @@ class Chord
   # - `double5`: Same as double3, but looks for a perfect fifth in the chord.
   # - `double5_up`: Same as double3_up, but looks for a perfect fifth in the
   #   chord.
+  # - `double7`: Same as double3, but looks for a major or minor 7th in the
+  #   chord.
+  # - `double7_up`: Same as double3_up, but looks for a major or minor 7th in
+  #   the chord.
   # - `open`: Applies a closed voicing, then raises the second-lowest note an
   #   octave.
   # - `open2`: Applies a closed voicing, then raises the lowest note an octave
