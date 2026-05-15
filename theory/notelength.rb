@@ -24,45 +24,21 @@ class NoteLength
     instance = @cache[length]
     return instance unless instance.nil?
 
-    instance = case length
-    when Symbol
-      super
-    when Numeric
-      from_number(length)
-    else
-      raise TypeError, "Invalid note length #{length}"
-    end
+    # Every possible value other than symbols will be cached (and symbols are
+    # only uncached until we make the constants below), so anything else is an
+    # error here.
+
+    raise ArgumentError, "Invalid note length #{length}" unless length.is_a?(Symbol)
+
+    instance = super
 
     @cache[length] = instance
     @cache[instance.to_sym] = instance
     @cache[instance.to_f] = instance
+    @cache[instance.to_f.to_i] = instance if instance.to_f == instance.to_f.to_i  # rubocop:disable Lint/FloatComparison
 
     instance
   end
-
-  def self.from_number(f)
-    # rubocop:disable Lint/FloatComparison
-    case f
-    when 4.0
-      Whole
-    when 2.0
-      Half
-    when 1.0
-      Quarter
-    when 1/2.0
-      Eighth
-    when 1/4.0
-      Sixteenth
-    when 1/8.0
-      ThirtySecond
-    when 1/16.0
-      SixtyFourth
-    else
-      raise RangeError, "Invalid note length #{f}"
-    end
-    # rubocop:enable Lint/FloatComparison
-  end
-  private_class_method :from_number
 
   private def initialize(sym)
     @sym = sym
@@ -226,6 +202,10 @@ class NoteLength
     ":#{@sym}"
   end
 
+
+  # Creating these constants has the side-effect of priming the cache so that
+  # the initializer doesn't have to worry about creating instances from anything
+  # other than symbols.
 
   # Whole-note length: 4 beats.
   Whole = new(:whole)

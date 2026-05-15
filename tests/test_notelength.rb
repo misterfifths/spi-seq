@@ -53,8 +53,8 @@ class NoteLengthTest < Test::Unit::TestCase
     end
 
     # Invalid values
-    assert_raises(RangeError) { NoteLength.new(1.5) }
-    assert_raises(TypeError) { NoteLength.new([]) }
+    assert_raises(ArgumentError) { NoteLength.new(1.5) }
+    assert_raises(ArgumentError) { NoteLength.new([]) }
     assert_raises(ArgumentError) { NoteLength.new(:nope) }
   end
 
