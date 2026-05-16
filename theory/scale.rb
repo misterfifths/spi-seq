@@ -285,20 +285,22 @@ class Scale
 
     # This is very lenient, but isn't worth thinking about too much.
 
-    s = s.downcase
+    digits = s.downcase.chars.map do |c|
+      val = ROMAN_NUMS[c]
+      raise ArgumentError, "invalid Roman numeral string #{s}" if val.nil?
+      val
+    end
+
     res = 0
     i = 0
     loop do
-      break if i >= s.length
+      break if i >= digits.length
 
-      val = ROMAN_NUMS[s[i]]
-      raise ArgumentError, "invalid Roman numeral string #{s}" if val.nil?
+      val = digits[i]
       if i < s.length - 1
         # Check if we're less than the next number (like "IX") and if so, add
         # the difference and skip past that character.
-        next_val = ROMAN_NUMS[s[i + 1]]
-        raise ArgumentError, "invalid Roman numeral string #{s}" if next_val.nil?
-
+        next_val = digits[i + 1]
         if val < next_val
           res += next_val - val
           i += 2
