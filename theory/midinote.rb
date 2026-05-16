@@ -25,9 +25,8 @@ end
 #
 # Despite the name, this class can represent notes outside the MIDI range (C-1
 # to G9, note numbers 0 - 127). However such notes cannot be played on MIDI
-# devices, so they aren't particularly relevant. It can also handle non-integer
-# note numbers, but those will just be rounded to integers when played. Both
-# such uses should be considered deprecated.
+# devices, so they aren't particularly relevant. That use case should be
+# considered deprecated.
 #
 # This class derives from Numeric, so you can directly pass instances of it to
 # Sonic Pi methods like `play` and `midi`. You can also perform arithmetic on
@@ -58,11 +57,11 @@ class MIDINote < Numeric
   # @return [Symbol]
   attr_reader :pitch_class
 
-  # The MIDI number for the note (e.g. C4 is 60). Note that this may not be an
-  # integer (use {#to_i} if you need one), and may not be in the MIDI range of
-  # 0 - 127.
-  # @return [Number]
+  # The MIDI number for the note (e.g. C4 is 60). Note that this may not be in
+  # the MIDI range of 0 - 127.
+  # @return [Integer]
   attr_reader :number
+  alias to_i number
 
   # The octave number for the note (e.g. 2 for C2). This may be negative, and
   # may not be in the MIDI range.
@@ -71,7 +70,7 @@ class MIDINote < Numeric
 
   # Creates a new MIDINote instance from the given value, which must be either a
   # MIDI note number, a string, a symbol, or a MIDINote instance (in which case
-  # the argument is returned as-is).
+  # the argument is returned as-is). Floating point arguments are truncated.
   #
   # This method is aliased to {N} for convenience.
   #
@@ -94,6 +93,7 @@ class MIDINote < Numeric
     @note_cache ||= {}
 
     # Attempt a raw cache lookup.
+    note = note.to_i if note.is_a?(Numeric)
     instance = @note_cache[note]
     return instance unless instance.nil?
 
@@ -103,8 +103,6 @@ class MIDINote < Numeric
       note.downcase
     when Symbol
       note.to_s.downcase
-    when Numeric
-      note.to_f
     else
       note
     end
@@ -122,12 +120,7 @@ class MIDINote < Numeric
     @note_cache[note] = instance
     @note_cache[cache_key] = instance
     @note_cache[instance.to_f] = instance
-
-    # It's only safe to cache against instance.to_s if the note number is an
-    # integer. If it was a float, it is not the canonical representation of that
-    # note symbol, and we should only cache it against instance.to_f (which will
-    # also be the cache_key in that case).
-    @note_cache[instance.to_s] = instance if instance.number.is_a?(Integer)
+    @note_cache[instance.to_s] = instance
 
     instance
   end
@@ -137,11 +130,9 @@ class MIDINote < Numeric
 
     case note
     when Numeric
-      # The argument may be a float. Keep it as-is in @number, but be sure to
-      # use to_i when using it as a MIDI note number.
-      @number = note
-      @octave = (note.to_i / 12) - 1
-      @pitch_class = NOTE_NAMES[note.to_i % 12][0]
+      @number = note.to_i
+      @octave = (@number / 12) - 1
+      @pitch_class = NOTE_NAMES[@number % 12][0]
       @sym = :"#{@pitch_class}#{@octave}"
     when Symbol, String
       match = NOTE_REGEX.match(note.to_s.downcase)
@@ -268,12 +259,6 @@ class MIDINote < Numeric
 
   ### Ruby magic methods and Numeric implementation
 
-  # Returns {#number} as an integer.
-  # @return [Integer]
-  def to_i
-    @number.to_i
-  end
-
   # Returns {#number} as a floating point number.
   # @return [Float]
   def to_f
@@ -285,38 +270,38 @@ class MIDINote < Numeric
   # @param other [MIDINote, String, Symbol, Integer]
   # @return [Boolean]
   def <(other)
-    return @number < other.to_f if other.is_a?(Numeric)
+    return @number < other.to_i if other.is_a?(Numeric)
     @number < MIDINote.new(other).number
   end
 
   # (see #<)
   def <=(other)
-    return @number <= other.to_f if other.is_a?(Numeric)
+    return @number <= other.to_i if other.is_a?(Numeric)
     @number <= MIDINote.new(other).number
   end
 
   # (see #<)
   def >(other)
-    return @number > other.to_f if other.is_a?(Numeric)
+    return @number > other.to_i if other.is_a?(Numeric)
     @number > MIDINote.new(other).number
   end
 
   # (see #<)
   def >=(other)
-    return @number >= other.to_f if other.is_a?(Numeric)
+    return @number >= other.to_i if other.is_a?(Numeric)
     @number >= MIDINote.new(other).number
   end
 
   # (see #<)
   def <=>(other)
-    return @number <=> other.to_f if other.is_a?(Numeric)
+    return @number <=> other.to_i if other.is_a?(Numeric)
     @number <=> MIDINote.new(other).number
   end
 
   # (see #<)
   def ==(other)
     return false if MIDINote.rest?(other)
-    return @number == other.to_f if other.is_a?(Numeric)  # rubocop:disable Lint/FloatComparison
+    return @number == other.to_i if other.is_a?(Numeric)
     # The symbol and string checks are just fast paths. :c4 and :C4 are still
     # equal, e.g., so we have to normalize if they don't match.
     return true if other.is_a?(Symbol) && @sym == other
@@ -346,28 +331,28 @@ class MIDINote < Numeric
   # @param other [Integer]
   # @return [MIDINote]
   def +(other)
-    transpose(other.to_f)
+    transpose(other.to_i)
   end
 
   # Returns a new MIDINote by subtracting `other` many semitones from this one.
   # @param other [Integer]
   # @return [MIDINote]
   def -(other)
-    transpose(-other.to_f)
+    transpose(-other.to_i)
   end
 
   # Returns a new MIDINote by multiplying this note's {#number} by `other`.
   # @param other [Integer]
   # @return [MIDINote]
   def *(other)
-    MIDINote.new(@number * other.to_f)
+    MIDINote.new(@number * other.to_i)
   end
 
   # Returns a new MIDINote by dividing this note's {#number} by `other`.
   # @param other [Integer]
   # @return [MIDINote]
   def /(other)
-    MIDINote.new(@number / other.to_f)
+    MIDINote.new(@number / other.to_i)
   end
 
   # Returns the symbol for this note, which consists of its {#pitch_class} and

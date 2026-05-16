@@ -45,7 +45,7 @@ class MIDINoteTest < Test::Unit::TestCase
     assert_attrs N("C4"), 60, :c4, :c
     assert_attrs N(60), 60, :c4, :c
     assert_attrs N(60.0), 60, :c4, :c
-    assert_attrs N(60.5), 60.5, :c4, :c
+    assert_attrs N(60.5), 60, :c4, :c
 
     # Accidental standardization
     assert_attrs N(:cs4), 61, :cs4, :cs
@@ -85,20 +85,15 @@ class MIDINoteTest < Test::Unit::TestCase
     assert_equal N(:c4), "C4"
     assert_equal "C4", N(:c4)
 
+    # Arguable, I suppose, whether these should be true.
     assert_equal N(60.5), 60.5
     assert_equal 60.5, N(60.5)
     assert_equal N(60.5), N(60.5)
 
-    # TODO: It's debatable what these should return, but the current situation
-    # is a little odd. I can sort of justify it though - comparing to a number
-    # implies you care about the actual number value, but comparing to a symbol
-    # implies that you're asking what MIDI note it corresponds to, and 60.5
-    # collapses to :c4. OTOH, it does feel like N(a) == b should imply N(b) == a
-    # and N(a) == N(b)...
-    assert_not_equal N(:c4), 60.5
+    assert_equal N(:c4), 60.5
     assert_equal N(60.5), :c4
-    assert_not_equal N(60.5), N(:c4)
-    assert_not_equal N(60.5), 60
+    assert_equal N(60.5), N(:c4)
+    assert_equal N(60.5), 60
 
     # Accidentals
     assert_equal N(:cs4), 61
@@ -239,9 +234,13 @@ class MIDINoteTest < Test::Unit::TestCase
     assert_equal N(:c4) + 13, :cs5
     assert_equal N(:c4) - 12, :c3
 
-    assert_attrs N(:c4) + 0.5, 60.5, :c4, :c
-    assert_attrs 0.5 + N(:c4), 60.5, :c4, :c
-    assert_attrs N(:c4) - 0.5, 59.5, :b3, :b
+    assert_attrs N(:c4) + 0.5, 60, :c4, :c
+    assert_attrs 0.5 + N(:c4), 60, :c4, :c
+    assert_attrs N(:c4) - 0.5, 60, :c4, :c
+
+    assert_attrs N(:c4) + 1.5, 61, :cs4, :cs
+    assert_attrs 1.5 + N(:c4), 61, :cs4, :cs
+    assert_attrs N(:c4) - 1.5, 59, :b3, :b
 
     # Doesn't seem worth worrying about multiplication and division, or the
     # odd case of both operands being MIDINotes.
@@ -260,8 +259,8 @@ class MIDINoteTest < Test::Unit::TestCase
       [59, 60, 65],
       [59, 60, "C6"],
       ["c0", 60, "d6"],
-      [59.5, 60, 60.5],
-      [59.5, :c4, 60.5]
+      [59.5, 60, 61.5],
+      [59.5, :c4, 61.5]
     ].each do |vals|
       a, b, c = *vals
 
@@ -312,8 +311,8 @@ class MIDINoteTest < Test::Unit::TestCase
     # In the case of equal distances, the upper note should win.
     assert_equal N(60).snap([50, 70]), 70
     assert_equal N(60).snap([70, 50]), 70
-    assert_equal N(60.5).snap([60, 61]), 61
-    assert_equal N(60.5).snap([61, 60]), 61
+    assert_equal N(60.5).snap([60, 61]), 60
+    assert_equal N(60.5).snap([61, 60]), 60
   end
 
   def test_snap_to_scale
