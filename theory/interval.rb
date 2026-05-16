@@ -252,19 +252,20 @@ class Interval < Numeric
     @number += 7 * num_octaves
     @sym = :"#{QUALITY_PREFIXES[@quality]}#{number}"
 
-    @octave_span = num_octaves + 1
-    if @sym != :P1 && intra_octave_semitones == 12
+    # Not adjusted for P8 like num_octaves above
+    @octave_span = 1 + @size / 12
+    @simple_interval = if size > 0 && (size % 12) == 0
       # Exact multiples of an octave are funny. P8 & A7 are simple (number < 8);
       # d9 is technically compound though it's the same size. We want all of
       # them to have a simple_interval of a first so that they'll be considered
       # with things like shell chord voicing. So this is an unfortunate special
       # case where intervals with `simple?` true are not their own
       # simple_interval, and the qualities might not match.
-      @simple_interval = Interval.new(:P1)
-    elsif @octave_span == 1
-      @simple_interval = self
+      Interval.new(:P1)
+    elsif num_octaves == 0
+      self
     else
-      @simple_interval = Interval.new(size: intra_octave_semitones, quality: @quality)
+      Interval.new(size: intra_octave_semitones, quality: @quality)
     end
   end
 
