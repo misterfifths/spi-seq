@@ -12,6 +12,7 @@ class IntervalTest < Test::Unit::TestCase
     assert_equal i.number, number
     assert_equal i.to_sym, sym
     assert_equal i.octave_span, octave_span
+    assert i.names.include?(i.to_sym)
 
     # We want to very specifically check the simple_interval value, not just
     # its equality with the argument; hence the comparison of symbols.
@@ -390,6 +391,9 @@ class IntervalTest < Test::Unit::TestCase
     assert i2.expressible_as(num1)
     refute_nil i2.as(num1)
     assert_equal i2.as(num1).to_sym, i1.to_sym
+
+    assert_equal Set.new(i1.names), Set.new(i2.names)
+    assert_equal Set.new(i2.names), Set.new(i1.names)
   end
 
   def test_as
@@ -405,5 +409,36 @@ class IntervalTest < Test::Unit::TestCase
     assert_as :major,   6, :dim, 7
     assert_as :minor,   7, :aug, 6
     assert_as :major,   7, :dim, 8
+    assert_as :perfect, 8, :aug, 7
+  end
+
+  def test_names
+    [
+      [:P1, :d2],
+      [:M2, :d3],
+      [:m3, :A2],
+      [:M3, :d4],
+      [:P5, :d6],
+      [:P8, :A7, :d9],
+      [:M10, :d11],
+      [:m17, :A16],
+      [:P12, :d13],
+      [:P22, :A21, :d23]
+    ].each do |names|
+      names.each do |name|
+        i = Interval.new(name)
+        assert_equal Set.new(i.names), Set.new(names), name
+      end
+    end
+
+    0.upto(54) do |semitones|
+      i = Interval.new(size: semitones)
+      i_names = Set.new(i.names)
+      i_names.map do |name|
+        other = Interval.new(name)
+        assert_equal i.size, other.size
+        assert_equal i_names, Set.new(other.names)
+      end
+    end
   end
 end

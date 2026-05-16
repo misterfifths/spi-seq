@@ -271,6 +271,31 @@ class Interval < Numeric
     end
   end
 
+  # Returns all possible names for an interval of this {#size}.
+  # @return [Array<Symbol>]
+  def names
+    return @names unless @names.nil?
+
+    # We give P8 & multiples a simple interval of P1 and one more octave span,
+    # so undo that. We want the number of 7ths we need to add, and an index into
+    # SIZES_TO_NUMBERS.
+    if simple_interval.to_sym == :P1 && size > 0
+      simple_interval_size = 12
+      octaves = octave_span - 2
+    else
+      simple_interval_size = simple_interval.size
+      octaves = octave_span - 1
+    end
+
+    @names = SIZES_TO_NUMBERS[simple_interval_size].map do |other_quality, other_number|
+      new_num = octaves * 7 + other_number
+      qual_prefix = QUALITY_PREFIXES[other_quality]
+      :"#{qual_prefix}#{new_num}"
+    end
+
+    @names
+  end
+
   # Returns a new interval with the same {#size} but as some quality of the
   # given `number`. For example, since a perfect 5th and a diminished 6th are
   # both 5 semitones, `Interval.new(:P5).as(6)` will return a diminished 6.
@@ -459,7 +484,13 @@ class Interval < Numeric
 
   # @private
   def inspect
-    "<Interval #{@sym}, #{@size} semitones>"
+    return @inspect_s unless @inspect_s.nil?
+
+    other_names = names.dup
+    other_names.delete(@sym)
+    other_names = other_names.join(", ")
+    @inspect_s = "<Interval #{@sym} (aka #{other_names}), #{@size} semitones>"
+    @inspect_s
   end
 
   # A symbol representation of this interval, in the abbreviated format
