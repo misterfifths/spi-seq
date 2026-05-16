@@ -83,7 +83,8 @@ class Chord
   # Valid voicing styles:
   # - `closed`: The simplest voicing: uses the intervals in the chord as-is.
   # - `rootless`: The same as closed voicing, but omits the root note.
-  # - `shell`: Only the root, thirds, and seventh intervals are included.
+  # - `shell`: Only the root, thirds, and seventh intervals (in any octave) are
+  #   included.
   # - `drop2`: Applies a closed voicing, then drops the 2nd highest note in the
   #   result an octave.
   # - `drop3`: Same as drop2, but drops the third highest note.
@@ -94,15 +95,15 @@ class Chord
   # - `double_bass`: Applies a closed voicing, then adds a note that is an
   #   octave below the lowest note in the result.
   # - `double_bass_up`: Like double_bass, but adds the new note an octave up.
-  # - `double3`: Applies a closed voicing, then, if there is a (major or minor)
-  #   third in the chord, adds a note that is an octave below that.
+  # - `double3`: Applies a closed voicing, then adds a note an octave below any
+  #   major or minor 3rd (in all octaves).
   # - `double3_up`: Same as double 3, but adds the new note an octave up.
-  # - `double5`: Same as double3, but looks for a perfect fifth in the chord.
-  # - `double5_up`: Same as double3_up, but looks for a perfect fifth in the
+  # - `double5`: Same as double3, but looks for perfect fifths in the chord.
+  # - `double5_up`: Same as double3_up, but looks for perfect fifths in the
   #   chord.
-  # - `double7`: Same as double3, but looks for a major or minor 7th in the
+  # - `double7`: Same as double3, but looks for major or minor 7ths in the
   #   chord.
-  # - `double7_up`: Same as double3_up, but looks for a major or minor 7th in
+  # - `double7_up`: Same as double3_up, but looks for major or minor 7ths in
   #   the chord.
   # - `open`: Applies a closed voicing, then raises the second-lowest note an
   #   octave.
@@ -315,11 +316,11 @@ class Chord
     notes
   end
 
-  # Only the root, thirds, and sevenths are voiced.
+  # Only the root, thirds, and sevenths (in any octave) are voiced.
   private_class_method def self.voice_shell(intervals, root)
     notes = []
     intervals.each do |i|
-      notes << root + i if SHELL_INTERVALS.include?(i)
+      notes << root + i if SHELL_INTERVALS.include?(i.simple_interval)
     end
     notes
   end
@@ -355,7 +356,7 @@ class Chord
     notes = []
     intervals.each do |i|
       notes << root + i
-      notes << root + i + shift if double_ints.include?(i)
+      notes << root + i + shift if double_ints.include?(i.simple_interval)
     end
     notes.sort!
     notes.uniq!

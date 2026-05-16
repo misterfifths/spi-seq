@@ -150,6 +150,10 @@ class ChordVoicingTest < Test::Unit::TestCase
   def test_shell
     assert_equal(Chord.new(%i[P1 m2 M3 m3 A3 P5 d7 m7 M7 M9]).voice(:c4, :shell),
                  %i[P1 m3 M3 m7 M7].map { |i| N(:c4) + Interval.new(i) })
+
+    # Should voice 1sts, 3rds, & 7ths in other octaves.
+    assert_equal(Chord.new(%i[P1 P8 m10 M10 P12 m14 M14 P15]).voice(:c4, :shell),
+                 %i[P1 P8 m10 M10 m14 M14 P15].map { |i| N(:c4) + Interval.new(i) })
   end
 
   def test_drop
@@ -192,11 +196,17 @@ class ChordVoicingTest < Test::Unit::TestCase
     assert_equal C(:c4, :min, :double3_up), %i[c4 ds4 g4 ds5]
     assert_equal Chord.new(%i[P1 A3 P5]).voice(:c4, :double3), %i[c4 f4 g4]  # no effect
     assert_equal Chord.new(%i[P1 P5]).voice(:c4, :double3), %i[c4 g4]  # no effect
+    # 3rds in other octaves are doubled
+    assert_equal Chord.new(%i[m10 M10]).voice(:c4, :double3), %i[ds4 e4 ds5 e5]
+    assert_equal Chord.new(%i[m17 M17]).voice(:c4, :double3), %i[ds5 e5 ds6 e6]
 
     assert_equal C(:c4, :maj, :double5), %i[g3 c4 e4 g4]
     assert_equal C(:c4, :maj, :double5_up), %i[c4 e4 g4 g5]
     assert_equal Chord.new(%i[P1 M3 A5]).voice(:c4, :double5), %i[c4 e4 gs4]  # no effect
     assert_equal Chord.new(%i[P1 M3]).voice(:c4, :double5), %i[c4 e4]  # no effect
+    # 5ths in other octaves are doubled
+    assert_equal Chord.new(%i[P12]).voice(:c4, :double5), %i[g4 g5]
+    assert_equal Chord.new(%i[P19]).voice(:c4, :double5), %i[g5 g6]
 
     assert_equal C(:c4, :maj7, :double7), %i[b3 c4 e4 g4 b4]
     assert_equal C(:c4, :min7, :double7), %i[as3 c4 ds4 g4 as4]
@@ -204,6 +214,9 @@ class ChordVoicingTest < Test::Unit::TestCase
     assert_equal C(:c4, :min7, :double7_up), %i[c4 ds4 g4 as4 as5]
     assert_equal Chord.new(%i[P1 A7]).voice(:c4, :double7), %i[c4 c5]  # no effect
     assert_equal Chord.new(%i[P1 P5]).voice(:c4, :double7), %i[c4 g4]  # no effect
+    # 7ths in other octaves are doubled
+    assert_equal Chord.new(%i[m14 M14]).voice(:c4, :double7), %i[as4 b4 as5 b5]
+    assert_equal Chord.new(%i[m21 M21]).voice(:c4, :double7), %i[as5 b5 as6 b6]
   end
 
   def test_open
