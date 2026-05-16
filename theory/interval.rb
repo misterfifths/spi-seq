@@ -208,8 +208,9 @@ class Interval < Numeric
   private_class_method def self.from_number(num, quality)
     num_octaves, sub_octave_num = decompose_number(num)
 
-    intra_octave_semitones = NUMBERS_TO_SIZES[sub_octave_num][quality]
-    raise ArgumentError, "invalid quality #{quality} for interval number #{num}" if intra_octave_semitones.nil?
+    quals_to_sizes = NUMBERS_TO_SIZES[sub_octave_num]
+    intra_octave_semitones = quals_to_sizes[quality]
+    raise ArgumentError, "invalid quality #{quality} for interval number #{num} - must be one of #{quals_to_sizes.keys.inspect}" if intra_octave_semitones.nil?
     size = intra_octave_semitones + 12 * num_octaves
 
     new(size: size, quality: quality)
@@ -245,8 +246,9 @@ class Interval < Numeric
       @quality, @number = SIZES_TO_NUMBERS[intra_octave_semitones].first
     else
       @quality = quality
-      @number = SIZES_TO_NUMBERS[intra_octave_semitones][quality]
-      raise ArgumentError, "an interval of #{size} semitones cannot have quality #{quality}" if number.nil?
+      quals_to_numbers = SIZES_TO_NUMBERS[intra_octave_semitones]
+      @number = quals_to_numbers[quality]
+      raise ArgumentError, "an interval of #{size} semitones cannot have quality #{quality} - must be one of #{quals_to_numbers.keys.inspect}" if number.nil?
     end
 
     @number += 7 * num_octaves
