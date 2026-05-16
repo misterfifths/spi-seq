@@ -133,4 +133,18 @@ class ArpTest < Test::Unit::TestCase
     assert_arp ns, :order, %i[c5 c3 c1 c2 c4], spread: 2
     assert_arp ns, :order, %i[c5 c3 c1 c2 c4 c6], spread: 3
   end
+
+  def test_sonic_pi_enums
+    return unless ExtApi.in_sonic_pi?
+
+    # The thing returned by Sonic Pi's chord method is very strange (doubly-
+    # wrapped ring with some breakage of the builtins along the way). Make sure
+    # it works.
+    ns = ExtApi.spi_call(:chord, :c4, :major7)
+    assert_arp ns, :updown, %i[c4 e4 g4 b4 g4 e4]
+
+    # Make sure ring works too.
+    ns = ExtApi.spi_call(:ring, *%i[c4 c5 c6])
+    assert_arp ns, :updown, %i[c4 c5 c6 c5]
+  end
 end

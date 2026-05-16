@@ -143,14 +143,9 @@ module Arp
   def self.arpeggiate(notes, direction, spread: 0, extra_octaves: [])
     return [] if notes.empty?
 
-    # NOTE: notes might be a Sonic Pi ring, which doesn't have everything from
-    # Enumerable, so we need to call `to_a` on it. But it gets weirder - the
-    # objects returned by `chord` are really tricky. It returns a ring wrapping
-    # a SonicPi::Chord. Calling to_a on that ring just unwraps and returns the
-    # Chord object. Chords are technically subclasses of Array, but they're
-    # kind of broken - in-place mutations like `map!` and `sort!` don't modify
-    # them! So we explicitly call to_a twice here.
-    notes = notes.to_a.to_a.dup.map! { |n| MIDINote.new(n) }  # rubocop:disable Lint/RedundantTypeConversion
+    # See the note in ExtApi.enumerable? about why we need to explicitly call
+    # to_a here.
+    notes = notes.to_a.map { |n| MIDINote.new(n) }
     orig_notes = notes.dup
 
     extra_octaves.each do |octave_shift|
