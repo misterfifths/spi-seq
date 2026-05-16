@@ -213,8 +213,32 @@ class Prob
   # @return [String]
   def repr
     raise ArgumentError, "cannot get code representation of probability #{self}" if @repr.nil?
-    "Prob.#{@repr}"
+    @repr
   end
+
+  # @private
+  def ==(other)
+    return true if equal?(other)
+    return false unless other.is_a?(Prob)
+
+    # Best we can do for custom probs is identity comparison on the proc.
+    return @callable == other.callable if @repr.nil?
+
+    # This isn't exactly ideal but only the tests really need this anyway.
+    @repr == other.repr
+  end
+
+  alias eql? ==
+
+  # @private
+  def hash
+    @repr.nil? ? @callable.hash : @repr.hash
+  end
+
+
+  protected
+
+  attr_reader :callable
 
 
   private
@@ -227,6 +251,6 @@ class Prob
     end
 
     @desc = desc
-    @repr = repr
+    @repr = repr.nil? ? nil : "Prob.#{repr}"
   end
 end

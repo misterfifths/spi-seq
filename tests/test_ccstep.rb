@@ -11,7 +11,7 @@ class CCStepTest < Test::Unit::TestCase
     if prob.nil?
       assert_nil step.prob
     else
-      assert_equal step.prob.to_s, prob.to_s  # TODO: this is a crappy way to test Prob equality
+      assert_equal step.prob, prob
     end
   end
 
@@ -59,7 +59,7 @@ class CCStepTest < Test::Unit::TestCase
     if prob.nil?
       assert_nil step.accum_prob
     else
-      assert_equal step.accum_prob.to_s, prob.to_s  # TODO: this is a crappy way to test Prob equality
+      assert_equal step.accum_prob, prob
     end
   end
 

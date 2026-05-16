@@ -13,7 +13,7 @@ class CCTrackTest < Test::Unit::TestCase
   def equal_steps?(a, b)
     a.cc == b.cc &&
       a.val == b.val &&
-      a.prob.to_s == b.prob.to_s  # TODO: this is a crappy way to test Prob equality
+      a.prob == b.prob
   end
 
   def assert_grid(track, slots)

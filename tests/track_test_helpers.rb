@@ -8,7 +8,7 @@ module TrackTestHelpers
       return step.note == stepish.note &&
              ((step.gate - stepish.gate).abs < tol) &&
              step.vel == stepish.vel &&
-             step.prob.to_s == stepish.prob.to_s  # TODO: this is a crappy way to test Prob equality
+             step.prob == stepish.prob
     end
 
     # something MIDINote-ish
@@ -61,10 +61,7 @@ module TrackTestHelpers
   def assert_steps_attr(track, attr_name, value, tol = 0.01)
     each_step(track) do |step|
       actual = step.send(attr_name)
-      if attr_name == :prob
-        # TODO: this is a crappy way to test Prob equality
-        assert_equal step.prob.to_s, value.to_s, "expected #{step.inspect} to have prob #{value.inspect}, but got #{step.prob.inspect}"
-      elsif actual.is_a?(Float) || value.is_a?(Float)
+      if actual.is_a?(Float) || value.is_a?(Float)
         assert_in_delta actual, value, tol, "expected #{step.inspect} #{attr_name} to be #{value.inspect}, but got #{actual}"
       else
         assert_equal actual, value, "expected #{step.inspect} #{attr_name} to be #{value.inspect}, but got #{actual}"
