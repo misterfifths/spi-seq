@@ -323,4 +323,14 @@ class PlayerTest < Test::Unit::TestCase
       [:c4, 0, nil]
     ], play_count: 5
   end
+
+  def test_zero_gate
+    # Steps with a gate of 0 should not sound, and should terminate ties.
+    assert_playback_events QT[:c4, :c4, S(:c4, gate: 0), :c4, :r], [
+      [:c4, 0, 2],
+      [:c4, 3, 4]
+    ]
+
+    assert_playback_events QT[*[S(:c4, gate: 0)] * 5], []
+  end
 end

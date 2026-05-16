@@ -20,6 +20,15 @@ class TrackInitTest < Test::Unit::TestCase
     assert_raises { T[] }
   end
 
+  def test_zero_gate
+    # Steps with a zero gate are maintained, though they will not play.
+    assert_grid T[S(:c4, gate: 0), S(:c5, gate: 0)],
+                [[S(:c4, gate: 0)], [S(:c5, gate: 0)]]
+    assert_grid T[:c4, :c5].gate(0),
+                [[S(:c4, gate: 0)], [S(:c5, gate: 0)]]
+    assert_grid T[S(:c4, gate: 0), S(:c5, gate: 0)].gate(1), [[:c4], [:c5]]
+  end
+
   def test_from_grid
     assert_grid Track.from_grid(:r), [[]]
     assert_grid Track.from_grid([]), [[]]

@@ -40,9 +40,6 @@ end
 # @!endgroup
 
 
-# TODO: probably special-case Steps with a 0 gate
-
-
 # A Player plays a {Track} by sending its {Step}s' notes over MIDI or playing
 # them with Sonic Pi's internal synthesis.
 #
@@ -216,6 +213,10 @@ class Player < PlayerBase
 
     # distinguish between tied notes and newly started ones
     cur_steps.each do |step|
+      # Steps with 0 gate do not exist from our perspective. They won't play or
+      # continue ties.
+      next if step.gate == 0
+
       # were we just playing this note as a tie?
       is_tie = @prev_steps.any? do |prev_step|
         prev_step.tied? && @notes_for_prev_steps[prev_step] == note_for_step(step, i)
