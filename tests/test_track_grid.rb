@@ -5,8 +5,6 @@ require_relative "test_helper"
 require_relative "../track"
 require_relative "track_test_helpers"
 
-# TODO: missing permutation & combination tests.
-
 # Test Track's grid manipulation methods.
 # Boundary's a little fuzzy here, but this is mostly things that deal with the
 # grid as a whole, or that act on slots rather than directly on the steps within
@@ -183,6 +181,18 @@ class TrackGridTest < Test::Unit::TestCase
     assert_grid t.each_cons(4, flatten: false), [[:a1, :b2, :c3, :d4]]
 
     assert_raises { t.each_cons(5) }
+  end
+
+  def test_permutation_combination
+    # Order on these is indeterminate, so this is questionable test. Safe to
+    # assume it'll match the methods on Array though.
+    grid = [[:c1], [:c2, :c3], [:c4, :c5, :c6], [:a1]]
+    assert_grid T.from_grid(grid).permutation, grid.permutation.to_a.flatten(1)
+
+    1.upto(grid.length) do |n|
+      assert_grid T.from_grid(grid).permutation(n), grid.permutation(n).to_a.flatten(1)
+      assert_grid T.from_grid(grid).combination(n), grid.combination(n).to_a.flatten(1)
+    end
   end
 
   def test_repeat

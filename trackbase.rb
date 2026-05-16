@@ -1545,7 +1545,7 @@ class TrackBase
   # @return [TrackBase]
   # @see #combination
   def permutation(n = nil)
-    mutate(grid: @grid.permutation(n).to_a) #.flatten(1))
+    mutate(grid: @grid.permutation(n).to_a.flatten(1))
   end
 
   alias permutations permutation
