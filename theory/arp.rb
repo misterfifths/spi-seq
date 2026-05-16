@@ -196,6 +196,7 @@ module Arp
     when Arp::AlternIn, Arp::AlternOut, Arp::AlternInOut
       notes.sort!
       notes = notes.values_at(*altern_indexes(notes.length, direction))
+      notes.pop if notes.length > 1 && notes[0] == notes[-1]  # cycle cleanly
     when Arp::Pinky
       # play the highest note after each (but don't double at end)
       notes.sort!
@@ -272,7 +273,6 @@ module Arp
 
       idxs
     when Arp::AlternInOut
-      # TODO: drop the last note when it would repeat in a loop?
       in_idxs = altern_indexes(length, Arp::AlternIn)
       out_idxs = altern_indexes(length, Arp::AlternOut)
       in_idxs + out_idxs.drop(1)

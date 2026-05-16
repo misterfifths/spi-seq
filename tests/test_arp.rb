@@ -45,11 +45,11 @@ class ArpTest < Test::Unit::TestCase
     assert_arp ns.take(2), :alternout, %i[a1 c0]
     assert_arp ns.take(1), :alternout, %i[a1]
 
-    assert_arp ns, :alterninout, %i[c0 e5 a0 d3 a1 c2 a1 d3 a0 e5 c0]
+    assert_arp ns, :alterninout, %i[c0 e5 a0 d3 a1 c2 a1 d3 a0 e5]
     assert_arp ns.take(5), :alterninout, %i[c0 d3 a0 c2 a1 a0 c2 c0 d3]
-    assert_arp ns.take(4), :alterninout, %i[c0 d3 a0 a1 a0 d3 c0]
+    assert_arp ns.take(4), :alterninout, %i[c0 d3 a0 a1 a0 d3]
     assert_arp ns.take(3), :alterninout, %i[c0 d3 a1 c0 d3]
-    assert_arp ns.take(2), :alterninout, %i[c0 a1 c0]
+    assert_arp ns.take(2), :alterninout, %i[c0 a1]
     assert_arp ns.take(1), :alterninout, %i[a1]
   end
 
