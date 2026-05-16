@@ -161,6 +161,11 @@ class IntervalTest < Test::Unit::TestCase
     assert_compound 24, :aug, 14, :A14, 2, :P1
 
     assert_compound 25, :aug, 15, :A15, 3, :A1
+
+    assert_compound 28, :major, 17, :M17, 3, :M3
+    assert_compound 40, :major, 24, :M24, 4, :M3
+    assert_compound 52, :major, 31, :M31, 5, :M3
+    assert_compound 64, :major, 38, :M38, 6, :M3
   end
 
   def assert_def_qual_for_size(size, quality, number, sym, octave_span = 1, simple_interval = nil)
@@ -241,7 +246,7 @@ class IntervalTest < Test::Unit::TestCase
       [:m3, :P4, :P8],
       [:A3, :d5, :M6],
       [:m2, :d9, :A8],
-      [:M9, :m13, :P24]
+      [:M9, :m13, :M24]
     ].each do |vals|
       a, b, c = *vals
       ai = Interval.new(a)

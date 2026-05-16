@@ -109,21 +109,17 @@ class Interval < Numeric
   # the number of a simple interval on top of those octaves. Returns an array
   # [number of octaves, simple interval number]. For example, interval number 10
   # decomposes into [1, 3] since it is one octave and a third.
-  private_class_method def self.decompose_number(num)
-    num_octaves = num / 8
-    sub_octave_num = num % 8
+  def self.decompose_number(num)
+    num_octaves = (num - 1) / 7
+    simple_num = 1 + (num - 1) % 7
 
-    # Exact octave multiples should map to an 8th (sub_octave_num = 8).
-    # Otherwise, if the interval is more than one octave, we should bump the
-    # number up one (because, e.g., a 9th is an 8th + a 2nd, not 8th + 1st).
-    if sub_octave_num == 0
-      sub_octave_num = 8
-      num_octaves -= 1 if num_octaves > 0
-    elsif num_octaves > 0
-      sub_octave_num += 1
+    # Take octave+P1 to (octave-1)+P8 (unless it's actually just a P1).
+    if simple_num == 1 && num > 1
+      simple_num = 8
+      num_octaves -= 1
     end
 
-    [num_octaves, sub_octave_num]
+    [num_octaves, simple_num]
   end
 
   # Creates a new Interval. The arguments must be one of the following:
