@@ -5,9 +5,6 @@ require_relative "interval"
 require_relative "midinote"
 
 
-# TODO: support interval-ish notation to `degree`, add back Arp.arp_degrees
-
-
 # @!group Music theory
 # An alias for {Scale#initialize Scale.new}.
 # @return [Scale]

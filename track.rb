@@ -1133,7 +1133,7 @@ class Track < TrackBase
   private def mutate_runs
     new_track = self
     each_run do |starting_slot_idx, orig_steps|
-      new_steps = yield starting_slot_idx, orig_steps.dup  # TODO: why did I dup that?
+      new_steps = yield starting_slot_idx, orig_steps.dup  # dup'd so the block can mutate it
       new_track = new_track.set_run(starting_slot_idx, orig_steps, new_steps)
     end
     new_track

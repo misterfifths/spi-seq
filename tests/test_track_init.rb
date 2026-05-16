@@ -5,8 +5,6 @@ require_relative "test_helper"
 require_relative "../track"
 require_relative "track_test_helpers"
 
-# TODO: Test arp initializer.
-
 # Test simple Track initialization, Track.new and Track.rest.
 class TrackInitTest < Test::Unit::TestCase
   include TrackTestHelpers
