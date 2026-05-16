@@ -48,6 +48,9 @@ class StepTest < Test::Unit::TestCase
     assert_attrs S(:c4, prob: p), :c4, 127, 1.0, p
 
     assert_attrs S(:c4, prob: 0.1), :c4, 127, 1.0, Prob.chance(0.1)
+
+    custom_prob_lambda = ->{ true }
+    assert_attrs S(:c4, prob: custom_prob_lambda), :c4, 127, 1.0, Prob.custom(custom_prob_lambda)
   end
 
   def test_with_mutators
@@ -102,7 +105,12 @@ class StepTest < Test::Unit::TestCase
 
     (-4..4).each do |n|
       assert_attrs S(:c4).shift_octave(n), N(:c4).shift_octave(n), 127, 1
+      assert_attrs S(:c4).up(n), N(:c4).up(n), 127, 1
+      assert_attrs S(:c4).down(n), N(:c4).down(n), 127, 1
     end
+
+    assert_attrs S(:c4).down, :c3, 127, 1
+    assert_attrs S(:c4).up, :c5, 127, 1
   end
 
   def assert_accum(step, delta, min: 0, max: 12, mode: :wrap, prob: nil)

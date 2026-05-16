@@ -165,6 +165,11 @@ class TrackStepTest < Test::Unit::TestCase
     assert_grid T[:c4].transpose(2), [[:d4]]
     assert_grid T[:c4, :d5].transpose(5), [[:f4], [:g5]]
     assert_grid T[:c4, [:d5, :e6]].transpose(-3), [[:a3], [:b4, :cs6]]
+
+    assert_grid T[:c4].semi_up, [[:cs4]]
+    assert_grid T[:c4].semi_up(2), [[:d4]]
+    assert_grid T[:d4].semi_down, [[:cs4]]
+    assert_grid T[:d4].semi_down(2), [[:c4]]
   end
 
   def assert_sub_note(track, note, repl, grid)

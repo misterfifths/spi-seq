@@ -326,7 +326,9 @@ class IntervalTest < Test::Unit::TestCase
     # Comparison against non-Intervals
     assert Interval.new(:A1) == 1.0  # rubocop:disable Lint/FloatComparison
     assert Interval.new(:P1) != []
+    assert Interval.new(:P1) != :nope
     assert_raises(ArgumentError) { Interval.new(:P1) > [] }
+    assert_raises(ArgumentError) { Interval.new(:P1) > :nope }
 
     # Right-hand side equality
     # rubocop:disable Style/YodaCondition

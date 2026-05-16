@@ -140,7 +140,9 @@ class NoteLengthTest < Test::Unit::TestCase
     # Comparisons against non-NoteLength values
     assert NoteLength::Whole == 4
     assert NoteLength::Whole != []
+    assert NoteLength::Whole != :nope
     assert_raises(ArgumentError) { NoteLength::Whole > [] }
+    assert_raises(ArgumentError) { NoteLength::Whole > :nope }
   end
 
   def test_repr
