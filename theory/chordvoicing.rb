@@ -329,7 +329,7 @@ class Chord
   private_class_method def self.voice_drop(intervals, root, *drops)
     notes = voice_closed(intervals, root)
     drops.each do |idx|
-      next if idx > notes.length  # TODO: should this be an error?
+      next if idx > notes.length
       notes[-idx] -= 12
     end
     notes.sort!
