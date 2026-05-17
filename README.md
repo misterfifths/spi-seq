@@ -424,6 +424,8 @@ track_live_loop :t, t, fill_cc: 111
 
 There is also a `not_fill` probability, which specifies that a step should only trigger when fill is off. And, there is a `fill` method on `Track` that gives all steps the `fill` probability, which may be useful when assembling tracks by merging them.
 
+In addition to `fill_cc`, you can manually enable or disable fill with `fill_live_loop` and `unfill_live_loop`, which take the name of the target loop.
+
 ### Sequencing CCs
 
 So far we've only seen `Track`s and `Step`s, which both deal with sequencing notes. spi-seq can also sequence MIDI CCs using the `CCTrack` class. `CCTrack` shares the same structure and many methods with `Track`, but instead of note-based `Step`s, it contains `CCStep`s, which consist of a CC number and a value. `CCTrack` is aliased to `CCT`, and you can call its initializer with brackets, just like `T`. `CCStep.new` is aliased to `CC`. Constructing and using a `CCTrack` should look rather familiar:

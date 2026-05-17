@@ -172,7 +172,7 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
   # should wait until the old player finishes its final loop so that its
   # internal state is accurate. So we do the inheriting on the first iteration
   # of the new live loop, below.
-  old_player = LiveLoopTracker.live_loop_var_get(loop_name, :__player)
+  old_player = __player_for_live_loop(loop_name)
 
   raise TypeError, "cannot switch track live loop #{loop_name} between track types" unless old_player.nil? || player.is_a?(old_player.class)
 
@@ -310,3 +310,37 @@ def cc_track_live_loop(loop_name, track = nil, **kwargs, &block)
 end
 
 alias cctll cc_track_live_loop
+
+
+# Returns the player instance for a live loop with the given name, or nil if
+# the loop is not running or doesn't have a player.
+# @private
+def __player_for_live_loop(loop_name)
+  LiveLoopTracker.live_loop_var_get(loop_name, :__player)
+end
+
+# Sets the {PlayerBase#fill fill mode} on the player associated with a
+# `live_loop` made by {track_live_loop}. Unlike {mute_live_loop muting}, setting
+# fill mode takes effect immediately.
+# @param loop_name [Symbol] The name of the target live loop.
+# @param fill [Boolean] The desired fill mode for the loop's internal player.
+# @return [void]
+# @see PlayerBase#fill
+# @see Prob.fill
+# @see unset_live_loop_fill
+def set_live_loop_fill(loop_name, fill = true)
+  __player_for_live_loop(loop_name)&.fill = fill
+end
+alias fill_live_loop set_live_loop_fill
+
+# Turns off {PlayerBase#fill fill mode} on the player associated with a
+# `live_loop` made by {track_live_loop}.
+# @param loop_name [Symbol] The name of the target live loop.
+# @return [void]
+# @see PlayerBase#fill
+# @see Prob.fill
+# @see set_live_loop_fill
+def unset_live_loop_fill(loop_name)
+  set_live_loop_fill(loop_name, false)
+end
+alias unfill_live_loop unset_live_loop_fill

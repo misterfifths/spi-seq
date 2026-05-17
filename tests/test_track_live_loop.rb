@@ -521,4 +521,29 @@ class TrackLiveLoopTest < Test::Unit::TestCase
       [:c4, 3, 3.5]
     ]
   end
+
+  def test_fill
+    # Can't reliably test toggling fill mid-cycle, unfortunately.
+
+    t = QT[S(:c4, gate: 0.5, prob: Prob.not_fill),
+           S(:d4, gate: 0.5, prob: Prob.fill)]
+    l = _tll(:t, t)
+    es = events do
+      l.pump
+      fill_live_loop :t
+      l.pump
+      l.pump
+      unfill_live_loop :t
+      l.pump
+      l.stop
+    end
+    assert_events es, [
+      [:c4, 0, 0.5],
+
+      [:d4, 3, 3.5],
+      [:d4, 5, 5.5],
+
+      [:c4, 6, 6.5]
+    ]
+  end
 end
