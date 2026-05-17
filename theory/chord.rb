@@ -293,11 +293,11 @@ class Chord
   def append(other)
     if other.is_a?(Chord)
       other = other.intervals
-    elsif !other.is_a?(Enumerable)
+    elsif !ExtApi.enumerable?(other)
       other = [other]
     end
 
-    new_intervals = other.map do |i|
+    new_intervals = other.to_a.map do |i|
       case i
       when Interval
         i
