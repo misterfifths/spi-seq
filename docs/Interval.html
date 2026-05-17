@@ -729,6 +729,28 @@ compound.</p>
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#names-instance_method" title="#names (instance method)">#<strong>names</strong>  &#x21d2; Array&lt;Symbol&gt; </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns all possible names for an interval of this <span class='object_link'><a href="#size-instance_method" title="Interval#size (method)">#size</a></span>.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#perfect%3F-instance_method" title="#perfect? (instance method)">#<strong>perfect?</strong>  &#x21d2; Boolean </a>
     
 
@@ -1483,12 +1505,12 @@ Optional; you may use some combination of keyword arguments instead.</p></div>
       <pre class="lines">
 
 
-440
-441
-442</pre>
+467
+468
+469</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 440</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 467</span>
 
 <span class='kw'>def</span> <span class='op'>*</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="" title="Interval (class)">Interval</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-class_method" title="Interval.new (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>size:</span> <span class='ivar'>@size</span> <span class='op'>*</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span><span class='rparen'>)</span>
@@ -1551,12 +1573,12 @@ Optional; you may use some combination of keyword arguments instead.</p></div>
       <pre class="lines">
 
 
-425
-426
-427</pre>
+452
+453
+454</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 425</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 452</span>
 
 <span class='kw'>def</span> <span class='op'>+</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="" title="Interval (class)">Interval</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-class_method" title="Interval.new (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>size:</span> <span class='ivar'>@size</span> <span class='op'>+</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span><span class='rparen'>)</span>
@@ -1619,12 +1641,12 @@ Optional; you may use some combination of keyword arguments instead.</p></div>
       <pre class="lines">
 
 
-433
-434
-435</pre>
+460
+461
+462</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 433</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 460</span>
 
 <span class='kw'>def</span> <span class='op'>-</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="" title="Interval (class)">Interval</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-class_method" title="Interval.new (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>size:</span> <span class='ivar'>@size</span> <span class='op'>-</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span><span class='rparen'>)</span>
@@ -1686,12 +1708,12 @@ Optional; you may use some combination of keyword arguments instead.</p></div>
       <pre class="lines">
 
 
-447
-448
-449</pre>
+474
+475
+476</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 447</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 474</span>
 
 <span class='kw'>def</span> <span class='op'>/</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="" title="Interval (class)">Interval</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-class_method" title="Interval.new (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>size:</span> <span class='ivar'>@size</span> <span class='op'>/</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span><span class='rparen'>)</span>
@@ -1755,12 +1777,12 @@ which will be compared with this interval's <span class='object_link'><a href="#
       <pre class="lines">
 
 
-380
-381
-382</pre>
+407
+408
+409</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 380</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 407</span>
 
 <span class='kw'>def</span> <span class='op'>&lt;</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_delegate_comp'>delegate_comp</span><span class='lparen'>(</span><span class='symbol'>:&lt;</span><span class='comma'>,</span> <span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
@@ -1824,12 +1846,12 @@ which will be compared with this interval's <span class='object_link'><a href="#
       <pre class="lines">
 
 
-385
-386
-387</pre>
+412
+413
+414</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 385</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 412</span>
 
 <span class='kw'>def</span> <span class='op'>&lt;=</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_delegate_comp'>delegate_comp</span><span class='lparen'>(</span><span class='symbol'>:&lt;=</span><span class='comma'>,</span> <span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
@@ -1893,12 +1915,12 @@ which will be compared with this interval's <span class='object_link'><a href="#
       <pre class="lines">
 
 
-400
-401
-402</pre>
+427
+428
+429</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 400</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 427</span>
 
 <span class='kw'>def</span> <span class='op'>&lt;=&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_delegate_comp'>delegate_comp</span><span class='lparen'>(</span><span class='symbol'>:&lt;=&gt;</span><span class='comma'>,</span> <span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
@@ -1966,12 +1988,12 @@ which will be compared with this interval's <span class='object_link'><a href="#
       <pre class="lines">
 
 
-405
-406
-407</pre>
+432
+433
+434</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 405</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 432</span>
 
 <span class='kw'>def</span> <span class='op'>==</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_delegate_comp'>delegate_comp</span><span class='lparen'>(</span><span class='symbol'>:==</span><span class='comma'>,</span> <span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
@@ -2035,12 +2057,12 @@ which will be compared with this interval's <span class='object_link'><a href="#
       <pre class="lines">
 
 
-390
-391
-392</pre>
+417
+418
+419</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 390</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 417</span>
 
 <span class='kw'>def</span> <span class='op'>&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_delegate_comp'>delegate_comp</span><span class='lparen'>(</span><span class='symbol'>:&gt;</span><span class='comma'>,</span> <span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
@@ -2104,12 +2126,12 @@ which will be compared with this interval's <span class='object_link'><a href="#
       <pre class="lines">
 
 
-395
-396
-397</pre>
+422
+423
+424</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 395</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 422</span>
 
 <span class='kw'>def</span> <span class='op'>&gt;=</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_delegate_comp'>delegate_comp</span><span class='lparen'>(</span><span class='symbol'>:&gt;=</span><span class='comma'>,</span> <span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
@@ -2187,21 +2209,21 @@ Returns nil if this conversion is not possible.</p>
       <pre class="lines">
 
 
-278
-279
-280
-281
-282
-283
-284
-285
-286
-287
-288
-289</pre>
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 278</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 305</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_as'>as</span><span class='lparen'>(</span><span class='id identifier rubyid_number'>number</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>self</span> <span class='kw'>if</span> <span class='ivar'>@number</span> <span class='op'>==</span> <span class='id identifier rubyid_number'>number</span>
@@ -2261,12 +2283,12 @@ Returns nil if this conversion is not possible.</p>
       <pre class="lines">
 
 
-329
-330
-331</pre>
+356
+357
+358</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 329</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 356</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_augmented?'>augmented?</span>
   <span class='ivar'>@quality</span> <span class='op'>==</span> <span class='symbol'>:aug</span>
@@ -2314,14 +2336,14 @@ than 8 or its <span class='object_link'><a href="#size-instance_method" title="I
       <pre class="lines">
 
 
-303
-304
-305
-306
-307</pre>
+330
+331
+332
+333
+334</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 303</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 330</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_compound?'>compound?</span>
   <span class='comment'># The two cases are really only necessary because d9 and A8 are weird
@@ -2374,12 +2396,12 @@ than 8 or its <span class='object_link'><a href="#size-instance_method" title="I
       <pre class="lines">
 
 
-337
-338
-339</pre>
+364
+365
+366</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 337</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 364</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_diminished?'>diminished?</span>
   <span class='ivar'>@quality</span> <span class='op'>==</span> <span class='symbol'>:dim</span>
@@ -2449,12 +2471,12 @@ A shortcut that checks if <code>as(number)</code> is not nil.</p>
       <pre class="lines">
 
 
-296
-297
-298</pre>
+323
+324
+325</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 296</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 323</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_expressible_as'>expressible_as</span><span class='lparen'>(</span><span class='id identifier rubyid_number'>number</span><span class='rparen'>)</span>
   <span class='op'>!</span><span class='id identifier rubyid_as'>as</span><span class='lparen'>(</span><span class='id identifier rubyid_number'>number</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
@@ -2501,12 +2523,12 @@ A shortcut that checks if <code>as(number)</code> is not nil.</p>
       <pre class="lines">
 
 
-317
-318
-319</pre>
+344
+345
+346</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 317</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 344</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_major?'>major?</span>
   <span class='ivar'>@quality</span> <span class='op'>==</span> <span class='symbol'>:major</span>
@@ -2553,15 +2575,105 @@ A shortcut that checks if <code>as(number)</code> is not nil.</p>
       <pre class="lines">
 
 
-323
-324
-325</pre>
+350
+351
+352</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 323</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 350</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_minor?'>minor?</span>
   <span class='ivar'>@quality</span> <span class='op'>==</span> <span class='symbol'>:minor</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="names-instance_method">
+  
+    #<strong>names</strong>  &#x21d2; <tt>Array&lt;<span class='object_link'>Symbol</span>&gt;</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns all possible names for an interval of this <span class='object_link'><a href="#size-instance_method" title="Interval#size (method)">#size</a></span>.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Array&lt;<span class='object_link'>Symbol</span>&gt;</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 276</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_names'>names</span>
+  <span class='kw'>return</span> <span class='ivar'>@names</span> <span class='kw'>unless</span> <span class='ivar'>@names</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+
+  <span class='comment'># We give P8 &amp; multiples a simple interval of P1 and one more octave span,
+</span>  <span class='comment'># so undo that. We want the number of 7ths we need to add, and an index into
+</span>  <span class='comment'># SIZES_TO_NUMBERS.
+</span>  <span class='kw'>if</span> <span class='id identifier rubyid_simple_interval'>simple_interval</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span> <span class='op'>==</span> <span class='symbol'>:P1</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_size'>size</span> <span class='op'>&gt;</span> <span class='int'>0</span>
+    <span class='id identifier rubyid_simple_interval_size'>simple_interval_size</span> <span class='op'>=</span> <span class='int'>12</span>
+    <span class='id identifier rubyid_octaves'>octaves</span> <span class='op'>=</span> <span class='id identifier rubyid_octave_span'>octave_span</span> <span class='op'>-</span> <span class='int'>2</span>
+  <span class='kw'>else</span>
+    <span class='id identifier rubyid_simple_interval_size'>simple_interval_size</span> <span class='op'>=</span> <span class='id identifier rubyid_simple_interval'>simple_interval</span><span class='period'>.</span><span class='id identifier rubyid_size'>size</span>
+    <span class='id identifier rubyid_octaves'>octaves</span> <span class='op'>=</span> <span class='id identifier rubyid_octave_span'>octave_span</span> <span class='op'>-</span> <span class='int'>1</span>
+  <span class='kw'>end</span>
+
+  <span class='ivar'>@names</span> <span class='op'>=</span> <span class='const'>SIZES_TO_NUMBERS</span><span class='lbracket'>[</span><span class='id identifier rubyid_simple_interval_size'>simple_interval_size</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_other_quality'>other_quality</span><span class='comma'>,</span> <span class='id identifier rubyid_other_number'>other_number</span><span class='op'>|</span>
+    <span class='id identifier rubyid_new_num'>new_num</span> <span class='op'>=</span> <span class='id identifier rubyid_octaves'>octaves</span> <span class='op'>*</span> <span class='int'>7</span> <span class='op'>+</span> <span class='id identifier rubyid_other_number'>other_number</span>
+    <span class='id identifier rubyid_qual_prefix'>qual_prefix</span> <span class='op'>=</span> <span class='const'>QUALITY_PREFIXES</span><span class='lbracket'>[</span><span class='id identifier rubyid_other_quality'>other_quality</span><span class='rbracket'>]</span>
+    <span class='symbol'>:&quot;#{</span><span class='id identifier rubyid_qual_prefix'>qual_prefix</span><span class='embexpr_end'>}</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_new_num'>new_num</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
+
+  <span class='ivar'>@names</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -2605,12 +2717,12 @@ A shortcut that checks if <code>as(number)</code> is not nil.</p>
       <pre class="lines">
 
 
-311
-312
-313</pre>
+338
+339
+340</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 311</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 338</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_perfect?'>perfect?</span>
   <span class='ivar'>@quality</span> <span class='op'>==</span> <span class='symbol'>:perfect</span>
@@ -2657,12 +2769,12 @@ A shortcut that checks if <code>as(number)</code> is not nil.</p>
       <pre class="lines">
 
 
-354
-355
-356</pre>
+381
+382
+383</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 354</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 381</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_f'>to_f</span>
   <span class='ivar'>@size</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span>
@@ -2709,12 +2821,12 @@ A shortcut that checks if <code>as(number)</code> is not nil.</p>
       <pre class="lines">
 
 
-348
-349
-350</pre>
+375
+376
+377</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 348</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 375</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_i'>to_i</span>
   <span class='ivar'>@size</span>
@@ -2762,12 +2874,12 @@ described by <span class='object_link'><a href="#new-class_method" title="Interv
       <pre class="lines">
 
 
-454
-455
-456</pre>
+481
+482
+483</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 454</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 481</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_s'>to_s</span>
   <span class='ivar'>@sym</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
@@ -2815,12 +2927,12 @@ described by <span class='object_link'><a href="#new-class_method" title="Interv
       <pre class="lines">
 
 
-466
-467
-468</pre>
+499
+500
+501</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 466</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 499</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_sym'>to_sym</span>
   <span class='ivar'>@sym</span>

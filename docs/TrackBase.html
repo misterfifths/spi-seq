@@ -7207,8 +7207,8 @@ of the permutations is indeterminate. If <code>n</code> is nil, permutes all slo
       <pre class="code"><span class="info file"># File 'trackbase.rb', line 1547</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_permutation'>permutation</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>grid:</span> <span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_permutation'>permutation</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_a'>to_a</span><span class='rparen'>)</span> <span class='comment'>#.flatten(1))
-</span><span class='kw'>end</span></pre>
+  <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>grid:</span> <span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_permutation'>permutation</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_a'>to_a</span><span class='period'>.</span><span class='id identifier rubyid_flatten'>flatten</span><span class='lparen'>(</span><span class='int'>1</span><span class='rparen'>)</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>

@@ -689,6 +689,9 @@ belonging to this many octaves of the scale.</p></div>
       <pre class="lines">
 
 
+211
+212
+213
 214
 215
 216
@@ -703,13 +706,10 @@ belonging to this many octaves of the scale.</p></div>
 225
 226
 227
-228
-229
-230
-231</pre>
+228</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/scale.rb', line 214</span>
+      <pre class="code"><span class="info file"># File 'theory/scale.rb', line 211</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_tonic'>tonic</span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='label'>num_octaves:</span> <span class='int'>1</span><span class='comma'>,</span> <span class='label'>clamp_to_midi:</span> <span class='kw'>false</span><span class='rparen'>)</span>
   <span class='ivar'>@tonic</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="MIDINote.html#new-class_method" title="MIDINote.new (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_tonic'>tonic</span><span class='rparen'>)</span>
@@ -779,12 +779,12 @@ belonging to this many octaves of the scale.</p></div>
       <pre class="lines">
 
 
-56
-57
-58</pre>
+53
+54
+55</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/scale.rb', line 56</span>
+      <pre class="code"><span class="info file"># File 'theory/scale.rb', line 53</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_clamp_to_midi'>clamp_to_midi</span>
   <span class='ivar'>@clamp_to_midi</span>
@@ -833,12 +833,12 @@ belonging to this many octaves of the scale.</p></div>
       <pre class="lines">
 
 
-38
-39
-40</pre>
+35
+36
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/scale.rb', line 38</span>
+      <pre class="code"><span class="info file"># File 'theory/scale.rb', line 35</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_name'>name</span>
   <span class='ivar'>@name</span>
@@ -888,12 +888,12 @@ octaves along the scale starting at <span class='object_link'><a href="#tonic-in
       <pre class="lines">
 
 
-51
-52
-53</pre>
+48
+49
+50</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/scale.rb', line 51</span>
+      <pre class="code"><span class="info file"># File 'theory/scale.rb', line 48</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_notes'>notes</span>
   <span class='ivar'>@notes</span>
@@ -942,12 +942,12 @@ octaves along the scale starting at <span class='object_link'><a href="#tonic-in
       <pre class="lines">
 
 
-46
-47
-48</pre>
+43
+44
+45</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/scale.rb', line 46</span>
+      <pre class="code"><span class="info file"># File 'theory/scale.rb', line 43</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_num_octaves'>num_octaves</span>
   <span class='ivar'>@num_octaves</span>
@@ -996,12 +996,12 @@ octaves along the scale starting at <span class='object_link'><a href="#tonic-in
       <pre class="lines">
 
 
-42
-43
-44</pre>
+39
+40
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/scale.rb', line 42</span>
+      <pre class="code"><span class="info file"># File 'theory/scale.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_tonic'>tonic</span>
   <span class='ivar'>@tonic</span>
@@ -1117,13 +1117,13 @@ names as Sonic Pi's <code>scale</code> function and some it doesn't.</p></div>
       <pre class="lines">
 
 
+403
 404
 405
-406
-407</pre>
+406</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/scale.rb', line 404</span>
+      <pre class="code"><span class="info file"># File 'theory/scale.rb', line 403</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_degree'>degree</span><span class='lparen'>(</span><span class='id identifier rubyid_d'>d</span><span class='comma'>,</span> <span class='id identifier rubyid_tonic'>tonic</span><span class='comma'>,</span> <span class='id identifier rubyid_scale_name'>scale_name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_scale'>scale</span> <span class='op'>=</span> <span class='id identifier rubyid_full_scale'>full_scale</span><span class='lparen'>(</span><span class='id identifier rubyid_tonic'>tonic</span><span class='comma'>,</span> <span class='id identifier rubyid_scale_name'>scale_name</span><span class='rparen'>)</span>
@@ -1213,6 +1213,9 @@ values in <span class='object_link'><a href="#SCALE_NAMES-constant" title="Scale
       <pre class="lines">
 
 
+238
+239
+240
 241
 242
 243
@@ -1225,13 +1228,10 @@ values in <span class='object_link'><a href="#SCALE_NAMES-constant" title="Scale
 250
 251
 252
-253
-254
-255
-256</pre>
+253</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/scale.rb', line 241</span>
+      <pre class="code"><span class="info file"># File 'theory/scale.rb', line 238</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_full_scale'>full_scale</span><span class='lparen'>(</span><span class='id identifier rubyid_tonic'>tonic</span><span class='comma'>,</span> <span class='id identifier rubyid_scale_name'>scale_name</span><span class='rparen'>)</span>
   <span class='ivar'>@full_scale_cache</span> <span class='op'>||=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
@@ -1359,6 +1359,7 @@ method <span class='object_link'><a href="#degree-class_method" title="Scale.deg
       <pre class="lines">
 
 
+377
 378
 379
 380
@@ -1366,11 +1367,10 @@ method <span class='object_link'><a href="#degree-class_method" title="Scale.deg
 382
 383
 384
-385
-386</pre>
+385</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/scale.rb', line 378</span>
+      <pre class="code"><span class="info file"># File 'theory/scale.rb', line 377</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_degree'>degree</span><span class='lparen'>(</span><span class='id identifier rubyid_d'>d</span><span class='comma'>,</span> <span class='label'>relative_tonic:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_n'>n</span><span class='comma'>,</span> <span class='id identifier rubyid_mod'>mod</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="" title="Scale (class)">Scale</a></span></span><span class='period'>.</span><span class='id identifier rubyid_parse_degree'>parse_degree</span><span class='lparen'>(</span><span class='id identifier rubyid_d'>d</span><span class='rparen'>)</span>
@@ -1457,14 +1457,14 @@ has degree -1.</p>
       <pre class="lines">
 
 
+435
 436
 437
 438
-439
-440</pre>
+439</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/scale.rb', line 436</span>
+      <pre class="code"><span class="info file"># File 'theory/scale.rb', line 435</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_degree_of'>degree_of</span><span class='lparen'>(</span><span class='id identifier rubyid_note'>note</span><span class='comma'>,</span> <span class='label'>relative_tonic:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_degree'>degree</span> <span class='op'>=</span> <span class='id identifier rubyid_steps_between'>steps_between</span><span class='lparen'>(</span><span class='id identifier rubyid_relative_tonic'>relative_tonic</span> <span class='op'>||</span> <span class='ivar'>@tonic</span><span class='comma'>,</span> <span class='id identifier rubyid_note'>note</span><span class='rparen'>)</span>
@@ -1555,17 +1555,17 @@ it.</p>
       <pre class="lines">
 
 
+263
+264
+265
 266
 267
 268
 269
-270
-271
-272
-273</pre>
+270</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/scale.rb', line 266</span>
+      <pre class="code"><span class="info file"># File 'theory/scale.rb', line 263</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_note_at_step'>note_at_step</span><span class='lparen'>(</span><span class='id identifier rubyid_relative_tonic'>relative_tonic</span><span class='comma'>,</span> <span class='id identifier rubyid_steps'>steps</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_tonic_idx'>tonic_idx</span> <span class='op'>=</span> <span class='ivar'>@notes</span><span class='period'>.</span><span class='id identifier rubyid_index'>index</span><span class='lparen'>(</span><span class='id identifier rubyid_relative_tonic'>relative_tonic</span><span class='rparen'>)</span>
@@ -1617,6 +1617,7 @@ it.</p>
       <pre class="lines">
 
 
+460
 461
 462
 463
@@ -1629,11 +1630,10 @@ it.</p>
 470
 471
 472
-473
-474</pre>
+473</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/scale.rb', line 461</span>
+      <pre class="code"><span class="info file"># File 'theory/scale.rb', line 460</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_repr'>repr</span>
   <span class='kw'>return</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Scale.full_scale(:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@tonic</span><span class='period'>.</span><span class='id identifier rubyid_pitch_class'>pitch_class</span><span class='embexpr_end'>}</span><span class='tstring_content'>, :</span><span class='embexpr_beg'>#{</span><span class='ivar'>@name</span><span class='embexpr_end'>}</span><span class='tstring_content'>)</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='ivar'>@tonic</span><span class='period'>.</span><span class='id identifier rubyid_octave'>octave</span> <span class='op'>==</span> <span class='op'>-</span><span class='int'>2</span> <span class='op'>&amp;&amp;</span> <span class='ivar'>@num_octaves</span> <span class='op'>==</span> <span class='int'>12</span> <span class='op'>&amp;&amp;</span> <span class='ivar'>@clamp_to_midi</span>
@@ -1717,12 +1717,12 @@ a value understood by <span class='object_link'><a href="MIDINote.html#new-class
       <pre class="lines">
 
 
+447
 448
-449
-450</pre>
+449</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/scale.rb', line 448</span>
+      <pre class="code"><span class="info file"># File 'theory/scale.rb', line 447</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_snap'>snap</span><span class='lparen'>(</span><span class='id identifier rubyid_note'>note</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="MIDINote.html#new-class_method" title="MIDINote.new (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_note'>note</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_snap'><span class='object_link'><a href="MIDINote.html#snap-instance_method" title="MIDINote#snap (method)">snap</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
@@ -1809,6 +1809,7 @@ ArgumentError if either note is not in the scale.</p>
       <pre class="lines">
 
 
+413
 414
 415
 416
@@ -1816,11 +1817,10 @@ ArgumentError if either note is not in the scale.</p>
 418
 419
 420
-421
-422</pre>
+421</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/scale.rb', line 414</span>
+      <pre class="code"><span class="info file"># File 'theory/scale.rb', line 413</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_steps_between'>steps_between</span><span class='lparen'>(</span><span class='id identifier rubyid_relative_tonic'>relative_tonic</span><span class='comma'>,</span> <span class='id identifier rubyid_note'>note</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_tonic_idx'>tonic_idx</span> <span class='op'>=</span> <span class='ivar'>@notes</span><span class='period'>.</span><span class='id identifier rubyid_index'>index</span><span class='lparen'>(</span><span class='id identifier rubyid_relative_tonic'>relative_tonic</span><span class='rparen'>)</span>
@@ -1873,13 +1873,13 @@ ArgumentError if either note is not in the scale.</p>
       <pre class="lines">
 
 
+453
 454
 455
-456
-457</pre>
+456</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/scale.rb', line 454</span>
+      <pre class="code"><span class="info file"># File 'theory/scale.rb', line 453</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_s'>to_s</span>
   <span class='id identifier rubyid_clamp_str'>clamp_str</span> <span class='op'>=</span> <span class='ivar'>@clamp_to_midi</span> <span class='op'>?</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>, clamped</span><span class='tstring_end'>&quot;</span></span> <span class='op'>:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span>

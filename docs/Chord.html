@@ -4684,11 +4684,11 @@ which will be treated as in cases 2 - 5.</li>
 <span class='kw'>def</span> <span class='id identifier rubyid_append'>append</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></span><span class='rparen'>)</span>
     <span class='id identifier rubyid_other'>other</span> <span class='op'>=</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_intervals'>intervals</span>
-  <span class='kw'>elsif</span> <span class='op'>!</span><span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Enumerable</span><span class='rparen'>)</span>
+  <span class='kw'>elsif</span> <span class='op'>!</span><span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_enumerable?'>enumerable?</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
     <span class='id identifier rubyid_other'>other</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='id identifier rubyid_other'>other</span><span class='rbracket'>]</span>
   <span class='kw'>end</span>
 
-  <span class='id identifier rubyid_new_intervals'>new_intervals</span> <span class='op'>=</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_i'>i</span><span class='op'>|</span>
+  <span class='id identifier rubyid_new_intervals'>new_intervals</span> <span class='op'>=</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_to_a'>to_a</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_i'>i</span><span class='op'>|</span>
     <span class='kw'>case</span> <span class='id identifier rubyid_i'>i</span>
     <span class='kw'>when</span> <span class='const'><span class='object_link'><a href="Interval.html" title="Interval (class)">Interval</a></span></span>
       <span class='id identifier rubyid_i'>i</span>

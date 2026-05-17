@@ -401,6 +401,9 @@ about its state during playback.</p></div>
       <pre class="lines">
 
 
+80
+81
+82
 83
 84
 85
@@ -414,13 +417,10 @@ about its state during playback.</p></div>
 93
 94
 95
-96
-97
-98
-99</pre>
+96</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'player.rb', line 83</span>
+      <pre class="code"><span class="info file"># File 'player.rb', line 80</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_track'>track</span><span class='comma'>,</span> <span class='label'>midi:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>debug:</span> <span class='kw'>false</span><span class='rparen'>)</span>
   <span class='ivar'>@midi</span> <span class='op'>=</span> <span class='id identifier rubyid_resolve_midi_arg'>resolve_midi_arg</span><span class='lparen'>(</span><span class='id identifier rubyid_midi'>midi</span><span class='rparen'>)</span>
@@ -489,12 +489,12 @@ about its state during playback.</p></div>
       <pre class="lines">
 
 
-63
-64
-65</pre>
+60
+61
+62</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'player.rb', line 63</span>
+      <pre class="code"><span class="info file"># File 'player.rb', line 60</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_channel'>channel</span>
   <span class='ivar'>@channel</span>
@@ -544,12 +544,12 @@ Pi's internal synthesis instead.</p>
       <pre class="lines">
 
 
-58
-59
-60</pre>
+55
+56
+57</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'player.rb', line 58</span>
+      <pre class="code"><span class="info file"># File 'player.rb', line 55</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_midi'>midi</span>
   <span class='ivar'>@midi</span>
@@ -599,12 +599,12 @@ is true.</p>
       <pre class="lines">
 
 
-68
-69
-70</pre>
+65
+66
+67</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'player.rb', line 68</span>
+      <pre class="code"><span class="info file"># File 'player.rb', line 65</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_port'>port</span>
   <span class='ivar'>@port</span>
@@ -648,15 +648,15 @@ clean slate. Ends all ongoing steps and resets the internal state, like
       <pre class="lines">
 
 
+99
+100
+101
 102
 103
-104
-105
-106
-107</pre>
+104</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'player.rb', line 102</span>
+      <pre class="code"><span class="info file"># File 'player.rb', line 99</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_stop'>stop</span>
   <span class='kw'>super</span>
