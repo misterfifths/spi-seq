@@ -333,7 +333,7 @@ name. See also <span class='object_link'><a href="#SC-instance_method" title="#S
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="top-level-namespace.html#cc_track_live_loop-instance_method" title="#cc_track_live_loop (instance method)">#<strong>cc_track_live_loop</strong>(loop_name, track = nil, **kwargs)  &#x21d2; void </a>
+      <a href="top-level-namespace.html#cc_track_live_loop-instance_method" title="#cc_track_live_loop (instance method)">#<strong>cc_track_live_loop</strong>(loop_name, track = nil, **kwargs, &amp;block)  &#x21d2; void </a>
     
 
     
@@ -445,6 +445,30 @@ name. See also <span class='object_link'><a href="#SC-instance_method" title="#S
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="top-level-namespace.html#set_live_loop_fill-instance_method" title="#set_live_loop_fill (instance method)">#<strong>set_live_loop_fill</strong>(loop_name, fill = true)  &#x21d2; void </a>
+    
+
+    
+      (also: #fill_live_loop)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Sets the <span class='object_link'><a href="PlayerBase.html#fill-instance_method" title="PlayerBase#fill (method)">fill mode</a></span> on the player associated with a <code>live_loop</code> made by <span class='object_link'><a href="top-level-namespace.html#track_live_loop-instance_method" title="#track_live_loop (method)">#track_live_loop</a></span>.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="top-level-namespace.html#track_live_loop-instance_method" title="#track_live_loop (instance method)">#<strong>track_live_loop</strong>(loop_name, track = nil, start_muted: nil, fade_in: false, fade_out: false, midi: nil, port: nil, channel: nil, cc: nil, fill_cc: nil, cc_port: nil, cc_channel: nil, send_cycle_cues: true, debug: false, init: nil, **kwargs) { ... } &#x21d2; void </a>
     
 
@@ -484,6 +508,30 @@ name. See also <span class='object_link'><a href="#SC-instance_method" title="#S
 
   
     <span class="summary_desc"><div class='inline'><p>Unmutes the given mutable <code>live_loop</code>.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="top-level-namespace.html#unset_live_loop_fill-instance_method" title="#unset_live_loop_fill (instance method)">#<strong>unset_live_loop_fill</strong>(loop_name)  &#x21d2; void </a>
+    
+
+    
+      (also: #unfill_live_loop)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Turns off <span class='object_link'><a href="PlayerBase.html#fill-instance_method" title="PlayerBase#fill (method)">fill mode</a></span> on the player associated with a <code>live_loop</code> made by <span class='object_link'><a href="top-level-namespace.html#track_live_loop-instance_method" title="#track_live_loop (method)">#track_live_loop</a></span>.</p></div></span>
   
 </li>
 
@@ -1297,7 +1345,7 @@ prior execution of the block afterwards.</p></div>
       <div class="method_details ">
   <h3 class="signature " id="cc_track_live_loop-instance_method">
   
-    #<strong>cc_track_live_loop</strong>(loop_name, track = nil, **kwargs)  &#x21d2; <tt>void</tt> 
+    #<strong>cc_track_live_loop</strong>(loop_name, track = nil, **kwargs, &amp;block)  &#x21d2; <tt>void</tt> 
   
 
   
@@ -1333,8 +1381,8 @@ you can just use <span class='object_link'><a href="#track_live_loop-instance_me
     <td>
       <pre class="code"><span class="info file"># File 'track_live_loop.rb', line 308</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_cc_track_live_loop'>cc_track_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_track'>track</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_track_live_loop'><span class='object_link'><a href="#track_live_loop-instance_method" title="#track_live_loop (method)">track_live_loop</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_track'>track</span> <span class='op'>||</span> <span class='const'><span class='object_link'><a href="CCTrack.html" title="CCTrack (class)">CCTrack</a></span></span><span class='period'>.</span><span class='id identifier rubyid_rest'><span class='object_link'><a href="TrackBase.html#rest-class_method" title="TrackBase.rest (method)">rest</a></span></span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_cc_track_live_loop'>cc_track_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_track'>track</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_track_live_loop'><span class='object_link'><a href="#track_live_loop-instance_method" title="#track_live_loop (method)">track_live_loop</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_track'>track</span> <span class='op'>||</span> <span class='const'><span class='object_link'><a href="CCTrack.html" title="CCTrack (class)">CCTrack</a></span></span><span class='period'>.</span><span class='id identifier rubyid_rest'><span class='object_link'><a href="TrackBase.html#rest-class_method" title="TrackBase.rest (method)">rest</a></span></span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -2876,6 +2924,96 @@ function.</p>
 </div>
     
       <div class="method_details ">
+  <h3 class="signature " id="set_live_loop_fill-instance_method">
+  
+    #<strong>set_live_loop_fill</strong>(loop_name, fill = true)  &#x21d2; <tt>void</tt> 
+  
+
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='fill_live_loop-instance_method'>fill_live_loop</span></span>
+    </span>
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note returns_void">This method returns an undefined value.</p><p>Sets the <span class='object_link'><a href="PlayerBase.html#fill-instance_method" title="PlayerBase#fill (method)">fill mode</a></span> on the player associated with a
+<code>live_loop</code> made by <span class='object_link'><a href="#track_live_loop-instance_method" title="#track_live_loop (method)">#track_live_loop</a></span>. Unlike <span class='object_link'><a href="#mute_live_loop-instance_method" title="#mute_live_loop (method)">muting</a></span>, setting
+fill mode takes effect immediately.</p>
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>loop_name</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'>Symbol</span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The name of the target live loop.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>fill</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The desired fill mode for the loop's internal player.</p></div>
+      
+    </li>
+  
+</ul>
+
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><span class='object_link'><a href="PlayerBase.html#fill-instance_method" title="PlayerBase#fill (method)">PlayerBase#fill</a></span></li>
+    
+      <li><span class='object_link'><a href="Prob.html#fill-class_method" title="Prob.fill (method)">Prob.fill</a></span></li>
+    
+      <li><span class='object_link'><a href="#unset_live_loop_fill-instance_method" title="#unset_live_loop_fill (method)">#unset_live_loop_fill</a></span></li>
+    
+  </ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+331
+332
+333</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'track_live_loop.rb', line 331</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_set_live_loop_fill'>set_live_loop_fill</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_fill'>fill</span> <span class='op'>=</span> <span class='kw'>true</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid___player_for_live_loop'>__player_for_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rparen'>)</span><span class='op'>&amp;.</span><span class='id identifier rubyid_fill'>fill</span> <span class='op'>=</span> <span class='id identifier rubyid_fill'>fill</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
   <h3 class="signature " id="track_live_loop-instance_method">
   
     #<strong>track_live_loop</strong>(loop_name, track = nil, start_muted: nil, fade_in: false, fade_out: false, midi: nil, port: nil, channel: nil, cc: nil, fill_cc: nil, cc_port: nil, cc_channel: nil, send_cycle_cues: true, debug: false, init: nil, **kwargs) { ... } &#x21d2; <tt>void</tt> 
@@ -3485,7 +3623,7 @@ switch to. See above.</p></div>
 </span>  <span class='comment'># should wait until the old player finishes its final loop so that its
 </span>  <span class='comment'># internal state is accurate. So we do the inheriting on the first iteration
 </span>  <span class='comment'># of the new live loop, below.
-</span>  <span class='id identifier rubyid_old_player'>old_player</span> <span class='op'>=</span> <span class='const'>LiveLoopTracker</span><span class='period'>.</span><span class='id identifier rubyid_live_loop_var_get'>live_loop_var_get</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='symbol'>:__player</span><span class='rparen'>)</span>
+</span>  <span class='id identifier rubyid_old_player'>old_player</span> <span class='op'>=</span> <span class='id identifier rubyid___player_for_live_loop'>__player_for_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rparen'>)</span>
 
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>cannot switch track live loop </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='embexpr_end'>}</span><span class='tstring_content'> between track types</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_old_player'>old_player</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>||</span> <span class='id identifier rubyid_player'>player</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='id identifier rubyid_old_player'>old_player</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='rparen'>)</span>
 
@@ -3663,6 +3801,79 @@ switch to. See above.</p></div>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_unmute_live_loop'>unmute_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mute_live_loop'><span class='object_link'><a href="#mute_live_loop-instance_method" title="#mute_live_loop (method)">mute_live_loop</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='kw'>false</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="unset_live_loop_fill-instance_method">
+  
+    #<strong>unset_live_loop_fill</strong>(loop_name)  &#x21d2; <tt>void</tt> 
+  
+
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='unfill_live_loop-instance_method'>unfill_live_loop</span></span>
+    </span>
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note returns_void">This method returns an undefined value.</p><p>Turns off <span class='object_link'><a href="PlayerBase.html#fill-instance_method" title="PlayerBase#fill (method)">fill mode</a></span> on the player associated with a
+<code>live_loop</code> made by <span class='object_link'><a href="#track_live_loop-instance_method" title="#track_live_loop (method)">#track_live_loop</a></span>.</p>
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>loop_name</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'>Symbol</span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The name of the target live loop.</p></div>
+      
+    </li>
+  
+</ul>
+
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><span class='object_link'><a href="PlayerBase.html#fill-instance_method" title="PlayerBase#fill (method)">PlayerBase#fill</a></span></li>
+    
+      <li><span class='object_link'><a href="Prob.html#fill-class_method" title="Prob.fill (method)">Prob.fill</a></span></li>
+    
+      <li><span class='object_link'><a href="#set_live_loop_fill-instance_method" title="#set_live_loop_fill (method)">#set_live_loop_fill</a></span></li>
+    
+  </ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+343
+344
+345</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'track_live_loop.rb', line 343</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_unset_live_loop_fill'>unset_live_loop_fill</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_set_live_loop_fill'><span class='object_link'><a href="#set_live_loop_fill-instance_method" title="#set_live_loop_fill (method)">set_live_loop_fill</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='kw'>false</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
