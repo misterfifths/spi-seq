@@ -51,6 +51,8 @@ require_relative "utils/misc_utils"
 #   argument on the first iteration, and the return of the prior execution of
 #   the block afterwards.
 #
+# A block is mandatory is the `track` argument is nil.
+#
 # The internal block that plays the track will sleep, so a user-provided block
 # does not need to call `sleep` or `sync`, unlike normal `live_loop` blocks.
 # If it does sync or sleep, it may cause delays between cycles of the track.
@@ -95,8 +97,9 @@ require_relative "utils/misc_utils"
 #
 # @param loop_name [Symbol] The name of the live loop.
 # @param track [Track, CCTrack] The track that this loop will play, or nil to
-#   play a single-slot {Track} containing only a rest (in which case you will
-#   almost certainly want to provide a block).
+#   play a single-slot {Track} containing only a rest. If this is nil, a block
+#   must be provided, and you will almost certainly want to return a track from
+#   it.
 # @param start_muted [Boolean] The initial mute state of the loop. If nil, uses
 #   the global default set by {use_player_defaults}, or false if that was not
 #   set.
