@@ -305,8 +305,8 @@ alias tll track_live_loop
 # you can just use {track_live_loop} to play CCTracks.
 #
 # @return [void]
-def cc_track_live_loop(loop_name, track = nil, **kwargs)
-  track_live_loop(loop_name, track || CCTrack.rest, **kwargs)
+def cc_track_live_loop(loop_name, track = nil, **kwargs, &block)
+  track_live_loop(loop_name, track || CCTrack.rest, **kwargs, &block)
 end
 
 alias cctll cc_track_live_loop
