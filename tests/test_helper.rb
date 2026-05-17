@@ -16,7 +16,6 @@ begin
     add_group "tests", "tests/"
     add_filter "utils/"
     add_filter "core.rb"
-    add_filter "track_live_loop.rb"
   end
 rescue LoadError  # rubocop:disable Lint/SuppressedException
 end
