@@ -3,6 +3,7 @@
 require "forwardable"
 require_relative "test_helper"
 require_relative "player_extapi_stubs"
+require_relative "live_loop_extapi_stubs"
 require_relative "../player"
 require_relative "../ccplayer"
 
@@ -46,15 +47,63 @@ module PlayerTestHelpers
     es
   end
 
-  def _event_shorthand_is_cc(shorthand)
-    shorthand.first.is_a?(Integer)
+  def _event_shorthand_type(shorthand)
+    case shorthand.first
+    when :cue
+      :cue
+    when :sync
+      :sync
+    when Integer
+      :midi_cc
+    else
+      :midi_note
+    end
   end
 
+  # Finds index(es) in raw_events corresponding to the given event shorthand.
+  # For MIDI note events, returns [on index, off index], where the off index
+  # will be nil if no off time was specified. Otherwise returns a single index
+  # or nil.
   def _find_event_idxs_for_shorthand(raw_events, shorthand, tol = 0.001)
-    if _event_shorthand_is_cc(shorthand)
-      # We're looking for a CC event.
+    case _event_shorthand_type(shorthand)
+    when :cue
+      # form: [:cue, name, time[, arg1, ..., argN, kwarg1: ..., ..., kwargN: ...]]
+      _, name, time, *args = *shorthand
+      args ||= []
+      kwargs = args.last.is_a?(Hash) ? args.pop : {}
+      raw_events.index do |ev|
+        ev_type = ev[:type]
+        ev_t = ev[:t]
+        ev_name = ev[:name]
+        ev_args = ev[:args]
+        ev_kwargs = ev[:kwargs]
+
+        next false unless ev_type == :cue
+        next false unless (ev_t - time).abs < tol
+        next false unless ev_name == name
+        next false unless ev_args == args
+        next false unless ev_kwargs == kwargs
+        true
+      end
+    when :sync
+      # form: [:sync, name, time]
+      _, name, time = *shorthand
+      args ||= []
+      kwargs = args.last.is_a?(Hash) ? args.pop : {}
+      raw_events.index do |ev|
+        ev_type = ev[:type]
+        ev_t = ev[:t]
+        ev_name = ev[:name]
+
+        next false unless ev_type == :sync
+        next false unless (ev_t - time).abs < tol
+        next false unless ev_name == name
+        true
+      end
+    when :midi_cc
+      # form [cc number, cc value, time[, port, channel]]
       cc_num, val, time, port, channel = *shorthand
-      event_idx = raw_events.index do |ev|
+      raw_events.index do |ev|
         ev_type = ev[:type]
         ev_t = ev[:t]
         ev_num = ev[:num]
@@ -70,10 +119,10 @@ module PlayerTestHelpers
         next false unless channel.nil? || ev_channel == channel
         true
       end
-
-      [event_idx, nil]
-    else
-      # We're looking for note on and (possibly) off events.
+    when :midi_note
+      # form: [note, on time[, off time or nil, velocity, port, channel]]
+      # If off time is missing or nil, will not look for a corresponding
+      # midi_note_off event.
       note, on_time, off_time, vel, port, channel = *shorthand
       on_event_idx = raw_events.index do |ev|
         ev_type = ev[:type]
@@ -117,12 +166,8 @@ module PlayerTestHelpers
   def assert_events(raw_events, shorthands)
     raw_events = raw_events.dup
     shorthands.each do |shorthand|
-      if _event_shorthand_is_cc(shorthand)
-        event_idx, = _find_event_idxs_for_shorthand(raw_events, shorthand)
-        refute_nil event_idx, "no corresponding midi_cc event for #{shorthand.inspect}\nevents:\n#{raw_events.inspect}"
-
-        raw_events.delete_at(event_idx)
-      else
+      type = _event_shorthand_type(shorthand)
+      if type == :midi_note
         _, _, off_time = *shorthand
         on_event_idx, off_event_idx = _find_event_idxs_for_shorthand(raw_events, shorthand)
         refute_nil on_event_idx, "no corresponding midi_note_on event for #{shorthand.inspect}\nevents:\n#{raw_events.inspect}"
@@ -131,6 +176,11 @@ module PlayerTestHelpers
         # Delete in reverse order
         raw_events.delete_at(off_event_idx) unless off_event_idx.nil?
         raw_events.delete_at(on_event_idx)
+      else
+        event_idx = _find_event_idxs_for_shorthand(raw_events, shorthand)
+        refute_nil event_idx, "no corresponding #{type} event for #{shorthand.inspect}\nevents:\n#{raw_events.inspect}"
+
+        raw_events.delete_at(event_idx)
       end
     end
 

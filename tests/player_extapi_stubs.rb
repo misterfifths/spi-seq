@@ -163,5 +163,13 @@ module ExtApi
       port, channel = resolve_midi_dest(port, channel)
       @events << {type: :midi_cc, t: vt, num: number, val: val, port: port, channel: channel}
     end
+
+    def cue(name, *args, **kwargs)
+      @events << {type: :cue, t: vt, name: name, args: args, kwargs: kwargs}
+    end
+
+    def sync(name)
+      @events << {type: :sync, t: vt, name: name}
+    end
   end
 end
