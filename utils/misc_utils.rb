@@ -12,8 +12,9 @@ require_relative "../extapi"
 # @param key [Symbol] A unique name for the handler.
 # @return [void]
 # @yield
-def on_cold_run(key = :__default_cold_run, &block)
-  ExtApi.in_thread(name: key) do
+def on_cold_run(key = :default, &block)
+  thread_name = :"__cold_run_#{key}"
+  ExtApi.in_thread(name: thread_name) do
     block.call
 
     # spin to keep this thread alive until the script is manually stopped
