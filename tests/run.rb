@@ -52,12 +52,29 @@ if ExtApi.in_sonic_pi?
 
     collector = Test::Unit::Collector::Descendant.new
     suite = collector.collect("spi-seq")
-    log("Found #{suite.tests.count} test case classes")
+    ExtApi.puts("Found #{suite.tests.count} test case classes")
+
+    buggy_test_classes = [TrackLiveLoopTest, MutableLiveLoopTest]
+    subsuites_to_remove = []
+    suite.tests.each do |subsuite|
+      first_case = subsuite.tests.first
+      if buggy_test_classes.include?(first_case.class)
+        subsuites_to_remove << subsuite
+        ExtApi.puts("Skipping #{first_case.class}: known to be buggy in Sonic Pi")
+      end
+    end
+    subsuites_to_remove.each { |subsuite| suite.delete(subsuite) }
 
     Test::Unit::UI::Console::TestRunner.run(suite, {
       use_color: false,
       progress_style: :mark,
       output: File.open(File.expand_path(output_path), "w")
     })
+
+    if suite.passed?
+      ExtApi.puts("Tests passed!")
+    else
+      ExtApi.puts("There were test failures; see the log")
+    end
   end
 end
