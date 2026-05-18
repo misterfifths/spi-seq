@@ -125,9 +125,13 @@ require_relative "utils/misc_utils"
 #   true. If nil, falls back in the same manner as `port`.
 # @param cc [Integer] The CC number to monitor to control muting of the loop.
 #   A value of 0 for this CC will mute the loop; any other value will unmute.
+#   Note that you can also mute loops with {mute_live_loop}.
 # @param fill_cc [Integer] The CC number to monitor to control {PlayerBase#fill
 #   fill mode} on the internal player. A value of 0 for this CC will turn off
-#   fill; any other value will turn it on.
+#   fill; any other value will turn it on. If this argument is nil, falls back
+#   to the global default set with {use_player_defaults}, or no CC fill control
+#   if no default was set. Note that you can also set fill mode for a loop with
+#   {fill_live_loop}.
 # @param cc_port [String, nil] The MIDI port to monitor for CC messages, if
 #   either `cc` or `fill_cc` are set. If nil, falls back to the global default
 #   set with {use_cc_control_defaults} or all ports (i.e. "*") if no default was
@@ -137,7 +141,8 @@ require_relative "utils/misc_utils"
 # @param send_cycle_cues [Boolean] If true, sends sends a cue immediately before
 #   each cycle of play with the name `<loop_name>_cycle` and a single value,
 #   the {PlayerBase#cycle cycle} that's about to play. Cycle cues are not sent
-#   while the loop is muted.
+#   while the loop is muted. If nil, falls back to the global default set with
+#   {use_player_defaults}, or true if no default was set.
 # @param debug [Boolean] If true, details about muting, unmuting, and fill state
 #   will be logged, as well as any debug information from the internal player.
 # @param init [Object] The initial value to pass to the `arg` parameter of the
@@ -151,7 +156,7 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
                     fade_in: false, fade_out: false,
                     midi: nil, port: nil, channel: nil,
                     cc: nil, fill_cc: nil, cc_port: nil, cc_channel: nil,
-                    send_cycle_cues: true, debug: false,
+                    send_cycle_cues: nil, debug: false,
                     init: nil, **kwargs, &block)
   raise ArgumentError, "Block must take 0 - 5 arguments" if !block.nil? && block.arity > 5
 
@@ -200,12 +205,13 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
     end
   end
 
-  # Use the default sync and start_muted unless we were passed one explicitly.
+  # Use values from use_player_defaults unless we were passed them specifically.
   unless kwargs.member?(:sync)
     sync = player_defaults[:sync]
     kwargs[:sync] = sync unless sync.nil?
   end
   start_muted = player_defaults[:start_muted] || false if start_muted.nil?
+  send_cycle_cues = player_defaults.fetch(:send_cycle_cues, true) if send_cycle_cues.nil?
 
 
   ### Build the block for the live_loop

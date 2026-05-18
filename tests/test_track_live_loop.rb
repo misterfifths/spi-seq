@@ -218,7 +218,7 @@ class TrackLiveLoopTest < Test::Unit::TestCase
 
     # Note: not using _tll to make loops here! Want the raw defaults except
     # cycle cues.
-    l = track_live_loop(:t, t, send_cycle_cues: false)
+    l = track_live_loop(:t, t)
     es = events do
       l.pump
       l.stop
@@ -230,9 +230,19 @@ class TrackLiveLoopTest < Test::Unit::TestCase
     old_defaults = current_player_defaults
 
     use_player_defaults(midi: true)
-    assert_std_loop_events [[:c4, 0, 0.5]]
+    assert_std_loop_events [
+      [:cue, :t_cycle, 0, 0],
+      [:c4, 0, 0.5]
+    ]
 
     use_player_defaults(midi: true, sync: :test_sync)
+    assert_std_loop_events [
+      [:sync, :test_sync, 0],
+      [:cue, :t_cycle, 0, 0],
+      [:c4, 0, 0.5]
+    ]
+
+    use_player_defaults(midi: true, send_cycle_cues: false, sync: :test_sync)
     assert_std_loop_events [
       [:sync, :test_sync, 0],
       [:c4, 0, 0.5]

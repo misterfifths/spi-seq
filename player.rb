@@ -16,14 +16,17 @@ require_relative "track"
 #   parameter of {track_live_loop} Default: false.
 # @param fill_cc [Integer, nil]: The default value for the `fill_cc` parameter
 #   of `track_live_loop`. Default: nil (no fill CC).
+# @param send_cycle_cues [Boolean, nil]: The default value for the
+#   `send_cycle_cues` parameter of {track_live_loop}. Default: true.
 # @return [void]
 # @see current_player_defaults
-def use_player_defaults(midi: nil, sync: nil, start_muted: nil, fill_cc: nil)
+def use_player_defaults(midi: nil, sync: nil, start_muted: nil, fill_cc: nil, send_cycle_cues: nil)
   defaults = {}
   defaults[:midi] = midi unless midi.nil?
   defaults[:sync] = sync unless sync.nil?
   defaults[:start_muted] = start_muted unless start_muted.nil?
   defaults[:fill_cc] = fill_cc unless fill_cc.nil?
+  defaults[:send_cycle_cues] = send_cycle_cues unless send_cycle_cues.nil?
   $__PLAYER_DEFAULTS = defaults  # rubocop:disable Style/GlobalVars
 end
 
