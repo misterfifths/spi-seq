@@ -14,15 +14,15 @@ require_relative "player_test_helpers"
 class TrackLiveLoopTest < Test::Unit::TestCase
   include PlayerTestHelpers
 
-  def _tll(name, *args, **kwargs, &block)
+  def setup
     # We only stub MIDI sends, not internal synths, and we don't want to test
     # cues every time.
-    track_live_loop name, *args, midi: true, send_cycle_cues: false, **kwargs, &block
+    use_player_defaults midi: true, send_cycle_cues: false
   end
 
   def test_basics
     t = QT[S(:c4, gate: 0.5)]
-    l = _tll :t, t, send_cycle_cues: true, sync: :test_sync
+    l = tll :t, t, send_cycle_cues: true, sync: :test_sync
     es = events do
       l.pump 4
       l.stop
@@ -44,7 +44,7 @@ class TrackLiveLoopTest < Test::Unit::TestCase
     ]
 
     # Ties should work as expected
-    l = _tll(:t, QT[:c4])
+    l = tll(:t, QT[:c4])
     es = events do
       l.pump(5)
       l.stop
@@ -58,7 +58,7 @@ class TrackLiveLoopTest < Test::Unit::TestCase
     expected_cycle = 0
     loop_iteration = 0
     t = QT[S(:c4, gate: 0.5)]
-    l = _tll(:t, t) do |muted:, was_muted:, cycle:|
+    l = tll(:t, t) do |muted:, was_muted:, cycle:|
       assert_equal cycle, expected_cycle
       assert_equal expected_mutings[loop_iteration], muted
 
@@ -89,14 +89,14 @@ class TrackLiveLoopTest < Test::Unit::TestCase
   end
 
   def test_start_muted
-    l = _tll(:t) do |muted:, was_muted:|
+    l = tll(:t) do |muted:, was_muted:|
       assert_true was_muted
       assert_false muted
     end
     l.pump
     l.stop
 
-    l = _tll(:t, start_muted: true) do |muted:, was_muted:|
+    l = tll(:t, start_muted: true) do |muted:, was_muted:|
       assert_true was_muted
       assert_true muted
     end
@@ -106,7 +106,7 @@ class TrackLiveLoopTest < Test::Unit::TestCase
 
   def test_default_track
     # If no track is provided, should default to a one-slot eighth-note rest.
-    l = _tll(:t) { }  # rubocop:disable Lint/EmptyBlock
+    l = tll(:t) { }  # rubocop:disable Lint/EmptyBlock
     assert_duration 2.5 do
       l.pump 5
       l.stop
@@ -114,7 +114,7 @@ class TrackLiveLoopTest < Test::Unit::TestCase
 
     # A swap away from the default track should take place right away; the rest
     # should not trigger.
-    l = _tll(:t) do
+    l = tll(:t) do
       QT[S(:c4, gate: 0.5)]
     end
     es = events do
@@ -130,7 +130,7 @@ class TrackLiveLoopTest < Test::Unit::TestCase
     # work as expected and be the default for `arg:` in the first cycle.
     expected_args = [5, 6, 7, 8]
     t = QT[S(:c4, gate: 0.5)]
-    l = _tll(:t, t, init: 5) do |cycle:, arg:|
+    l = tll(:t, t, init: 5) do |cycle:, arg:|
       assert_equal expected_args[cycle], arg
       arg + 1
     end
@@ -153,7 +153,7 @@ class TrackLiveLoopTest < Test::Unit::TestCase
     ]
 
     expected_cycle = 0
-    l = _tll :t do |cycle:, track:, arg:|
+    l = tll :t do |cycle:, track:, arg:|
       # Swapping should have no effect on cycle
       assert_equal cycle, expected_cycle
       expected_cycle += 1
@@ -194,16 +194,16 @@ class TrackLiveLoopTest < Test::Unit::TestCase
 
   def test_bad_swaps
     # This is invalid because the default track is a Track.
-    l = _tll(:t) { CCT.rest }
+    l = tll(:t) { CCT.rest }
     assert_raises(TypeError) { l.pump }
     l.stop
 
-    l = _tll(:t, T.rest) { CCT.rest }
+    l = tll(:t, T.rest) { CCT.rest }
     assert_raises(TypeError) { l.pump }
     l.stop
 
     # CCTrack -> Track is also invalid
-    l = _tll(:t, CCT.rest) { T.rest }
+    l = tll(:t, CCT.rest) { T.rest }
     assert_raises(TypeError) { l.pump }
     l.stop
 
@@ -216,9 +216,7 @@ class TrackLiveLoopTest < Test::Unit::TestCase
   def assert_std_loop_events(shorthands)
     t = QT[S(:c4, gate: 0.5)]
 
-    # Note: not using _tll to make loops here! Want the raw defaults except
-    # cycle cues.
-    l = track_live_loop(:t, t)
+    l = tll(:t, t)
     es = events do
       l.pump
       l.stop
@@ -257,7 +255,7 @@ class TrackLiveLoopTest < Test::Unit::TestCase
   def test_cctrack
     t = CCT[CC(127, 0), CC(127, 50), granularity: :quarter]
     u = CCT[CC(64, 80), granularity: :quarter]
-    l = _tll(:t, t) do |cycle:|
+    l = tll(:t, t) do |cycle:|
       u if cycle >= 2
     end
 
@@ -299,7 +297,7 @@ class TrackLiveLoopTest < Test::Unit::TestCase
     end
 
     # Basic immediate fade in. Track yielded to the block should be unfaded.
-    l = _tll(:t, t, fade_in: true) do |track:|
+    l = tll(:t, t, fade_in: true) do |track:|
       assert track.equal?(t)
     end
     es = events do
@@ -313,7 +311,7 @@ class TrackLiveLoopTest < Test::Unit::TestCase
     ]
 
     # Quad fade in
-    l = _tll(:t, t, fade_in: :quad)
+    l = tll(:t, t, fade_in: :quad)
     es = events do
       l.pump
       l.stop
@@ -321,7 +319,7 @@ class TrackLiveLoopTest < Test::Unit::TestCase
     assert_events es, fade_in_events[0, quad: true]
 
     # Fade in on unmute. Should work more than once.
-    l = _tll(:t, t, fade_in: true, start_muted: true) do |track:|
+    l = tll(:t, t, fade_in: true, start_muted: true) do |track:|
       assert track.equal?(t)
     end
     es = events do
@@ -348,7 +346,7 @@ class TrackLiveLoopTest < Test::Unit::TestCase
     # Fade out. Should report muted during the fade out, and block should always
     # get the unfaded track.
     iteration = 0
-    l = _tll(:t, t, fade_out: true) do |muted:, track:|
+    l = tll(:t, t, fade_out: true) do |muted:, track:|
       assert muted == iteration >= 2
       assert track.equal?(t)
       iteration += 1
@@ -368,7 +366,7 @@ class TrackLiveLoopTest < Test::Unit::TestCase
     ]
 
     # Quad fade out
-    l = _tll(:t, t, fade_out: :quad)
+    l = tll(:t, t, fade_out: :quad)
     es = events do
       l.pump
       mute_live_loop(:t)
@@ -381,7 +379,7 @@ class TrackLiveLoopTest < Test::Unit::TestCase
     ]
 
     # Fade in & out
-    l = _tll(:t, t, fade_in: true, fade_out: true, start_muted: true)
+    l = tll(:t, t, fade_in: true, fade_out: true, start_muted: true)
     es = events do
       l.pump
       unmute_live_loop(:t)
@@ -408,7 +406,7 @@ class TrackLiveLoopTest < Test::Unit::TestCase
     # be used for a fade in or out.
     iteration = 0
     tracks_to_yield = [t, t, u, u, t, u]
-    l = _tll(:t, t, fade_in: true, fade_out: true, start_muted: true) do |track:|
+    l = tll(:t, t, fade_in: true, fade_out: true, start_muted: true) do |track:|
       expected_track_arg = (iteration == 0) ? t : tracks_to_yield[iteration - 1]
       assert track.equal?(expected_track_arg)
       res = tracks_to_yield[iteration]
@@ -448,7 +446,7 @@ class TrackLiveLoopTest < Test::Unit::TestCase
     t = QT[S(:c4, prob: Prob.pre_same_note),
            S(:d4, gate: 0.5).accum(12, max: 36),
            :c4]
-    l1 = _tll(:t, t)
+    l1 = tll(:t, t)
     es = events do
       l1.pump
 
@@ -456,7 +454,7 @@ class TrackLiveLoopTest < Test::Unit::TestCase
       # Also note that we continue to pump l1 for another cycle here. l2 should
       # not inherit the state of l1's player immediately; it should wait until
       # its first iteration of playback.
-      l2 = _tll(:t, t)
+      l2 = tll(:t, t)
 
       l1.pump
 
@@ -483,7 +481,7 @@ class TrackLiveLoopTest < Test::Unit::TestCase
 
     # Cycle should be maintained between new loops
     expected_cycle = 0
-    l1 = _tll(:t) do |cycle:|
+    l1 = tll(:t) do |cycle:|
       assert [0, 1].include?(expected_cycle)
       assert_equal expected_cycle, cycle
     end
@@ -491,7 +489,7 @@ class TrackLiveLoopTest < Test::Unit::TestCase
     expected_cycle += 1
 
     # Not stopping l1 yet! Also making this while l1 is still alive, as above.
-    l2 = _tll(:t) do |cycle:|
+    l2 = tll(:t) do |cycle:|
       assert [2, 3].include?(expected_cycle)
       assert_equal expected_cycle, cycle
     end
@@ -509,10 +507,10 @@ class TrackLiveLoopTest < Test::Unit::TestCase
 
     # start_muted should not mute pre-existing loops
     t = QT[S(:c4, gate: 0.5)]
-    l1 = _tll(:t, t)
+    l1 = tll(:t, t)
     es = events do
       l1.pump
-      l2 = _tll(:t, t, start_muted: true)
+      l2 = tll(:t, t, start_muted: true)
       l1.pump
       l2.pump
       l2.pump
@@ -533,7 +531,7 @@ class TrackLiveLoopTest < Test::Unit::TestCase
 
     t = QT[S(:c4, gate: 0.5, prob: Prob.not_fill),
            S(:d4, gate: 0.5, prob: Prob.fill)]
-    l = _tll(:t, t)
+    l = tll(:t, t)
     es = events do
       l.pump
       fill_live_loop :t
