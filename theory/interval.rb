@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# TODO: inversion?
-
 # An interval between two notes, represented both by its traditional {#number}
 # and {#quality}, and its {#size} (i.e. the number of semitones).
 #

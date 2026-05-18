@@ -1842,9 +1842,6 @@ class TrackBase
 
 
   ### Track construction helpers
-  # TODO: philosophically I want these to be private class methods, but you
-  # can't call private class methods from instance methods :(. Figure out a way
-  # to deal with that, or maybe just give up and make them instance methods.
 
   # Attempts to convert its argument to a Step.
   #

@@ -81,7 +81,6 @@ class Step < StepBase
       @vel = 127
     end
 
-    # TODO: quantize this?
     @gate = gate.to_f
     if @gate < 0.0
       @gate = 0.0

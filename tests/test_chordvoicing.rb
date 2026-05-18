@@ -144,11 +144,11 @@ class ChordVoicingTest < Test::Unit::TestCase
 
     assert_equal C(:c4, :maj, :rootless, num_octaves: 2), %i[e4 g4 c5 e5 g5]
 
-    assert_equal Chord.new([:P1]).voice(:c4, :rootless), []  # TODO: questionable
+    assert_equal Chord.new([:P1]).voice(:c4, :rootless), []
   end
 
   def test_shell
-    assert_equal Chord.new([:P5]).voice(:c4, :shell), []  # TODO: questionable
+    assert_equal Chord.new([:P5]).voice(:c4, :shell), []
 
     assert_equal(Chord.new(%i[P1 m2 M3 m3 A3 P5 d7 m7 M7 M9]).voice(:c4, :shell),
                  %i[P1 m3 M3 m7 M7].map { |i| N(:c4) + Interval.new(i) })

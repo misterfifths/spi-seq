@@ -82,9 +82,12 @@ class Chord
   #
   # Valid voicing styles:
   # - `closed`: The simplest voicing: uses the intervals in the chord as-is.
-  # - `rootless`: The same as closed voicing, but omits the root note.
+  # - `rootless`: The same as closed voicing, but omits the root note. If the
+  #   only interval in the chord is the root, this voicing will return an empty
+  #   array.
   # - `shell`: Only the root, thirds, and seventh intervals (in any octave) are
-  #   included.
+  #   included. If none of those intervals are present in the chord, this
+  #   voicing will return an empty array.
   # - `drop2`: Applies a closed voicing, then drops the 2nd highest note in the
   #   result an octave.
   # - `drop3`: Same as drop2, but drops the third highest note.

@@ -183,7 +183,6 @@ class TrackRecorderTest < Test::Unit::TestCase
     assert_grid t, [[], [S(:a1, gate: 0.2)]]
 
     # but with a set end time, that can't happen and we'll just lose the event.
-    # TODO: anything to do about that?
     timeline = [[:a1, 0.75, 1.1, 127], [:b1, 0, 1, 127]]
     t = TrackRecorder.timeline_to_track(timeline,
                                         bpm: bpm, granularity: granularity,

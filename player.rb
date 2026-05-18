@@ -179,7 +179,6 @@ class Player < PlayerBase
   # accumulation.
   #
   # Because this method must call `apply_accum`, it is not idempotent.
-  # TODO: fix that?
   #
   # Note that the returned array of ended steps does not strictly contain steps
   # that ended exactly at the beginning of this step. It also contains steps

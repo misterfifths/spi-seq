@@ -4,7 +4,6 @@ require_relative "prob"
 
 
 # TODO: microtiming?
-# TODO: split accumulation stuff into a subclass? AccumulatingStep < StepBase?
 
 
 # StepBase represents an event that can be sequenced in a slot inside a
