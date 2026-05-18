@@ -6,24 +6,22 @@ require_relative "track"
 
 # @!group Playback and live loops
 
-# Set global default {Player} and {track_live_loop} behaviors. Only explicitly
-# specified parameters are changed.
+# Set global default {Player} and {track_live_loop} behaviors. Removes any
+# previous defaults.
 # @param midi [Boolean, nil] The default value for the `midi` parameter of
 #   {Player#initialize} and by extension {track_live_loop}. Default: false.
 # @param sync [Symbol, nil] The default value for the `sync` parameter of
-#   {track_live_loop}. Passing nil to this function unsets a previous default.
-#   Default: nil (no sync).
+#   {track_live_loop}. Default: nil (no sync).
 # @param start_muted [Boolean, nil]: The default value for the `start_muted`
 #   parameter of {track_live_loop} Default: false.
 # @param fill_cc [Integer, nil]: The default value for the `fill_cc` parameter
 #   of `track_live_loop`. Default: nil (no fill CC).
 # @return [void]
 # @see current_player_defaults
-def use_player_defaults(midi: nil, sync: :__dummy_sync_sentinel, start_muted: nil, fill_cc: nil)
-  defaults = current_player_defaults
+def use_player_defaults(midi: nil, sync: nil, start_muted: nil, fill_cc: nil)
+  defaults = {}
   defaults[:midi] = midi unless midi.nil?
-  defaults.delete(:sync) if sync.nil?
-  defaults[:sync] = sync unless sync == :__dummy_sync_sentinel
+  defaults[:sync] = sync unless sync.nil?
   defaults[:start_muted] = start_muted unless start_muted.nil?
   defaults[:fill_cc] = fill_cc unless fill_cc.nil?
   $__PLAYER_DEFAULTS = defaults  # rubocop:disable Style/GlobalVars

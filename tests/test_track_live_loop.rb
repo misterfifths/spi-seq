@@ -229,21 +229,17 @@ class TrackLiveLoopTest < Test::Unit::TestCase
   def test_player_defaults
     old_defaults = current_player_defaults
 
-    # midi: false will raise since we don't stub play/kill, so just set true
-    # and leave it on throughout.
     use_player_defaults(midi: true)
     assert_std_loop_events [[:c4, 0, 0.5]]
 
-    use_player_defaults(sync: :test_sync)
+    use_player_defaults(midi: true, sync: :test_sync)
     assert_std_loop_events [
       [:sync, :test_sync, 0],
       [:c4, 0, 0.5]
     ]
-    use_player_defaults(sync: nil)
 
-    use_player_defaults(start_muted: true)
+    use_player_defaults(midi: true, start_muted: true)
     assert_std_loop_events []
-    use_player_defaults(start_muted: false)
 
     use_player_defaults(**old_defaults)
   end
