@@ -20,21 +20,20 @@ require_relative "track"
 # @return [void]
 # @see current_player_defaults
 def use_player_defaults(midi: nil, sync: :__dummy_sync_sentinel, start_muted: nil, fill_cc: nil)
-  # `set` hashes become SPMaps, apparently, so we need to call to_h on this.
-  defaults = ExtApi.get(:__player_defaults).to_h
+  defaults = current_player_defaults
   defaults[:midi] = midi unless midi.nil?
   defaults.delete(:sync) if sync.nil?
   defaults[:sync] = sync unless sync == :__dummy_sync_sentinel
   defaults[:start_muted] = start_muted unless start_muted.nil?
   defaults[:fill_cc] = fill_cc unless fill_cc.nil?
-  ExtApi.set(:__player_defaults, defaults)
+  $__PLAYER_DEFAULTS = defaults  # rubocop:disable Style/GlobalVars
 end
 
 # Returns the current player defaults as set by {use_player_defaults}, or an
 # empty hash if no defaults have been set.
 # @return [Hash{Symbol => Object}]
 def current_player_defaults
-  ExtApi.get(:__player_defaults) || {}
+  $__PLAYER_DEFAULTS || {}  # rubocop:disable Style/GlobalVars
 end
 
 # @!endgroup

@@ -21,14 +21,14 @@ require_relative "theory/notelength"
 # @return [void]
 # @see current_track_defaults
 def use_track_defaults(strict_track_merging:)
-  ExtApi.set(:__track_defaults, { strict_track_merging: strict_track_merging })
+  $__TRACK_DEFAULTS = { strict_track_merging: strict_track_merging }  # rubocop:disable Style/GlobalVars
 end
 
 # Returns the current track defaults as set by {use_track_defaults}, or an
 # empty hash if no defaults have been set.
 # @return [Hash{Symbol => Object}]
 def current_track_defaults
-  ExtApi.get(:__track_defaults) || {}
+  $__TRACK_DEFAULTS || {}  # rubocop:disable Style/GlobalVars
 end
 
 # @!endgroup

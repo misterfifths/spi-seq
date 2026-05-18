@@ -132,14 +132,17 @@ end
 # @return [void]
 # @see current_cc_control_defaults
 def use_cc_control_defaults(port: nil, channel: nil)
-  ExtApi.set(:__cc_control_defaults, { port: port, channel: channel })
+  defaults = {}
+  defaults[:port] = port unless port.nil?
+  defaults[:channel] = channel unless channel.nil?
+  $__CC_CONTROL_DEFAULTS = defaults  # rubocop:disable Style/GlobalVars
 end
 
 # Returns the current CC control defaults as set by {use_cc_control_defaults},
 # or an empty hash if no defaults have been set.
 # @return [Hash{Symbol => Object}]
 def current_cc_control_defaults
-  ExtApi.get(:__cc_control_defaults) || {}
+  $__CC_CONTROL_DEFAULTS || {}  # rubocop:disable Style/GlobalVars
 end
 
 # Starts a new `live_loop` that can be muted by a MIDI CC message. A value of 0
