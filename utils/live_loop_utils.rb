@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "weakref"
+require_relative "midi_utils"
 require_relative "../extapi"
 
 # @!group Playback and live loops
