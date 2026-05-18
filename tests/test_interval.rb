@@ -412,6 +412,17 @@ class IntervalTest < Test::Unit::TestCase
     assert_as :minor,   7, :aug, 6
     assert_as :major,   7, :dim, 8
     assert_as :perfect, 8, :aug, 7
+
+    assert_as :perfect, 15, :aug, 14
+    assert_as :perfect, 15, :dim, 16
+    assert_as :minor, 23, :aug, 22
+    assert_as :major, 30, :dim, 31
+
+    assert_as :perfect, 5, :perfect, 5
+    assert_as :major, 30, :major, 30
+
+    assert_nil Interval.new(:P5).as(7)
+    assert_nil Interval.new(:M3).as(5)
   end
 
   def test_names

@@ -305,14 +305,13 @@ class Interval < Numeric
   def as(number)
     return self if @number == number
 
-    sizes_for_num = NUMBERS_TO_SIZES[number]
+    names.each do |name|
+      next if name == @sym
+      other_num = name.to_s[1..].to_i
+      return Interval.new(name) if number == other_num
+    end
 
-    # TODO: handle compound intervals more sanely
-    raise ArgumentError, "expected a simple interval" if sizes_for_num.nil?
-
-    new_qual, = sizes_for_num.find { |_, s| s == @size }
-    return nil if new_qual.nil?
-    Interval.new(number: number, quality: new_qual)
+    nil
   end
 
   # Returns true if this interval can be expressed as some quality of `number`.
