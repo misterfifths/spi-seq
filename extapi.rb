@@ -103,6 +103,11 @@ module ExtApi
   end
 end
 
+# Implementations of some Sonic Pi methods that are both accurate to the
+# original and useful for getting spi-seq code running outside of Sonic Pi.
+# Various other methods are mocked in far less functional or niche ways for the
+# tests - see tests/player_extapi_stubs.rb, for example. The delegator above
+# will call these if we're not in Sonic Pi.
 # @private
 module ExtApiStubs
   class << self
