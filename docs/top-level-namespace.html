@@ -469,7 +469,7 @@ name. See also <span class='object_link'><a href="#SC-instance_method" title="#S
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="top-level-namespace.html#track_live_loop-instance_method" title="#track_live_loop (instance method)">#<strong>track_live_loop</strong>(loop_name, track = nil, start_muted: nil, fade_in: false, fade_out: false, midi: nil, port: nil, channel: nil, cc: nil, fill_cc: nil, cc_port: nil, cc_channel: nil, send_cycle_cues: true, debug: false, init: nil, **kwargs) { ... } &#x21d2; void </a>
+      <a href="top-level-namespace.html#track_live_loop-instance_method" title="#track_live_loop (instance method)">#<strong>track_live_loop</strong>(loop_name, track = nil, start_muted: nil, fade_in: false, fade_out: false, midi: nil, port: nil, channel: nil, cc: nil, fill_cc: nil, cc_port: nil, cc_channel: nil, send_cycle_cues: nil, debug: false, init: nil, **kwargs) { ... } &#x21d2; void </a>
     
 
     
@@ -561,7 +561,7 @@ name. See also <span class='object_link'><a href="#SC-instance_method" title="#S
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="top-level-namespace.html#use_player_defaults-instance_method" title="#use_player_defaults (instance method)">#<strong>use_player_defaults</strong>(midi: nil, sync: :__dummy_sync_sentinel, start_muted: nil, fill_cc: nil)  &#x21d2; void </a>
+      <a href="top-level-namespace.html#use_player_defaults-instance_method" title="#use_player_defaults (instance method)">#<strong>use_player_defaults</strong>(midi: nil, sync: nil, start_muted: nil, fill_cc: nil, send_cycle_cues: nil)  &#x21d2; void </a>
     
 
     
@@ -1295,9 +1295,6 @@ prior execution of the block afterwards.</p></div>
       <pre class="lines">
 
 
-165
-166
-167
 168
 169
 170
@@ -1315,10 +1312,13 @@ prior execution of the block afterwards.</p></div>
 182
 183
 184
-185</pre>
+185
+186
+187
+188</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'utils/live_loop_utils.rb', line 165</span>
+      <pre class="code"><span class="info file"># File 'utils/live_loop_utils.rb', line 168</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_cc_mutable_live_loop'>cc_mutable_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='label'>cc:</span><span class='comma'>,</span> <span class='label'>port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>start_muted:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='id identifier rubyid_channel'>channel</span> <span class='op'>=</span> <span class='id identifier rubyid___resolve_cc_port_and_channel'>__resolve_cc_port_and_channel</span><span class='lparen'>(</span><span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='id identifier rubyid_channel'>channel</span><span class='rparen'>)</span>
@@ -1378,12 +1378,12 @@ you can just use <span class='object_link'><a href="#track_live_loop-instance_me
       <pre class="lines">
 
 
-311
-312
-313</pre>
+317
+318
+319</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track_live_loop.rb', line 311</span>
+      <pre class="code"><span class="info file"># File 'track_live_loop.rb', line 317</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_cc_track_live_loop'>cc_track_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_track'>track</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_track_live_loop'><span class='object_link'><a href="#track_live_loop-instance_method" title="#track_live_loop (method)">track_live_loop</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_track'>track</span> <span class='op'>||</span> <span class='const'><span class='object_link'><a href="CCTrack.html" title="CCTrack (class)">CCTrack</a></span></span><span class='period'>.</span><span class='id identifier rubyid_rest'><span class='object_link'><a href="TrackBase.html#rest-class_method" title="TrackBase.rest (method)">rest</a></span></span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
@@ -1589,16 +1589,16 @@ or an empty hash if no defaults have been set.</p>
       <pre class="lines">
 
 
-141
-142
-143</pre>
+144
+145
+146</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'utils/live_loop_utils.rb', line 141</span>
+      <pre class="code"><span class="info file"># File 'utils/live_loop_utils.rb', line 144</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_current_cc_control_defaults'>current_cc_control_defaults</span>
-  <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span><span class='lparen'>(</span><span class='symbol'>:__cc_control_defaults</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
-<span class='kw'>end</span></pre>
+  <span class='gvar'>$__CC_CONTROL_DEFAULTS</span> <span class='op'>||</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>  <span class='comment'># rubocop:disable Style/GlobalVars
+</span><span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1650,8 +1650,8 @@ empty hash if no defaults have been set.</p>
       <pre class="code"><span class="info file"># File 'player.rb', line 36</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_current_player_defaults'>current_player_defaults</span>
-  <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span><span class='lparen'>(</span><span class='symbol'>:__player_defaults</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
-<span class='kw'>end</span></pre>
+  <span class='gvar'>$__PLAYER_DEFAULTS</span> <span class='op'>||</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>  <span class='comment'># rubocop:disable Style/GlobalVars
+</span><span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -1703,8 +1703,8 @@ empty hash if no defaults have been set.</p>
       <pre class="code"><span class="info file"># File 'trackbase.rb', line 30</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_current_track_defaults'>current_track_defaults</span>
-  <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span><span class='lparen'>(</span><span class='symbol'>:__track_defaults</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
-<span class='kw'>end</span></pre>
+  <span class='gvar'>$__TRACK_DEFAULTS</span> <span class='op'>||</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>  <span class='comment'># rubocop:disable Style/GlobalVars
+</span><span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -3004,12 +3004,12 @@ fill mode takes effect immediately.</p>
       <pre class="lines">
 
 
-334
-335
-336</pre>
+340
+341
+342</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track_live_loop.rb', line 334</span>
+      <pre class="code"><span class="info file"># File 'track_live_loop.rb', line 340</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_set_live_loop_fill'>set_live_loop_fill</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_fill'>fill</span> <span class='op'>=</span> <span class='kw'>true</span><span class='rparen'>)</span>
   <span class='id identifier rubyid___player_for_live_loop'>__player_for_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rparen'>)</span><span class='op'>&amp;.</span><span class='id identifier rubyid_fill'>fill</span> <span class='op'>=</span> <span class='id identifier rubyid_fill'>fill</span>
@@ -3022,7 +3022,7 @@ fill mode takes effect immediately.</p>
       <div class="method_details ">
   <h3 class="signature " id="track_live_loop-instance_method">
   
-    #<strong>track_live_loop</strong>(loop_name, track = nil, start_muted: nil, fade_in: false, fade_out: false, midi: nil, port: nil, channel: nil, cc: nil, fill_cc: nil, cc_port: nil, cc_channel: nil, send_cycle_cues: true, debug: false, init: nil, **kwargs) { ... } &#x21d2; <tt>void</tt> 
+    #<strong>track_live_loop</strong>(loop_name, track = nil, start_muted: nil, fade_in: false, fade_out: false, midi: nil, port: nil, channel: nil, cc: nil, fill_cc: nil, cc_port: nil, cc_channel: nil, send_cycle_cues: nil, debug: false, init: nil, **kwargs) { ... } &#x21d2; <tt>void</tt> 
   
 
   
@@ -3284,7 +3284,8 @@ true. If nil, falls back in the same manner as <code>port</code>.</p></div>
       
         &mdash;
         <div class='inline'><p>The CC number to monitor to control muting of the loop.
-A value of 0 for this CC will mute the loop; any other value will unmute.</p></div>
+A value of 0 for this CC will mute the loop; any other value will unmute.
+Note that you can also mute loops with <span class='object_link'><a href="#mute_live_loop-instance_method" title="#mute_live_loop (method)">#mute_live_loop</a></span>.</p></div>
       
     </li>
   
@@ -3301,7 +3302,10 @@ A value of 0 for this CC will mute the loop; any other value will unmute.</p></d
       
         &mdash;
         <div class='inline'><p>The CC number to monitor to control <span class='object_link'><a href="PlayerBase.html#fill-instance_method" title="PlayerBase#fill (method)">fill mode</a></span> on the internal player. A value of 0 for this CC will turn off
-fill; any other value will turn it on.</p></div>
+fill; any other value will turn it on. If this argument is nil, falls back
+to the global default set with <span class='object_link'><a href="#use_player_defaults-instance_method" title="#use_player_defaults (method)">#use_player_defaults</a></span>, or no CC fill control
+if no default was set. Note that you can also set fill mode for a loop with
+<span class='object_link'><a href="#fill_live_loop-instance_method" title="#fill_live_loop (method)">#fill_live_loop</a></span>.</p></div>
       
     </li>
   
@@ -3349,14 +3353,15 @@ messages. If nil, falls back in the same manner as <code>cc_port</code>.</p></di
         <span class='type'>(<tt>Boolean</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>true</tt>)</em>
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
       
       
         &mdash;
         <div class='inline'><p>If true, sends sends a cue immediately before
 each cycle of play with the name <code>&lt;loop_name&gt;_cycle</code> and a single value,
 the <span class='object_link'><a href="PlayerBase.html#cycle-instance_method" title="PlayerBase#cycle (method)">cycle</a></span> that's about to play. Cycle cues are not sent
-while the loop is muted.</p></div>
+while the loop is muted. If nil, falls back to the global default set with
+<span class='object_link'><a href="#use_player_defaults-instance_method" title="#use_player_defaults (method)">#use_player_defaults</a></span>, or true if no default was set.</p></div>
       
     </li>
   
@@ -3450,11 +3455,6 @@ switch to. See above.</p></div>
       <pre class="lines">
 
 
-150
-151
-152
-153
-154
 155
 156
 157
@@ -3598,16 +3598,22 @@ switch to. See above.</p></div>
 295
 296
 297
-298</pre>
+298
+299
+300
+301
+302
+303
+304</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track_live_loop.rb', line 150</span>
+      <pre class="code"><span class="info file"># File 'track_live_loop.rb', line 155</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_track_live_loop'>track_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_track'>track</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>start_muted:</span> <span class='kw'>nil</span><span class='comma'>,</span>
                     <span class='label'>fade_in:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>fade_out:</span> <span class='kw'>false</span><span class='comma'>,</span>
                     <span class='label'>midi:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='kw'>nil</span><span class='comma'>,</span>
                     <span class='label'>cc:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>fill_cc:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>cc_port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>cc_channel:</span> <span class='kw'>nil</span><span class='comma'>,</span>
-                    <span class='label'>send_cycle_cues:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>debug:</span> <span class='kw'>false</span><span class='comma'>,</span>
+                    <span class='label'>send_cycle_cues:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>debug:</span> <span class='kw'>false</span><span class='comma'>,</span>
                     <span class='label'>init:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Block must take 0 - 5 arguments</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='op'>!</span><span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>&gt;</span> <span class='int'>5</span>
 
@@ -3656,12 +3662,13 @@ switch to. See above.</p></div>
     <span class='kw'>end</span>
   <span class='kw'>end</span>
 
-  <span class='comment'># Use the default sync and start_muted unless we were passed one explicitly.
+  <span class='comment'># Use values from use_player_defaults unless we were passed them specifically.
 </span>  <span class='kw'>unless</span> <span class='id identifier rubyid_kwargs'>kwargs</span><span class='period'>.</span><span class='id identifier rubyid_member?'>member?</span><span class='lparen'>(</span><span class='symbol'>:sync</span><span class='rparen'>)</span>
     <span class='id identifier rubyid_sync'>sync</span> <span class='op'>=</span> <span class='id identifier rubyid_player_defaults'>player_defaults</span><span class='lbracket'>[</span><span class='symbol'>:sync</span><span class='rbracket'>]</span>
     <span class='id identifier rubyid_kwargs'>kwargs</span><span class='lbracket'>[</span><span class='symbol'>:sync</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_sync'>sync</span> <span class='kw'>unless</span> <span class='id identifier rubyid_sync'>sync</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
   <span class='kw'>end</span>
   <span class='id identifier rubyid_start_muted'>start_muted</span> <span class='op'>=</span> <span class='id identifier rubyid_player_defaults'>player_defaults</span><span class='lbracket'>[</span><span class='symbol'>:start_muted</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='kw'>false</span> <span class='kw'>if</span> <span class='id identifier rubyid_start_muted'>start_muted</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+  <span class='id identifier rubyid_send_cycle_cues'>send_cycle_cues</span> <span class='op'>=</span> <span class='id identifier rubyid_player_defaults'>player_defaults</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:send_cycle_cues</span><span class='comma'>,</span> <span class='kw'>true</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_send_cycle_cues'>send_cycle_cues</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
 
 
   <span class='comment'>### Build the block for the live_loop
@@ -3873,12 +3880,12 @@ switch to. See above.</p></div>
       <pre class="lines">
 
 
-346
-347
-348</pre>
+352
+353
+354</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track_live_loop.rb', line 346</span>
+      <pre class="code"><span class="info file"># File 'track_live_loop.rb', line 352</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_unset_live_loop_fill'>unset_live_loop_fill</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_set_live_loop_fill'><span class='object_link'><a href="#set_live_loop_fill-instance_method" title="#set_live_loop_fill (method)">set_live_loop_fill</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='kw'>false</span><span class='rparen'>)</span>
@@ -3963,14 +3970,20 @@ falls back to &quot;*&quot;.</p></div>
 
 134
 135
-136</pre>
+136
+137
+138
+139</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'utils/live_loop_utils.rb', line 134</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_use_cc_control_defaults'>use_cc_control_defaults</span><span class='lparen'>(</span><span class='label'>port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
-  <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_set'>set</span><span class='lparen'>(</span><span class='symbol'>:__cc_control_defaults</span><span class='comma'>,</span> <span class='lbrace'>{</span> <span class='label'>port:</span> <span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='id identifier rubyid_channel'>channel</span> <span class='rbrace'>}</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
+  <span class='id identifier rubyid_defaults'>defaults</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
+  <span class='id identifier rubyid_defaults'>defaults</span><span class='lbracket'>[</span><span class='symbol'>:port</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_port'>port</span> <span class='kw'>unless</span> <span class='id identifier rubyid_port'>port</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+  <span class='id identifier rubyid_defaults'>defaults</span><span class='lbracket'>[</span><span class='symbol'>:channel</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_channel'>channel</span> <span class='kw'>unless</span> <span class='id identifier rubyid_channel'>channel</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+  <span class='gvar'>$__CC_CONTROL_DEFAULTS</span> <span class='op'>=</span> <span class='id identifier rubyid_defaults'>defaults</span>  <span class='comment'># rubocop:disable Style/GlobalVars
+</span><span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -3979,7 +3992,7 @@ falls back to &quot;*&quot;.</p></div>
       <div class="method_details ">
   <h3 class="signature " id="use_player_defaults-instance_method">
   
-    #<strong>use_player_defaults</strong>(midi: nil, sync: :__dummy_sync_sentinel, start_muted: nil, fill_cc: nil)  &#x21d2; <tt>void</tt> 
+    #<strong>use_player_defaults</strong>(midi: nil, sync: nil, start_muted: nil, fill_cc: nil, send_cycle_cues: nil)  &#x21d2; <tt>void</tt> 
   
 
   
@@ -3987,8 +4000,8 @@ falls back to &quot;*&quot;.</p></div>
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p class="note returns_void">This method returns an undefined value.</p><p>Set global default <span class='object_link'><a href="Player.html" title="Player (class)">Player</a></span> and <span class='object_link'><a href="#track_live_loop-instance_method" title="#track_live_loop (method)">#track_live_loop</a></span> behaviors. Only explicitly
-specified parameters are changed.</p>
+    <p class="note returns_void">This method returns an undefined value.</p><p>Set global default <span class='object_link'><a href="Player.html" title="Player (class)">Player</a></span> and <span class='object_link'><a href="#track_live_loop-instance_method" title="#track_live_loop (method)">#track_live_loop</a></span> behaviors. Removes any
+previous defaults.</p>
 
   </div>
 </div>
@@ -4021,13 +4034,12 @@ specified parameters are changed.</p>
         <span class='type'>(<tt><span class='object_link'>Symbol</span></tt>, <tt>nil</tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>:__dummy_sync_sentinel</tt>)</em>
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
       
       
         &mdash;
         <div class='inline'><p>The default value for the <code>sync</code> parameter of
-<span class='object_link'><a href="#track_live_loop-instance_method" title="#track_live_loop (method)">#track_live_loop</a></span>. Passing nil to this function unsets a previous default.
-Default: nil (no sync).</p></div>
+<span class='object_link'><a href="#track_live_loop-instance_method" title="#track_live_loop (method)">#track_live_loop</a></span>. Default: nil (no sync).</p></div>
       
     </li>
   
@@ -4065,6 +4077,23 @@ of <code>track_live_loop</code>. Default: nil (no fill CC).</p></div>
       
     </li>
   
+    <li>
+      
+        <span class='name'>send_cycle_cues</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>, <tt>nil</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>: The default value for the
+<code>send_cycle_cues</code> parameter of <span class='object_link'><a href="#track_live_loop-instance_method" title="#track_live_loop (method)">#track_live_loop</a></span>. Default: true.</p></div>
+      
+    </li>
+  
 </ul>
 
 
@@ -4081,7 +4110,6 @@ of <code>track_live_loop</code>. Default: nil (no fill CC).</p></div>
       <pre class="lines">
 
 
-22
 23
 24
 25
@@ -4093,18 +4121,17 @@ of <code>track_live_loop</code>. Default: nil (no fill CC).</p></div>
 31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'player.rb', line 22</span>
+      <pre class="code"><span class="info file"># File 'player.rb', line 23</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_use_player_defaults'>use_player_defaults</span><span class='lparen'>(</span><span class='label'>midi:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>sync:</span> <span class='symbol'>:__dummy_sync_sentinel</span><span class='comma'>,</span> <span class='label'>start_muted:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>fill_cc:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
-  <span class='comment'># `set` hashes become SPMaps, apparently, so we need to call to_h on this.
-</span>  <span class='id identifier rubyid_defaults'>defaults</span> <span class='op'>=</span> <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span><span class='lparen'>(</span><span class='symbol'>:__player_defaults</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_h'>to_h</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_use_player_defaults'>use_player_defaults</span><span class='lparen'>(</span><span class='label'>midi:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>sync:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>start_muted:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>fill_cc:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>send_cycle_cues:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_defaults'>defaults</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
   <span class='id identifier rubyid_defaults'>defaults</span><span class='lbracket'>[</span><span class='symbol'>:midi</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_midi'>midi</span> <span class='kw'>unless</span> <span class='id identifier rubyid_midi'>midi</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
-  <span class='id identifier rubyid_defaults'>defaults</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:sync</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_sync'>sync</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
-  <span class='id identifier rubyid_defaults'>defaults</span><span class='lbracket'>[</span><span class='symbol'>:sync</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_sync'>sync</span> <span class='kw'>unless</span> <span class='id identifier rubyid_sync'>sync</span> <span class='op'>==</span> <span class='symbol'>:__dummy_sync_sentinel</span>
+  <span class='id identifier rubyid_defaults'>defaults</span><span class='lbracket'>[</span><span class='symbol'>:sync</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_sync'>sync</span> <span class='kw'>unless</span> <span class='id identifier rubyid_sync'>sync</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
   <span class='id identifier rubyid_defaults'>defaults</span><span class='lbracket'>[</span><span class='symbol'>:start_muted</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_start_muted'>start_muted</span> <span class='kw'>unless</span> <span class='id identifier rubyid_start_muted'>start_muted</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
   <span class='id identifier rubyid_defaults'>defaults</span><span class='lbracket'>[</span><span class='symbol'>:fill_cc</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_fill_cc'>fill_cc</span> <span class='kw'>unless</span> <span class='id identifier rubyid_fill_cc'>fill_cc</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
-  <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_set'>set</span><span class='lparen'>(</span><span class='symbol'>:__player_defaults</span><span class='comma'>,</span> <span class='id identifier rubyid_defaults'>defaults</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
+  <span class='id identifier rubyid_defaults'>defaults</span><span class='lbracket'>[</span><span class='symbol'>:send_cycle_cues</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_send_cycle_cues'>send_cycle_cues</span> <span class='kw'>unless</span> <span class='id identifier rubyid_send_cycle_cues'>send_cycle_cues</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+  <span class='gvar'>$__PLAYER_DEFAULTS</span> <span class='op'>=</span> <span class='id identifier rubyid_defaults'>defaults</span>  <span class='comment'># rubocop:disable Style/GlobalVars
+</span><span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
@@ -4174,8 +4201,8 @@ are Tracks) scale of <code>t1</code>. Strict track merging is off by default.</p
       <pre class="code"><span class="info file"># File 'trackbase.rb', line 23</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_use_track_defaults'>use_track_defaults</span><span class='lparen'>(</span><span class='label'>strict_track_merging:</span><span class='rparen'>)</span>
-  <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_set'>set</span><span class='lparen'>(</span><span class='symbol'>:__track_defaults</span><span class='comma'>,</span> <span class='lbrace'>{</span> <span class='label'>strict_track_merging:</span> <span class='id identifier rubyid_strict_track_merging'>strict_track_merging</span> <span class='rbrace'>}</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
+  <span class='gvar'>$__TRACK_DEFAULTS</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>strict_track_merging:</span> <span class='id identifier rubyid_strict_track_merging'>strict_track_merging</span> <span class='rbrace'>}</span>  <span class='comment'># rubocop:disable Style/GlobalVars
+</span><span class='kw'>end</span></pre>
     </td>
   </tr>
 </table>
