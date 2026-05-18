@@ -59,4 +59,74 @@ class MutableLiveLoopTest < Test::Unit::TestCase
     end
     assert_events es, [[:sync, :test_sync, 0]]
   end
+
+  def test_cc_mutable
+    # Testing the actual mute functionality isn't possible without a *lot* more
+    # stubbing of Sonic Pi methods (actually making `sync` work, e.g.). But we
+    # can at least test the initial CC send and use_cc_control_defaults.
+
+    # Should send a CC at creation with value 127. Recreating the same loop name
+    # should not send another CC.
+    es = events do
+      l1 = cc_mutable_live_loop(:t, cc: 64) { |_| ExtApi.sleep(1) }
+      l1.pump
+      l2 = cc_mutable_live_loop(:t, cc: 64, start_muted: true) { |_| ExtApi.sleep(1) }
+      l1.pump
+      l2.pump
+      l2.stop
+      l1.stop
+    end
+    assert_events es, [[64, 127, 0]]
+
+    # start_muted should send a CC with value 0.
+    es = events do
+      l = cc_mutable_live_loop(:t, cc: 10, start_muted: true) { |_| ExtApi.sleep(1) }
+      l.stop
+    end
+    assert_events es, [[10, 0, 0]]
+  end
+
+  def assert_init_cc_port_channel(port = nil, channel = nil)
+    es = events do
+      l = cc_mutable_live_loop(:t, cc: 10) { |_| ExtApi.sleep(1) }
+      l.pump
+      l.stop
+
+      l = cc_mutable_live_loop(:t, cc: 10, port: "specific port") { |_| ExtApi.sleep(1) }
+      l.pump
+      l.stop
+
+      l = cc_mutable_live_loop(:t, cc: 10, channel: 5) { |_| ExtApi.sleep(1) }
+      l.pump
+      l.stop
+
+      l = cc_mutable_live_loop(:t, cc: 10, port: "specific port", channel: 3) { |_| ExtApi.sleep(1) }
+      l.pump
+      l.stop
+    end
+    assert_events es, [
+      [10, 127, 0, port, channel],
+      [10, 127, 1, "specific port", channel],
+      [10, 127, 2, port, 5],
+      [10, 127, 3, "specific port", 3]
+    ]
+  end
+
+  def test_cc_defaults
+    old_defaults = current_cc_control_defaults
+
+    use_cc_control_defaults(port: "default_device")
+    assert_init_cc_port_channel("default_device")
+
+    use_cc_control_defaults(channel: 6)  # should have cleared the port
+    assert_init_cc_port_channel(nil, 6)
+
+    use_cc_control_defaults(port: "default device", channel: 7)
+    assert_init_cc_port_channel("default device", 7)
+
+    use_cc_control_defaults(channel: nil)
+    assert_init_cc_port_channel(nil, nil)
+
+    use_cc_control_defaults(**old_defaults)
+  end
 end
