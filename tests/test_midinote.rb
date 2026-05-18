@@ -339,7 +339,7 @@ class MIDINoteTest < Test::Unit::TestCase
     end
 
     # Octave wrap-around
-    assert_equal N(:cb4), ":b3"
-    assert_equal N(:bs4), ":c5"
+    assert_equal N(:cb4).repr, ":b3"
+    assert_equal N(:bs4).repr, ":c5"
   end
 end
