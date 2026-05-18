@@ -813,7 +813,7 @@ name. See also <span class='object_link'><a href="#SC-instance_method" title="#S
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="top-level-namespace.html#on_cold_run-instance_method" title="#on_cold_run (instance method)">#<strong>on_cold_run</strong>(key = :__default_cold_run) { ... } &#x21d2; void </a>
+      <a href="top-level-namespace.html#on_cold_run-instance_method" title="#on_cold_run (instance method)">#<strong>on_cold_run</strong>(key = :default) { ... } &#x21d2; void </a>
     
 
     
@@ -1295,7 +1295,6 @@ prior execution of the block afterwards.</p></div>
       <pre class="lines">
 
 
-164
 165
 166
 167
@@ -1313,12 +1312,17 @@ prior execution of the block afterwards.</p></div>
 179
 180
 181
-182</pre>
+182
+183
+184
+185</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'utils/live_loop_utils.rb', line 164</span>
+      <pre class="code"><span class="info file"># File 'utils/live_loop_utils.rb', line 165</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_cc_mutable_live_loop'>cc_mutable_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='label'>cc:</span><span class='comma'>,</span> <span class='label'>port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>start_muted:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='id identifier rubyid_channel'>channel</span> <span class='op'>=</span> <span class='id identifier rubyid___resolve_cc_port_and_channel'>__resolve_cc_port_and_channel</span><span class='lparen'>(</span><span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='id identifier rubyid_channel'>channel</span><span class='rparen'>)</span>
+
   <span class='id identifier rubyid_cc_watcher_live_loop'><span class='object_link'><a href="#cc_watcher_live_loop-instance_method" title="#cc_watcher_live_loop (method)">cc_watcher_live_loop</a></span></span><span class='lparen'>(</span><span class='symbol'>:&quot;__</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='embexpr_end'>}</span><span class='tstring_content'>_cc_mute_watcher</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
                        <span class='label'>port:</span> <span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='id identifier rubyid_channel'>channel</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_incoming_cc'>incoming_cc</span><span class='comma'>,</span> <span class='id identifier rubyid_cc_val'>cc_val</span><span class='op'>|</span>
     <span class='kw'>next</span> <span class='kw'>if</span> <span class='id identifier rubyid_incoming_cc'>incoming_cc</span> <span class='op'>!=</span> <span class='id identifier rubyid_cc'>cc</span>
@@ -1374,12 +1378,12 @@ you can just use <span class='object_link'><a href="#track_live_loop-instance_me
       <pre class="lines">
 
 
-308
-309
-310</pre>
+311
+312
+313</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track_live_loop.rb', line 308</span>
+      <pre class="code"><span class="info file"># File 'track_live_loop.rb', line 311</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_cc_track_live_loop'>cc_track_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_track'>track</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_track_live_loop'><span class='object_link'><a href="#track_live_loop-instance_method" title="#track_live_loop (method)">track_live_loop</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_track'>track</span> <span class='op'>||</span> <span class='const'><span class='object_link'><a href="CCTrack.html" title="CCTrack (class)">CCTrack</a></span></span><span class='period'>.</span><span class='id identifier rubyid_rest'><span class='object_link'><a href="TrackBase.html#rest-class_method" title="TrackBase.rest (method)">rest</a></span></span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
@@ -1585,12 +1589,12 @@ or an empty hash if no defaults have been set.</p>
       <pre class="lines">
 
 
-140
 141
-142</pre>
+142
+143</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'utils/live_loop_utils.rb', line 140</span>
+      <pre class="code"><span class="info file"># File 'utils/live_loop_utils.rb', line 141</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_current_cc_control_defaults'>current_cc_control_defaults</span>
   <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_get'>get</span><span class='lparen'>(</span><span class='symbol'>:__cc_control_defaults</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
@@ -2390,7 +2394,6 @@ prior execution of the block afterwards.</p></div>
       <pre class="lines">
 
 
-99
 100
 101
 102
@@ -2411,10 +2414,11 @@ prior execution of the block afterwards.</p></div>
 117
 118
 119
-120</pre>
+120
+121</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'utils/live_loop_utils.rb', line 99</span>
+      <pre class="code"><span class="info file"># File 'utils/live_loop_utils.rb', line 100</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_mutable_live_loop'>mutable_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='label'>start_muted:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Block must take 1 or 2 arguments</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>==</span> <span class='int'>0</span> <span class='op'>||</span> <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>&gt;</span> <span class='int'>2</span>
@@ -2511,12 +2515,12 @@ details.</p>
       <pre class="lines">
 
 
-64
 65
-66</pre>
+66
+67</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'utils/live_loop_utils.rb', line 64</span>
+      <pre class="code"><span class="info file"># File 'utils/live_loop_utils.rb', line 65</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_mute_live_loop'>mute_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_mute'>mute</span><span class='op'>=</span><span class='kw'>true</span><span class='rparen'>)</span>
   <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_set'>set</span><span class='lparen'>(</span><span class='id identifier rubyid___mute_key'>__mute_key</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='id identifier rubyid_mute'>mute</span><span class='rparen'>)</span>
@@ -2596,7 +2600,7 @@ details.</p>
       <div class="method_details ">
   <h3 class="signature " id="on_cold_run-instance_method">
   
-    #<strong>on_cold_run</strong>(key = :__default_cold_run) { ... } &#x21d2; <tt>void</tt> 
+    #<strong>on_cold_run</strong>(key = :default) { ... } &#x21d2; <tt>void</tt> 
   
 
   
@@ -2624,7 +2628,7 @@ provide different keys for each call to this function.</p>
         <span class='type'>(<tt><span class='object_link'>Symbol</span></tt>)</span>
       
       
-        <em class="default">(defaults to: <tt>:__default_cold_run</tt>)</em>
+        <em class="default">(defaults to: <tt>:default</tt>)</em>
       
       
         &mdash;
@@ -2661,13 +2665,15 @@ provide different keys for each call to this function.</p>
 19
 20
 21
-22</pre>
+22
+23</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'utils/misc_utils.rb', line 15</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_on_cold_run'>on_cold_run</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span> <span class='op'>=</span> <span class='symbol'>:__default_cold_run</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
-  <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_in_thread'>in_thread</span><span class='lparen'>(</span><span class='label'>name:</span> <span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span> <span class='kw'>do</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_on_cold_run'>on_cold_run</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span> <span class='op'>=</span> <span class='symbol'>:default</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_thread_name'>thread_name</span> <span class='op'>=</span> <span class='symbol'>:&quot;__cold_run_</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_key'>key</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_in_thread'>in_thread</span><span class='lparen'>(</span><span class='label'>name:</span> <span class='id identifier rubyid_thread_name'>thread_name</span><span class='rparen'>)</span> <span class='kw'>do</span>
     <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span>
 
     <span class='comment'># spin to keep this thread alive until the script is manually stopped
@@ -2796,16 +2802,16 @@ function.</p>
       <pre class="lines">
 
 
-31
 32
 33
 34
 35
 36
-37</pre>
+37
+38</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'utils/misc_utils.rb', line 31</span>
+      <pre class="code"><span class="info file"># File 'utils/misc_utils.rb', line 32</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_one_time_init'>one_time_init</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span> <span class='op'>=</span> <span class='symbol'>:default</span><span class='rparen'>)</span>
   <span class='gvar'>$__ONE_TIME_INIT_KEYS</span> <span class='op'>||=</span> <span class='const'>Set</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
@@ -2998,12 +3004,12 @@ fill mode takes effect immediately.</p>
       <pre class="lines">
 
 
-331
-332
-333</pre>
+334
+335
+336</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track_live_loop.rb', line 331</span>
+      <pre class="code"><span class="info file"># File 'track_live_loop.rb', line 334</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_set_live_loop_fill'>set_live_loop_fill</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_fill'>fill</span> <span class='op'>=</span> <span class='kw'>true</span><span class='rparen'>)</span>
   <span class='id identifier rubyid___player_for_live_loop'>__player_for_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rparen'>)</span><span class='op'>&amp;.</span><span class='id identifier rubyid_fill'>fill</span> <span class='op'>=</span> <span class='id identifier rubyid_fill'>fill</span>
@@ -3062,6 +3068,7 @@ This argument is true the first time the block executes.</li>
 argument on the first iteration, and the return of the prior execution of
 the block afterwards.</li>
 </ul>
+<p>A block is mandatory is the <code>track</code> argument is nil.</p>
 <p>The internal block that plays the track will sleep, so a user-provided block
 does not need to call <code>sleep</code> or <code>sync</code>, unlike normal <code>live_loop</code> blocks.
 If it does sync or sleep, it may cause delays between cycles of the track.</p>
@@ -3145,8 +3152,9 @@ one.</p>
       
         &mdash;
         <div class='inline'><p>The track that this loop will play, or nil to
-play a single-slot <span class='object_link'><a href="Track.html" title="Track (class)">Track</a></span> containing only a rest (in which case you will
-almost certainly want to provide a block).</p></div>
+play a single-slot <span class='object_link'><a href="Track.html" title="Track (class)">Track</a></span> containing only a rest. If this is nil, a block
+must be provided, and you will almost certainly want to return a track from
+it.</p></div>
       
     </li>
   
@@ -3442,9 +3450,6 @@ switch to. See above.</p></div>
       <pre class="lines">
 
 
-147
-148
-149
 150
 151
 152
@@ -3590,10 +3595,13 @@ switch to. See above.</p></div>
 292
 293
 294
-295</pre>
+295
+296
+297
+298</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track_live_loop.rb', line 147</span>
+      <pre class="code"><span class="info file"># File 'track_live_loop.rb', line 150</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_track_live_loop'>track_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_track'>track</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>start_muted:</span> <span class='kw'>nil</span><span class='comma'>,</span>
                     <span class='label'>fade_in:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>fade_out:</span> <span class='kw'>false</span><span class='comma'>,</span>
@@ -3792,12 +3800,12 @@ switch to. See above.</p></div>
       <pre class="lines">
 
 
-72
 73
-74</pre>
+74
+75</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'utils/live_loop_utils.rb', line 72</span>
+      <pre class="code"><span class="info file"># File 'utils/live_loop_utils.rb', line 73</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_unmute_live_loop'>unmute_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mute_live_loop'><span class='object_link'><a href="#mute_live_loop-instance_method" title="#mute_live_loop (method)">mute_live_loop</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='kw'>false</span><span class='rparen'>)</span>
@@ -3865,12 +3873,12 @@ switch to. See above.</p></div>
       <pre class="lines">
 
 
-343
-344
-345</pre>
+346
+347
+348</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track_live_loop.rb', line 343</span>
+      <pre class="code"><span class="info file"># File 'track_live_loop.rb', line 346</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_unset_live_loop_fill'>unset_live_loop_fill</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_set_live_loop_fill'><span class='object_link'><a href="#set_live_loop_fill-instance_method" title="#set_live_loop_fill (method)">set_live_loop_fill</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='kw'>false</span><span class='rparen'>)</span>
@@ -3953,12 +3961,12 @@ falls back to &quot;*&quot;.</p></div>
       <pre class="lines">
 
 
-133
 134
-135</pre>
+135
+136</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'utils/live_loop_utils.rb', line 133</span>
+      <pre class="code"><span class="info file"># File 'utils/live_loop_utils.rb', line 134</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_use_cc_control_defaults'>use_cc_control_defaults</span><span class='lparen'>(</span><span class='label'>port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_set'>set</span><span class='lparen'>(</span><span class='symbol'>:__cc_control_defaults</span><span class='comma'>,</span> <span class='lbrace'>{</span> <span class='label'>port:</span> <span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='id identifier rubyid_channel'>channel</span> <span class='rbrace'>}</span><span class='rparen'>)</span>
