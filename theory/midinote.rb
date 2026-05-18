@@ -53,7 +53,7 @@ class MIDINote < Numeric
 
   # The symbol for the pitch class of the note (e.g. `:c` for C notes in any
   # octave). This will always be lower-case, and accidentals are normalized to
-  # sharps.
+  # a natural (when possible) or a sharp.
   # @return [Symbol]
   attr_reader :pitch_class
 
@@ -77,9 +77,9 @@ class MIDINote < Numeric
   # Acceptable strings and symbols are of the form "(pitch class)(octave)". The
   # pitch class is "a" - "g", with an optional suffix of "b" or "f" for flats
   # or "s" for sharps. The octave is an integer. Case is ignored, but will be
-  # standardized to lower for {#pitch_class}, {#to_s}, and {#to_sym}. Flats will
-  # be canonicalized to sharps. For example, `"Cs3"`, `:df4`, `:g9`, and `"c-1"`
-  # are all valid arguments.
+  # standardized to lower for {#pitch_class}, {#to_s}, and {#to_sym}.
+  # Accidentals are normalized to a natural (when possible) or a sharp. For
+  # example, `"Cs3"`, `:df4`, `:g9`, and `"c-1"` are all valid arguments.
   #
   # The octave number may be omitted on strings and symbols; the default is
   # octave 4.
@@ -200,6 +200,13 @@ class MIDINote < Numeric
 
   # Returns a new note in the same octave but with the given pitch class, which
   # should be a string or symbol of the sort accepted by {.new}.
+  #
+  # Note that, after normalization of flats and sharps, this will actually
+  # change the octave number if you provide a pitch class of `:cb`/`:cf` (one
+  # octave down) or `:bs` (one octave up). For example,
+  #
+  #   N(:c4).with_pitch_class(:cb)  # would give :cb4, but that's normalized to :b3
+  #
   # @param cls [Symbol, String]
   # @return [MIDINote]
   def with_pitch_class(cls)
@@ -356,7 +363,8 @@ class MIDINote < Numeric
   end
 
   # Returns the symbol for this note, which consists of its {#pitch_class} and
-  # #{octave}. It is always lower case, and flats are normalized to sharps.
+  # #{octave}. It is always lower case, and accidentals are normalized to
+  # a natural (when possible) or a sharp.
   # @return [Symbol]
   def to_sym
     @sym
