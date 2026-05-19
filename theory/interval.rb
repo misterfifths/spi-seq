@@ -107,7 +107,7 @@ class Interval < Numeric
   # the number of a simple interval on top of those octaves. Returns an array
   # [number of octaves, simple interval number]. For example, interval number 10
   # decomposes into [1, 3] since it is one octave and a third.
-  def self.decompose_number(num)
+  private_class_method def self.decompose_number(num)
     num_octaves = (num - 1) / 7
     simple_num = 1 + (num - 1) % 7
 
