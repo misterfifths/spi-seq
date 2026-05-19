@@ -27,6 +27,7 @@ require_relative "test_track_live_loop"
 require_relative "test_mutable_live_loop"
 require_relative "test_prob"
 require_relative "test_accum"
+require_relative "test_curves_easings"
 
 if ExtApi.in_sonic_pi?
   # To run the tests from inside Sonic Pi, call `init_spi_seq`, then require
