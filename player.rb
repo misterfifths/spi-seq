@@ -184,8 +184,6 @@ class Player < PlayerBase
   # that ended exactly at the beginning of this step. It also contains steps
   # that ended between this step and the previous one - e.g. Steps with gates
   # less than 1.
-  #
-  # The slot index is wrapped if it exceeds the number of slots in the track.
   def steps_at_slot(i)
     # As noted in PlayerBase.play_slot, it is important that this method assume
     # nothing about the order in which slots were or will be played. @prev_steps
@@ -195,7 +193,7 @@ class Player < PlayerBase
     tied_steps = []
     ended_steps = []
 
-    cur_steps = @track.grid[i % @track.length].filter do |step|
+    cur_steps = @track.grid[i].filter do |step|
       # There's a bit of a recursion problem here - the step's prob may rely on
       # the note this step is about to play, but we don't really know what that
       # is yet because we only call apply_accum to steps that will trigger. So,
