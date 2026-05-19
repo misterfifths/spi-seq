@@ -361,9 +361,9 @@
 <p>Many of the means for manipulating <code>Track</code>s are also available for <code>CCTrack</code>s; if the method doesn't deal directly with note properties (like <code>transpose</code> or <code>gate</code>), it's probably available on <code>CCTrack</code>. To name just a few, <code>zip</code>, <code>dropout</code>, and the <code>|</code> operator are all at your disposal. <code>CCStep</code>s can have probabilities and even accumulation - <code>CCStep</code> accumulation works just like that on <code>Step</code>, but applies deltas to the value of the CC message instead of semitone offsets of the note.</p>
 <p>The <code>CCTrack.simple</code> class method provides a concise way to construct a track that consists entirely of values for the same CC number. The <code>add_curve</code> method lets you add steps for a CC number with values along a curve. And if you want to generate a <code>CCTrack</code> with steps that correspond to notes in a <code>Track</code>, the <code>to_cc</code> and <code>to_simple_cc</code> methods on <code>Track</code> provide ways to map between the two.</p>
 <h2 id="Recording_tracks">Recording tracks</h2>
-<p>As you've hopefully seen, spi-seq has rich tools for constructing <code>Track</code>s programmatically. However, it can still be tedious to create tracks for more organic melodies. To help with that, the <code>TrackRecorder</code> module records and quantizes incoming MIDI note events and creates a <code>Track</code> object for you.</p>
+<p>As you've hopefully seen, spi-seq has rich tools for constructing <code>Track</code>s programmatically. However, it can still be tedious to create tracks for more organic melodies. To help with that, the <code>Track.record</code> method records and quantizes incoming MIDI note events and creates a <code>Track</code> object for you.</p>
 <p>To use it, first set a BPM that is the same you intend to use when playing back the resulting track. The BPM determines how to map between real-world seconds and slots in a track, so it's important that it is the same between recording and playback.</p>
-<p>Then, call <code>TrackRecorder.record</code>. That method takes many arguments, the most important of which are:</p>
+<p>Then, call <code>Track.record</code>. That method takes many arguments, the most important of which are:</p>
 <ul>
 <li><code>cc</code>: Recording is started and stopped via this MIDI CC. The value sent for the CC is ignored; any message with this number will do. By default the CC is listened for on the device specified with <code>use_cc_control_defaults</code>, or all devices if none was set.</li>
 <li><code>port</code> and <code>channel</code>: The MIDI device to listen to for note events. Defaults to the device specified by <code>use_midi_defaults</code>, or all devices if none was set.</li>
@@ -371,17 +371,17 @@
 <li><code>trim_start</code> and <code>trim_end</code>: If these are true, rests from the respective end of the track will be removed.</li>
 <li><code>ignore_vel</code>: By default, the velocity of incoming events is recorded in the <code>Step</code>s in the track. If this is true, all steps will have the default velocity of 127.</li>
 </ul>
-<p><code>TrackRecorder.record</code> returns a <code>Track</code>, but how do you save that track for future use or editing? The easiest way is to call <code>copy_repr</code> on the it, which will put a Ruby representation of the track on your clipboard. You can also print the track's Ruby representation in Sonic Pi with <code>puts track.repr</code>.</p>
-<p>Here's an example use of <code>TrackRecorder</code>:</p>
+<p><code>Track.record</code> returns a <code>Track</code>, but how do you save that track for future use or editing? The easiest way is to call <code>copy_repr</code> on the it, which will put a Ruby representation of the track on your clipboard. You can also print the track's Ruby representation in Sonic Pi with <code>puts track.repr</code>.</p>
+<p>Here's an example use of <code>Track.record</code>:</p>
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_use_bpm'>use_bpm</span> <span class='int'>95</span>
 
 <span class='id identifier rubyid_require'>require</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>~/spi-seq/core</span><span class='tstring_end'>&quot;</span></span>
 <span class='id identifier rubyid_init_spi_seq'><span class='object_link'><a href="top-level-namespace.html#init_spi_seq-instance_method" title="#init_spi_seq (method)">init_spi_seq</a></span></span>
 
-<span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="TrackRecorder.html" title="TrackRecorder (module)">TrackRecorder</a></span></span><span class='period'>.</span><span class='id identifier rubyid_record'><span class='object_link'><a href="TrackRecorder.html#record-class_method" title="TrackRecorder.record (method)">record</a></span></span><span class='lparen'>(</span><span class='label'>cc:</span> <span class='int'>119</span><span class='comma'>,</span>
-                         <span class='label'>granularity:</span> <span class='symbol'>:sixteenth</span><span class='comma'>,</span>
-                         <span class='label'>trim_start:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>trim_end:</span> <span class='kw'>false</span><span class='comma'>,</span>
-                         <span class='label'>ignore_vel:</span> <span class='kw'>true</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Track.html" title="Track (class)">Track</a></span></span><span class='period'>.</span><span class='id identifier rubyid_record'><span class='object_link'><a href="Track.html#record-class_method" title="Track.record (method)">record</a></span></span><span class='lparen'>(</span><span class='label'>cc:</span> <span class='int'>119</span><span class='comma'>,</span>
+                 <span class='label'>granularity:</span> <span class='symbol'>:sixteenth</span><span class='comma'>,</span>
+                 <span class='label'>trim_start:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>trim_end:</span> <span class='kw'>false</span><span class='comma'>,</span>
+                 <span class='label'>ignore_vel:</span> <span class='kw'>true</span><span class='rparen'>)</span>
 <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_copy_repr'>copy_repr</span>
 </code></pre>
 <h2 id="Everyday_use">Everyday use</h2>

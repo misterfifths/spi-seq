@@ -602,6 +602,7 @@ trigger. Non-<span class='object_link'><a href="Prob.html" title="Prob (class)">
       <pre class="lines">
 
 
+124
 125
 126
 127
@@ -615,11 +616,10 @@ trigger. Non-<span class='object_link'><a href="Prob.html" title="Prob (class)">
 135
 136
 137
-138
-139</pre>
+138</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'stepbase.rb', line 125</span>
+      <pre class="code"><span class="info file"># File 'stepbase.rb', line 124</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='label'>prob:</span> <span class='kw'>nil</span><span class='comma'>,</span>
                <span class='label'>accum_delta:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>accum_max:</span> <span class='int'>12</span><span class='comma'>,</span> <span class='label'>accum_min:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>accum_mode:</span> <span class='symbol'>:wrap</span><span class='comma'>,</span> <span class='label'>accum_prob:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
@@ -692,12 +692,12 @@ sent for the CC.</p>
       <pre class="lines">
 
 
+46
 47
-48
-49</pre>
+48</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'stepbase.rb', line 47</span>
+      <pre class="code"><span class="info file"># File 'stepbase.rb', line 46</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_accum_delta'>accum_delta</span>
   <span class='ivar'>@accum_delta</span>
@@ -749,12 +749,12 @@ greater than <code>accum_min</code>.</p>
       <pre class="lines">
 
 
+53
 54
-55
-56</pre>
+55</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'stepbase.rb', line 54</span>
+      <pre class="code"><span class="info file"># File 'stepbase.rb', line 53</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_accum_max'>accum_max</span>
   <span class='ivar'>@accum_max</span>
@@ -806,12 +806,12 @@ greater than <code>accum_min</code>.</p>
       <pre class="lines">
 
 
+53
 54
-55
-56</pre>
+55</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'stepbase.rb', line 54</span>
+      <pre class="code"><span class="info file"># File 'stepbase.rb', line 53</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_accum_min'>accum_min</span>
   <span class='ivar'>@accum_min</span>
@@ -880,12 +880,12 @@ triggers, the result will be 7.</li>
       <pre class="lines">
 
 
+77
 78
-79
-80</pre>
+79</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'stepbase.rb', line 78</span>
+      <pre class="code"><span class="info file"># File 'stepbase.rb', line 77</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_accum_mode'>accum_mode</span>
   <span class='ivar'>@accum_mode</span>
@@ -945,12 +945,12 @@ the application of accumulation at all.</p>
       <pre class="lines">
 
 
+86
 87
-88
-89</pre>
+88</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'stepbase.rb', line 87</span>
+      <pre class="code"><span class="info file"># File 'stepbase.rb', line 86</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_accum_prob'>accum_prob</span>
   <span class='ivar'>@accum_prob</span>
@@ -1007,12 +1007,12 @@ that contains it is played, or nil if the step should always play.</p>
       <pre class="lines">
 
 
+33
 34
-35
-36</pre>
+35</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'stepbase.rb', line 34</span>
+      <pre class="code"><span class="info file"># File 'stepbase.rb', line 33</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_prob'>prob</span>
   <span class='ivar'>@prob</span>
@@ -1150,12 +1150,12 @@ will be converted to <span class='object_link'><a href="Prob.html" title="Prob (
       <pre class="lines">
 
 
+149
 150
-151
-152</pre>
+151</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'stepbase.rb', line 150</span>
+      <pre class="code"><span class="info file"># File 'stepbase.rb', line 149</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_accum'>accum</span><span class='lparen'>(</span><span class='id identifier rubyid_delta'>delta</span><span class='comma'>,</span> <span class='label'>min:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>max:</span> <span class='int'>12</span><span class='comma'>,</span> <span class='label'>mode:</span> <span class='symbol'>:wrap</span><span class='comma'>,</span> <span class='label'>prob:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>accum_delta:</span> <span class='id identifier rubyid_delta'>delta</span><span class='comma'>,</span> <span class='label'>accum_min:</span> <span class='id identifier rubyid_min'>min</span><span class='comma'>,</span> <span class='label'>accum_max:</span> <span class='id identifier rubyid_max'>max</span><span class='comma'>,</span> <span class='label'>accum_mode:</span> <span class='id identifier rubyid_mode'>mode</span><span class='comma'>,</span> <span class='label'>accum_prob:</span> <span class='id identifier rubyid_prob'>prob</span><span class='rparen'>)</span>
@@ -1227,6 +1227,7 @@ point for floating point numbers.</p></div>
       <pre class="lines">
 
 
+194
 195
 196
 197
@@ -1291,11 +1292,10 @@ point for floating point numbers.</p></div>
 256
 257
 258
-259
-260</pre>
+259</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'stepbase.rb', line 195</span>
+      <pre class="code"><span class="info file"># File 'stepbase.rb', line 194</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_repr'>repr</span><span class='lparen'>(</span><span class='label'>float_digits:</span> <span class='int'>2</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_stringify'>stringify</span> <span class='op'>=</span> <span class='id identifier rubyid_lambda'>lambda</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_val'>val</span><span class='op'>|</span>
@@ -1428,12 +1428,12 @@ will be converted to <span class='object_link'><a href="Prob.html" title="Prob (
       <pre class="lines">
 
 
+158
 159
-160
-161</pre>
+160</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'stepbase.rb', line 159</span>
+      <pre class="code"><span class="info file"># File 'stepbase.rb', line 158</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_prob'>with_prob</span><span class='lparen'>(</span><span class='id identifier rubyid_new_prob'>new_prob</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>prob:</span> <span class='id identifier rubyid_new_prob'>new_prob</span><span class='rparen'>)</span>
@@ -1491,12 +1491,12 @@ will be converted to <span class='object_link'><a href="Prob.html" title="Prob (
       <pre class="lines">
 
 
+165
 166
-167
-168</pre>
+167</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'stepbase.rb', line 166</span>
+      <pre class="code"><span class="info file"># File 'stepbase.rb', line 165</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_without_prob'>without_prob</span>
   <span class='ivar'>@prob</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>?</span> <span class='kw'>self</span> <span class='op'>:</span> <span class='id identifier rubyid_with_prob'>with_prob</span><span class='lparen'>(</span><span class='kw'>nil</span><span class='rparen'>)</span>

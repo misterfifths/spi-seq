@@ -789,8 +789,7 @@ trigger. Non-<span class='object_link'><a href="Prob.html" title="Prob (class)">
 90
 91
 92
-93
-94</pre>
+93</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'step.rb', line 73</span>
@@ -806,8 +805,7 @@ trigger. Non-<span class='object_link'><a href="Prob.html" title="Prob (class)">
     <span class='ivar'>@vel</span> <span class='op'>=</span> <span class='int'>127</span>
   <span class='kw'>end</span>
 
-  <span class='comment'># TODO: quantize this?
-</span>  <span class='ivar'>@gate</span> <span class='op'>=</span> <span class='id identifier rubyid_gate'>gate</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span>
+  <span class='ivar'>@gate</span> <span class='op'>=</span> <span class='id identifier rubyid_gate'>gate</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span>
   <span class='kw'>if</span> <span class='ivar'>@gate</span> <span class='op'>&lt;</span> <span class='float'>0.0</span>
     <span class='ivar'>@gate</span> <span class='op'>=</span> <span class='float'>0.0</span>
   <span class='kw'>elsif</span> <span class='ivar'>@gate</span> <span class='op'>&gt;</span> <span class='float'>1.0</span>
@@ -1061,12 +1059,12 @@ the negation of its argument.</p>
       <pre class="lines">
 
 
+183
 184
-185
-186</pre>
+185</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 184</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 183</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_down'>down</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_shift_octave'>shift_octave</span><span class='lparen'>(</span><span class='op'>-</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
@@ -1129,12 +1127,12 @@ outside of 0 - 1, it will be clamped.</p>
       <pre class="lines">
 
 
+148
 149
-150
-151</pre>
+150</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 149</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 148</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_shift_gate'>shift_gate</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_with_gate'>with_gate</span><span class='lparen'>(</span><span class='ivar'>@gate</span> <span class='op'>+</span> <span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
@@ -1198,12 +1196,12 @@ return a step with a note of C4.</p>
       <pre class="lines">
 
 
+166
 167
-168
-169</pre>
+168</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 167</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 166</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_shift_octave'>shift_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_with_note'>with_note</span><span class='lparen'>(</span><span class='ivar'>@note</span><span class='period'>.</span><span class='id identifier rubyid_shift_octave'>shift_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -1266,12 +1264,12 @@ resulting velocity is outside of 0 - 127, it will be clamped.</p>
       <pre class="lines">
 
 
+115
 116
-117
-118</pre>
+117</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 116</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 115</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_shift_vel'>shift_vel</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_with_vel'>with_vel</span><span class='lparen'>(</span><span class='ivar'>@vel</span> <span class='op'>+</span> <span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
@@ -1334,12 +1332,12 @@ the resulting velocity is outside of 0 - 127, it will be clamped.</p>
       <pre class="lines">
 
 
+132
 133
-134
-135</pre>
+134</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 133</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 132</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_shift_velf'>shift_velf</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_with_velf'>with_velf</span><span class='lparen'>(</span><span class='id identifier rubyid_velf'>velf</span> <span class='op'>+</span> <span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
@@ -1386,12 +1384,12 @@ the resulting velocity is outside of 0 - 127, it will be clamped.</p>
       <pre class="lines">
 
 
+206
 207
-208
-209</pre>
+208</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 207</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 206</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_tied?'>tied?</span>
   <span class='ivar'>@gate</span> <span class='op'>==</span> <span class='float'>1.0</span>  <span class='comment'># rubocop:disable Lint/FloatComparison
@@ -1457,12 +1455,12 @@ the resulting velocity is outside of 0 - 127, it will be clamped.</p>
       <pre class="lines">
 
 
+190
 191
-192
-193</pre>
+192</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 191</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 190</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_transpose'>transpose</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_with_note'>with_note</span><span class='lparen'>(</span><span class='ivar'>@note</span><span class='period'>.</span><span class='id identifier rubyid_transpose'>transpose</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -1527,12 +1525,12 @@ shifted up by the given amount. This is equivalent to <span class='object_link'>
       <pre class="lines">
 
 
+174
 175
-176
-177</pre>
+176</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 175</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 174</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_up'>up</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_shift_octave'>shift_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
@@ -1586,12 +1584,12 @@ shifted up by the given amount. This is equivalent to <span class='object_link'>
       <pre class="lines">
 
 
+200
 201
-202
-203</pre>
+202</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 201</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 200</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_velf'>velf</span>
   <span class='ivar'>@vel</span> <span class='op'>/</span> <span class='float'>127.0</span>
@@ -1654,12 +1652,12 @@ it will be clamped.</p>
       <pre class="lines">
 
 
+140
 141
-142
-143</pre>
+142</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 141</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 140</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_gate'>with_gate</span><span class='lparen'>(</span><span class='id identifier rubyid_new_gate'>new_gate</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>gate:</span> <span class='id identifier rubyid_new_gate'>new_gate</span><span class='rparen'>)</span>
@@ -1725,12 +1723,12 @@ understood by <span class='object_link'><a href="MIDINote.html#new-class_method"
       <pre class="lines">
 
 
+99
 100
-101
-102</pre>
+101</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 100</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 99</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_note'>with_note</span><span class='lparen'>(</span><span class='id identifier rubyid_new_note'>new_note</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>note:</span> <span class='id identifier rubyid_new_note'>new_note</span><span class='rparen'>)</span>
@@ -1794,12 +1792,12 @@ a step with a note of C5.</p>
       <pre class="lines">
 
 
+157
 158
-159
-160</pre>
+159</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 158</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 157</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_octave'>with_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_new_octave'>new_octave</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_with_note'>with_note</span><span class='lparen'>(</span><span class='ivar'>@note</span><span class='period'>.</span><span class='id identifier rubyid_with_octave'>with_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_new_octave'>new_octave</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -1865,12 +1863,12 @@ will be clamped.</p>
       <pre class="lines">
 
 
+107
 108
-109
-110</pre>
+109</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 108</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 107</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_vel'>with_vel</span><span class='lparen'>(</span><span class='id identifier rubyid_new_vel'>new_vel</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>vel:</span> <span class='id identifier rubyid_new_vel'>new_vel</span><span class='rparen'>)</span>
@@ -1940,12 +1938,12 @@ between 0 and 1. Values outside of that range will be clamped.</p>
       <pre class="lines">
 
 
+124
 125
-126
-127</pre>
+126</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 125</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 124</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_velf'>with_velf</span><span class='lparen'>(</span><span class='id identifier rubyid_new_velf'>new_velf</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>vel:</span> <span class='id identifier rubyid_new_velf'>new_velf</span> <span class='op'>*</span> <span class='int'>127</span><span class='rparen'>)</span>  <span class='comment'># this is clamped to 0-127 in the ctor
