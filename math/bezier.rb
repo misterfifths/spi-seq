@@ -121,7 +121,7 @@ class CubicBezier
     if @p1x > 0
       @start_gradient = @p1y / @p1x
     elsif @p1y != 0 && @p2x > 0
-      @start_gradient = p2y / @p2x
+      @start_gradient = @p2y / @p2x
     elsif @p1y != 0 && @p2y != 0
       @start_gradient = 1.0
     else
