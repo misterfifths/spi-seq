@@ -7,9 +7,7 @@ require_relative "theory/midinote"
 require_relative "extapi"
 require_relative "utils/midi_utils"
 
-# Utilities for recording {Track}s from incoming MIDI events. See {.record} for
-# details.
-module TrackRecorder
+class Track
   private_class_method def self.float_lt(a, b, threshold = 0.01)
     (a - b) < threshold
   end
@@ -112,6 +110,8 @@ module TrackRecorder
     end
   end
 
+  # @!group Recording
+
   # Convert a timeline of note events to a Track.
   #
   # The timeline is an array of four-element arrays, the elements of which are:
@@ -150,11 +150,11 @@ module TrackRecorder
   # function returns nil.
   #
   # @private
-  def self.timeline_to_track(timeline,
-                             bpm: nil, granularity: NoteLength::Eighth,
-                             start_time: nil, end_time: nil,
-                             min_gate: 0.1, quantize_gates: true,
-                             ignore_vel: false)
+  def self.from_timeline(timeline,
+                         bpm: nil, granularity: NoteLength::Eighth,
+                         start_time: nil, end_time: nil,
+                         min_gate: 0.1, quantize_gates: true,
+                         ignore_vel: false)
     bpm = ExtApi.current_bpm if bpm.nil?
     granularity = NoteLength.new(granularity)
     beats_per_sec = bpm * (1 / 60.0)
@@ -211,7 +211,7 @@ module TrackRecorder
                         min_gate: min_gate, quantize_gates: quantize_gates)
     end
 
-    t = Track.new(*slots, granularity: granularity)
+    t = new(*slots, granularity: granularity)
 
     # If we're snapping endpoints to the timeline, with rounding error, it's
     # probably possible to wind up with rests at the beginning of the track.
@@ -224,7 +224,7 @@ module TrackRecorder
     t
   end
 
-  # Records a timeline of note events, suitable for use with timeline_to_track.
+  # Records a timeline of note events, suitable for use with from_timeline.
   #
   # Recording is stopped and started by a MIDI CC (control_cc) on cc_port and
   # cc_channel, either of which may be wildcards. The value of the CC message is
@@ -240,7 +240,7 @@ module TrackRecorder
   # use_real_time, or in a with_real_time block.
   #
   # The return is a three-element array [start time, end time, timeline], where
-  # the timeline is as described in timeline_to_track.
+  # the timeline is as described in from_timeline.
   private_class_method def self.record_timeline(control_cc:, cc_port:, cc_channel:,
                                                 port:, channel:)
     recording = false
@@ -323,7 +323,7 @@ module TrackRecorder
     [start_time, end_time, timeline]
   end
 
-  # Records incoming MIDI notes and creates a {Track} by quantizing those notes
+  # Records incoming MIDI notes and creates a Track by quantizing those notes
   # to a grid.
   #
   # Recording is stopped and started by a MIDI CC (the `cc` argument). The value
@@ -401,10 +401,10 @@ module TrackRecorder
     start_time = nil if trim_start
     end_time = nil if trim_end
 
-    timeline_to_track(timeline,
-                      start_time: start_time, end_time: end_time,
-                      bpm: bpm, granularity: granularity,
-                      min_gate: min_gate, quantize_gates: quantize_gates,
-                      ignore_vel: ignore_vel)
+    from_timeline(timeline,
+                  start_time: start_time, end_time: end_time,
+                  bpm: bpm, granularity: granularity,
+                  min_gate: min_gate, quantize_gates: quantize_gates,
+                  ignore_vel: ignore_vel)
   end
 end

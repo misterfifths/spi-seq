@@ -124,7 +124,7 @@ end
 # messages. Such events are used to control various features, such as muting
 # live loops (e.g. those made from {cc_mutable_live_loop} and
 # {track_live_loop}), toggling fill mode in {track_live_loop}, and controlling
-# recording in {TrackRecorder.record}.
+# recording in {Track.record}.
 # @param channel [Integer, String, nil] The default MIDI channel to watch for
 #   CC events. If nil, defaults to all channels (i.e. "*").
 # @param port [String, nil] The MIDI device to watch for CC events. If nil, also

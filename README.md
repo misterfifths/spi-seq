@@ -451,11 +451,11 @@ The `CCTrack.simple` class method provides a concise way to construct a track th
 
 ## Recording tracks
 
-As you've hopefully seen, spi-seq has rich tools for constructing `Track`s programmatically. However, it can still be tedious to create tracks for more organic melodies. To help with that, the `TrackRecorder` module records and quantizes incoming MIDI note events and creates a `Track` object for you.
+As you've hopefully seen, spi-seq has rich tools for constructing `Track`s programmatically. However, it can still be tedious to create tracks for more organic melodies. To help with that, the `Track.record` method records and quantizes incoming MIDI note events and creates a `Track` object for you.
 
 To use it, first set a BPM that is the same you intend to use when playing back the resulting track. The BPM determines how to map between real-world seconds and slots in a track, so it's important that it is the same between recording and playback.
 
-Then, call `TrackRecorder.record`. That method takes many arguments, the most important of which are:
+Then, call `Track.record`. That method takes many arguments, the most important of which are:
 
 - `cc`: Recording is started and stopped via this MIDI CC. The value sent for the CC is ignored; any message with this number will do. By default the CC is listened for on the device specified with `use_cc_control_defaults`, or all devices if none was set.
 - `port` and `channel`: The MIDI device to listen to for note events. Defaults to the device specified by `use_midi_defaults`, or all devices if none was set.
@@ -463,9 +463,9 @@ Then, call `TrackRecorder.record`. That method takes many arguments, the most im
 - `trim_start` and `trim_end`: If these are true, rests from the respective end of the track will be removed.
 - `ignore_vel`: By default, the velocity of incoming events is recorded in the `Step`s in the track. If this is true, all steps will have the default velocity of 127.
 
-`TrackRecorder.record` returns a `Track`, but how do you save that track for future use or editing? The easiest way is to call `copy_repr` on the it, which will put a Ruby representation of the track on your clipboard. You can also print the track's Ruby representation in Sonic Pi with `puts track.repr`.
+`Track.record` returns a `Track`, but how do you save that track for future use or editing? The easiest way is to call `copy_repr` on the it, which will put a Ruby representation of the track on your clipboard. You can also print the track's Ruby representation in Sonic Pi with `puts track.repr`.
 
-Here's an example use of `TrackRecorder`:
+Here's an example use of `Track.record`:
 
 ```ruby
 use_bpm 95
@@ -473,10 +473,10 @@ use_bpm 95
 require "~/spi-seq/core"
 init_spi_seq
 
-t = TrackRecorder.record(cc: 119,
-                         granularity: :sixteenth,
-                         trim_start: true, trim_end: false,
-                         ignore_vel: true)
+t = Track.record(cc: 119,
+                 granularity: :sixteenth,
+                 trim_start: true, trim_end: false,
+                 ignore_vel: true)
 t.copy_repr
 ```
 
