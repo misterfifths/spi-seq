@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
-begin
-  Object.const_get("SonicPi::RuntimeMethods")
-
+if Object.const_defined?("SonicPi::RuntimeMethods")
   # TODO: This is a sin, but is the only way I find to catch hitting the stop
   # button (or quitting) Sonic Pi. Trying to catch ThreadExit in a Sonic Pi
   # thread doesn't work for whatever reason.
   # See runtime.rb in the Sonic Pi source for what we're overriding here.
   # https://github.com/sonic-pi-net/sonic-pi/blob/e3e305164d9b5c4e29caceed9fb60666fc7cbbb1/app/server/ruby/lib/sonicpi/runtime.rb#L549
+  # @private
   module SonicPi
     module RuntimeMethods
       alias __orig_stop_jobs __stop_jobs
@@ -31,7 +30,6 @@ begin
       end
     end
   end
-rescue NameError  # rubocop:disable Lint/SuppressedException
 end
 
 

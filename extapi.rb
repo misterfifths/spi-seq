@@ -72,12 +72,13 @@ module ExtApi
     end
 
     def in_sonic_pi?
+      # We could check for the existence of a particular module like below, but
+      # what we really mean here is: was init_spi_seq called from within Sonic
+      # Pi?
       !@spi.nil?
     end
 
-    begin
-      Object.const_get("SonicPi::Core::SPVector")
-
+    if Object.const_defined?("SonicPi::Runtime")
       # 'Enumerable' resolves to SonicPi::RuntimeMethods::Enumerable from within
       # Sonic Pi, which e.g. Array does not have as a superclass. So we need to
       # use ::Enumerable to get the built-in class.
@@ -95,7 +96,7 @@ module ExtApi
       def spi_call(method, *args, **kwargs, &block)
         @spi.send(method, *args, **kwargs, &block)
       end
-    rescue NameError
+    else
       def enumerable?(e)
         e.is_a?(Enumerable)
       end
