@@ -3,6 +3,7 @@
 
 require_relative "test_helper"
 require_relative "../track"
+require_relative "../extapi"
 require_relative "track_test_helpers"
 
 # Test simple Track initialization, Track.new and Track.rest.
@@ -18,6 +19,20 @@ class TrackInitTest < Test::Unit::TestCase
     assert_grid T[:a1, :b2, :c3], [[:a1], [:b2], [:c3]]
 
     assert_raises { T[] }
+  end
+
+  def test_sonic_pi_enums
+    return unless ExtApi.in_sonic_pi?
+
+    # Make sure things work with Sonic Pi's wrapped enumerables.
+    cmaj = ExtApi.spi_call(:chord, :c4, :major)
+    assert_grid T[cmaj], [[:c4, :e4, :g4]]
+    assert_grid T.from_grid(cmaj), [[:c4], [:e4], [:g4]]
+
+    ring_slot = ExtApi.spi_call(:ring, :c4, :c5)
+    assert_grid T[ring_slot], [[:c4, :c5]]
+    ring_grid = ExtApi.spi_call(:ring, ring_slot, ring_slot)
+    assert_grid T.from_grid(ring_grid), [[:c4, :c5], [:c4, :c5]]
   end
 
   def test_zero_gate

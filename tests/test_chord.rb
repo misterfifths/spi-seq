@@ -24,6 +24,12 @@ class ChordTest < Test::Unit::TestCase
     # Chords can't be empty
     assert_raises(ArgumentError) { Chord.new([]) }
     assert_raises(ArgumentError) { Chord.new([:P1]).without(1) }
+
+    # Sonic Pi's wrapped enumerables should work
+    if ExtApi.in_sonic_pi?
+      int_ring = ExtApi.spi_call(:ring, :P1, :m3, :P5)
+      assert_equal Chord.new(int_ring).intervals, [:P1, :m3, :P5]
+    end
   end
 
   def test_append_remove
@@ -49,6 +55,13 @@ class ChordTest < Test::Unit::TestCase
     assert_equal c.intervals, [:P1, :m3, :P5]
     c = Chord.new([:P1]) + Chord.new([:P5, :m3])
     assert_equal c.intervals, [:P1, :m3, :P5]
+
+    # Sonic Pi's enumerables
+    if ExtApi.in_sonic_pi?
+      int_ring = ExtApi.spi_call(:ring, :P1, :m3, :P5)
+      c = Chord.new([:P8]) + int_ring
+      assert_equal c.intervals, [:P1, :m3, :P5, :P8]
+    end
 
     # Integers -> major or perfect
     c = Chord.new([:P1, :m3])
