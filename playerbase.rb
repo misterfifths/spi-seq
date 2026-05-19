@@ -163,9 +163,9 @@ class PlayerBase
   # used when indexing @accum_data.
   def step_accum_hash_key(step, slot_idx)
     # Since they're immutable, Steps could theoretically be shared across
-    # multiple slots in different tracks. So we need to hash based on enough
-    # information to uniquely identify the step within the track.
-    [step.object_id, slot_idx, @track.object_id].freeze
+    # multiple slots. So we need to hash based on both the step and the slot
+    # that contains it.
+    [step.object_id, slot_idx].freeze
   end
 
   # Returns the current accumulation delta for the given step from the given
