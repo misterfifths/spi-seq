@@ -113,6 +113,25 @@ class AccumTest < Test::Unit::TestCase
       [:ds4, 7, 7.5],
       [:ds4, 8, 8.5]
     ], play_count: 9
+
+    # pre_same_note should take accumulation into account
+    t0 = QT[S(:c4, gate: 0.5)]
+    t1 = QT[S(:c4, gate: 0.5, prob: Prob.pre_same_note).accum(12, max: 24, mode: :freeze, prob: Prob.every(3))]
+    p = player(t0)
+    es = events do
+      p.play
+      p.swap_track(t1)
+      p.play
+      p.play
+      p.play
+      p.play
+    end
+    assert_events es, [
+      [:c4, 0, 0.5],  # t0
+      [:c4, 1, 1.5],  # t1
+      [:c4, 2, 2.5]   # accum didn't trigger yet
+      # accum triggers; t1 note is now c5, so the prob doesn't pass
+    ]
   end
 
   def test_scale_interaction

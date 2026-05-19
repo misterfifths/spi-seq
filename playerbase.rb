@@ -185,12 +185,20 @@ class PlayerBase
     raise RuntimeError, "subclasses must implement step_accum_should_trigger?"
   end
 
+  # Returns the accumulation delta that the given Step would have, if it were to
+  # trigger. Uses the same logic as apply_accum, but does not commit the new
+  # accumulation state.
+  def peek_accum_delta(step, slot_idx)
+    apply_accum(step, slot_idx, peek: true)
+  end
+
   # Updates the accumulation state of the given Step, which is assumed to be
   # triggering (i.e. its `prob` predicate passed). Evaluates the Step's
   # `accum_prob` (if any) and updates the Step's entry in @accum_data
-  # appropriately with the new total accumulated delta and other state.
-  def apply_accum(step, slot_idx)
-    return if step.accum_delta == 0
+  # appropriately with the new total accumulated delta and other state. Returns
+  # the new delta. If peek is true, the @accum_data entry is not updated.
+  def apply_accum(step, slot_idx, peek: false)
+    return 0 if step.accum_delta == 0
 
     hash_key = step_accum_hash_key(step, slot_idx)
     data = @accum_data[hash_key]
@@ -198,13 +206,14 @@ class PlayerBase
       # This is the first time we've seen this Step. Accumulation should not
       # trigger, but we should make a note that we've seen it so that we may
       # trigger it the next time it plays.
-      @accum_data[hash_key] = { delta: 0, direction: 1 }
-      return
+      @accum_data[hash_key] = { delta: 0, direction: 1 } unless peek
+      return 0
     end
 
     # This Step has played before, and its accumulation may trigger.
-    return unless step_accum_should_trigger?(step, slot_idx)
+    return data[:delta] unless step_accum_should_trigger?(step, slot_idx)
 
+    direction = data[:direction]
     delta = data[:delta] + data[:direction] * step.accum_delta
     if delta <= step.accum_min
       case step.accum_mode
@@ -215,7 +224,7 @@ class PlayerBase
         # already stepped below the min. If we are exactly at the minimum, then
         # do not change the delta and wait for the next accumulation to take the
         # first step in the right direction.
-        data[:direction] *= -1
+        direction *= -1
         if delta < step.accum_min
           overage = step.accum_min - delta - 1
           delta = step.accum_min + overage
@@ -236,7 +245,7 @@ class PlayerBase
       when :freeze
         delta = step.accum_max
       when :reverse
-        data[:direction] *= -1
+        direction *= -1
         if delta > step.accum_max
           overage = delta - step.accum_max - 1
           delta = step.accum_max - overage
@@ -249,7 +258,12 @@ class PlayerBase
       end
     end
 
-    data[:delta] = delta
+    unless peek
+      data[:direction] = direction
+      data[:delta] = delta
+    end
+
+    delta
   end
 
   # Plays the slot at index `i`. Subclasses must implement this method. In

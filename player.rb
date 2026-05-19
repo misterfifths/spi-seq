@@ -196,11 +196,14 @@ class Player < PlayerBase
     ended_steps = []
 
     cur_steps = @track.grid[i % @track.length].filter do |step|
-      # TODO: using `note_for_step` here is tricky, since it means that the
-      # predicate will not take accumulation into account. Perhaps it's worth
-      # just getting rid of the `pre_same_note` predicates; they're causing a
-      # lot of trouble.
-      step.should_trigger?(@cycle, @fill, note_for_step(step, i), @notes_for_prev_steps.values)
+      # There's a bit of a recursion problem here - the step's prob may rely on
+      # the note this step is about to play, but we don't really know what that
+      # is yet because we only call apply_accum to steps that will trigger. So,
+      # note_for_step will be incorrect in the face of accumulation here, since
+      # we haven't yet called apply_accum. But we can correct it manually by
+      # peeking at what the accumulation would be, if the step were to trigger.
+      effective_note = note_for_step(step, i) + peek_accum_delta(step, i)
+      step.should_trigger?(@cycle, @fill, effective_note, @notes_for_prev_steps.values)
     end
 
     cur_steps.each { |step| apply_accum(step, i) }
