@@ -202,7 +202,7 @@ class Prob
   #   slot that was played. If the associated track is not a Track instance,
   #   this should be the empty array.
   # @private
-  def should_trigger?(cycle, fill, step, effective_note, prev_notes)
+  def should_trigger?(cycle:, fill:, step:, effective_note: nil, prev_notes: [])
     kwargs = {cycle: cycle, fill: fill, step: step, note: effective_note, prev_notes: prev_notes}
     kwargs = __filter_kwargs_for_proc(@callable, kwargs)
     @callable.call(**kwargs)

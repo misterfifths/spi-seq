@@ -172,19 +172,21 @@ class StepBase
   # the given set of notes played in the previous slot. This evaluates the
   # step's probability predicate.
   # @private
-  def should_trigger?(cycle, fill, effective_note, prev_notes)
+  def should_trigger?(cycle:, fill:, effective_note: nil, prev_notes: [])
     return true if @prob.nil?
-    @prob.should_trigger?(cycle, fill, self, effective_note, prev_notes)
+    @prob.should_trigger?(cycle: cycle, fill: fill, step: self,
+                          effective_note: effective_note, prev_notes: prev_notes)
   end
 
   # Returns whether this step's accumulation should trigger, by evaluating
   # the accum_prob predicate.
   # @private
-  def accum_should_trigger?(cycle, fill, effective_note, prev_notes)
+  def accum_should_trigger?(cycle:, fill:, effective_note: nil, prev_notes: [])
     return true if @accum_prob.nil?
     # TODO: should `prev` probability mean "any *accumulation* triggered in the
     # previous slot" in this case?
-    @accum_prob.should_trigger?(cycle, fill, self, effective_note, prev_notes)
+    @accum_prob.should_trigger?(cycle: cycle, fill: fill, step: self,
+                                effective_note: effective_note, prev_notes: prev_notes)
   end
 
   # Returns a string representation of the step as Ruby code.

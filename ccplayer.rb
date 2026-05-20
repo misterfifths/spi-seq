@@ -44,11 +44,11 @@ class CCPlayer < PlayerBase
   protected
 
   def accum_should_trigger?(step)
-    step.accum_should_trigger?(@cycle, @fill, nil, [])
+    step.accum_should_trigger?(cycle: @cycle, fill: @fill)
   end
 
   def step_should_trigger?(step)
-    step.should_trigger?(@cycle, @fill, nil, [])
+    step.should_trigger?(cycle: @cycle, fill: @fill)
   end
 
   def play_steps(steps)

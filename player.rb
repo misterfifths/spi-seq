@@ -155,11 +155,14 @@ class Player < PlayerBase
     # note_for_step here (which would take it into account). That means that
     # the `pre_same_note` family of probs won't work; they don't really make
     # sense on an accum anyway.
-    step.accum_should_trigger?(@cycle, @fill, nil, @notes_for_prev_steps.values)
+    step.accum_should_trigger?(cycle: @cycle, fill: @fill,
+                               prev_notes: @notes_for_prev_steps.values)
   end
 
   def step_should_trigger?(step)
-    step.should_trigger?(@cycle, @fill, note_for_step(step), @notes_for_prev_steps.values)
+    step.should_trigger?(cycle: @cycle, fill: @fill,
+                         effective_note: note_for_step(step),
+                         prev_notes: @notes_for_prev_steps.values)
 
     # We don't want to (and can't) dedupe on effective note yet. We want the
     # accumulation data for all of those steps to be committed so PlayerBase
