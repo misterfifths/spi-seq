@@ -35,10 +35,11 @@ require_relative "trackbase"
 # {track_live_loop} for playback, you can assign a MIDI CC that will toggle
 # fill mode with the `fill_cc` parameter.
 #
-# @abstract Subclasses must implement `play_slot` and
-#   `step_accum_should_trigger?`. If the subclass has additional internal state,
+# @abstract Subclasses must implement `play_steps`, `accum_should_trigger?`, and
+#   `triggering_steps_in_slot`. If the subclass has additional internal state,
 #   it should override `stop` to clear it and `inherit_state` to propagate it
-#   to new player instances.
+#   to new player instances. There are additional override points that may be
+#   of use.
 class PlayerBase
   # The track that will be used when {#play} and {#sleep} are called. You may
   # swap to a new track between cycles of playback with {#swap_track}.
@@ -91,9 +92,17 @@ class PlayerBase
   #
   # @return [void]
   def play
+    @slot_idx = 0
+    reset_for_new_cycle
+
     ExtApi.with_bpm_mul(@track.timescale) do
-      @track.num_slots.times do |i|
-        play_slot(i)
+      @track.num_slots.times do
+        calculate_pending_accums
+        slot_advanced
+        triggering_steps = triggering_steps_in_slot
+        commit_accums(triggering_steps)
+        play_steps(triggering_steps)
+        @slot_idx += 1
 
         # Sleep until it's time for the next slot
         ExtApi.sleep(@track.granularity.to_f)
@@ -151,67 +160,153 @@ class PlayerBase
   def inherit_state(other)
     @cycle = other.cycle
     @fill = other.fill
-    @accum_data = other.accum_data
+    @accum_data = other.instance_variable_get(:@accum_data)
   end
 
 
   protected
 
-  attr_reader :accum_data
+  # Note to subclassers:
+  # The flow during playback is a little tricky.
+  # First, `play` calls `reset_for_new_cycle`. The default does nothing.
+  # Then, it iterates over the slots in the track. For each, it:
+  # 1. Updates `slot_idx` to the current slot.
+  # 2. Calculates potential accumulations for the steps in that slot, calling
+  #    `accum_should_trigger?` as needed.
+  # 3. Calls `slot_advanced`. The default does nothing.
+  # 4. Gathers the steps that will trigger in this slot by calling
+  #    `triggering_steps_in_slot`. Subclassers must implement that method by
+  #    evaluating probabilities. If it is needed to evaluate a probability, the
+  #    `accum_delta` method may be used at this point to retrieve the
+  #    accumulation the step would have if it were to trigger. It is guaranteed
+  #    that `triggering_steps_in_slot` will only be called once per slot.
+  # 5. Commits the accumulation for triggering steps.
+  # 6. Calls `play_steps` (must be implemented) with the result of
+  #    `triggering_steps_in_slot`.
+  # 7. Sleeps until it's time for the next slot.
 
-  # Returns a hash key for the given step from the given slot in @track, to be
-  # used when indexing @accum_data.
-  def step_accum_hash_key(step, slot_idx)
-    # Since they're immutable, Steps could theoretically be shared across
-    # multiple slots. So we need to hash based on both the step and the slot
-    # that contains it.
-    [step.object_id, slot_idx].freeze
+
+  # The current index in the track's grid.
+  # Note: To support changing the playhead direction and swapping between
+  # tracks, it is important that subclassers do not assume anything about the
+  # order in which slots were or will be played. They must base their logic
+  # solely on the contents of this slot index and possibly some subclass-
+  # specific internal state tracking the steps played in the most recent slot.
+  # The next steps may not come from slot `slot_idx + 1`, and the previous ones
+  # may not have come from slot `slot_idx - 1`. In fact they may not even be
+  # from this track, if the track was swapped.
+  attr_reader :slot_idx
+
+  # The steps in the current slot in the track.
+  def current_steps
+    @track.grid[@slot_idx]
   end
 
-  # Returns the current accumulation delta for the given step from the given
-  # slot in @track. Returns 0 if there is no accumulation for the step.
-  # Note: this is only valid for the current slot, after `apply_accum` has been
-  # called.
-  def accum_delta_for_step(step, slot_idx)
-    data = @accum_data[step_accum_hash_key(step, slot_idx)]
-    data.nil? ? 0 : data[:delta]
+  # Called by `play` before beginning a cycle of playback. Provided for use by
+  # subclassers.
+  def reset_for_new_cycle; end
+
+  # Called by `play` at the beginning of the process to play a slot. `slot_idx`
+  # is the new index in the track. Provided for use by subclassers.
+  def slot_advanced; end
+
+  # Called by `play` after `slot_advanced`. Subclassers must return all steps in
+  # the current slot that will trigger (i.e. ones whose probability predicate
+  # passed). Steps in this list will have their accumulation (if any) committed,
+  # so that it will be returned by `accum_delta`.
+  def triggering_steps_in_slot
+    raise RuntimeError, "subclasses must implement triggering_steps_in_slot"
   end
 
-  # Evaluate the `accum_prob` of the given step from the given slot in @track.
+  # Evaluate the `accum_prob` of the given step in the current slot of @track.
   # Subclasses must implement this method by calling `accum_should_trigger?` on
   # the step with as much information as it can provide about the current state
   # of playback.
-  def step_accum_should_trigger?(_step, _slot_idx)
-    raise RuntimeError, "subclasses must implement step_accum_should_trigger?"
+  def accum_should_trigger?(_step)
+    raise RuntimeError, "subclasses must implement accum_should_trigger?"
   end
 
-  # Returns the accumulation delta that the given Step would have, if it were to
-  # trigger. Uses the same logic as apply_accum, but does not commit the new
-  # accumulation state.
-  def peek_accum_delta(step, slot_idx)
-    apply_accum(step, slot_idx, peek: true)
+  # Plays the steps in the current slot. Subclasses must implement this method.
+  # In general, they should:
+  # 1. Activate new steps from `triggering_steps_in_slot`, taking into account
+  #    their accumulation from `accum_delta`. For example, a player for Tracks
+  #    should sound new notes and continue ties.
+  # 2. If necessary, terminate any ongoing steps that are not continued by a
+  #    triggering step. For example, a player for Tracks would terminate any
+  #    ties that are not continued in the current slot. Since CC events in a
+  #    CCTrack are instantaneous, a player for those tracks does not need to
+  #    consider such a thing.
+  #
+  # Note that there may be some elaborate subclass-specific tracking involved to
+  # keep track of the world state.
+  def play_steps(_steps)
+    raise RuntimeError, "subclasses must implement play_steps"
   end
 
-  # Updates the accumulation state of the given Step, which is assumed to be
-  # triggering (i.e. its `prob` predicate passed). Evaluates the Step's
-  # `accum_prob` (if any) and updates the Step's entry in @accum_data
-  # appropriately with the new total accumulated delta and other state. Returns
-  # the new delta. If peek is true, the @accum_data entry is not updated.
-  def apply_accum(step, slot_idx, peek: false)
-    return 0 if step.accum_delta == 0
+  # Returns the current accumulation delta for the given step in the current
+  # slot in @track. Returns 0 if there is no accumulation for the step. If this
+  # is called before `play_steps`, it represents the potential accumulation a
+  # step would have if it were to trigger. If the step does not end up
+  # triggering, a call to this method in `play_steps` will return the previous
+  # accumulation.
+  def accum_delta(step)
+    raise ArgumentError, "step is not in the current slot" unless current_steps.include?(step)
 
-    hash_key = step_accum_hash_key(step, slot_idx)
-    data = @accum_data[hash_key]
+    data = @pending_accum_data.nil? ? accum_data(step) : pending_accum_data(step)
+    data.nil? ? 0 : data[:delta]
+  end
+
+  # End all ongoing steps. Subclasses that manage steps that linger for a
+  # duration after they are triggered should implement this method and
+  # immediately terminate all such steps. Called by `stop` and `sleep`.
+  def end_all_steps; end
+
+
+  private
+
+  # Returns a hash key for the given step in the current slot in @track, to be
+  # used when indexing @accum_data or @pending_accum_data.
+  def accum_hash_key(step)
+    # Since they're immutable, Steps could theoretically be shared across
+    # multiple slots. So we need to hash based on both the step and the slot
+    # that contains it.
+    [step.object_id, @slot_idx].freeze
+  end
+
+  def accum_data(step)
+    @accum_data[accum_hash_key(step)]
+  end
+
+  def pending_accum_data(step)
+    @pending_accum_data[accum_hash_key(step)]
+  end
+
+  def set_accum_data(step, data)
+    @accum_data[accum_hash_key(step)] = data
+  end
+
+  def set_pending_accum_data(step, data)
+    @pending_accum_data[accum_hash_key(step)] = data
+  end
+
+  # Returns the new accumulation data entry for the step (in the current slot of
+  # @track), if the step were to trigger in this cycle of playback. Does not
+  # commit any changes to @accum_data. Evaluates the step's accum_prob using
+  # step_accum_should_trigger? Returns nil if the step has no accumulation.
+  # Returns the current data if the accumulation would not trigger.
+  def calculate_accum(step)
+    return nil if step.accum_delta == 0
+
+    data = accum_data(step)
     if data.nil?
       # This is the first time we've seen this Step. Accumulation should not
       # trigger, but we should make a note that we've seen it so that we may
       # trigger it the next time it plays.
-      @accum_data[hash_key] = { delta: 0, direction: 1 } unless peek
-      return 0
+      return { delta: 0, direction: 1 }
     end
 
     # This Step has played before, and its accumulation may trigger.
-    return data[:delta] unless step_accum_should_trigger?(step, slot_idx)
+    return data unless accum_should_trigger?(step)
 
     direction = data[:direction]
     delta = data[:delta] + data[:direction] * step.accum_delta
@@ -258,40 +353,29 @@ class PlayerBase
       end
     end
 
-    unless peek
-      data[:direction] = direction
-      data[:delta] = delta
+    { direction: direction, delta: delta }
+  end
+
+  def calculate_pending_accums
+    # Collect potential accumulations for peeking purposes. We'll commit the
+    # ones for steps that actually trigger in post_slot_advanced.
+    @pending_accum_data = {}
+    current_steps.each do |step|
+      new_data = calculate_accum(step)
+      set_pending_accum_data(step, new_data) unless new_data.nil?
+    end
+  end
+
+  def commit_accums(steps)
+    # Commit accumulations for steps that will trigger.
+    steps.each do |step|
+      raise ArgumentError, "step is not in the current slot" unless current_steps.include?(step)
+
+      data = pending_accum_data(step)
+      set_accum_data(step, data) unless data.nil?
     end
 
-    delta
+    # Causes accum_delta to use the committed values.
+    @pending_accum_data = nil
   end
-
-  # Plays the slot at index `i`. Subclasses must implement this method. In
-  # general, they should:
-  #
-  # 1. Gather steps from slot `i` and filter out ones whose probabilities
-  #    indicate that they ought not to play.
-  # 2. Apply accumulation for each newly triggered step via `apply_accum`.
-  # 3. Update the state of the world by activating new steps (accounting for
-  #    accumulation) and, possibly, terminating ongoing ones. E.g., Track plays
-  #    new notes, continues ties, and terminates ongoing notes that are no
-  #    longer playing in the current slot. Note that this step may involve some
-  #    elaborate subclass-specific state tracking.
-  #
-  # Note: To support changing the playhead direction and swapping between
-  # tracks, it is important that this method does not assume anything about the
-  # order in which slots were or will be played. It must base its logic solely
-  # on the contents of slot `i` and possibly some subclass-specific internal
-  # state tracking the steps played in the most recent call to `play_slot`. The
-  # next steps may not come from slot `i + 1`, and the previous ones may not
-  # have come from slot `i - 1`. In fact they may not even be from this track,
-  # if the track was swapped.
-  def play_slot(_i)
-    raise RuntimeError, "subclasses must implement play_slot"
-  end
-
-  # End all ongoing steps. Subclasses that manage steps that linger for a
-  # duration after they are triggered should implement this method and
-  # immediately terminate all such steps. Called by `stop` and `sleep`.
-  def end_all_steps; end
 end

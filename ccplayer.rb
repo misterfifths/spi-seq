@@ -43,15 +43,17 @@ class CCPlayer < PlayerBase
 
   protected
 
-  def step_accum_should_trigger?(step, _slot_idx)
+  def accum_should_trigger?(step)
     step.accum_should_trigger?(@cycle, @fill, nil, [])
   end
 
-  def play_slot(i)
-    steps = @track.grid[i % @track.length].filter do |step|
+  def triggering_steps_in_slot
+    current_steps.filter do |step|
       step.should_trigger?(@cycle, @fill, nil, [])
     end
+  end
 
+  def play_steps(steps)
     # Note that, unlike in Player, there's no need to do a deduplication pass on
     # these steps because that will already have happened via CCTrack's
     # `gridify`, and accumulation effects the CC value, not the number.
@@ -59,9 +61,7 @@ class CCPlayer < PlayerBase
     step_debug_strings = []
 
     steps.each do |step|
-      apply_accum(step, i)
-
-      effective_val = step.value + accum_delta_for_step(step, i)
+      effective_val = step.value + accum_delta(step)
       ExtApi.midi_cc(step.cc, effective_val, **@midi_spi_kwargs)
 
       next unless @debug
@@ -71,7 +71,7 @@ class CCPlayer < PlayerBase
     end
 
     if @debug
-      log("@ slot=#{i} cycle=#{@cycle} fill=#{@fill}", "ccplayer")
+      log("@ slot=#{slot_idx} cycle=#{@cycle} fill=#{@fill}", "ccplayer")
       log("new steps: [#{step_debug_strings.join(', ')}]", "ccplayer")
     end
   end
