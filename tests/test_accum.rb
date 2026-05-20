@@ -152,6 +152,24 @@ class AccumTest < Test::Unit::TestCase
     ], play_count: 7
   end
 
+  def test_duplicate_note
+    # If accumulation makes a step have the same note as another, the
+    # accumulation should still take effect, even if the step doesn't sound.
+    t = QT[[S(:cs4, gate: 0.75), S(:c4, gate: 0.5).accum(1)]]
+    assert_playback_events t, [
+      [:cs4, 0, 0.75],
+      [:c4, 0, 0.5],
+
+      [:cs4, 1, 1.75],  # the accumulating step collided with the other and lost
+
+      [:cs4, 2, 2.75],
+      [:d4, 2, 2.5],  # but the accumulation from that cycle still happened
+
+      [:cs4, 3, 3.75],
+      [:ds4, 3, 3.5]
+    ], play_count: 4
+  end
+
   def test_independence
     # Accumulation on two steps should be independent even if they share a note
     t = QT[
