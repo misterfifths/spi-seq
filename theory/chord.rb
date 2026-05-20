@@ -377,7 +377,7 @@ class Chord
     suspend(:M2)
   end
 
-  # Returns a new chord with the (major or minor) third replaced with a major
+  # Returns a new chord with the (major or minor) third replaced with a perfect
   # fourth, and an added major ninth. Raises an ArgumentError if the chord has
   # no third, or if it has both a major and a minor third.
   # @return [Chord]
