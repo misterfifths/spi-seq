@@ -220,8 +220,9 @@ class PlayerBase
   # Called by `play` at the beginning of the process to play a new slot, before
   # `slot_advanced`. Subclasses must implement this method by calling
   # `accum_should_trigger?` on the step with as much information as it can
-  # provide about the current state of playback. If necessary, subclasses can
-  # peek at the potential accumulation for the step with `accum_delta`.
+  # provide about the current state of playback. It is not legal to call
+  # `accum_delta` at this point, since this method is used in the process of
+  # calculating those deltas.
   def accum_should_trigger?(_step)
     raise RuntimeError, "subclasses must implement accum_should_trigger?"
   end
@@ -253,13 +254,15 @@ class PlayerBase
   end
 
   # Returns the current accumulation delta for the given step in the current
-  # slot in @track. Returns 0 if there is no accumulation for the step. If this
-  # is called before `play_steps`, it represents the potential accumulation a
-  # step would have if it were to trigger. If the step does not end up
-  # triggering, a call to this method in `play_steps` will return the previous
-  # accumulation.
+  # slot in @track. Returns 0 if there is no accumulation for the step. This
+  # cannot be called until `slot_advanced` (e.g., it is illegal in
+  # `accum_should_trigger?`). If this is called before `play_steps`, it
+  # represents the potential accumulation a step would have if it were to
+  # trigger. If the step does not end up triggering, a call to this method in
+  # `play_steps` will return the previous accumulation.
   def accum_delta(step)
     raise ArgumentError, "step is not in the current slot" unless current_steps.include?(step)
+    raise RuntimeError, "accumulation deltas are being calculated" if @calculating_pending_accums
 
     data = @pending_accum_data.nil? ? accum_data(step) : pending_accum_data(step)
     data.nil? ? 0 : data[:delta]
@@ -367,12 +370,14 @@ class PlayerBase
 
   def calculate_pending_accums
     # Collect potential accumulations for peeking purposes. We'll commit the
-    # ones for steps that actually trigger in post_slot_advanced.
+    # ones for steps that actually trigger in commit_accums.
+    @calculating_pending_accums = true  # accum_delta inspects this
     @pending_accum_data = {}
     current_steps.each do |step|
       new_data = calculate_accum(step)
       set_pending_accum_data(step, new_data) unless new_data.nil?
     end
+    @calculating_pending_accums = false
   end
 
   def commit_accums(steps)

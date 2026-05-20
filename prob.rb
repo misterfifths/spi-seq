@@ -145,6 +145,12 @@ class Prob
   # Note that this predicate is only applicable to {Step}s in {Track}s; it will
   # always evaluate to false for {CCStep}s in {CCTrack}s.
   #
+  # Additionally, it is cyclical to use this as an
+  # {StepBase#accum_prob accum_prob}, since the note that a Step will play is
+  # dependent on the accumulation, which is dependent on the probability, which
+  # is dependent on the accumulation, etc.. It will always evaluate to false if
+  # used as an `accum_prob`.
+  #
   # @return [Prob]
   def self.pre_same_note
     pred = ->(note:, prev_notes:) { prev_notes.include?(note) }
@@ -157,6 +163,12 @@ class Prob
   #
   # Note that this predicate is only applicable to {Step}s in {Track}s; it will
   # always evaluate to true for {CCStep}s in {CCTrack}s.
+  #
+  # Additionally, it is cyclical to use this as an
+  # {StepBase#accum_prob accum_prob}, since the note that a Step will play is
+  # dependent on the accumulation, which is dependent on the probability, which
+  # is dependent on the accumulation, etc.. It will always evaluate to true if
+  # used as an `accum_prob`.
   #
   # @return [Prob]
   def self.not_pre_same_note

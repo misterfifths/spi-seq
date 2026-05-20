@@ -151,7 +151,11 @@ class Player < PlayerBase
   end
 
   def accum_should_trigger?(step)
-    step.accum_should_trigger?(@cycle, @fill, note_for_step(step), @notes_for_prev_steps.values)
+    # Accumulation deltas are in the middle of being calculated, so we can't use
+    # note_for_step here (which would take it into account). That means that
+    # the `pre_same_note` family of probs won't work; they don't really make
+    # sense on an accum anyway.
+    step.accum_should_trigger?(@cycle, @fill, nil, @notes_for_prev_steps.values)
   end
 
   def step_should_trigger?(step)
