@@ -271,7 +271,7 @@ class Player < PlayerBase
     new_steps, tied_steps, ended_steps = categorize_steps(steps)
 
     if @debug
-      log("@ slot=#{slot_idx} cycle=#{@cycle} fill=#{@fill}", "player")
+      log("@ t=#{ExtApi.vt} slot=#{slot_idx} cycle=#{@cycle} fill=#{@fill}", "player")
       log("new steps: #{steps_debug_string(new_steps)}", "player")
       log("tied steps: #{steps_debug_string(tied_steps)}", "player")
       log("ended steps: #{steps_debug_string(ended_steps, from_prev: true)}", "player")

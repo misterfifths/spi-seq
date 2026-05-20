@@ -69,7 +69,7 @@ class CCPlayer < PlayerBase
     end
 
     if @debug
-      log("@ slot=#{slot_idx} cycle=#{@cycle} fill=#{@fill}", "ccplayer")
+      log("@ t=#{ExtApi.vt} slot=#{slot_idx} cycle=#{@cycle} fill=#{@fill}", "ccplayer")
       log("new steps: [#{step_debug_strings.join(', ')}]", "ccplayer")
     end
   end
