@@ -154,6 +154,15 @@ class Player < PlayerBase
     step.accum_should_trigger?(@cycle, @fill, note_for_step(step), @notes_for_prev_steps.values)
   end
 
+  def step_should_trigger?(step)
+    step.should_trigger?(@cycle, @fill, note_for_step(step), @notes_for_prev_steps.values)
+
+    # We don't want to (and can't) dedupe on effective note yet. We want the
+    # accumulation data for all of those steps to be committed so PlayerBase
+    # will register their accumulation, even if we don't end up playing them.
+    # We'll dedupe them at play time below.
+  end
+
   # Deduplicate the given steps, which must come from the current slot, based on
   # their effective note (accounting for accumulation). In the case that more
   # than one Step has the same effective note, chooses one with the longest
@@ -176,17 +185,6 @@ class Player < PlayerBase
     end
 
     steps_by_note.values
-  end
-
-  def triggering_steps_in_slot
-    current_steps.filter do |step|
-      step.should_trigger?(@cycle, @fill, note_for_step(step), @notes_for_prev_steps.values)
-    end
-
-    # We don't want to dedupe on effective note yet. We'd like the accumulation
-    # data for all of those steps to be committed so PlayerBase will register
-    # the accumulation for all steps, even if we don't end up playing them.
-    # We'll dedupe them at play time below.
   end
 
   # Returns an array of arrays of steps representing the state of playback,

@@ -36,10 +36,10 @@ require_relative "trackbase"
 # fill mode with the `fill_cc` parameter.
 #
 # @abstract Subclasses must implement `play_steps`, `accum_should_trigger?`, and
-#   `triggering_steps_in_slot`. If the subclass has additional internal state,
-#   it should override `stop` to clear it and `inherit_state` to propagate it
-#   to new player instances. There are additional override points that may be
-#   of use.
+#   `step_should_trigger?`. If the subclass has additional internal state, it
+#   should override `stop` to clear it and `inherit_state` to propagate it to
+#   new player instances. There are additional override points that may be of
+#   use.
 class PlayerBase
   # The track that will be used when {#play} and {#sleep} are called. You may
   # swap to a new track between cycles of playback with {#swap_track}.
@@ -99,7 +99,7 @@ class PlayerBase
       @track.num_slots.times do
         calculate_pending_accums
         slot_advanced
-        triggering_steps = triggering_steps_in_slot
+        triggering_steps = current_steps.filter { |step| step_should_trigger?(step) }
         commit_accums(triggering_steps)
         accums_committed
         play_steps(triggering_steps)
@@ -173,18 +173,17 @@ class PlayerBase
   # Then, it iterates over the slots in the track. For each, it:
   # 1. Updates `slot_idx` to the current slot.
   # 2. Calculates potential accumulations for the steps in that slot, calling
-  #    `accum_should_trigger?` as needed.
+  #    `accum_should_trigger?` as needed, which must be implemented.
   # 3. Calls `slot_advanced`. The default does nothing.
   # 4. Gathers the steps that will trigger in this slot by calling
-  #    `triggering_steps_in_slot`. Subclassers must implement that method by
+  #    `step_should_trigger?`. Subclassers must implement that method by
   #    evaluating probabilities. If it is needed to evaluate a probability, the
   #    `accum_delta` method may be used at this point to retrieve the
-  #    accumulation the step would have if it were to trigger. It is guaranteed
-  #    that `triggering_steps_in_slot` will only be called once per slot.
+  #    accumulation the step would have if it were to trigger.
   # 5. Commits the accumulation for triggering steps and calls
   #    `accums_committed`. The default does nothing.
-  # 6. Calls `play_steps` (must be implemented) with the result of
-  #    `triggering_steps_in_slot`.
+  # 6. Calls `play_steps` (must be implemented) with the steps that will
+  #    trigger, as determined in step 4.
   # 7. Sleeps until it's time for the next slot.
 
 
@@ -212,32 +211,35 @@ class PlayerBase
   # is the new index in the track. Provided for use by subclassers.
   def slot_advanced; end
 
-  # Called by `play` after `slot_advanced`. Subclassers must return all steps in
-  # the current slot that will trigger (i.e. ones whose probability predicate
-  # passed). Steps in this list will have their accumulation (if any) committed,
-  # so that it will be returned by `accum_delta`.
-  def triggering_steps_in_slot
-    raise RuntimeError, "subclasses must implement triggering_steps_in_slot"
-  end
-
   # Called by `play` after `triggering_steps_at_slot` has been used to determine
   # which steps should have their accumulation committed. Provided for use by
   # subclassers.
   def accums_committed; end
 
   # Evaluate the `accum_prob` of the given step in the current slot of @track.
-  # Subclasses must implement this method by calling `accum_should_trigger?` on
-  # the step with as much information as it can provide about the current state
-  # of playback.
+  # Called by `play` at the beginning of the process to play a new slot, before
+  # `slot_advanced`. Subclasses must implement this method by calling
+  # `accum_should_trigger?` on the step with as much information as it can
+  # provide about the current state of playback. If necessary, subclasses can
+  # peek at the potential accumulation for the step with `accum_delta`.
   def accum_should_trigger?(_step)
     raise RuntimeError, "subclasses must implement accum_should_trigger?"
   end
 
-  # Plays the steps in the current slot. Subclasses must implement this method.
-  # In general, they should:
-  # 1. Activate new steps from `triggering_steps_in_slot`, taking into account
-  #    their accumulation from `accum_delta`. For example, a player for Tracks
-  #    should sound new notes and continue ties.
+  # Evaluate the `prob` of the given step in the current slot of @track. Called
+  # by `play` after `slot_advanced`. Subclasses must implement this method by
+  # calling `should_trigger?` on the step with as much information as it can
+  # provide about the current state of playback. If necessary, subclasses can
+  # peek at the potential accumulation for the step with `accum_delta`.
+  def step_should_trigger?(_step)
+    raise RuntimeError, "subclasses must implement step_should_trigger?"
+  end
+
+  # Play the given steps, which are the triggering ones from the current slot.
+  # Subclasses must implement this method. In general, they should:
+  # 1. Activate the given steps, taking into account their accumulation from
+  #    `accum_delta`. For example, a player for Tracks should sound new notes
+  #    and continue ties.
   # 2. If necessary, terminate any ongoing steps that are not continued by a
   #    triggering step. For example, a player for Tracks would terminate any
   #    ties that are not continued in the current slot. Since CC events in a

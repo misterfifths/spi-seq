@@ -47,10 +47,8 @@ class CCPlayer < PlayerBase
     step.accum_should_trigger?(@cycle, @fill, nil, [])
   end
 
-  def triggering_steps_in_slot
-    current_steps.filter do |step|
-      step.should_trigger?(@cycle, @fill, nil, [])
-    end
+  def step_should_trigger?(step)
+    step.should_trigger?(@cycle, @fill, nil, [])
   end
 
   def play_steps(steps)
