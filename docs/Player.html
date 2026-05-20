@@ -417,13 +417,17 @@ about its state during playback.</p></div>
 93
 94
 95
-96</pre>
+96
+97
+98
+99</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'player.rb', line 80</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_track'>track</span><span class='comma'>,</span> <span class='label'>midi:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>debug:</span> <span class='kw'>false</span><span class='rparen'>)</span>
-  <span class='ivar'>@midi</span> <span class='op'>=</span> <span class='id identifier rubyid_resolve_midi_arg'>resolve_midi_arg</span><span class='lparen'>(</span><span class='id identifier rubyid_midi'>midi</span><span class='rparen'>)</span>
+  <span class='ivar'>@midi</span> <span class='op'>=</span> <span class='id identifier rubyid_midi'>midi</span>
+  <span class='ivar'>@midi</span> <span class='op'>=</span> <span class='id identifier rubyid_current_player_defaults'><span class='object_link'><a href="top-level-namespace.html#current_player_defaults-instance_method" title="#current_player_defaults (method)">current_player_defaults</a></span></span><span class='lbracket'>[</span><span class='symbol'>:midi</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='kw'>false</span> <span class='kw'>if</span> <span class='ivar'>@midi</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
   <span class='ivar'>@channel</span> <span class='op'>=</span> <span class='id identifier rubyid_channel'>channel</span>
   <span class='ivar'>@port</span> <span class='op'>=</span> <span class='id identifier rubyid_port'>port</span>
   <span class='ivar'>@midi_spi_kwargs</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
@@ -437,6 +441,8 @@ about its state during playback.</p></div>
 </span>  <span class='ivar'>@active_synth_nodes</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>  <span class='comment'># note symbols -&gt; synth nodes. unused when playing midi
 </span>  <span class='ivar'>@active_midi_notes</span> <span class='op'>=</span> <span class='const'>Set</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>  <span class='comment'># active midi note symbols. unused when playing built-in synths
 </span>
+  <span class='ivar'>@effective_note_cache</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
+
   <span class='kw'>super</span><span class='lparen'>(</span><span class='id identifier rubyid_track'>track</span><span class='comma'>,</span> <span class='label'>debug:</span> <span class='id identifier rubyid_debug'>debug</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -648,15 +654,15 @@ clean slate. Ends all ongoing steps and resets the internal state, like
       <pre class="lines">
 
 
-99
-100
-101
 102
 103
-104</pre>
+104
+105
+106
+107</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'player.rb', line 99</span>
+      <pre class="code"><span class="info file"># File 'player.rb', line 102</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_stop'>stop</span>
   <span class='kw'>super</span>
