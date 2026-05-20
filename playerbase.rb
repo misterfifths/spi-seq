@@ -101,6 +101,7 @@ class PlayerBase
         slot_advanced
         triggering_steps = triggering_steps_in_slot
         commit_accums(triggering_steps)
+        accums_committed
         play_steps(triggering_steps)
         @slot_idx += 1
 
@@ -180,7 +181,8 @@ class PlayerBase
   #    `accum_delta` method may be used at this point to retrieve the
   #    accumulation the step would have if it were to trigger. It is guaranteed
   #    that `triggering_steps_in_slot` will only be called once per slot.
-  # 5. Commits the accumulation for triggering steps.
+  # 5. Commits the accumulation for triggering steps and calls
+  #    `accums_committed`. The default does nothing.
   # 6. Calls `play_steps` (must be implemented) with the result of
   #    `triggering_steps_in_slot`.
   # 7. Sleeps until it's time for the next slot.
@@ -217,6 +219,11 @@ class PlayerBase
   def triggering_steps_in_slot
     raise RuntimeError, "subclasses must implement triggering_steps_in_slot"
   end
+
+  # Called by `play` after `triggering_steps_at_slot` has been used to determine
+  # which steps should have their accumulation committed. Provided for use by
+  # subclassers.
+  def accums_committed; end
 
   # Evaluate the `accum_prob` of the given step in the current slot of @track.
   # Subclasses must implement this method by calling `accum_should_trigger?` on

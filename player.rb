@@ -93,6 +93,8 @@ class Player < PlayerBase
     @active_synth_nodes = {}  # note symbols -> synth nodes. unused when playing midi
     @active_midi_notes = Set.new  # active midi note symbols. unused when playing built-in synths
 
+    @effective_note_cache = {}
+
     super(track, debug: debug)
   end
 
@@ -119,11 +121,24 @@ class Player < PlayerBase
 
   attr_reader :active_synth_nodes, :active_midi_notes, :prev_steps, :notes_for_prev_steps
 
+  def slot_advanced
+    @effective_note_cache.clear
+  end
+
+  def accums_committed
+    # accum_delta is no longer peeking at potential accumulations, so we can't
+    # rely on anything we already cached.
+    @effective_note_cache.clear
+  end
+
   # Returns the effective note for the given step in the current slot of the
   # track, accounting for the track's scale and the step's accumulation. If this
   # is called before `play_steps`, it will account for potential accumulation if
   # the step were to trigger.
   def note_for_step(step)
+    note = @effective_note_cache[step]
+    return note unless note.nil?
+
     note = step.note
     note = @track.scale.snap(step.note) unless @track.scale.nil?
     note += accum_delta(step)
@@ -131,6 +146,7 @@ class Player < PlayerBase
     # Snap to the scale again after accumulation, if needed.
     note = @track.scale.snap(note) unless @track.scale.nil?
 
+    @effective_note_cache[step] = note
     note
   end
 
