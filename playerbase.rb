@@ -96,14 +96,15 @@ class PlayerBase
     reset_for_new_cycle
 
     ExtApi.with_bpm_mul(@track.timescale) do
-      @track.num_slots.times do
+      @track.num_slots.times do |i|
+        @slot_idx = i
+
         calculate_pending_accums
         slot_advanced
         triggering_steps = current_steps.filter { |step| step_should_trigger?(step) }
         commit_accums(triggering_steps)
         accums_committed
         play_steps(triggering_steps)
-        @slot_idx += 1
 
         # Sleep until it's time for the next slot
         ExtApi.sleep(@track.granularity.to_f)
