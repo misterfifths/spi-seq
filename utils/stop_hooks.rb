@@ -33,7 +33,7 @@ if Object.const_defined?("SonicPi::RuntimeMethods")
 end
 
 
-$__STOP_HOOKS = []
+$__STOP_HOOKS = {}
 $__STOP_HOOKS_QUEUE = Thread::Queue.new
 
 # @!group Sonic Pi lifecycle utilities
@@ -43,13 +43,21 @@ $__STOP_HOOKS_QUEUE = Thread::Queue.new
 # very quick! The maximum total time allotted for all stop hooks to complete is
 # 1 second.
 #
-# Also note that the code in the block is evaluated in a new context, so many
-# global Sonic Pi settings (e.g. `use_midi_defaults`) will not be set.
+# If you need more than one stop hook, you must give them each different
+# `name`s; calling this function a second time with the same name will remove
+# the previous hook with that name.
+#
+# The code in the block is evaluated in a new context, so many global Sonic Pi
+# settings (e.g. `use_midi_defaults`) will not be set.
+#
+# Stop hooks are *not* executed if a Sonic Pi sketch exits gracefully (e.g. if
+# it has no `live_loops` or they all stop). They are only executed when hitting
+# the stop button or quitting the app.
 #
 # @return [void]
 # @yield
-def on_stop(&block)
-  $__STOP_HOOKS << block
+def on_stop(name = :default, &block)
+  $__STOP_HOOKS[name] = block
 end
 
 # @!endgroup
@@ -84,7 +92,7 @@ end
 # @private
 def __run_stop_hooks
   $__STOP_HOOKS_QUEUE.clear
-  $__STOP_HOOKS.each { |b| b.call }
+  $__STOP_HOOKS.each_value { |b| b.call }
   $__STOP_HOOKS.clear
   $__STOP_HOOKS_QUEUE << true
 end
