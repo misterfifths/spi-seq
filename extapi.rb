@@ -55,7 +55,7 @@ module ExtApi
       :current_bpm, :with_bpm_mul,
 
       # Timing
-      :vt, :time_warp,
+      :vt, :at,
       :sleep,
       :use_real_time, :with_real_time,
 

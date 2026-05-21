@@ -336,6 +336,22 @@ class Player < PlayerBase
     # @attrs_for_prev_steps.
     ended_steps.each { |step| end_step(step) }
 
+    # Start new steps
+    new_steps.each { |step| start_step(step) }
+
+    # Update prev_steps for the next round
+    @prev_steps = tied_steps + new_steps
+
+    # The next slot may not come from @track, so we can't safely use
+    # effective_attrs in the next iteration on anything in @prev_steps. We need
+    # to cache the resolved notes we actually played for each of those steps, so
+    # that we can detect ties and ended notes in the next call to play_steps/
+    # categorize_steps.
+    @attrs_for_prev_steps.clear
+    @prev_steps.each do |step|
+      @attrs_for_prev_steps[step] = effective_attrs(step)
+    end
+
     # Schedule ends for continued steps that end before the next slot.
     # Note that we don't need to do this for new steps - those are either:
     # - of some specific length less than the granularity (i.e., not tied), in
@@ -349,23 +365,13 @@ class Player < PlayerBase
     #   gate < 1.0), in which case we schedule its end at the appropriate time
     #   here.
     tied_steps.each do |step|
-      schedule_end_for_step_with_partial_gate(step) unless effective_gate(step) == 1
-    end
+      gate = effective_gate(step)
+      next if gate == 1
 
-    # Start new steps
-    new_steps.each { |step| start_step(step) }
-
-    # Update prev_steps for the next round
-    @prev_steps = tied_steps + new_steps
-
-    # The next slot may not come from @track, so we can't safely use
-    # note_for_step in the next iteration on anything in @prev_steps. We need to
-    # cache the resolved notes we actually played for each of those steps, so
-    # that we can detect ties and ended notes in the next call to play_steps/
-    # categorize_steps.
-    @attrs_for_prev_steps.clear
-    @prev_steps.each do |step|
-      @attrs_for_prev_steps[step] = effective_attrs(step)
+      ExtApi.at(gate * @track.granularity.to_f) do
+        _log("killing #{step.inspect} @ t=#{ExtApi.vt}", "player") if @debug
+        end_step(step)
+      end
     end
   end
 
@@ -385,16 +391,6 @@ class Player < PlayerBase
     else
       node = @active_synth_nodes.delete(step_note)
       ExtApi.kill(node) unless node.nil?
-    end
-  end
-
-  # Schedules a call to `end_step` for a tied Step that will end between slots
-  # (i.e., before the next call to `play_steps`).
-  def schedule_end_for_step_with_partial_gate(step)
-    ExtApi.time_warp(effective_gate(step) * @track.granularity.to_f) do
-      _log("killing #{step.inspect} @ t=#{ExtApi.vt}", "player") if @debug
-      # The step will be in prev_steps by the time this fires.
-      end_step(step)
     end
   end
 

@@ -25,10 +25,10 @@ module PlayerTestHelpers
   end
 
   # Returns the events from executing the block, optionally resetting vt. All
-  # lingering events and timewarps are cleared before executing the block.
+  # lingering events and delayed blocks are cleared before executing the block.
   def events(reset_vt: true)
     self.reset_vt if reset_vt
-    drain_events(exec_timewarps: false)
+    drain_events(exec_delayed_blocks: false)
     yield
     drain_events
   end

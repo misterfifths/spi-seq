@@ -26,16 +26,16 @@ module ExtApi
   @bpm = 60
   @bpm_mul = 1
   @midi_defaults = {}
-  @queued_timewarps = []  # [[time, block]]
+  @delayed_blocks = []  # [[time, block]]
 
   class << self
     # Returns a list of hashes for events that have occurred since the last
     # time this method was called, sorted by timestamp, then type, ascending.
-    # By default, executes all queued timewarp blocks and clears the queue.
-    def drain_events(exec_timewarps: true)
-      if exec_timewarps
-        @queued_timewarps.each { |tw| exec_timewarp(tw) }
-        @queued_timewarps.clear
+    # By default, executes all delayed blocks and clears the queue.
+    def drain_events(exec_delayed_blocks: true)
+      if exec_delayed_blocks
+        @delayed_blocks.each { |b| exec_delayed_block(b) }
+        @delayed_blocks.clear
       end
 
       # Events may be out of order due to time warps.
@@ -66,8 +66,8 @@ module ExtApi
 
     attr_reader :vt
 
-    def reset_vt(clear_timewarps: true)
-      @queued_timewarps.clear if clear_timewarps
+    def reset_vt(clear_delayed_blocks: true)
+      @delayed_blocks.clear if clear_delayed_blocks
       @vt = 0
     end
 
@@ -75,7 +75,7 @@ module ExtApi
       beats * (60.0 / current_bpm)
     end
 
-    def time_warp(beats, &block)
+    def at(beats, &block)
       # Since the block may have side-effects, it's important that it not
       # execute until its scheduled time. Queue it up for later; we'll run
       # blocks we've stepped past in `sleep` and clear the whole queue in
@@ -83,21 +83,21 @@ module ExtApi
       if beats == 0
         block.call
       elsif beats < 0
-        raise RangeError, "the stub does not support time_warps into the past"
+        raise RangeError, "the stub does not support delays into the past"
       else
-        @queued_timewarps << [@vt + secs_per_beat(beats), block]
-        @queued_timewarps.sort! { |a, b| a[0] <=> b[0] }
+        @delayed_blocks << [@vt + secs_per_beat(beats), block]
+        @delayed_blocks.sort! { |a, b| a[0] <=> b[0] }
       end
     end
 
-    private def exec_timewarp(tw)
-      time, block = *tw
+    private def exec_delayed_block(b)
+      time, block = *b
 
       # We probably won't be at the vt when we were supposed to call the block,
       # so pretend we are while we call it. There are probably edge cases where
-      # this approach will go horribly wrong (e.g. if a timewarp block sleeps or
-      # registers its own timewarps, I imagine things will get weird), but it
-      # suffices for now.
+      # this approach will go horribly wrong (e.g. if a delayed block sleeps or
+      # registers its own delayed block, I imagine things will get weird), but
+      # it suffices for now.
       actual_vt = @vt
       @vt = time
       block.call
@@ -107,17 +107,17 @@ module ExtApi
     def sleep(beats)
       @vt += secs_per_beat(beats)
 
-      # Dequeue and execute any timewarp blocks whose time came while we slept.
+      # Dequeue and execute any delayed blocks whose time came while we slept.
       # These are sorted by start time, so they'll happen in order.
-      executed_timewarps = 0
-      @queued_timewarps.each do |tw|
-        time, = *tw
+      executed_blocks = 0
+      @delayed_blocks.each do |b|
+        time, = *b
         break if time > @vt
-        executed_timewarps += 1
-        exec_timewarp(tw)
+        executed_blocks += 1
+        exec_delayed_block(b)
       end
 
-      @queued_timewarps = @queued_timewarps.drop(executed_timewarps) if executed_timewarps > 0
+      @delayed_blocks = @delayed_blocks.drop(executed_blocks) if executed_blocks > 0
     end
 
     # Note that we do not import this from Sonic Pi into ExtApi normally; this
@@ -142,7 +142,7 @@ module ExtApi
     def midi(note, velocity: 127, sustain: 1.0, port: nil, channel: nil)
       # For consistency's sake, we'll turn this into separate on and off events.
       midi_note_on(note, velocity: velocity, port: port, channel: channel)
-      time_warp(sustain) do
+      ExtApi.at(sustain) do
         midi_note_off(note, port: port, channel: channel)
       end
     end
