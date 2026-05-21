@@ -321,6 +321,11 @@ class PlayerBase
     # This Step has played before, and its accumulation may trigger.
     return data unless accum_should_trigger?(step)
 
+    # When the accum_delta is not an integer, we can't reasonably try to wrap or
+    # reverse inclusively by subtracting one when we overstep the min or max.
+    # See notes in test_accum.rb's test_float_step.
+    wraparound_epsilon = (step.accum_delta.to_i == step.accum_delta) ? 1 : 0
+
     direction = data[:direction]
     delta = data[:delta] + data[:direction] * step.accum_delta
     if delta <= step.accum_min
@@ -334,7 +339,7 @@ class PlayerBase
         # first step in the right direction.
         direction *= -1
         if delta < step.accum_min
-          overage = step.accum_min - delta - 1
+          overage = step.accum_min - delta - wraparound_epsilon
           delta = step.accum_min + overage
         end
       when :wrap
@@ -344,7 +349,7 @@ class PlayerBase
         if delta < step.accum_min
           # We know accum_min <= accum_delta <= accum_max, so we don't need to
           # worry about modding to get the overage here; we can just subtract.
-          overage = step.accum_min - delta - 1
+          overage = step.accum_min - delta - wraparound_epsilon
           delta = step.accum_max - overage
         end
       end
@@ -355,12 +360,12 @@ class PlayerBase
       when :reverse
         direction *= -1
         if delta > step.accum_max
-          overage = delta - step.accum_max - 1
+          overage = delta - step.accum_max - wraparound_epsilon
           delta = step.accum_max - overage
         end
       when :wrap
         if delta > step.accum_max
-          overage = delta - step.accum_max - 1
+          overage = delta - step.accum_max - wraparound_epsilon
           delta = step.accum_min + overage
         end
       end

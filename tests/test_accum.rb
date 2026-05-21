@@ -51,6 +51,9 @@ class AccumTest < Test::Unit::TestCase
     # 0 -3 -6->4 1 -2 -5 -8->2
     assert_std_accum -3, min: -5, max: 4, mode: :wrap, play_count: 7, deltas: [0, -3, 4, 1, -2, -5, 2]
 
+    # 0 -3 -6 -9->0 -3 -6
+    assert_std_accum -3, min: -6, max: 2, mode: :wrap, play_count: 6, deltas: [0, -3, -6, 0, -3, -6]
+
     # 0 -1 -2 -3->0 -1
     assert_std_accum -1, min: -2, max: 0, mode: :wrap, play_count: 5, deltas: [0, -1, -2, 0, -1]
   end
@@ -302,5 +305,43 @@ class AccumTest < Test::Unit::TestCase
       [:c4, 8, 8.8],  # +0
       [:c4, 9, 9.7]   # -0.1
     ], play_count: 10
+  end
+
+  def test_float_step
+    # When the step is an integer, it makes sent to subtract one when wrapping
+    # or reversing after stepping past the min or max. For instance, if you have
+    # accum delta 3, min 0, max 7 in wrap mode, the accumulation will go 0, 3,
+    # 6, then 9. How do we wrap 9? Well, it's two past the maximum. We use one
+    # of those 2 overages to get us back to the minimum, and then add the
+    # remainder, so 9 wraps to 1.
+    # But for floating point deltas, there's no sensible analogy. If wrapping
+    # with delta 0.3, min 0, max 0.7, we go 0, 0.3, 0.6, 0.9. There's an overage
+    # of 0.2, but how much of that do we consume to wrap around to 0? We could
+    # establish an arbitrary epsilon (say, 0.1) and treat an overage in steps of
+    # that amount. Or we could just throw up our hands and not attempt to
+    # account for the "wrap around" step when the delta is too small.
+    # That's what we do. Luckily, this case will probably only come up with gate
+    # accumulation, where the minor difference is unlikely to be impactful.
+    t = QT[S(:c4, gate: 0.1).accum(0.3, max: 0.7, mode: :wrap, target: :gate)]
+    assert_playback_events t, [
+      [:c4, 0, 0.1],  # +0
+      [:c4, 1, 1.4],  # +0.3
+      [:c4, 2, 2.7],  # +0.6
+      [:c4, 3, 3.3],  # +0.9 -> +0.2
+      [:c4, 4, 4.6],  # +0.5
+      [:c4, 5, 5.2]   # +0.8 -> 0.1
+    ], play_count: 6
+
+    # Reverse should behave similarly
+    t = QT[S(:c4, gate: 0.1).accum(0.3, max: 0.7, mode: :reverse, target: :gate)]
+    assert_playback_events t, [
+      [:c4, 0, 0.1],  # +0
+      [:c4, 1, 1.4],  # +0.3
+      [:c4, 2, 2.7],  # +0.6
+      [:c4, 3, 3.6],  # +0.9 -> overage of 0.2 -> +0.5
+      [:c4, 4, 4.3],  # +0.2
+      [:c4, 5, 5.2],  # -0.1 -> overage of 0.1 -> 0.1
+      [:c4, 6, 6.5]   # +0.4
+    ], play_count: 7
   end
 end
