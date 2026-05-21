@@ -123,30 +123,30 @@ class Chord
     %i[m+5]                   => -> { Chord.minor_triad.sharp5 },
     %i[m6*9]                  => -> { Chord.minor_sixth.add(9) },
     %i[m7+5]                  => -> { Chord.minor_seventh.sharp5 },
+    %i[m7-5 m7b5]             => -> { Chord.minor_seventh.flat5 },  # AKA halfdim_seventh
     %i[m7+5-9]                => -> { Chord.minor_seventh.sharp5.add(:m9) },
     %i[m7-9]                  => -> { Chord.minor_seventh.add(:m9) },
     %i[m7+9]                  => :minor_ninth,
     %i[9sus4]                 => -> { Chord.minor_ninth.sus4 },
     %i[m11+]                  => -> { Chord.minor_eleventh.sharp(11) },
 
-    %i[7-5]                   => -> { Chord.new(%i[P1 M3 d5 A6]) },  # Same as fr6. No idea.
+    %i[7-5]                   => -> { Chord.dom_seventh.flat5 },
     %i[7-9]                   => -> { Chord.dom_seventh.add(:m9) },
     %i[7-10]                  => -> { Chord.dom_seventh.add(:m10) },
     %i[7-11]                  => -> { Chord.dom_seventh.add(:d11) },
     %i[7-13]                  => -> { Chord.dom_seventh.add(:m13) },
+    %i[7+5]                   => -> { Chord.dom_seventh.sharp5 },  # AKA aug_seventh
     %i[7+5-9]                 => -> { Chord.dom_seventh.sharp5.add(:m9) },
     %i[7sus2]                 => -> { Chord.dom_seventh.sus2 },
     %i[7sus4]                 => -> { Chord.dom_seventh.sus4 },
     %i[11+]                   => -> { Chord.dom_eleventh.sharp(11) },
 
     %i[augmented a]           => :aug_triad,
-    %i[7+5]                   => :aug_seventh,
 
     %i[diminished i]          => :dim_triad,
     %i[diminished7 i7]        => :dim_seventh,
 
-    %i[halfdiminished m7b5
-       m7-5]                  => :halfdim_seventh,
+    %i[halfdiminished]        => :halfdim_seventh,
 
     # I have no idea what these are supposed to be.
     %i[9+5]                   => -> { Chord.new(%i[P1 m7 m9]) },
