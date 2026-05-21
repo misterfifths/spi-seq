@@ -230,7 +230,7 @@ class CCTrack < TrackBase
         steps_by_cc[step.cc] = step
       else
         unless yelled
-          warn("more than one step with CC #{step.cc} in the same slot! Picking one with the highest value!", "cctrack")
+          _warn("more than one step with CC #{step.cc} in the same slot! Picking one with the highest value!", "cctrack")
           yelled = true
         end
         steps_by_cc[step.cc] = step if old_step_with_same_cc.value < step.value

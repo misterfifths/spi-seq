@@ -1592,7 +1592,7 @@ class Track < TrackBase
         steps_by_note[step.note] = step
       else
         unless yelled
-          warn("more than one Step with note #{step.note} in the same slot! Picking one with the longest gate!", "track")
+          _warn("more than one Step with note #{step.note} in the same slot! Picking one with the longest gate!", "track")
           yelled = true
         end
         steps_by_note[step.note] = step if old_step_with_same_note.gate < step.gate

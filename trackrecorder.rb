@@ -103,7 +103,7 @@ class Track
 
     if final_gate > 0
       if (start_slot + tied_steps) >= slots.length
-        warn("dropping a note that would go past the end of the track", "recorder")
+        _warn("dropping a note that would go past the end of the track", "recorder")
       else
         slots[start_slot + tied_steps] << Step.new(note, vel: velocity, gate: final_gate)
       end
@@ -200,7 +200,7 @@ class Track
       note_end = duration if note_end > duration
 
       if note_end <= note_start
-        warn("timeline event ends before it starts or has 0 duration; ignoring", "recorder")
+        _warn("timeline event ends before it starts or has 0 duration; ignoring", "recorder")
         next
       end
 
@@ -276,13 +276,13 @@ class Track
         next if cc_channel != "*" && cue_channel != cc_channel
 
         if recording
-          log("ending recording @ #{cue_time}", "recorder")
+          _log("ending recording @ #{cue_time}", "recorder")
 
           recording = false
           end_time = cue_time
           break
         else
-          log("starting recording @ #{cue_time}", "recorder")
+          _log("starting recording @ #{cue_time}", "recorder")
 
           recording = true
           start_time = cue_time
@@ -301,10 +301,10 @@ class Track
           if active_event.nil?
             in_progress_timeline_events[note] = [note, cue_time, -1, vel]
           else
-            warn("got a note on for #{note}, but it's already on", "recorder")
+            _warn("got a note on for #{note}, but it's already on", "recorder")
           end
         elsif active_event.nil?
-          warn("got a note off for #{note}, but we didn't see it come on", "recorder")
+          _warn("got a note off for #{note}, but we didn't see it come on", "recorder")
         else
           active_event[2] = cue_time
           timeline << active_event

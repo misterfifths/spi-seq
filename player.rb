@@ -230,7 +230,7 @@ class Player < PlayerBase
         steps_by_note[step_note] = step
       else
         if @debug && !yelled
-          warn("wound up with more than one Step with note #{step_note} in the same slot! Picking one with the longest gate!", "player")
+          _warn("wound up with more than one Step with note #{step_note} in the same slot! Picking one with the longest gate!", "player")
           yelled = true
         end
         old_step_gate = effective_gate(old_step_with_same_note)
@@ -325,10 +325,10 @@ class Player < PlayerBase
     new_steps, tied_steps, ended_steps = categorize_steps(steps)
 
     if @debug
-      log("@ t=#{ExtApi.vt} slot=#{slot_idx} cycle=#{@cycle} fill=#{@fill}", "player")
-      log("new steps: #{steps_debug_string(new_steps)}", "player")
-      log("tied steps: #{steps_debug_string(tied_steps)}", "player")
-      log("ended steps: #{steps_debug_string(ended_steps, from_prev: true)}", "player")
+      _log("@ t=#{ExtApi.vt} slot=#{slot_idx} cycle=#{@cycle} fill=#{@fill}", "player")
+      _log("new steps: #{steps_debug_string(new_steps)}", "player")
+      _log("tied steps: #{steps_debug_string(tied_steps)}", "player")
+      _log("ended steps: #{steps_debug_string(ended_steps, from_prev: true)}", "player")
     end
 
     # Turn off or kill ended steps. Note that ended_steps is a subset of
@@ -392,7 +392,7 @@ class Player < PlayerBase
   # (i.e., before the next call to `play_steps`).
   def schedule_end_for_step_with_partial_gate(step)
     ExtApi.time_warp(effective_gate(step) * @track.granularity.to_f) do
-      log("killing #{step.inspect} @ t=#{ExtApi.vt}", "player") if @debug
+      _log("killing #{step.inspect} @ t=#{ExtApi.vt}", "player") if @debug
       # The step will be in prev_steps by the time this fires.
       end_step(step)
     end

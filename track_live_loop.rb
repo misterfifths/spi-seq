@@ -195,12 +195,12 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
       next if incoming_cc != fill_cc
 
       player.fill = cc_val != 0
-      log("CC #{cc} = #{cc_val} -> #{'un' unless player.fill}setting fill for live loop #{loop_name}", "cc_fill_control")
+      _log("CC #{cc} = #{cc_val} -> #{'un' unless player.fill}setting fill for live loop #{loop_name}", "cc_fill_control")
     end
 
     # Don't send a 0 fill CC for restarts of the same sketch.
     unless LiveLoopTracker.live_loop_is_running(loop_name)
-      log("sending default CC #{fill_cc} value 0 for live loop #{loop_name}", "cc_fill_control")
+      _log("sending default CC #{fill_cc} value 0 for live loop #{loop_name}", "cc_fill_control")
       ExtApi.midi_cc(cc, 0, port: cc_port, channel: cc_channel)
     end
   end
@@ -226,7 +226,7 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
       # This is the first iteration run by a new player; old_player just
       # finished its final loop. So we should have the new player inherit some
       # private state of the old.
-      log("#{loop_name}: inheriting state from old player", "track_live_loop") if debug
+      _log("#{loop_name}: inheriting state from old player", "track_live_loop") if debug
       player.inherit_state(old_player)
       old_player = nil
     end
@@ -249,7 +249,7 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
     if res.is_a?(TrackBase)
       raise TypeError, "cannot switch track live loop #{loop_name} between track types" if (res.is_a?(Track) && player.is_a?(CCPlayer)) || (res.is_a?(CCTrack) && player.is_a?(Player))
 
-      log("#{loop_name}: swapping track on cycle #{player.cycle}", "track_live_loop") if debug
+      _log("#{loop_name}: swapping track on cycle #{player.cycle}", "track_live_loop") if debug
       player.swap_track(res)
     end
 
@@ -258,7 +258,7 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
     # Now that we have the final thing we're going to play, swap it out for the
     # faded version if we need to.
     if !muted && was_muted && fade_in
-      log("#{loop_name}: fading in track", "track_live_loop") if debug
+      _log("#{loop_name}: fading in track", "track_live_loop") if debug
       unfaded_track = player.track
       if fade_in == :quad
         faded_track = player.track.fade_in_quad
@@ -268,7 +268,7 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
       player.swap_track(faded_track)
     elsif muted && !was_muted && fade_out
       fading_out = true
-      log("#{loop_name}: fading out track", "track_live_loop") if debug
+      _log("#{loop_name}: fading out track", "track_live_loop") if debug
       unfaded_track = player.track
       if fade_out == :quad
         faded_track = player.track.fade_out_quad

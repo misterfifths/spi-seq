@@ -32,7 +32,7 @@ def run_tests(output_path)
 
   collector = Test::Unit::Collector::Dir.new
   suite = collector.collect(TEST_DIR)
-  ExtApi.puts("Found #{suite.tests.count} test case classes")
+  _log("Found #{suite.tests.count} test case classes")
 
   buggy_test_classes = [TrackLiveLoopTest, MutableLiveLoopTest]
   subsuites_to_remove = []
@@ -40,7 +40,7 @@ def run_tests(output_path)
     first_case = subsuite.tests.first
     if buggy_test_classes.include?(first_case.class)
       subsuites_to_remove << subsuite
-      ExtApi.puts("Skipping #{first_case.class}: known to be buggy in Sonic Pi")
+      _log("Skipping #{first_case.class}: known to be buggy in Sonic Pi")
     end
   end
   subsuites_to_remove.each { |subsuite| suite.delete(subsuite) }
@@ -52,8 +52,8 @@ def run_tests(output_path)
   })
 
   if suite.passed?
-    ExtApi.puts("Tests passed!")
+    _log("Tests passed!")
   else
-    ExtApi.puts("There were test failures; see the log")
+    _log("There were test failures; see the log")
   end
 end
