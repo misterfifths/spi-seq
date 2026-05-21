@@ -93,7 +93,7 @@ class Player < PlayerBase
     @active_synth_nodes = {}  # note symbols -> synth nodes. unused when playing midi
     @active_midi_notes = Set.new  # active midi note symbols. unused when playing built-in synths
 
-    @effective_note_cache = {}
+    @effective_attrs_cache = {}
 
     super(track, debug: debug)
   end
@@ -103,7 +103,7 @@ class Player < PlayerBase
     super
 
     @prev_steps = []
-    @notes_for_prev_steps = {}
+    @attrs_for_prev_steps = {}
   end
 
   # @private
@@ -111,7 +111,7 @@ class Player < PlayerBase
     super
 
     @prev_steps = other.prev_steps
-    @notes_for_prev_steps = other.notes_for_prev_steps
+    @attrs_for_prev_steps = other.attrs_for_prev_steps
     @active_synth_nodes = other.active_synth_nodes
     @active_midi_notes = other.active_midi_notes
   end
@@ -119,50 +119,96 @@ class Player < PlayerBase
 
   protected
 
-  attr_reader :active_synth_nodes, :active_midi_notes, :prev_steps, :notes_for_prev_steps
+  attr_reader :active_synth_nodes, :active_midi_notes, :prev_steps, :attrs_for_prev_steps
 
   def slot_advanced
-    @effective_note_cache.clear
+    @effective_attrs_cache.clear
   end
 
   def accums_committed
     # accum_delta is no longer peeking at potential accumulations, so we can't
     # rely on anything we already cached.
-    @effective_note_cache.clear
+    @effective_attrs_cache.clear
   end
 
-  # Returns the effective note for the given step in the current slot of the
-  # track, accounting for the track's scale and the step's accumulation. If this
-  # is called before `play_steps`, it will account for potential accumulation if
-  # the step were to trigger.
-  def note_for_step(step)
-    note = @effective_note_cache[step]
-    return note unless note.nil?
+  # Returns the effective attributes for the given step in the current slot of
+  # the track, accounting for the track's scale and the step's accumulation.
+  # If this is called before `play_steps`, it will account for potential
+  # accumulation if the step were to trigger. Result is [note, gate, vel].
+  def effective_attrs(step)
+    attrs = @effective_attrs_cache[step]
+    return attrs unless attrs.nil?
+
+    delta = accum_delta(step)  # this will ensure step is in the current slot
 
     note = step.note
     note = @track.scale.snap(step.note) unless @track.scale.nil?
-    note += accum_delta(step)
+    if delta != 0 && step.accum_target == :note
+      note += delta
+      # Snap to the scale again after accumulation
+      note = @track.scale.snap(note) unless @track.scale.nil?
+    end
 
-    # Snap to the scale again after accumulation, if needed.
-    note = @track.scale.snap(note) unless @track.scale.nil?
+    gate = step.gate
+    if delta != 0 && step.accum_target == :gate
+      gate += delta
+      gate = 0 if gate < 0
+      gate = 1 if gate > 1
+    end
 
-    @effective_note_cache[step] = note
+    vel = step.vel
+    if delta != 0 && step.accum_target == :vel
+      vel += delta
+      vel = vel.to_i
+      vel = 0 if vel < 0
+      vel = 127 if vel > 127
+    end
+
+    attrs = [note, gate, vel]
+    @effective_attrs_cache[step] = attrs
+    attrs
+  end
+
+  def effective_note(step)
+    note, = effective_attrs(step)
     note
+  end
+
+  def effective_gate(step)
+    _, gate, = effective_attrs(step)
+    gate
+  end
+
+  # Returns the attributes for the given step as it was played in a previous
+  # slot. The step must be in prev_steps. Returns [note, gate, vel].
+  def prev_attrs(step)
+    attrs = @attrs_for_prev_steps[step]
+    raise ArgumentError, "step is not in prev_steps" if attrs.nil?
+    attrs
+  end
+
+  def prev_note(step)
+    note, = prev_attrs(step)
+    note
+  end
+
+  # Returns the notes of all steps that were active during the previous slot.
+  def prev_notes
+    @attrs_for_prev_steps.map { |_, attrs| attrs[0] }
   end
 
   def accum_should_trigger?(step)
     # Accumulation deltas are in the middle of being calculated, so we can't use
-    # note_for_step here (which would take it into account). That means that
+    # effective_note here (which would take it into account). That means that
     # the `pre_same_note` family of probs won't work; they don't really make
     # sense on an accum anyway.
-    step.accum_should_trigger?(cycle: @cycle, fill: @fill,
-                               prev_notes: @notes_for_prev_steps.values)
+    step.accum_should_trigger?(cycle: @cycle, fill: @fill, prev_notes: prev_notes)
   end
 
   def step_should_trigger?(step)
     step.should_trigger?(cycle: @cycle, fill: @fill,
-                         effective_note: note_for_step(step),
-                         prev_notes: @notes_for_prev_steps.values)
+                         effective_note: effective_note(step),
+                         prev_notes: prev_notes)
 
     # We don't want to (and can't) dedupe on effective note yet. We want the
     # accumulation data for all of those steps to be committed so PlayerBase
@@ -178,7 +224,7 @@ class Player < PlayerBase
     steps_by_note = {}
     yelled = false
     steps.each do |step|
-      step_note = note_for_step(step)
+      step_note, step_gate, = effective_attrs(step)
       old_step_with_same_note = steps_by_note[step_note]
       if old_step_with_same_note.nil?
         steps_by_note[step_note] = step
@@ -187,7 +233,8 @@ class Player < PlayerBase
           warn("wound up with more than one Step with note #{step_note} in the same slot! Picking one with the longest gate!", "player")
           yelled = true
         end
-        steps_by_note[step_note] = step if old_step_with_same_note.gate < step.gate
+        old_step_gate = effective_gate(old_step_with_same_note)
+        steps_by_note[step_note] = step if old_step_gate < step_gate
       end
     end
 
@@ -200,9 +247,8 @@ class Player < PlayerBase
   # The returned array has the following elements:
   #   [new steps to trigger, continued (tied) steps, newly ended steps]
   #
-  # Step probabilities are evaluated, and steps that should not trigger are not
-  # returned. Steps in the first array are deduplicated if accumulation would
-  # result in multiple steps with the same note.
+  # Steps in the first array are deduplicated if accumulation would result in
+  # multiple steps with the same note.
   #
   # Note that the returned array of ended steps does not strictly contain steps
   # that ended exactly at the beginning of this step. It also contains steps
@@ -211,8 +257,7 @@ class Player < PlayerBase
   def categorize_steps(triggering_steps)
     # As noted in PlayerBase, it is important that this method assume nothing
     # about the order in which slots were or will be played. @prev_steps and
-    # @notes_for_prev_steps track the steps that were played from the previous
-    # slot.
+    # @attrs_for_prev_steps track active steps from previous slots.
     new_steps = []
     tied_steps = []
     ended_steps = []
@@ -224,13 +269,16 @@ class Player < PlayerBase
 
     # distinguish between tied notes and newly started ones
     cur_steps.each do |step|
+      note, gate, = effective_attrs(step)
+
       # Steps with 0 gate do not exist from our perspective. They won't play or
       # continue ties.
-      next if step.gate == 0
+      next if gate == 0
 
       # were we just playing this note as a tie?
       is_tie = @prev_steps.any? do |prev_step|
-        prev_step.tied? && @notes_for_prev_steps[prev_step] == note_for_step(step)
+        prev_note, prev_gate, = prev_attrs(prev_step)
+        prev_gate == 1 && prev_note == note
       end
 
       if is_tie
@@ -243,7 +291,7 @@ class Player < PlayerBase
     # find notes from the last slot that have ended.
     @prev_steps.each do |prev_step|
       # any note we were playing that is not tied has ended
-      note_continues = tied_steps.any? { |tie| note_for_step(tie) == @notes_for_prev_steps[prev_step] }
+      note_continues = tied_steps.any? { |tie| effective_note(tie) == prev_note(prev_step) }
       ended_steps << prev_step unless note_continues
     end
 
@@ -256,8 +304,14 @@ class Player < PlayerBase
       s += ", " if i > 0
       s += step.repr
 
-      note = from_prev ? @notes_for_prev_steps[step] : note_for_step(step)
-      s += " -> :#{note}" unless note == step.note
+      note, gate, vel = from_prev ? prev_attrs(step) : effective_attrs(step)
+      next if step.note == note && step.gate == gate && step.vel == vel
+
+      accum_bits = []
+      accum_bits << ":#{note}" unless note == step.note
+      accum_bits << "gate=#{gate.round(2)}" unless gate == step.gate
+      accum_bits << "vel=#{vel}" unless vel == step.vel
+      s += " -> #{accum_bits.join(' ')}"
     end
 
     s += "]"
@@ -279,7 +333,7 @@ class Player < PlayerBase
 
     # Turn off or kill ended steps. Note that ended_steps is a subset of
     # @prev_steps; end_step will handle finding the correct note for them from
-    # @notes_for_prev_steps.
+    # @attrs_for_prev_steps.
     ended_steps.each { |step| end_step(step) }
 
     # Schedule ends for continued steps that end before the next slot.
@@ -295,7 +349,7 @@ class Player < PlayerBase
     #   gate < 1.0), in which case we schedule its end at the appropriate time
     #   here.
     tied_steps.each do |step|
-      schedule_end_for_step_with_partial_gate(step) unless step.tied?
+      schedule_end_for_step_with_partial_gate(step) unless effective_gate(step) == 1
     end
 
     # Start new steps
@@ -309,8 +363,10 @@ class Player < PlayerBase
     # cache the resolved notes we actually played for each of those steps, so
     # that we can detect ties and ended notes in the next call to play_steps/
     # categorize_steps.
-    @notes_for_prev_steps.clear
-    @prev_steps.each { |step| @notes_for_prev_steps[step] = note_for_step(step) }
+    @attrs_for_prev_steps.clear
+    @prev_steps.each do |step|
+      @attrs_for_prev_steps[step] = effective_attrs(step)
+    end
   end
 
   # Stop the MIDI note or kill the synth node corresponding to the given Step,
@@ -319,7 +375,7 @@ class Player < PlayerBase
   # in which case it will not have an entry in active_midi_notes or
   # active_synth_nodes. Do nothing in that case.
   def end_step(step)
-    step_note = @notes_for_prev_steps[step]
+    step_note = prev_note(step)
 
     if @midi
       # Note that @active_midi_notes is a Set, and Set.delete acts differently
@@ -335,8 +391,9 @@ class Player < PlayerBase
   # Schedules a call to `end_step` for a tied Step that will end between slots
   # (i.e., before the next call to `play_steps`).
   def schedule_end_for_step_with_partial_gate(step)
-    ExtApi.time_warp(step.gate * @track.granularity.to_f) do
+    ExtApi.time_warp(effective_gate(step) * @track.granularity.to_f) do
       log("killing #{step.inspect} @ t=#{ExtApi.vt}", "player") if @debug
+      # The step will be in prev_steps by the time this fires.
       end_step(step)
     end
   end
@@ -357,22 +414,22 @@ class Player < PlayerBase
   # @track. Updates @active_midi_notes or @active_synth_nodes as needed to track
   # ongoing steps.
   def start_step(step)
-    step_note = note_for_step(step)
+    note, gate, vel = effective_attrs(step)
 
-    if step.tied?
+    if gate == 1
       # Step has indeterminate duration; it may be continued in the next played
       # slot. Start it and we'll kill it later when it ends in play_steps.
       if @midi
-        ExtApi.midi_note_on(step_note, velocity: step.vel, **@midi_spi_kwargs)
-        @active_midi_notes << step_note
+        ExtApi.midi_note_on(note, velocity: vel, **@midi_spi_kwargs)
+        @active_midi_notes << note
       else
         # TODO: there's no good way to just have a synth note go forever and
         # eventually gracefully kick it into release. Luckily I'm really only
         # using this for previewing stuff away from my real synth...
         # For now just having ties go for 100 * the length of the whole track.
         # Obviously that's ridiculous.
-        node = ExtApi.play(step_note, amp: step.velf, sustain: @track.beat_length * 100)
-        @active_synth_nodes[step_note] = node
+        node = ExtApi.play(note, amp: vel / 127.0, sustain: @track.beat_length * 100)
+        @active_synth_nodes[note] = node
       end
     else
       # Step has a known duration, so we can specify it now and don't have to
@@ -384,9 +441,9 @@ class Player < PlayerBase
       # to hold on to them for that either.
       # rubocop:disable Style/IfInsideElse
       if @midi
-        ExtApi.midi(step_note, velocity: step.vel, sustain: step.gate * @track.granularity.to_f, **@midi_spi_kwargs)
+        ExtApi.midi(note, velocity: vel, sustain: gate * @track.granularity.to_f, **@midi_spi_kwargs)
       else
-        ExtApi.play(step_note, amp: step.velf, sustain: step.gate * @track.granularity.to_f)
+        ExtApi.play(note, amp: vel / 127.0, sustain: gate * @track.granularity.to_f)
       end
       # rubocop:enable Style/IfInsideElse
     end

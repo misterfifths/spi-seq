@@ -15,16 +15,18 @@ require_relative "prob"
 # whether it should trigger when its slot is played. It additionally has a
 # number of accumulation parameters, which determine changes to be made to the
 # step each time it plays. The effect of accumulation varies depending on the
-# subclass. For {Step}s, it applies a semitone offset to the {Step#note note};
-# for {CCStep}s it applies an offset to the {CCStep#value value} that will be
-# sent for the CC.
+# subclass. For {Step}s, it applies a semitone offset to the {Step#note note},
+# or shifts the {Step#gate gate} or {Step#vel velocity}. For {CCStep}s it
+# applies an offset to the {CCStep#value value} that will be sent for the CC.
 #
 # Note that **steps are immutable**. The mutation methods provided here, like
 # {#with_prob}, return new steps that have all the same attributes as the
 # receiver, with just the described change.
 #
 # @abstract Subclasses should override `ctor_args`, `ctor_kwargs`, and
-#   `repr_ctor_method` so that {#repr} and `mutate` work as expected.
+#   `repr_ctor_method` so that {#repr} and `mutate` work as expected. They must
+#   also provide `default_accum_target` and `valid_accum_targets` to handle
+#   initialization of accumulation parameters.
 class StepBase
   # A predicate which determines whether this step will trigger when the slot
   # that contains it is played, or nil if the step should always play.
@@ -85,6 +87,13 @@ class StepBase
   # @return [Prob, nil]
   attr_reader :accum_prob
 
+  # Defines the target of accumulation on this step. The valid values depend on
+  # the subclass. For {CCStep}s, the only option is `:value`; accumulation will
+  # effect {CCStep#value}. For {Step}s, it may be `:note`, `:gate`, or `:vel`,
+  # which will target {Step#note}, {Step#gate}, and {Step#vel} respectively.
+  # @return [Symbol]
+  attr_reader :accum_target
+
   # Constructs a step.
   #
   # `prob` is the probability that the step will trigger when its slot is
@@ -99,7 +108,8 @@ class StepBase
   # With the `accum_*` parameters, a step may be configured so that it varies
   # by some accumulating amount each time it triggers. The actual effect of the
   # accumulation varies by subclass. For {Step}s, it applies a semitone offset
-  # to the {Step#note note}; for {CCStep}s it applies an offset to the
+  # to the {Step#note note}, or shifts the {Step#gate gate} or
+  # {Step#vel velocity}. For {CCStep}s it applies an offset to the
   # {CCStep#value value} that will be sent for the CC.
   #
   # You may find it more convenient to set the accumulation parameters after
@@ -121,8 +131,13 @@ class StepBase
   #   accumulation will trigger when the step does, or nil if it should always
   #   trigger. Non-{Prob} values will be converted to {Prob}s as described for
   #   `prob`.
+  # @param accum_target [Symbol, nil] The target for accumulation. If nil,
+  #   defaults to `:note` for {Step}s and `:value` for {CCStep}s. `:value` is
+  #   the only valid value for CCSteps. You may pass `:note`, `:gate`, or `:vel`
+  #   for Steps, to direct accumulation to the corresponding attribute.
   def initialize(prob: nil,
-                 accum_delta: 0, accum_max: 12, accum_min: 0, accum_mode: :wrap, accum_prob: nil)
+                 accum_delta: 0, accum_max: 12, accum_min: 0,
+                 accum_mode: :wrap, accum_prob: nil, accum_target: nil)
     @prob = probify(prob)
 
     raise RangeError, "accum_min must be <= 0" unless accum_min <= 0
@@ -135,6 +150,8 @@ class StepBase
     @accum_mode = accum_mode
 
     @accum_prob = probify(accum_prob)
+    @accum_target = accum_target || default_accum_target
+    raise ArgumentError, "invalid accum_target #{@accum_target}" unless valid_accum_targets.include?(@accum_target)
   end
 
   # Returns a new step with the given accumulation parameters set. Note that
@@ -145,9 +162,12 @@ class StepBase
   # @param mode [:freeze, :wrap, :reverse] See {#accum_mode}.
   # @param prob [Prob, Number, #call, nil] See {#accum_prob}. Non-{Prob} values
   #   will be converted to {Prob}s as described by {#initialize}.
+  # @param target [Symbol, nil] See #{accum_target}. Defaults as described in
+  #   {#initialize}.
   # @return [StepBase]
-  def accum(delta, min: 0, max: 12, mode: :wrap, prob: nil)
-    mutate(accum_delta: delta, accum_min: min, accum_max: max, accum_mode: mode, accum_prob: prob)
+  def accum(delta, min: 0, max: 12, mode: :wrap, prob: nil, target: nil)
+    mutate(accum_delta: delta, accum_min: min, accum_max: max,
+           accum_mode: mode, accum_prob: prob, accum_target: target)
   end
 
   # Returns a new step with the given {#prob probability}. Non-{Prob} values
@@ -308,6 +328,14 @@ class StepBase
     self.class.new(*args, **mutations)
   end
 
+  def default_accum_target
+    raise RuntimeError, "subclasses must implement default_accum_target"
+  end
+
+  def valid_accum_targets
+    raise RuntimeError, "subclasses must implement valid_accum_targets"
+  end
+
 
   private
 
@@ -335,7 +363,8 @@ class StepBase
       accum_max: 12,
       accum_min: 0,
       accum_mode: :wrap,
-      accum_prob: nil
+      accum_prob: nil,
+      accum_target: default_accum_target
     }
   end
 end

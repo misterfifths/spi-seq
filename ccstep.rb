@@ -53,7 +53,8 @@ class CCStep < StepBase
   #   Values outside of 0 - 127 (inclusive) will be clamped to the nearest
   #   extreme.
   def initialize(cc, value, prob: nil,
-                 accum_delta: 0, accum_max: 12, accum_min: 0, accum_mode: :wrap, accum_prob: nil)
+                 accum_delta: 0, accum_max: 12, accum_min: 0,
+                 accum_mode: :wrap, accum_prob: nil, accum_target: nil)
     @cc = cc.to_i
     raise RangeError, "CC numbers must be between 0 and 127, inclusive" if @cc < 0 || @cc > 127
 
@@ -65,7 +66,8 @@ class CCStep < StepBase
     end
 
     super(prob: prob, accum_delta: accum_delta, accum_max: accum_max,
-          accum_min: accum_min, accum_mode: accum_mode, accum_prob: accum_prob)
+          accum_min: accum_min, accum_mode: accum_mode,
+          accum_prob: accum_prob, accum_target: accum_target)
   end
 
   # Returns a new CCStep with the given {#cc CC number}. It is an error to pass
@@ -105,6 +107,14 @@ class CCStep < StepBase
 
   def ctor_args
     [:cc, :value]
+  end
+
+  def default_accum_target
+    :value
+  end
+
+  def valid_accum_targets
+    [:value]
   end
 
   def repr_ctor_method

@@ -237,6 +237,16 @@ t = T[
 
 The accumulation of 7 semitones will only trigger on every other playback of the track, so the first two cycles will play a C4, the next two will play a G4, and so on.
 
+Accumulation can actually effect more than notes! You can apply accumulation to the gate or velocity of a step using the `target` argument, like this:
+
+```ruby
+t = T[
+  S(:c4, gate: 0.5).accum(0.1, max: 0.5, mode: freeze)
+]
+```
+
+That C4 will start with a gate of 0.5, increasing by 0.1 each time it plays, until it finally becomes a tie (and stays there because of the `freeze` mode).
+
 ### Manipulating `Track`s
 
 Much of the power of spi-seq lies in its track mutation methods. Let's take a look at some of them. In these examples, I'm omitting most boilerplate and the `track_live_loop` calls for playback.

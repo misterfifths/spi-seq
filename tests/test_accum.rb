@@ -258,4 +258,49 @@ class AccumTest < Test::Unit::TestCase
       [64, 8, 4]
     ], play_count: 5
   end
+
+  def test_vel_target
+    # The delta calculations are identical between this and standard note
+    # accumulation, so we don't need to go crazy here. Just making sure it
+    # targets velocity is good enough.
+    t = QT[S(:c4, gate: 0.5, vel: 5).accum(10, max: 30, mode: :freeze, target: :vel)]
+    assert_playback_events t, [
+      [:c4, 0, 0.5, 5],
+      [:c4, 1, 1.5, 15],
+      [:c4, 2, 2.5, 25],
+      [:c4, 3, 3.5, 35],
+      [:c4, 4, 4.5, 35],  # maxed out
+      [:c4, 5, 5.5, 35]
+    ], play_count: 6
+  end
+
+  def test_gate_target
+    # Again, the delta stepping has been tested thoroughly, so we can keep it
+    # pretty simple.
+
+    t = QT[S(:c4, gate: 0.5).accum(0.1, max: 0.5, mode: :freeze, target: :gate)]
+    assert_playback_events t, [
+      [:c4, 0, 0.5],
+      [:c4, 1, 1.6],
+      [:c4, 2, 2.7],
+      [:c4, 3, 3.8],
+      [:c4, 4, 4.9],
+      [:c4, 5, nil]  # now tied
+    ], play_count: 8
+
+    # If gate exceeds 1, accumulation continues
+    t = QT[S(:c4, gate: 0.8).accum(0.1, min: -0.5, max: 0.4, mode: :reverse, target: :gate)]
+    assert_playback_events t, [
+      [:c4, 0, 0.8],
+      [:c4, 1, 1.9],
+      [:c4, 2,        # accum +0.2 - now tied from 2 - 3
+                      # +0.3, tied 3 - 4
+                      # +0.4, tied 4 - 5
+                      # now reversing, +0.3, tied 5 - 6
+                      # +0.2, tied 6 - 7
+               7.9],  # +0.1, gate 0.9, tie ends
+      [:c4, 8, 8.8],  # +0
+      [:c4, 9, 9.7]   # -0.1
+    ], play_count: 10
+  end
 end

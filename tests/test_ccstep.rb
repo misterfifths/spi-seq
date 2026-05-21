@@ -51,7 +51,7 @@ class CCStepTest < Test::Unit::TestCase
     assert_attrs CC(1, 2).shift_val(-10), 1, 0
   end
 
-  def assert_accum(step, delta, min: 0, max: 12, mode: :wrap, prob: nil)
+  def assert_accum(step, delta, min: 0, max: 12, mode: :wrap, prob: nil, target: :value)
     assert_equal step.accum_delta, delta
     assert_equal step.accum_min, min
     assert_equal step.accum_max, max
@@ -61,6 +61,7 @@ class CCStepTest < Test::Unit::TestCase
     else
       assert_equal step.accum_prob, prob
     end
+    assert_equal step.accum_target, target
   end
 
   def test_accum
@@ -71,6 +72,7 @@ class CCStepTest < Test::Unit::TestCase
     assert_accum s.accum(1, min: -2), 1, min: -2
     assert_accum s.accum(1, min: -2, max: 5), 1, min: -2, max: 5
     assert_accum s.accum(1, min: -2, max: 5, mode: :reverse), 1, min: -2, max: 5, mode: :reverse
+    assert_accum s.accum(1, min: -2, max: 5, mode: :reverse, target: :value), 1, min: -2, max: 5, mode: :reverse, target: :value
 
     p = Prob.one_in(5)
     assert_accum s.accum(1, min: -2, max: 5, mode: :reverse, prob: p), 1, min: -2, max: 5, mode: :reverse, prob: p
@@ -87,15 +89,16 @@ class CCStepTest < Test::Unit::TestCase
     assert_accum s, 1, max: 20
 
     # Invalid mode values should raise
-    assert_raises { CC(127, 50).accum(mode: :nope) }
-    assert_raises { CC(127, 50).accum(mode: nil) }
+    assert_raises { CC(127, 50).accum(1, mode: :nope) }
+    assert_raises { CC(127, 50).accum(1, mode: nil) }
+    assert_raises { CC(127, 50).accum(1, mode: nil, target: :note) }
   end
 
   def assert_repr(s)
     roundtrip = eval(s.repr)  # rubocop:disable Security/Eval
     assert_attrs roundtrip, s.cc, s.val, s.prob
     assert_accum roundtrip, s.accum_delta, min: s.accum_min, max: s.accum_max,
-                            mode: s.accum_mode, prob: s.accum_prob
+                            mode: s.accum_mode, prob: s.accum_prob, target: s.accum_target
   end
 
   def test_repr
@@ -107,6 +110,7 @@ class CCStepTest < Test::Unit::TestCase
     assert_repr a.accum(1, min: -5)
     assert_repr a.accum(1, min: -5, max: 22)
     assert_repr a.accum(1, min: -5, max: 22, mode: :freeze)
+    assert_repr a.accum(1, min: -5, max: 22, mode: :freeze, target: :value)
 
     # Prob spot-checks
     assert_repr a.with_prob(Prob.every_other).accum(1, min: -5, max: 22, mode: :freeze)

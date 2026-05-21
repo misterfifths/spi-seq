@@ -19,7 +19,8 @@ end
 # the grid of a {Track}. See the documentation for {StepBase} for details about
 # steps in general, and their probability and accumulation mechanics.
 #
-# Accumulation on a Step applies a semitone offset to the {#note}.
+# Accumulation on a Step applies a semitone offset to the {#note} by default,
+# but can also target the {#gate} or {#vel}.
 #
 # Note that **Steps are immutable**. The mutation methods provided here, like
 # {#with_note}, return new Steps that have all the same attributes as the
@@ -54,8 +55,9 @@ class Step < StepBase
   #
   # `Step.new` is aliased to {S} for convenience.
   #
-  # Accumulation on a Step manifests as a shift in the {#note} by the
-  # accumulated number of semitones.
+  # By default, accumulation on a Step manifests as a shift in the {#note} by
+  # the accumulated number of semitones. It can also target the {#gate} or
+  # {#vel} with the `accum_target` parameter.
   #
   # You may find it more convenient to set the accumulation parameters after
   # constructing a step with the {#accum} method.
@@ -71,7 +73,8 @@ class Step < StepBase
   #   duration of its slot. Values outside of 0.0 - 1.0 will be clamped to the
   #   nearest extreme. See {#gate}.
   def initialize(note, vel: 127, gate: 1.0, prob: nil,
-                 accum_delta: 0, accum_max: 12, accum_min: 0, accum_mode: :wrap, accum_prob: nil)
+                 accum_delta: 0, accum_max: 12, accum_min: 0,
+                 accum_mode: :wrap, accum_prob: nil, accum_target: nil)
     @note = MIDINote.new(note)
 
     @vel = vel.to_i
@@ -89,7 +92,8 @@ class Step < StepBase
     end
 
     super(prob: prob, accum_delta: accum_delta, accum_max: accum_max,
-          accum_min: accum_min, accum_mode: accum_mode, accum_prob: accum_prob)
+          accum_min: accum_min, accum_mode: accum_mode,
+          accum_prob: accum_prob, accum_target: accum_target)
   end
 
   # Returns a new Step with the given {#note}.
@@ -219,6 +223,14 @@ class Step < StepBase
     kwargs[:vel] = 127
     kwargs[:gate] = 1
     kwargs
+  end
+
+  def default_accum_target
+    :note
+  end
+
+  def valid_accum_targets
+    %i[note gate vel]
   end
 
   def repr_ctor_method
