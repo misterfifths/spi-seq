@@ -130,7 +130,7 @@ class ChordTest < Test::Unit::TestCase
     assert_equal Chord.major_ninth.flat5.intervals, [:P1, :M3, :d5, :M7, :M9]
 
     assert_equal Chord.new(:power).intervals, [:P1, :P5]
-    assert_equal Chord.new(:power2).intervals, [:P1, :P5, :M9]
+    assert_equal Chord.new(:power2).intervals, [:P1, :P5, :P8, :P12]
     assert_equal Chord.new(:fr6).intervals, [:P1, :M3, :d5, :A6]
   end
 

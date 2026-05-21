@@ -755,12 +755,18 @@ class Chord
   end
 
 
-  # Returns fifth or "power" chord spanning the given number of octaves.
-  # @param count [Integer]
+  # Returns fifth or "power" chord (P1 and P5) spanning the given number of
+  # octaves.
+  # @param octaves [Integer]
   # @return [Chord]
-  def self.fifth(count = 1)
-    intervals = [:P1]
-    count.times { |i| intervals.append(Interval.new(size: 7 * (i + 1))) }
+  def self.fifth(octaves = 1)
+    p1 = Interval.new(:P1)
+    p5 = Interval.new(:P5)
+    intervals = []
+    octaves.times do |i|
+      intervals << p1 + 12 * i
+      intervals << p5 + 12 * i
+    end
     new(intervals)
   end
 
