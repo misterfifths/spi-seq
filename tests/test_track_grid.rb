@@ -390,7 +390,7 @@ class TrackGridTest < Test::Unit::TestCase
   def test_slice
     assert_grid T[:c4][0], [[:c4]]
     assert_grid T[:c4][-1], [[:c4]]
-    assert_raises { T[:c4][1] }
+    assert_raises(IndexError) { T[:c4][1] }
 
     t = T[:a1, :b2, :c3]
     assert_grid t[0], [[:a1]]

@@ -1232,6 +1232,7 @@ class TrackBase
   # @return [TrackBase]
   def slice(*args)
     s = @grid.slice(*args)
+    raise IndexError, "invalid grid index" if s.nil?
     s = [s] if s.empty? || !s[0].is_a?(Array)
     mutate(grid: s)
   end
