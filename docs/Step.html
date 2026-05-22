@@ -109,7 +109,8 @@
     <p>A Step represents a sequenceable MIDI note event which can appear in slots in
 the grid of a <span class='object_link'><a href="Track.html" title="Track (class)">Track</a></span>. See the documentation for <span class='object_link'><a href="StepBase.html" title="StepBase (class)">StepBase</a></span> for details about
 steps in general, and their probability and accumulation mechanics.</p>
-<p>Accumulation on a Step applies a semitone offset to the <span class='object_link'><a href="#note-instance_method" title="Step#note (method)">#note</a></span>.</p>
+<p>Accumulation on a Step applies a semitone offset to the <span class='object_link'><a href="#note-instance_method" title="Step#note (method)">#note</a></span> by default,
+but can also target the <span class='object_link'><a href="#gate-instance_method" title="Step#gate (method)">#gate</a></span> or <span class='object_link'><a href="#vel-instance_method" title="Step#vel (method)">#vel</a></span>.</p>
 <p>Note that <strong>Steps are immutable</strong>. The mutation methods provided here, like
 <span class='object_link'><a href="#with_note-instance_method" title="Step#with_note (method)">#with_note</a></span>, return new Steps that have all the same attributes as the
 receiver, with just the described change.</p>
@@ -214,7 +215,7 @@ receiver, with just the described change.</p>
   
   
   <h3 class="inherited">Attributes inherited from <span class='object_link'><a href="StepBase.html" title="StepBase (class)">StepBase</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="StepBase.html#accum_delta-instance_method" title="StepBase#accum_delta (method)">#accum_delta</a></span>, <span class='object_link'><a href="StepBase.html#accum_max-instance_method" title="StepBase#accum_max (method)">#accum_max</a></span>, <span class='object_link'><a href="StepBase.html#accum_min-instance_method" title="StepBase#accum_min (method)">#accum_min</a></span>, <span class='object_link'><a href="StepBase.html#accum_mode-instance_method" title="StepBase#accum_mode (method)">#accum_mode</a></span>, <span class='object_link'><a href="StepBase.html#accum_prob-instance_method" title="StepBase#accum_prob (method)">#accum_prob</a></span>, <span class='object_link'><a href="StepBase.html#prob-instance_method" title="StepBase#prob (method)">#prob</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="StepBase.html#accum_delta-instance_method" title="StepBase#accum_delta (method)">#accum_delta</a></span>, <span class='object_link'><a href="StepBase.html#accum_max-instance_method" title="StepBase#accum_max (method)">#accum_max</a></span>, <span class='object_link'><a href="StepBase.html#accum_min-instance_method" title="StepBase#accum_min (method)">#accum_min</a></span>, <span class='object_link'><a href="StepBase.html#accum_mode-instance_method" title="StepBase#accum_mode (method)">#accum_mode</a></span>, <span class='object_link'><a href="StepBase.html#accum_prob-instance_method" title="StepBase#accum_prob (method)">#accum_prob</a></span>, <span class='object_link'><a href="StepBase.html#accum_target-instance_method" title="StepBase#accum_target (method)">#accum_target</a></span>, <span class='object_link'><a href="StepBase.html#prob-instance_method" title="StepBase#prob (method)">#prob</a></span></p>
 
 
   
@@ -250,7 +251,7 @@ receiver, with just the described change.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(note, vel: 127, gate: 1.0, prob: nil, accum_delta: 0, accum_max: 12, accum_min: 0, accum_mode: :wrap, accum_prob: nil)  &#x21d2; Step </a>
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(note, vel: 127, gate: 1.0, prob: nil, accum_delta: 0, accum_max: 12, accum_min: 0, accum_mode: :wrap, accum_prob: nil, accum_target: nil)  &#x21d2; Step </a>
     
 
     
@@ -581,7 +582,7 @@ receiver, with just the described change.</p>
     <div class="method_details first">
   <h3 class="signature first" id="initialize-instance_method">
   
-    #<strong>initialize</strong>(note, vel: 127, gate: 1.0, prob: nil, accum_delta: 0, accum_max: 12, accum_min: 0, accum_mode: :wrap, accum_prob: nil)  &#x21d2; <tt><span class='object_link'><a href="" title="Step (class)">Step</a></span></tt> 
+    #<strong>initialize</strong>(note, vel: 127, gate: 1.0, prob: nil, accum_delta: 0, accum_max: 12, accum_min: 0, accum_mode: :wrap, accum_prob: nil, accum_target: nil)  &#x21d2; <tt><span class='object_link'><a href="" title="Step (class)">Step</a></span></tt> 
   
 
   
@@ -591,8 +592,9 @@ receiver, with just the described change.</p>
   <div class="discussion">
     <p>Constructs a Step.</p>
 <p><code>Step.new</code> is aliased to <span class='object_link'><a href="top-level-namespace.html#S-instance_method" title="#S (method)">#S</a></span> for convenience.</p>
-<p>Accumulation on a Step manifests as a shift in the <span class='object_link'><a href="#note-instance_method" title="Step#note (method)">#note</a></span> by the
-accumulated number of semitones.</p>
+<p>By default, accumulation on a Step manifests as a shift in the <span class='object_link'><a href="#note-instance_method" title="Step#note (method)">#note</a></span> by
+the accumulated number of semitones. It can also target the <span class='object_link'><a href="#gate-instance_method" title="Step#gate (method)">#gate</a></span> or
+<span class='object_link'><a href="#vel-instance_method" title="Step#vel (method)">#vel</a></span> with the <code>accum_target</code> parameter.</p>
 <p>You may find it more convenient to set the accumulation parameters after
 constructing a step with the <span class='object_link'><a href="StepBase.html#accum-instance_method" title="StepBase#accum (method)">StepBase#accum</a></span> method.</p>
 
@@ -760,6 +762,25 @@ trigger. Non-<span class='object_link'><a href="Prob.html" title="Prob (class)">
       
     </li>
   
+    <li>
+      
+        <span class='name'>accum_target</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'>Symbol</span></tt>, <tt>nil</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The target for accumulation. If nil,
+defaults to <code>:note</code> for <span class='object_link'><a href="" title="Step (class)">Step</a></span>s and <code>:value</code> for <span class='object_link'><a href="CCStep.html" title="CCStep (class)">CCStep</a></span>s. <code>:value</code> is
+the only valid value for CCSteps. You may pass <code>:note</code>, <code>:gate</code>, or <code>:vel</code>
+for Steps, to direct accumulation to the corresponding attribute.</p></div>
+      
+    </li>
+  
 </ul>
 
 
@@ -769,8 +790,6 @@ trigger. Non-<span class='object_link'><a href="Prob.html" title="Prob (class)">
       <pre class="lines">
 
 
-73
-74
 75
 76
 77
@@ -789,13 +808,18 @@ trigger. Non-<span class='object_link'><a href="Prob.html" title="Prob (class)">
 90
 91
 92
-93</pre>
+93
+94
+95
+96
+97</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 73</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 75</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_note'>note</span><span class='comma'>,</span> <span class='label'>vel:</span> <span class='int'>127</span><span class='comma'>,</span> <span class='label'>gate:</span> <span class='float'>1.0</span><span class='comma'>,</span> <span class='label'>prob:</span> <span class='kw'>nil</span><span class='comma'>,</span>
-               <span class='label'>accum_delta:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>accum_max:</span> <span class='int'>12</span><span class='comma'>,</span> <span class='label'>accum_min:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>accum_mode:</span> <span class='symbol'>:wrap</span><span class='comma'>,</span> <span class='label'>accum_prob:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+               <span class='label'>accum_delta:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>accum_max:</span> <span class='int'>12</span><span class='comma'>,</span> <span class='label'>accum_min:</span> <span class='int'>0</span><span class='comma'>,</span>
+               <span class='label'>accum_mode:</span> <span class='symbol'>:wrap</span><span class='comma'>,</span> <span class='label'>accum_prob:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>accum_target:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='ivar'>@note</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="MIDINote.html#new-class_method" title="MIDINote.new (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_note'>note</span><span class='rparen'>)</span>
 
   <span class='ivar'>@vel</span> <span class='op'>=</span> <span class='id identifier rubyid_vel'>vel</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span>
@@ -813,7 +837,8 @@ trigger. Non-<span class='object_link'><a href="Prob.html" title="Prob (class)">
   <span class='kw'>end</span>
 
   <span class='kw'>super</span><span class='lparen'>(</span><span class='label'>prob:</span> <span class='id identifier rubyid_prob'>prob</span><span class='comma'>,</span> <span class='label'>accum_delta:</span> <span class='id identifier rubyid_accum_delta'>accum_delta</span><span class='comma'>,</span> <span class='label'>accum_max:</span> <span class='id identifier rubyid_accum_max'>accum_max</span><span class='comma'>,</span>
-        <span class='label'>accum_min:</span> <span class='id identifier rubyid_accum_min'>accum_min</span><span class='comma'>,</span> <span class='label'>accum_mode:</span> <span class='id identifier rubyid_accum_mode'>accum_mode</span><span class='comma'>,</span> <span class='label'>accum_prob:</span> <span class='id identifier rubyid_accum_prob'>accum_prob</span><span class='rparen'>)</span>
+        <span class='label'>accum_min:</span> <span class='id identifier rubyid_accum_min'>accum_min</span><span class='comma'>,</span> <span class='label'>accum_mode:</span> <span class='id identifier rubyid_accum_mode'>accum_mode</span><span class='comma'>,</span>
+        <span class='label'>accum_prob:</span> <span class='id identifier rubyid_accum_prob'>accum_prob</span><span class='comma'>,</span> <span class='label'>accum_target:</span> <span class='id identifier rubyid_accum_target'>accum_target</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -870,12 +895,12 @@ the next played slot with the same note.</p>
       <pre class="lines">
 
 
-51
 52
-53</pre>
+53
+54</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 51</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 52</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_gate'>gate</span>
   <span class='ivar'>@gate</span>
@@ -925,12 +950,12 @@ to accumulation).</p>
       <pre class="lines">
 
 
-31
 32
-33</pre>
+33
+34</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 31</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 32</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_note'>note</span>
   <span class='ivar'>@note</span>
@@ -981,12 +1006,12 @@ into an <code>amp</code> value passed to <code>play</code>.</p>
       <pre class="lines">
 
 
-39
 40
-41</pre>
+41
+42</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 39</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 40</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_vel'>vel</span>
   <span class='ivar'>@vel</span>
@@ -1059,12 +1084,12 @@ the negation of its argument.</p>
       <pre class="lines">
 
 
-183
-184
-185</pre>
+187
+188
+189</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 183</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 187</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_down'>down</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_shift_octave'>shift_octave</span><span class='lparen'>(</span><span class='op'>-</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
@@ -1127,12 +1152,12 @@ outside of 0 - 1, it will be clamped.</p>
       <pre class="lines">
 
 
-148
-149
-150</pre>
+152
+153
+154</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 148</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 152</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_shift_gate'>shift_gate</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_with_gate'>with_gate</span><span class='lparen'>(</span><span class='ivar'>@gate</span> <span class='op'>+</span> <span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
@@ -1196,12 +1221,12 @@ return a step with a note of C4.</p>
       <pre class="lines">
 
 
-166
-167
-168</pre>
+170
+171
+172</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 166</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 170</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_shift_octave'>shift_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_with_note'>with_note</span><span class='lparen'>(</span><span class='ivar'>@note</span><span class='period'>.</span><span class='id identifier rubyid_shift_octave'>shift_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -1264,12 +1289,12 @@ resulting velocity is outside of 0 - 127, it will be clamped.</p>
       <pre class="lines">
 
 
-115
-116
-117</pre>
+119
+120
+121</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 115</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 119</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_shift_vel'>shift_vel</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_with_vel'>with_vel</span><span class='lparen'>(</span><span class='ivar'>@vel</span> <span class='op'>+</span> <span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
@@ -1332,12 +1357,12 @@ the resulting velocity is outside of 0 - 127, it will be clamped.</p>
       <pre class="lines">
 
 
-132
-133
-134</pre>
+136
+137
+138</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 132</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 136</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_shift_velf'>shift_velf</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_with_velf'>with_velf</span><span class='lparen'>(</span><span class='id identifier rubyid_velf'>velf</span> <span class='op'>+</span> <span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
@@ -1384,12 +1409,12 @@ the resulting velocity is outside of 0 - 127, it will be clamped.</p>
       <pre class="lines">
 
 
-206
-207
-208</pre>
+210
+211
+212</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 206</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 210</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_tied?'>tied?</span>
   <span class='ivar'>@gate</span> <span class='op'>==</span> <span class='float'>1.0</span>  <span class='comment'># rubocop:disable Lint/FloatComparison
@@ -1455,12 +1480,12 @@ the resulting velocity is outside of 0 - 127, it will be clamped.</p>
       <pre class="lines">
 
 
-190
-191
-192</pre>
+194
+195
+196</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 190</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 194</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_transpose'>transpose</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_with_note'>with_note</span><span class='lparen'>(</span><span class='ivar'>@note</span><span class='period'>.</span><span class='id identifier rubyid_transpose'>transpose</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -1525,12 +1550,12 @@ shifted up by the given amount. This is equivalent to <span class='object_link'>
       <pre class="lines">
 
 
-174
-175
-176</pre>
+178
+179
+180</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 174</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 178</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_up'>up</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_shift_octave'>shift_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
@@ -1584,12 +1609,12 @@ shifted up by the given amount. This is equivalent to <span class='object_link'>
       <pre class="lines">
 
 
-200
-201
-202</pre>
+204
+205
+206</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 200</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 204</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_velf'>velf</span>
   <span class='ivar'>@vel</span> <span class='op'>/</span> <span class='float'>127.0</span>
@@ -1652,12 +1677,12 @@ it will be clamped.</p>
       <pre class="lines">
 
 
-140
-141
-142</pre>
+144
+145
+146</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 140</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 144</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_gate'>with_gate</span><span class='lparen'>(</span><span class='id identifier rubyid_new_gate'>new_gate</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>gate:</span> <span class='id identifier rubyid_new_gate'>new_gate</span><span class='rparen'>)</span>
@@ -1723,12 +1748,12 @@ understood by <span class='object_link'><a href="MIDINote.html#new-class_method"
       <pre class="lines">
 
 
-99
-100
-101</pre>
+103
+104
+105</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 99</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 103</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_note'>with_note</span><span class='lparen'>(</span><span class='id identifier rubyid_new_note'>new_note</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>note:</span> <span class='id identifier rubyid_new_note'>new_note</span><span class='rparen'>)</span>
@@ -1792,12 +1817,12 @@ a step with a note of C5.</p>
       <pre class="lines">
 
 
-157
-158
-159</pre>
+161
+162
+163</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 157</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 161</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_octave'>with_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_new_octave'>new_octave</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_with_note'>with_note</span><span class='lparen'>(</span><span class='ivar'>@note</span><span class='period'>.</span><span class='id identifier rubyid_with_octave'>with_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_new_octave'>new_octave</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -1863,12 +1888,12 @@ will be clamped.</p>
       <pre class="lines">
 
 
-107
-108
-109</pre>
+111
+112
+113</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 107</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 111</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_vel'>with_vel</span><span class='lparen'>(</span><span class='id identifier rubyid_new_vel'>new_vel</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>vel:</span> <span class='id identifier rubyid_new_vel'>new_vel</span><span class='rparen'>)</span>
@@ -1938,12 +1963,12 @@ between 0 and 1. Values outside of that range will be clamped.</p>
       <pre class="lines">
 
 
-124
-125
-126</pre>
+128
+129
+130</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 124</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 128</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_velf'>with_velf</span><span class='lparen'>(</span><span class='id identifier rubyid_new_velf'>new_velf</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>vel:</span> <span class='id identifier rubyid_new_velf'>new_velf</span> <span class='op'>*</span> <span class='int'>127</span><span class='rparen'>)</span>  <span class='comment'># this is clamped to 0-127 in the ctor

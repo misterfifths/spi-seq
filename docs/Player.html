@@ -441,7 +441,7 @@ about its state during playback.</p></div>
 </span>  <span class='ivar'>@active_synth_nodes</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>  <span class='comment'># note symbols -&gt; synth nodes. unused when playing midi
 </span>  <span class='ivar'>@active_midi_notes</span> <span class='op'>=</span> <span class='const'>Set</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>  <span class='comment'># active midi note symbols. unused when playing built-in synths
 </span>
-  <span class='ivar'>@effective_note_cache</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
+  <span class='ivar'>@effective_attrs_cache</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
 
   <span class='kw'>super</span><span class='lparen'>(</span><span class='id identifier rubyid_track'>track</span><span class='comma'>,</span> <span class='label'>debug:</span> <span class='id identifier rubyid_debug'>debug</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
@@ -668,7 +668,7 @@ clean slate. Ends all ongoing steps and resets the internal state, like
   <span class='kw'>super</span>
 
   <span class='ivar'>@prev_steps</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
-  <span class='ivar'>@notes_for_prev_steps</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
+  <span class='ivar'>@attrs_for_prev_steps</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>

@@ -107,7 +107,9 @@
     <div class="note abstract">
   <strong>This class is abstract.</strong>
   <div class='inline'><p>Subclasses should override <code>ctor_args</code>, <code>ctor_kwargs</code>, and
-<code>repr_ctor_method</code> so that <span class='object_link'><a href="#repr-instance_method" title="StepBase#repr (method)">#repr</a></span> and <code>mutate</code> work as expected.</p></div>
+<code>repr_ctor_method</code> so that <span class='object_link'><a href="#repr-instance_method" title="StepBase#repr (method)">#repr</a></span> and <code>mutate</code> work as expected. They must
+also provide <code>default_accum_target</code> and <code>valid_accum_targets</code> to handle
+initialization of accumulation parameters.</p></div>
 </div>
 <p>StepBase represents an event that can be sequenced in a slot inside a
 <span class='object_link'><a href="TrackBase.html" title="TrackBase (class)">track</a></span>. Do not make instances of StepBase directly; instead use
@@ -117,9 +119,9 @@ one of its subclasses that specialize for a particular sort of event, like
 whether it should trigger when its slot is played. It additionally has a
 number of accumulation parameters, which determine changes to be made to the
 step each time it plays. The effect of accumulation varies depending on the
-subclass. For <span class='object_link'><a href="Step.html" title="Step (class)">Step</a></span>s, it applies a semitone offset to the <span class='object_link'><a href="Step.html#note-instance_method" title="Step#note (method)">note</a></span>;
-for <span class='object_link'><a href="CCStep.html" title="CCStep (class)">CCStep</a></span>s it applies an offset to the <span class='object_link'><a href="CCStep.html#value-instance_method" title="CCStep#value (method)">value</a></span> that will be
-sent for the CC.</p>
+subclass. For <span class='object_link'><a href="Step.html" title="Step (class)">Step</a></span>s, it applies a semitone offset to the <span class='object_link'><a href="Step.html#note-instance_method" title="Step#note (method)">note</a></span>,
+or shifts the <span class='object_link'><a href="Step.html#gate-instance_method" title="Step#gate (method)">gate</a></span> or <span class='object_link'><a href="Step.html#vel-instance_method" title="Step#vel (method)">velocity</a></span>. For <span class='object_link'><a href="CCStep.html" title="CCStep (class)">CCStep</a></span>s it
+applies an offset to the <span class='object_link'><a href="CCStep.html#value-instance_method" title="CCStep#value (method)">value</a></span> that will be sent for the CC.</p>
 <p>Note that <strong>steps are immutable</strong>. The mutation methods provided here, like
 <span class='object_link'><a href="#with_prob-instance_method" title="StepBase#with_prob (method)">#with_prob</a></span>, return new steps that have all the same attributes as the
 receiver, with just the described change.</p>
@@ -278,6 +280,33 @@ receiver, with just the described change.</p>
       <li class="public ">
   <span class="summary_signature">
     
+      <a href="#accum_target-instance_method" title="#accum_target (instance method)">#<strong>accum_target</strong>  &#x21d2; Symbol </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+      <span class="note title readonly">readonly</span>
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Defines the target of accumulation on this step.</p></div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#prob-instance_method" title="#prob (instance method)">#<strong>prob</strong>  &#x21d2; Prob<sup>?</sup> </a>
     
 
@@ -318,7 +347,7 @@ receiver, with just the described change.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#accum-instance_method" title="#accum (instance method)">#<strong>accum</strong>(delta, min: 0, max: 12, mode: :wrap, prob: nil)  &#x21d2; StepBase </a>
+      <a href="#accum-instance_method" title="#accum (instance method)">#<strong>accum</strong>(delta, min: 0, max: 12, mode: :wrap, prob: nil, target: nil)  &#x21d2; StepBase </a>
     
 
     
@@ -340,7 +369,7 @@ receiver, with just the described change.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(prob: nil, accum_delta: 0, accum_max: 12, accum_min: 0, accum_mode: :wrap, accum_prob: nil)  &#x21d2; StepBase </a>
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(prob: nil, accum_delta: 0, accum_max: 12, accum_min: 0, accum_mode: :wrap, accum_prob: nil, accum_target: nil)  &#x21d2; StepBase </a>
     
 
     
@@ -441,7 +470,7 @@ receiver, with just the described change.</p>
     <div class="method_details first">
   <h3 class="signature first" id="initialize-instance_method">
   
-    #<strong>initialize</strong>(prob: nil, accum_delta: 0, accum_max: 12, accum_min: 0, accum_mode: :wrap, accum_prob: nil)  &#x21d2; <tt><span class='object_link'><a href="" title="StepBase (class)">StepBase</a></span></tt> 
+    #<strong>initialize</strong>(prob: nil, accum_delta: 0, accum_max: 12, accum_min: 0, accum_mode: :wrap, accum_prob: nil, accum_target: nil)  &#x21d2; <tt><span class='object_link'><a href="" title="StepBase (class)">StepBase</a></span></tt> 
   
 
   
@@ -463,7 +492,8 @@ step will trigger</li>
 <p>With the <code>accum_*</code> parameters, a step may be configured so that it varies
 by some accumulating amount each time it triggers. The actual effect of the
 accumulation varies by subclass. For <span class='object_link'><a href="Step.html" title="Step (class)">Step</a></span>s, it applies a semitone offset
-to the <span class='object_link'><a href="Step.html#note-instance_method" title="Step#note (method)">note</a></span>; for <span class='object_link'><a href="CCStep.html" title="CCStep (class)">CCStep</a></span>s it applies an offset to the
+to the <span class='object_link'><a href="Step.html#note-instance_method" title="Step#note (method)">note</a></span>, or shifts the <span class='object_link'><a href="Step.html#gate-instance_method" title="Step#gate (method)">gate</a></span> or
+<span class='object_link'><a href="Step.html#vel-instance_method" title="Step#vel (method)">velocity</a></span>. For <span class='object_link'><a href="CCStep.html" title="CCStep (class)">CCStep</a></span>s it applies an offset to the
 <span class='object_link'><a href="CCStep.html#value-instance_method" title="CCStep#value (method)">value</a></span> that will be sent for the CC.</p>
 <p>You may find it more convenient to set the accumulation parameters after
 constructing a step with the <span class='object_link'><a href="#accum-instance_method" title="StepBase#accum (method)">#accum</a></span> method.</p>
@@ -580,6 +610,25 @@ trigger. Non-<span class='object_link'><a href="Prob.html" title="Prob (class)">
       
     </li>
   
+    <li>
+      
+        <span class='name'>accum_target</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'>Symbol</span></tt>, <tt>nil</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The target for accumulation. If nil,
+defaults to <code>:note</code> for <span class='object_link'><a href="Step.html" title="Step (class)">Step</a></span>s and <code>:value</code> for <span class='object_link'><a href="CCStep.html" title="CCStep (class)">CCStep</a></span>s. <code>:value</code> is
+the only valid value for CCSteps. You may pass <code>:note</code>, <code>:gate</code>, or <code>:vel</code>
+for Steps, to direct accumulation to the corresponding attribute.</p></div>
+      
+    </li>
+  
 </ul>
 
 <p class="tag_title">Raises:</p>
@@ -602,27 +651,31 @@ trigger. Non-<span class='object_link'><a href="Prob.html" title="Prob (class)">
       <pre class="lines">
 
 
-124
-125
-126
-127
-128
-129
-130
-131
-132
-133
-134
-135
-136
-137
-138</pre>
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'stepbase.rb', line 124</span>
+      <pre class="code"><span class="info file"># File 'stepbase.rb', line 138</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='label'>prob:</span> <span class='kw'>nil</span><span class='comma'>,</span>
-               <span class='label'>accum_delta:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>accum_max:</span> <span class='int'>12</span><span class='comma'>,</span> <span class='label'>accum_min:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>accum_mode:</span> <span class='symbol'>:wrap</span><span class='comma'>,</span> <span class='label'>accum_prob:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+               <span class='label'>accum_delta:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>accum_max:</span> <span class='int'>12</span><span class='comma'>,</span> <span class='label'>accum_min:</span> <span class='int'>0</span><span class='comma'>,</span>
+               <span class='label'>accum_mode:</span> <span class='symbol'>:wrap</span><span class='comma'>,</span> <span class='label'>accum_prob:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>accum_target:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='ivar'>@prob</span> <span class='op'>=</span> <span class='id identifier rubyid_probify'>probify</span><span class='lparen'>(</span><span class='id identifier rubyid_prob'>prob</span><span class='rparen'>)</span>
 
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>RangeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>accum_min must be &lt;= 0</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_accum_min'>accum_min</span> <span class='op'>&lt;=</span> <span class='int'>0</span>
@@ -635,6 +688,8 @@ trigger. Non-<span class='object_link'><a href="Prob.html" title="Prob (class)">
   <span class='ivar'>@accum_mode</span> <span class='op'>=</span> <span class='id identifier rubyid_accum_mode'>accum_mode</span>
 
   <span class='ivar'>@accum_prob</span> <span class='op'>=</span> <span class='id identifier rubyid_probify'>probify</span><span class='lparen'>(</span><span class='id identifier rubyid_accum_prob'>accum_prob</span><span class='rparen'>)</span>
+  <span class='ivar'>@accum_target</span> <span class='op'>=</span> <span class='id identifier rubyid_accum_target'>accum_target</span> <span class='op'>||</span> <span class='id identifier rubyid_default_accum_target'>default_accum_target</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>invalid accum_target </span><span class='embexpr_beg'>#{</span><span class='ivar'>@accum_target</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_valid_accum_targets'>valid_accum_targets</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='ivar'>@accum_target</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -692,12 +747,12 @@ sent for the CC.</p>
       <pre class="lines">
 
 
-46
-47
-48</pre>
+48
+49
+50</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'stepbase.rb', line 46</span>
+      <pre class="code"><span class="info file"># File 'stepbase.rb', line 48</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_accum_delta'>accum_delta</span>
   <span class='ivar'>@accum_delta</span>
@@ -749,12 +804,12 @@ greater than <code>accum_min</code>.</p>
       <pre class="lines">
 
 
-53
-54
-55</pre>
+55
+56
+57</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'stepbase.rb', line 53</span>
+      <pre class="code"><span class="info file"># File 'stepbase.rb', line 55</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_accum_max'>accum_max</span>
   <span class='ivar'>@accum_max</span>
@@ -806,12 +861,12 @@ greater than <code>accum_min</code>.</p>
       <pre class="lines">
 
 
-53
-54
-55</pre>
+55
+56
+57</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'stepbase.rb', line 53</span>
+      <pre class="code"><span class="info file"># File 'stepbase.rb', line 55</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_accum_min'>accum_min</span>
   <span class='ivar'>@accum_min</span>
@@ -880,12 +935,12 @@ triggers, the result will be 7.</li>
       <pre class="lines">
 
 
-77
-78
-79</pre>
+79
+80
+81</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'stepbase.rb', line 77</span>
+      <pre class="code"><span class="info file"># File 'stepbase.rb', line 79</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_accum_mode'>accum_mode</span>
   <span class='ivar'>@accum_mode</span>
@@ -945,15 +1000,72 @@ the application of accumulation at all.</p>
       <pre class="lines">
 
 
-86
-87
-88</pre>
+88
+89
+90</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'stepbase.rb', line 86</span>
+      <pre class="code"><span class="info file"># File 'stepbase.rb', line 88</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_accum_prob'>accum_prob</span>
   <span class='ivar'>@accum_prob</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id=""></span>
+      <div class="method_details ">
+  <h3 class="signature " id="accum_target-instance_method">
+  
+    #<strong>accum_target</strong>  &#x21d2; <tt><span class='object_link'>Symbol</span></tt>  <span class="extras">(readonly)</span>
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Defines the target of accumulation on this step. The valid values depend on
+the subclass. For <span class='object_link'><a href="CCStep.html" title="CCStep (class)">CCStep</a></span>s, the only option is `:value`; accumulation will
+effect <span class='object_link'><a href="CCStep.html#value-instance_method" title="CCStep#value (method)">CCStep#value</a></span>. For <span class='object_link'><a href="Step.html" title="Step (class)">Step</a></span>s, it may be `:note`, `:gate`, or `:vel`,
+which will target <span class='object_link'><a href="Step.html#note-instance_method" title="Step#note (method)">Step#note</a></span>, <span class='object_link'><a href="Step.html#gate-instance_method" title="Step#gate (method)">Step#gate</a></span>, and <span class='object_link'><a href="Step.html#vel-instance_method" title="Step#vel (method)">Step#vel</a></span> respectively.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'>Symbol</span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+95
+96
+97</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'stepbase.rb', line 95</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_accum_target'>accum_target</span>
+  <span class='ivar'>@accum_target</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1007,12 +1119,12 @@ that contains it is played, or nil if the step should always play.</p>
       <pre class="lines">
 
 
-33
-34
-35</pre>
+35
+36
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'stepbase.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'stepbase.rb', line 35</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_prob'>prob</span>
   <span class='ivar'>@prob</span>
@@ -1032,7 +1144,7 @@ that contains it is played, or nil if the step should always play.</p>
       <div class="method_details first">
   <h3 class="signature first" id="accum-instance_method">
   
-    #<strong>accum</strong>(delta, min: 0, max: 12, mode: :wrap, prob: nil)  &#x21d2; <tt><span class='object_link'><a href="" title="StepBase (class)">StepBase</a></span></tt> 
+    #<strong>accum</strong>(delta, min: 0, max: 12, mode: :wrap, prob: nil, target: nil)  &#x21d2; <tt><span class='object_link'><a href="" title="StepBase (class)">StepBase</a></span></tt> 
   
 
   
@@ -1128,6 +1240,23 @@ will be converted to <span class='object_link'><a href="Prob.html" title="Prob (
       
     </li>
   
+    <li>
+      
+        <span class='name'>target</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'>Symbol</span></tt>, <tt>nil</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>See #<span class='object_link'><a href="#accum_target-instance_method" title="StepBase#accum_target (method)">#accum_target</a></span>. Defaults as described in
+<span class='object_link'><a href="#initialize-instance_method" title="StepBase#initialize (method)">#initialize</a></span>.</p></div>
+      
+    </li>
+  
 </ul>
 
 <p class="tag_title">Returns:</p>
@@ -1150,15 +1279,17 @@ will be converted to <span class='object_link'><a href="Prob.html" title="Prob (
       <pre class="lines">
 
 
-149
-150
-151</pre>
+168
+169
+170
+171</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'stepbase.rb', line 149</span>
+      <pre class="code"><span class="info file"># File 'stepbase.rb', line 168</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_accum'>accum</span><span class='lparen'>(</span><span class='id identifier rubyid_delta'>delta</span><span class='comma'>,</span> <span class='label'>min:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>max:</span> <span class='int'>12</span><span class='comma'>,</span> <span class='label'>mode:</span> <span class='symbol'>:wrap</span><span class='comma'>,</span> <span class='label'>prob:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>accum_delta:</span> <span class='id identifier rubyid_delta'>delta</span><span class='comma'>,</span> <span class='label'>accum_min:</span> <span class='id identifier rubyid_min'>min</span><span class='comma'>,</span> <span class='label'>accum_max:</span> <span class='id identifier rubyid_max'>max</span><span class='comma'>,</span> <span class='label'>accum_mode:</span> <span class='id identifier rubyid_mode'>mode</span><span class='comma'>,</span> <span class='label'>accum_prob:</span> <span class='id identifier rubyid_prob'>prob</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_accum'>accum</span><span class='lparen'>(</span><span class='id identifier rubyid_delta'>delta</span><span class='comma'>,</span> <span class='label'>min:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>max:</span> <span class='int'>12</span><span class='comma'>,</span> <span class='label'>mode:</span> <span class='symbol'>:wrap</span><span class='comma'>,</span> <span class='label'>prob:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>target:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>accum_delta:</span> <span class='id identifier rubyid_delta'>delta</span><span class='comma'>,</span> <span class='label'>accum_min:</span> <span class='id identifier rubyid_min'>min</span><span class='comma'>,</span> <span class='label'>accum_max:</span> <span class='id identifier rubyid_max'>max</span><span class='comma'>,</span>
+         <span class='label'>accum_mode:</span> <span class='id identifier rubyid_mode'>mode</span><span class='comma'>,</span> <span class='label'>accum_prob:</span> <span class='id identifier rubyid_prob'>prob</span><span class='comma'>,</span> <span class='label'>accum_target:</span> <span class='id identifier rubyid_target'>target</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1227,28 +1358,6 @@ point for floating point numbers.</p></div>
       <pre class="lines">
 
 
-194
-195
-196
-197
-198
-199
-200
-201
-202
-203
-204
-205
-206
-207
-208
-209
-210
-211
-212
-213
-214
-215
 216
 217
 218
@@ -1292,10 +1401,32 @@ point for floating point numbers.</p></div>
 256
 257
 258
-259</pre>
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'stepbase.rb', line 194</span>
+      <pre class="code"><span class="info file"># File 'stepbase.rb', line 216</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_repr'>repr</span><span class='lparen'>(</span><span class='label'>float_digits:</span> <span class='int'>2</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_stringify'>stringify</span> <span class='op'>=</span> <span class='id identifier rubyid_lambda'>lambda</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_val'>val</span><span class='op'>|</span>
@@ -1428,12 +1559,12 @@ will be converted to <span class='object_link'><a href="Prob.html" title="Prob (
       <pre class="lines">
 
 
-158
-159
-160</pre>
+178
+179
+180</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'stepbase.rb', line 158</span>
+      <pre class="code"><span class="info file"># File 'stepbase.rb', line 178</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_prob'>with_prob</span><span class='lparen'>(</span><span class='id identifier rubyid_new_prob'>new_prob</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>prob:</span> <span class='id identifier rubyid_new_prob'>new_prob</span><span class='rparen'>)</span>
@@ -1491,12 +1622,12 @@ will be converted to <span class='object_link'><a href="Prob.html" title="Prob (
       <pre class="lines">
 
 
-165
-166
-167</pre>
+185
+186
+187</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'stepbase.rb', line 165</span>
+      <pre class="code"><span class="info file"># File 'stepbase.rb', line 185</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_without_prob'>without_prob</span>
   <span class='ivar'>@prob</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>?</span> <span class='kw'>self</span> <span class='op'>:</span> <span class='id identifier rubyid_with_prob'>with_prob</span><span class='lparen'>(</span><span class='kw'>nil</span><span class='rparen'>)</span>

@@ -653,7 +653,7 @@ to see all possible names.</p>
   
 
   
-    <span class="summary_desc"><div class='inline'><p>Returns a new chord with the (major or minor) third replaced with a major fourth, and an added major ninth.</p></div></span>
+    <span class="summary_desc"><div class='inline'><p>Returns a new chord with the (major or minor) third replaced with a perfect fourth, and an added major ninth.</p></div></span>
   
 </li>
 
@@ -1155,7 +1155,7 @@ to see all possible names.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#fifth-class_method" title="fifth (class method)">.<strong>fifth</strong>(count = 1)  &#x21d2; Chord </a>
+      <a href="#fifth-class_method" title="fifth (class method)">.<strong>fifth</strong>(octaves = 1)  &#x21d2; Chord </a>
     
 
     
@@ -1169,7 +1169,7 @@ to see all possible names.</p>
   
 
   
-    <span class="summary_desc"><div class='inline'><p>Returns fifth or &quot;power&quot; chord spanning the given number of octaves.</p></div></span>
+    <span class="summary_desc"><div class='inline'><p>Returns fifth or &quot;power&quot; chord (P1 and P5) spanning the given number of octaves.</p></div></span>
   
 </li>
 
@@ -3233,7 +3233,7 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
       <div class="method_details ">
   <h3 class="signature " id="fifth-class_method">
   
-    .<strong>fifth</strong>(count = 1)  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+    .<strong>fifth</strong>(octaves = 1)  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
   
 
   
@@ -3241,7 +3241,8 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p>Returns fifth or &quot;power&quot; chord spanning the given number of octaves.</p>
+    <p>Returns fifth or &quot;power&quot; chord (P1 and P5) spanning the given number of
+octaves.</p>
 
   </div>
 </div>
@@ -3251,7 +3252,7 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
   
     <li>
       
-        <span class='name'>count</span>
+        <span class='name'>octaves</span>
       
       
         <span class='type'>(<tt>Integer</tt>)</span>
@@ -3284,18 +3285,28 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
       <pre class="lines">
 
 
-761
 762
 763
 764
-765</pre>
+765
+766
+767
+768
+769
+770
+771</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 761</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 762</span>
 
-<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_fifth'>fifth</span><span class='lparen'>(</span><span class='id identifier rubyid_count'>count</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_intervals'>intervals</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='symbol'>:P1</span><span class='rbracket'>]</span>
-  <span class='id identifier rubyid_count'>count</span><span class='period'>.</span><span class='id identifier rubyid_times'>times</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_i'>i</span><span class='op'>|</span> <span class='id identifier rubyid_intervals'>intervals</span><span class='period'>.</span><span class='id identifier rubyid_append'>append</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="Interval.html" title="Interval (class)">Interval</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Interval.html#new-class_method" title="Interval.new (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>size:</span> <span class='int'>7</span> <span class='op'>*</span> <span class='lparen'>(</span><span class='id identifier rubyid_i'>i</span> <span class='op'>+</span> <span class='int'>1</span><span class='rparen'>)</span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_fifth'>fifth</span><span class='lparen'>(</span><span class='id identifier rubyid_octaves'>octaves</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_p1'>p1</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Interval.html" title="Interval (class)">Interval</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Interval.html#new-class_method" title="Interval.new (method)">new</a></span></span><span class='lparen'>(</span><span class='symbol'>:P1</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_p5'>p5</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Interval.html" title="Interval (class)">Interval</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Interval.html#new-class_method" title="Interval.new (method)">new</a></span></span><span class='lparen'>(</span><span class='symbol'>:P5</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_intervals'>intervals</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_octaves'>octaves</span><span class='period'>.</span><span class='id identifier rubyid_times'>times</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_i'>i</span><span class='op'>|</span>
+    <span class='id identifier rubyid_intervals'>intervals</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_p1'>p1</span> <span class='op'>+</span> <span class='int'>12</span> <span class='op'>*</span> <span class='id identifier rubyid_i'>i</span>
+    <span class='id identifier rubyid_intervals'>intervals</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_p5'>p5</span> <span class='op'>+</span> <span class='int'>12</span> <span class='op'>*</span> <span class='id identifier rubyid_i'>i</span>
+  <span class='kw'>end</span>
   <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_intervals'>intervals</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -5424,7 +5435,7 @@ both a major and a minor third.</p>
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p>Returns a new chord with the (major or minor) third replaced with a major
+    <p>Returns a new chord with the (major or minor) third replaced with a perfect
 fourth, and an added major ninth. Raises an ArgumentError if the chord has
 no third, or if it has both a major and a minor third.</p>
 

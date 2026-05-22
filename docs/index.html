@@ -220,6 +220,12 @@
 <span class='rbracket'>]</span>
 </code></pre>
 <p>The accumulation of 7 semitones will only trigger on every other playback of the track, so the first two cycles will play a C4, the next two will play a G4, and so on.</p>
+<p>Accumulation can actually effect more than notes! You can apply accumulation to the gate or velocity of a step using the <code>target</code> argument, like this:</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="top-level-namespace.html#T-constant" title="T (constant)">T</a></span></span><span class='lbracket'>[</span>
+  <span class='const'><span class='object_link'><a href="top-level-namespace.html#S-instance_method" title="#S (method)">S</a></span></span><span class='lparen'>(</span><span class='symbol'>:c4</span><span class='comma'>,</span> <span class='label'>gate:</span> <span class='float'>0.5</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_accum'><span class='object_link'><a href="StepBase.html#accum-instance_method" title="StepBase#accum (method)">accum</a></span></span><span class='lparen'>(</span><span class='float'>0.1</span><span class='comma'>,</span> <span class='label'>max:</span> <span class='float'>0.5</span><span class='comma'>,</span> <span class='label'>mode:</span> <span class='id identifier rubyid_freeze'>freeze</span><span class='rparen'>)</span>
+<span class='rbracket'>]</span>
+</code></pre>
+<p>That C4 will start with a gate of 0.5, increasing by 0.1 each time it plays, until it finally becomes a tie (and stays there because of the <code>freeze</code> mode).</p>
 <h3 id="Manipulating__Track_s">Manipulating <code>Track</code>s</h3>
 <p>Much of the power of spi-seq lies in its track mutation methods. Let's take a look at some of them. In these examples, I'm omitting most boilerplate and the <code>track_live_loop</code> calls for playback.</p>
 <p>One thing that greatly effects how you'll interact with them: <strong><code>Track</code> objects are immutable</strong>. All the methods that manipulate them return new <code>Track</code> instances, rather than changing the one on which they are called.</p>

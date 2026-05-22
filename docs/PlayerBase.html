@@ -107,10 +107,10 @@
     <div class="note abstract">
   <strong>This class is abstract.</strong>
   <div class='inline'><p>Subclasses must implement <code>play_steps</code>, <code>accum_should_trigger?</code>, and
-<code>triggering_steps_in_slot</code>. If the subclass has additional internal state,
-it should override <code>stop</code> to clear it and <code>inherit_state</code> to propagate it
-to new player instances. There are additional override points that may be
-of use.</p></div>
+<code>step_should_trigger?</code>. If the subclass has additional internal state, it
+should override <code>stop</code> to clear it and <code>inherit_state</code> to propagate it to
+new player instances. There are additional override points that may be of
+use.</p></div>
 </div>
 <p>PlayerBase contains the core functionality for playing back tracks (i.e,
 subclasses of <span class='object_link'><a href="TrackBase.html" title="TrackBase (class)">TrackBase</a></span>). Do not make instances of PlayerBase directly.
@@ -671,7 +671,8 @@ internally applying a BPM multiplier.</p>
 111
 112
 113
-114</pre>
+114
+115</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'playerbase.rb', line 94</span>
@@ -681,14 +682,15 @@ internally applying a BPM multiplier.</p>
   <span class='id identifier rubyid_reset_for_new_cycle'>reset_for_new_cycle</span>
 
   <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_with_bpm_mul'>with_bpm_mul</span><span class='lparen'>(</span><span class='ivar'>@track</span><span class='period'>.</span><span class='id identifier rubyid_timescale'>timescale</span><span class='rparen'>)</span> <span class='kw'>do</span>
-    <span class='ivar'>@track</span><span class='period'>.</span><span class='id identifier rubyid_num_slots'>num_slots</span><span class='period'>.</span><span class='id identifier rubyid_times'>times</span> <span class='kw'>do</span>
+    <span class='ivar'>@track</span><span class='period'>.</span><span class='id identifier rubyid_num_slots'>num_slots</span><span class='period'>.</span><span class='id identifier rubyid_times'>times</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_i'>i</span><span class='op'>|</span>
+      <span class='ivar'>@slot_idx</span> <span class='op'>=</span> <span class='id identifier rubyid_i'>i</span>
+
       <span class='id identifier rubyid_calculate_pending_accums'>calculate_pending_accums</span>
       <span class='id identifier rubyid_slot_advanced'>slot_advanced</span>
-      <span class='id identifier rubyid_triggering_steps'>triggering_steps</span> <span class='op'>=</span> <span class='id identifier rubyid_triggering_steps_in_slot'>triggering_steps_in_slot</span>
+      <span class='id identifier rubyid_triggering_steps'>triggering_steps</span> <span class='op'>=</span> <span class='id identifier rubyid_current_steps'>current_steps</span><span class='period'>.</span><span class='id identifier rubyid_filter'>filter</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span> <span class='id identifier rubyid_step_should_trigger?'>step_should_trigger?</span><span class='lparen'>(</span><span class='id identifier rubyid_step'>step</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
       <span class='id identifier rubyid_commit_accums'>commit_accums</span><span class='lparen'>(</span><span class='id identifier rubyid_triggering_steps'>triggering_steps</span><span class='rparen'>)</span>
       <span class='id identifier rubyid_accums_committed'>accums_committed</span>
       <span class='id identifier rubyid_play_steps'>play_steps</span><span class='lparen'>(</span><span class='id identifier rubyid_triggering_steps'>triggering_steps</span><span class='rparen'>)</span>
-      <span class='ivar'>@slot_idx</span> <span class='op'>+=</span> <span class='int'>1</span>
 
       <span class='comment'># Sleep until it&#39;s time for the next slot
 </span>      <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_sleep'>sleep</span><span class='lparen'>(</span><span class='ivar'>@track</span><span class='period'>.</span><span class='id identifier rubyid_granularity'>granularity</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span><span class='rparen'>)</span>
@@ -727,15 +729,15 @@ steps are stopped. The <span class='object_link'><a href="#cycle-instance_method
       <pre class="lines">
 
 
-119
 120
 121
 122
 123
-124</pre>
+124
+125</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'playerbase.rb', line 119</span>
+      <pre class="code"><span class="info file"># File 'playerbase.rb', line 120</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_sleep'>sleep</span>
   <span class='id identifier rubyid_end_all_steps'>end_all_steps</span>
@@ -864,15 +866,15 @@ of all of its steps will reset). If you call this with the same track as
       <pre class="lines">
 
 
-146
 147
 148
 149
 150
-151</pre>
+151
+152</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'playerbase.rb', line 146</span>
+      <pre class="code"><span class="info file"># File 'playerbase.rb', line 147</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_swap_track'>swap_track</span><span class='lparen'>(</span><span class='id identifier rubyid_new_track'>new_track</span><span class='comma'>,</span> <span class='label'>reset_cycle:</span> <span class='kw'>false</span><span class='rparen'>)</span>
   <span class='ivar'>@accum_data</span><span class='op'>&amp;.</span><span class='id identifier rubyid_clear'>clear</span> <span class='kw'>unless</span> <span class='ivar'>@track</span><span class='period'>.</span><span class='id identifier rubyid_equal?'>equal?</span><span class='lparen'>(</span><span class='id identifier rubyid_new_track'>new_track</span><span class='rparen'>)</span>

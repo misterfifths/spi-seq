@@ -192,7 +192,7 @@ receiver, with just the described change.</p>
   
   
   <h3 class="inherited">Attributes inherited from <span class='object_link'><a href="StepBase.html" title="StepBase (class)">StepBase</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="StepBase.html#accum_delta-instance_method" title="StepBase#accum_delta (method)">#accum_delta</a></span>, <span class='object_link'><a href="StepBase.html#accum_max-instance_method" title="StepBase#accum_max (method)">#accum_max</a></span>, <span class='object_link'><a href="StepBase.html#accum_min-instance_method" title="StepBase#accum_min (method)">#accum_min</a></span>, <span class='object_link'><a href="StepBase.html#accum_mode-instance_method" title="StepBase#accum_mode (method)">#accum_mode</a></span>, <span class='object_link'><a href="StepBase.html#accum_prob-instance_method" title="StepBase#accum_prob (method)">#accum_prob</a></span>, <span class='object_link'><a href="StepBase.html#prob-instance_method" title="StepBase#prob (method)">#prob</a></span></p>
+  <p class="inherited"><span class='object_link'><a href="StepBase.html#accum_delta-instance_method" title="StepBase#accum_delta (method)">#accum_delta</a></span>, <span class='object_link'><a href="StepBase.html#accum_max-instance_method" title="StepBase#accum_max (method)">#accum_max</a></span>, <span class='object_link'><a href="StepBase.html#accum_min-instance_method" title="StepBase#accum_min (method)">#accum_min</a></span>, <span class='object_link'><a href="StepBase.html#accum_mode-instance_method" title="StepBase#accum_mode (method)">#accum_mode</a></span>, <span class='object_link'><a href="StepBase.html#accum_prob-instance_method" title="StepBase#accum_prob (method)">#accum_prob</a></span>, <span class='object_link'><a href="StepBase.html#accum_target-instance_method" title="StepBase#accum_target (method)">#accum_target</a></span>, <span class='object_link'><a href="StepBase.html#prob-instance_method" title="StepBase#prob (method)">#prob</a></span></p>
 
 
   
@@ -206,7 +206,7 @@ receiver, with just the described change.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(cc, value, prob: nil, accum_delta: 0, accum_max: 12, accum_min: 0, accum_mode: :wrap, accum_prob: nil)  &#x21d2; CCStep </a>
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(cc, value, prob: nil, accum_delta: 0, accum_max: 12, accum_min: 0, accum_mode: :wrap, accum_prob: nil, accum_target: nil)  &#x21d2; CCStep </a>
     
 
     
@@ -321,7 +321,7 @@ receiver, with just the described change.</p>
     <div class="method_details first">
   <h3 class="signature first" id="initialize-instance_method">
   
-    #<strong>initialize</strong>(cc, value, prob: nil, accum_delta: 0, accum_max: 12, accum_min: 0, accum_mode: :wrap, accum_prob: nil)  &#x21d2; <tt><span class='object_link'><a href="" title="CCStep (class)">CCStep</a></span></tt> 
+    #<strong>initialize</strong>(cc, value, prob: nil, accum_delta: 0, accum_max: 12, accum_min: 0, accum_mode: :wrap, accum_prob: nil, accum_target: nil)  &#x21d2; <tt><span class='object_link'><a href="" title="CCStep (class)">CCStep</a></span></tt> 
   
 
   
@@ -479,6 +479,25 @@ trigger. Non-<span class='object_link'><a href="Prob.html" title="Prob (class)">
       
     </li>
   
+    <li>
+      
+        <span class='name'>accum_target</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'>Symbol</span></tt>, <tt>nil</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The target for accumulation. If nil,
+defaults to <code>:note</code> for <span class='object_link'><a href="Step.html" title="Step (class)">Step</a></span>s and <code>:value</code> for <span class='object_link'><a href="" title="CCStep (class)">CCStep</a></span>s. <code>:value</code> is
+the only valid value for CCSteps. You may pass <code>:note</code>, <code>:gate</code>, or <code>:vel</code>
+for Steps, to direct accumulation to the corresponding attribute.</p></div>
+      
+    </li>
+  
 </ul>
 
 <p class="tag_title">Raises:</p>
@@ -515,13 +534,16 @@ trigger. Non-<span class='object_link'><a href="Prob.html" title="Prob (class)">
 66
 67
 68
-69</pre>
+69
+70
+71</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'ccstep.rb', line 55</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_cc'>cc</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='comma'>,</span> <span class='label'>prob:</span> <span class='kw'>nil</span><span class='comma'>,</span>
-               <span class='label'>accum_delta:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>accum_max:</span> <span class='int'>12</span><span class='comma'>,</span> <span class='label'>accum_min:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>accum_mode:</span> <span class='symbol'>:wrap</span><span class='comma'>,</span> <span class='label'>accum_prob:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+               <span class='label'>accum_delta:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>accum_max:</span> <span class='int'>12</span><span class='comma'>,</span> <span class='label'>accum_min:</span> <span class='int'>0</span><span class='comma'>,</span>
+               <span class='label'>accum_mode:</span> <span class='symbol'>:wrap</span><span class='comma'>,</span> <span class='label'>accum_prob:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>accum_target:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='ivar'>@cc</span> <span class='op'>=</span> <span class='id identifier rubyid_cc'>cc</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>RangeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>CC numbers must be between 0 and 127, inclusive</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='ivar'>@cc</span> <span class='op'>&lt;</span> <span class='int'>0</span> <span class='op'>||</span> <span class='ivar'>@cc</span> <span class='op'>&gt;</span> <span class='int'>127</span>
 
@@ -533,7 +555,8 @@ trigger. Non-<span class='object_link'><a href="Prob.html" title="Prob (class)">
   <span class='kw'>end</span>
 
   <span class='kw'>super</span><span class='lparen'>(</span><span class='label'>prob:</span> <span class='id identifier rubyid_prob'>prob</span><span class='comma'>,</span> <span class='label'>accum_delta:</span> <span class='id identifier rubyid_accum_delta'>accum_delta</span><span class='comma'>,</span> <span class='label'>accum_max:</span> <span class='id identifier rubyid_accum_max'>accum_max</span><span class='comma'>,</span>
-        <span class='label'>accum_min:</span> <span class='id identifier rubyid_accum_min'>accum_min</span><span class='comma'>,</span> <span class='label'>accum_mode:</span> <span class='id identifier rubyid_accum_mode'>accum_mode</span><span class='comma'>,</span> <span class='label'>accum_prob:</span> <span class='id identifier rubyid_accum_prob'>accum_prob</span><span class='rparen'>)</span>
+        <span class='label'>accum_min:</span> <span class='id identifier rubyid_accum_min'>accum_min</span><span class='comma'>,</span> <span class='label'>accum_mode:</span> <span class='id identifier rubyid_accum_mode'>accum_mode</span><span class='comma'>,</span>
+        <span class='label'>accum_prob:</span> <span class='id identifier rubyid_accum_prob'>accum_prob</span><span class='comma'>,</span> <span class='label'>accum_target:</span> <span class='id identifier rubyid_accum_target'>accum_target</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -726,12 +749,12 @@ resulting value is outside of 0 - 127, it will be clamped.</p>
       <pre class="lines">
 
 
-97
-98
-99</pre>
+99
+100
+101</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'ccstep.rb', line 97</span>
+      <pre class="code"><span class="info file"># File 'ccstep.rb', line 99</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_shift_value'>shift_value</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>value:</span> <span class='ivar'>@value</span> <span class='op'>+</span> <span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
@@ -798,12 +821,12 @@ a value outside of 0 - 127 inclusive.</p>
       <pre class="lines">
 
 
-75
-76
-77</pre>
+77
+78
+79</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'ccstep.rb', line 75</span>
+      <pre class="code"><span class="info file"># File 'ccstep.rb', line 77</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_cc'>with_cc</span><span class='lparen'>(</span><span class='id identifier rubyid_new_cc'>new_cc</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>cc:</span> <span class='id identifier rubyid_new_cc'>new_cc</span><span class='rparen'>)</span>
@@ -870,12 +893,12 @@ will be clamped.</p>
       <pre class="lines">
 
 
-87
-88
-89</pre>
+89
+90
+91</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'ccstep.rb', line 87</span>
+      <pre class="code"><span class="info file"># File 'ccstep.rb', line 89</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_value'>with_value</span><span class='lparen'>(</span><span class='id identifier rubyid_new_value'>new_value</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>value:</span> <span class='id identifier rubyid_new_value'>new_value</span><span class='rparen'>)</span>
