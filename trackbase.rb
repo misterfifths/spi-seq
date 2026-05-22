@@ -1038,21 +1038,55 @@ class TrackBase
 
   alias set_filled_slot replace_filled_slot
 
-  # Returns a new track with all steps in slot `idx` removed. That is, the slot
-  # is turned into a rest.
+  # Returns a new track with all steps in a slot index or indexes cleared (i.e.
+  # turned to a rest). Takes the same assortment of arguments as {#slice} - a
+  # single integer, a starting integer index and a length, or a range.
   #
   # @example
   #   T[:a1, [:b1, :b2], :c3].clear_slot(1)
   #   # is equivalent to
   #   T[:a1, :r, :c3]
   #
-  # @param idx [Integer] The index of the slot to replace. Must be a valid index
-  #   for the {#grid}.
+  #   T[:a1, :b1, :c1, :d1, :e1, :f1].clear_slot(2, 3)
+  #   # is equivalent to
+  #   T[:a1, :b1, :r, :r, :r, :f1]
+  #
+  #   T[:a1, :b1, :c1, :d1, :e1, :f1].clear_slot(2..4)
+  #   # is equivalent to
+  #   T[:a1, :b1, :r, :r, :r, :f1]
+  #
+  # @param idx_or_range [Integer, Range] The index of the first slot to clear,
+  #   or a range of indexes to clear. Invalid indexes are ignored.
+  # @param length [Integer, nil] If `idx_or_range` is an integer, the number of
+  #   slots after that index to clear (nil will clear just that slot). It is an
+  #   error to provide a value for this parameter if the first argument is a
+  #   range.
   # @return [TrackBase]
   # @see set_slot
-  def clear_slot(idx)
-    replace_slot(idx, [])
+  def clear_slot(idx_or_range, length = nil)
+    raise ArgumentError, "the first argument must be either a range or an integer" unless idx_or_range.is_a?(Integer) || idx_or_range.is_a?(Range)
+    raise ArgumentError, "if a range is provided, a length must not be" if idx_or_range.is_a?(Range) && !length.nil?
+    raise ArgumentError, "length must be an integer" unless length.nil? || length.is_a?(Integer)
+
+    range = if idx_or_range.is_a?(Range)
+      idx_or_range
+    elsif length.nil?
+      idx_or_range..idx_or_range
+    else
+      idx_or_range..(idx_or_range + length - 1)
+    end
+
+    # We'll end up doing nothing if the range is empty (e.g. if length is < idx)
+    new_grid = mutable_grid_dup
+    range.each do |i|
+      slot = new_grid[i]
+      next if slot.nil?  # invalid index
+      slot.clear
+    end
+    mutate(grid: new_grid)
   end
+
+  alias clear_slots clear_slot
 
   # Returns a new track with the given steps appended to the slot at the given
   # index.

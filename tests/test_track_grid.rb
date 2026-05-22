@@ -530,7 +530,27 @@ class TrackGridTest < Test::Unit::TestCase
     assert_grid t.clear_slot(0), [[], [:b2, :c3], []]
     assert_grid t.clear_slot(1), [[:a1], [], []]
     assert_grid t.clear_slot(2), [[:a1], [:b2, :c3], []]
-    assert_raises { t.clear_slot(3) }
+    assert_grid t.clear_slot(3), t.grid  # does nothing
+
+    t = T[:a1, :b1, :c1, :d1, :e1]
+    assert_grid t.clear_slot(0, 5), [[], [], [], [], []]
+    assert_grid t.clear_slot(0, 6), [[], [], [], [], []]  # the step outside the range was ignored
+    assert_grid t.clear_slot(1, 3), [[:a1], [], [], [], [:e1]]
+    assert_grid t.clear_slot(2, 2), [[:a1], [:b1], [], [], [:e1]]
+    assert_grid t.clear_slot(2, 3), [[:a1], [:b1], [], [], []]
+    assert_grid t.clear_slot(5, -9), t.grid  # the range is effectively empty; does nothing
+
+    assert_grid t.clear_slot(0..5), [[], [], [], [], []]
+    assert_grid t.clear_slot(0..10), [[], [], [], [], []]  # the step outside the range was ignored
+    assert_grid t.clear_slot(1..3), [[:a1], [], [], [], [:e1]]
+    assert_grid t.clear_slot(2..3), [[:a1], [:b1], [], [], [:e1]]
+    assert_grid t.clear_slot(2..4), [[:a1], [:b1], [], [], []]
+
+    assert_raises(ArgumentError) { t.clear_slot(:nope) }
+    assert_raises(ArgumentError) { t.clear_slot(5, :nope) }
+    assert_raises(ArgumentError) { t.clear_slot(0..1, 3) }
+    assert_raises(ArgumentError) { t.clear_slot(1, 3.5) }
+    assert_raises(ArgumentError) { t.clear_slot(1.5, 3) }
   end
 
   def test_append_slot
