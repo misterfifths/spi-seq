@@ -156,14 +156,14 @@ class StepBase
 
   # Returns a new step with the given accumulation parameters set. Note that
   # parameters that are not provided will be set to default values.
-  # @param delta [Integer] See {#accum_delta}.
-  # @param max [Integer] See {#accum_max}.
-  # @param min [Integer] See {#accum_min}.
-  # @param mode [:freeze, :wrap, :reverse] See {#accum_mode}.
-  # @param prob [Prob, Number, #call, nil] See {#accum_prob}. Non-{Prob} values
-  #   will be converted to {Prob}s as described by {#initialize}.
-  # @param target [Symbol, nil] See #{accum_target}. Defaults as described in
-  #   {#initialize}.
+  # @param delta [Integer] See {StepBase#accum_delta}.
+  # @param max [Integer] See {StepBase#accum_max}.
+  # @param min [Integer] See {StepBase#accum_min}.
+  # @param mode [:freeze, :wrap, :reverse] See {StepBase#accum_mode}.
+  # @param prob [Prob, Number, #call, nil] See {StepBase#accum_prob}. Non-{Prob}
+  #   values will be converted to {Prob}s as described by {StepBase#initialize}.
+  # @param target [Symbol, nil] See {StepBase#accum_target}. Defaults as
+  #   described in {StepBase#initialize}.
   # @return [StepBase]
   def accum(delta, min: 0, max: 12, mode: :wrap, prob: nil, target: nil)
     mutate(accum_delta: delta, accum_min: min, accum_max: max,

@@ -213,6 +213,21 @@ class TrackStepTest < Test::Unit::TestCase
     assert_grid t.fill(false), [[:c1], [S(:c2, prob: 0.5), :c3], [S(:c4, prob: Prob.one_in(3))]]
   end
 
+  def test_with_accum_clear_accum
+    t = T[:c1, S(:c2).accum(1), S(:c3, gate: 0.5).accum(12, max: 24, mode: :freeze, target: :vel)]
+
+    u = t.accum(5, min: -5, max: 10, prob: Prob.every_other, mode: :reverse)
+    assert_steps_attr u, :accum_delta, 5
+    assert_steps_attr u, :accum_min, -5
+    assert_steps_attr u, :accum_max, 10
+    assert_steps_attr u, :accum_prob, Prob.every_other
+    assert_steps_attr u, :accum_mode, :reverse
+    assert_steps_attr u, :accum_target, :note
+
+    v = t.clear_accum
+    assert_steps_attr v, :accum_delta, 0
+  end
+
   def assert_curve(track, curve_func, attr, attr_scale_factor = 1, integer = false, tol = 0.01)
     track.grid.each_with_index do |slot, idx|
       if idx == 0

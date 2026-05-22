@@ -1654,8 +1654,6 @@ class TrackBase
   alias select filter_steps
 
 
-
-
   ## @!group Mutating steps
 
   # Return a new track, replacing each step in this track with the result of the
@@ -1837,6 +1835,32 @@ class TrackBase
       end
     end
   end
+
+  # Returns a new track where every step has the specified accumulation
+  # parameters. Parameters that are not provided will be set to default values.
+  # @param (see StepBase#accum)
+  # @return [TrackBase]
+  # @see StepBase#accum
+  # @see #without_accum
+  def with_accum(delta, min: 0, max: 12, mode: :wrap, prob: nil, target: nil)
+    mutate_each_step do |step|
+      step.accum(delta, min: min, max: max, mode: mode,
+                 prob: prob, target: target)
+    end
+  end
+
+  alias accum with_accum
+
+  # Returns a new track with the accumulation parameters cleared from every
+  # step.
+  # @return [TrackBase]
+  # @see StepBase#accum
+  # @see #with_accum
+  def without_accum
+    mutate_each_step { |step| step.without_accum }
+  end
+
+  alias clear_accum without_accum
 
   # @!endgroup
 
