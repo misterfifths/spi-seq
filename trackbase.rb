@@ -1112,6 +1112,7 @@ class TrackBase
   # @see #clear_slot
   # @see #set_filled_slot
   # @see #indexes_of_filled_slots
+  # @see #clear_last_filled_slots
   def clear_filled_slot(idx_or_range, length = nil)
     filled_indexes = indexes_of_filled_slots
     indexes = resolve_slice_idxs(filled_indexes.length, idx_or_range, length)
@@ -1125,6 +1126,24 @@ class TrackBase
   end
 
   alias clear_filled_slots clear_filled_slot
+
+  # Returns a new track by removing all steps in the final `count` filled slots.
+  # Clears all slots if `count` is greater than the number of filled slots.
+  #
+  # @param count [Integer]
+  # @return [TrackBase]
+  # @see #clear_filled_slot
+  # @see #indexes_of_filled_slots
+  def clear_last_filled_slots(count = 1)
+    return self if count == 0
+
+    # We want to allow over-large counts to just clear all filled slots, but
+    # resolve_slice_idxs will just return [] for such ranges. So cap the value.
+    count = [indexes_of_filled_slots.length, count].min
+    clear_filled_slots(-count..)
+  end
+
+  alias clear_last_filled_slot clear_last_filled_slots
 
   # Returns a new track with the given steps appended to the slot at the given
   # index.
