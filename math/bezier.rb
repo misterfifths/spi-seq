@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# cf https://stackoverflow.com/questions/11696736/recreating-css3-transitions-cubic-bezier-curve
-# https://github.com/WebKit/WebKit/blob/36e87a1fba92223b5289008516037523be409fba/Source/WebCore/platform/graphics/UnitBezier.h
+# Derived from https://github.com/WebKit/WebKit/blob/36e87a1fba92223b5289008516037523be409fba/Source/WebCore/platform/graphics/UnitBezier.h
 # @private
 class CubicBezier
   SPLINE_SAMPLES = 11
