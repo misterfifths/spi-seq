@@ -1079,6 +1079,7 @@ class TrackBase
   # @return [TrackBase]
   # @see #set_slot
   # @see #clear_filled_slot
+  # @see #clear_last_slots
   def clear_slot(idx_or_range, length = nil)
     indexes = resolve_slice_idxs(@grid.length, idx_or_range, length)
     new_grid = mutable_grid_dup
@@ -1091,6 +1092,24 @@ class TrackBase
   end
 
   alias clear_slots clear_slot
+
+  # Returns a new track by removing all steps in the final `count` slots. Clears
+  # all slots if `count` is greater than the length of the grid.
+  #
+  # @param count [Integer]
+  # @return [TrackBase]
+  # @see #clear_slot
+  # @see #clear_last_filled_slots
+  def clear_last_slots(count = 1)
+    return self if count == 0
+
+    # We want to allow over-large counts to just clear all slots, but
+    # resolve_slice_idxs will just return [] for such ranges. So cap the value.
+    count = [@grid.length, count].min
+    clear_slots(-count..)
+  end
+
+  alias clear_last_slot clear_last_slots
 
   # Returns a new track with steps in one or more filled slots cleared (i.e.
   # turned to a rest). Takes the same assortment of arguments as {#slice} - a

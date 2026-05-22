@@ -608,7 +608,7 @@ class TrackGridTest < Test::Unit::TestCase
     assert_grid t.clear_filled_slot(..-2), [[], [], [], [:c1]]
   end
 
-  def test_clear_last_filled_slots
+  def test_clear_last_slots_clear_last_filled_slots
     t = T[:a1, :b1, :r, :c1]
     assert_grid t.clear_last_filled_slot, [[:a1], [:b1], [], []]
     assert_grid t.clear_last_filled_slots(1), [[:a1], [:b1], [], []]
@@ -616,6 +616,14 @@ class TrackGridTest < Test::Unit::TestCase
     assert_grid t.clear_last_filled_slots(3), [[], [], [], []]
     assert_grid t.clear_last_filled_slots(10), [[], [], [], []]
     assert_grid t.clear_last_filled_slots(0), [[:a1], [:b1], [], [:c1]]  # does nothing
+
+    assert_grid t.clear_last_slot, [[:a1], [:b1], [], []]
+    assert_grid t.clear_last_slots(1), [[:a1], [:b1], [], []]
+    assert_grid t.clear_last_slots(2), [[:a1], [:b1], [], []]
+    assert_grid t.clear_last_slots(3), [[:a1], [], [], []]
+    assert_grid t.clear_last_slots(4), [[], [], [], []]
+    assert_grid t.clear_last_slots(10), [[], [], [], []]
+    assert_grid t.clear_last_slots(0), [[:a1], [:b1], [], [:c1]]  # does nothing
   end
 
   def test_append_slot
