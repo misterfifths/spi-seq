@@ -582,6 +582,32 @@ class TrackGridTest < Test::Unit::TestCase
     assert_grid t.clear_slot(..-3), [[], [], [:c1], [:d1]]
   end
 
+  def test_clear_filled_slot
+    t = T[:a1, :b1, :r, :c1]
+    assert_grid t.clear_filled_slot(0), [[], [:b1], [], [:c1]]
+    assert_grid t.clear_filled_slot(1), [[:a1], [], [], [:c1]]
+    assert_grid t.clear_filled_slot(2), [[:a1], [:b1], [], []]
+    assert_grid t.clear_filled_slot(3), [[:a1], [:b1], [], [:c1]]  # does nothing
+    assert_grid t.clear_filled_slot(-1), [[:a1], [:b1], [], []]
+    assert_grid t.clear_filled_slot(-2), [[:a1], [], [], [:c1]]
+    assert_grid t.clear_filled_slot(-3), [[], [:b1], [], [:c1]]
+    assert_grid t.clear_filled_slot(-4), [[:a1], [:b1], [], [:c1]]  # does nothing
+
+    assert_grid t.clear_filled_slot(0, 2), [[], [], [], [:c1]]
+    assert_grid t.clear_filled_slot(0, 3), [[], [], [], []]
+    assert_grid t.clear_filled_slot(1, 2), [[:a1], [], [], []]
+    assert_grid t.clear_filled_slot(1, 10), [[:a1], [], [], []]
+
+    assert_grid t.clear_filled_slot(0..1), [[], [], [], [:c1]]
+    assert_grid t.clear_filled_slot(0..2), [[], [], [], []]
+    assert_grid t.clear_filled_slot(1..2), [[:a1], [], [], []]
+    assert_grid t.clear_filled_slot(1..10), [[:a1], [], [], []]
+
+    assert_grid t.clear_filled_slot(1..), [[:a1], [], [], []]
+    assert_grid t.clear_filled_slot(2..), [[:a1], [:b1], [], []]
+    assert_grid t.clear_filled_slot(..-2), [[], [], [], [:c1]]
+  end
+
   def test_append_slot
     assert_grid T[:c4].append_slot(0, [:d5, :e5]), [[:c4, :d5, :e5]]
     assert_raises { T[:c4].append_slot(2, [:d5]) }

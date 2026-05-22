@@ -1038,6 +1038,21 @@ class TrackBase
 
   alias set_filled_slot replace_filled_slot
 
+  # `idx_or_range` and `length` are the sorts of arguments accepted by Array#[].
+  # This function returns an array of indexes that those arguments refer to,
+  # assuming they're operating on an array of length `array_len`. Returns an
+  # empty array if the index(es) are invalid (e.g. past the end of the array, or
+  # an empty range).
+  private def resolve_slice_idxs(array_len, idx_or_range, length = nil)
+    # The rules for this are surprisingly complicated, so let's be inefficient
+    # and let Array#[] do the work on a list of integers.
+    indexes = (0...array_len).to_a
+    indexes = length.nil? ? indexes[idx_or_range] : indexes[idx_or_range, length]
+    indexes = [] if indexes.nil?
+    indexes = [indexes] if indexes.is_a?(Integer)
+    indexes
+  end
+
   # Returns a new track with all steps in a slot index or indexes cleared (i.e.
   # turned to a rest). Takes the same assortment of arguments as {#slice} - a
   # single integer, a starting integer index and a length, or a range.
@@ -1062,16 +1077,10 @@ class TrackBase
   #   error to provide a value for this parameter if the first argument is a
   #   range.
   # @return [TrackBase]
-  # @see set_slot
+  # @see #set_slot
+  # @see #clear_filled_slot
   def clear_slot(idx_or_range, length = nil)
-    # The logic that Array#[] uses to resolve a range or size+length into
-    # indexes is suprisingly complicated, so let's be inefficient and use it on
-    # an array of integers, then use the result.
-    indexes = (0...@grid.length).to_a
-    indexes = length.nil? ? indexes[idx_or_range] : indexes[idx_or_range, length]
-    indexes = [] if indexes.nil?
-    indexes = [indexes] if indexes.is_a?(Integer)
-
+    indexes = resolve_slice_idxs(@grid.length, idx_or_range, length)
     new_grid = mutable_grid_dup
     indexes.each do |i|
       slot = new_grid[i]
@@ -1082,6 +1091,40 @@ class TrackBase
   end
 
   alias clear_slots clear_slot
+
+  # Returns a new track with steps in one or more filled slots cleared (i.e.
+  # turned to a rest). Takes the same assortment of arguments as {#slice} - a
+  # single integer, a starting integer index and a length, or a range.
+  #
+  # @example
+  #   t = T[:a1, :b2, :r, :d4]
+  #   t.clear_filled_slot(-2)
+  #   # is equivalent to
+  #   T[:a1, :r, :r, :d4]
+  #
+  # @param idx_or_range [Integer, Range] The index of the first non-empty slot
+  #   to clear, or a range of indexes. Invalid indexes are ignored.
+  # @param length [Integer, nil] If `idx_or_range` is an integer, the number of
+  #   filled slots after that index to clear (nil will clear just that slot). It
+  #   is an error to provide a value for this parameter if the first argument is
+  #   a range.
+  # @return [TrackBase]
+  # @see #clear_slot
+  # @see #set_filled_slot
+  # @see #indexes_of_filled_slots
+  def clear_filled_slot(idx_or_range, length = nil)
+    filled_indexes = indexes_of_filled_slots
+    indexes = resolve_slice_idxs(filled_indexes.length, idx_or_range, length)
+    new_grid = mutable_grid_dup
+    indexes.each do |i|
+      filled_index = filled_indexes[i]
+      next if filled_index.nil?  # invalid index
+      new_grid[filled_index].clear
+    end
+    mutate(grid: new_grid)
+  end
+
+  alias clear_filled_slots clear_filled_slot
 
   # Returns a new track with the given steps appended to the slot at the given
   # index.
