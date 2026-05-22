@@ -1189,22 +1189,45 @@ class TrackBase
   # @return [TrackBase]
   # @see #rtrim
   # @see #drop
+  # @see #take_last
   def drop_last(n = 1)
     drop(-n)
   end
 
   # Returns a new track consisting of only the first `n` slots of this track.
+  # Or, if `n` is negative, a new track with the final `n` slots.
   #
   # @example
   #   T[:a1, :b1, :c1, :d1].take(3)
   #   # is equivalent to
   #   T[:a1, :b1, :c1]
   #
+  #   T[:a1, :b1, :c1, :d1].take(-2)
+  #   # is equivalent to
+  #   T[:c1, :d1]
+  #
   # @param n [Integer]
   # @return [TrackBase]
   # @see #drop
+  # @see #take_last
   def take(n)
-    mutate(grid: @grid.take(n))
+    return mutate(grid: @grid.take(n)) if n >= 0  # will raise for 0
+    mutate(grid: @grid[n..])
+  end
+
+  # Returns a new track with only the last `n` slots of this track. This is
+  # equivalent to {#take} called with `-n`.
+  #
+  #   T[:a1, :b1, :c1, :d1].take_last(-3)
+  #   # is equivalent to
+  #   T[:b1, :c1, :d1]
+  #
+  # @param n [Integer]
+  # @return [TrackBase]
+  # @see #take
+  # @see #drop_last
+  def take_last(n = 1)
+    take(-n)
   end
 
   # Returns a new track consisting of only the selected slots of this track.

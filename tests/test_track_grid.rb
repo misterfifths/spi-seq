@@ -377,6 +377,14 @@ class TrackGridTest < Test::Unit::TestCase
     assert_grid t.take(2), [[:a1], [:b2]]
     assert_grid t.take(3), [[:a1], [:b2], [:c3]]
     assert_grid t.take(4), [[:a1], [:b2], [:c3]]
+
+    assert_grid t.take(-1), [[:c3]]
+    assert_grid t.take_last, [[:c3]]
+    assert_grid t.take_last(1), [[:c3]]
+    assert_grid t.take(-2), [[:b2], [:c3]]
+    assert_grid t.take_last(2), [[:b2], [:c3]]
+    assert_grid t.take(-3), [[:a1], [:b2], [:c3]]
+    assert_grid t.take_last(3), [[:a1], [:b2], [:c3]]
   end
 
   def test_slice
