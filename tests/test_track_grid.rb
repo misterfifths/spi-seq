@@ -351,20 +351,22 @@ class TrackGridTest < Test::Unit::TestCase
     assert_raises { T[:a1, :a2].drop(5) }
 
     t = T[:a1, :b2, :c3]
+    assert_grid t.drop(0), t.grid
     assert_grid t.drop, [[:b2], [:c3]]
     assert_grid t.drop(1), [[:b2], [:c3]]
     assert_grid t.drop(2), [[:c3]]
-  end
 
-  def test_drop_last
     assert_raises { T[:c4].drop_last }
     assert_raises { T[:a1, :a2].drop_last(2) }
     assert_raises { T[:a1, :a2].drop_last(5) }
 
     t = T[:a1, :b2, :c3]
+    assert_grid t.drop_last(0), t.grid
     assert_grid t.drop_last, [[:a1], [:b2]]
     assert_grid t.drop_last(1), [[:a1], [:b2]]
+    assert_grid t.drop(-1), [[:a1], [:b2]]
     assert_grid t.drop_last(2), [[:a1]]
+    assert_grid t.drop(-2), [[:a1]]
   end
 
   def test_take
