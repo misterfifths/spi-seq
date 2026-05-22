@@ -58,6 +58,10 @@ class TrackStepTest < Test::Unit::TestCase
     assert_mutate_in_slot(t, 0, [[:a0, :a2], [:b2, :c3], []]) { |s| [s.shift_tone(12), s.shift_tone(-12)] }
 
     assert_raises { t.mutate_steps_in_slot(3) { |_| nil } }
+
+    # Negative indexes
+    assert_mutate_in_slot(t, -2, [[:a1], [:b3, :c4], []]) { |s| s.shift_tone(12) }
+    assert_mutate_in_slot(t, -3, [[:a2], [:b2, :c3], []]) { |s| s.shift_tone(12) }
   end
 
   def assert_mutate_filled_slot(track, n, grid, &block)
@@ -71,6 +75,10 @@ class TrackStepTest < Test::Unit::TestCase
     assert_mutate_filled_slot(t, 0, [[:a2], [], [:b2, :c3], []]) { |s| s.shift_tone(12) }
     assert_mutate_filled_slot(t, 1, [[:a1], [], [:f9], []]) { |_| :f9 }
     assert_raises { t.mutate_filled_slot(2) { |_| nil } }
+
+    # Negative indexes
+    assert_mutate_filled_slot(t, -1, [[:a1], [], [:f9], []]) { |_| :f9 }
+    assert_mutate_filled_slot(t, -2, [[:a2], [], [:b2, :c3], []]) { |s| s.shift_tone(12) }
   end
 
   def assert_set_filled_slot(track, n, new_slot, grid)
@@ -89,6 +97,10 @@ class TrackStepTest < Test::Unit::TestCase
     assert_set_filled_slot t, 1, :f9, [[:a1], [], [:f9], []]
 
     assert_raises { t.set_filled_slot(2, []) }
+
+    # Negative indexes
+    assert_set_filled_slot t, -1, :a2, [[:a1], [], [:a2], []]
+    assert_set_filled_slot t, -2, :f9, [[:f9], [], [:b2, :c3], []]
   end
 
   def test_with_gate

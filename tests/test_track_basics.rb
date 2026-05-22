@@ -66,6 +66,16 @@ class TrackBasicTest < Test::Unit::TestCase
     s = t.nth_filled_slot(2)
     assert_equal s.length, 1
     assert_equal s[0].note, :c3
+
+    # Negative indexes
+    s = t.nth_filled_slot(-1)
+    assert_equal s.length, 1
+    assert_equal s[0].note, :c3
+
+    s = t.nth_filled_slot(-2)
+    assert_equal s.length, 2
+    assert(s.one? { |slot| slot.note == :b2 })
+    assert(s.one? { |slot| slot.note == :b3 })
   end
 
   def test_repr
