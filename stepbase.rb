@@ -170,6 +170,16 @@ class StepBase
            accum_mode: mode, accum_prob: prob, accum_target: target)
   end
 
+  alias with_accum accum
+
+  # Returns a new step with all accumulation parameters removed.
+  # @return [StepBase]
+  def without_accum
+    accum(0)
+  end
+
+  alias clear_accum without_accum
+
   # Returns a new step with the given {#prob probability}. Non-{Prob} values
   # will be converted to {Prob}s as described by {#initialize}.
   # @param new_prob [Prob, Number, #call, nil]

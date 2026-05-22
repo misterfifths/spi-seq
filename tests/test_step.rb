@@ -149,6 +149,10 @@ class StepTest < Test::Unit::TestCase
     s = s.with_note(:d5)
     assert_accum s, 1, max: 20
 
+    # without_accum
+    s = S(:c4).accum(1, max: 20).without_accum
+    assert_accum s, 0
+
     # Invalid values should raise
     assert_raises { S(:c4).accum(1, mode: :nope) }
     assert_raises { S(:c4).accum(1, mode: nil) }
