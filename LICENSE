@@ -1,37 +1,36 @@
-The MIT License
+spi-seq
+Copyright (C) 2026  Tim Clem
 
-Copyright (c) 2023-2025 Tim Clem
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ---
 
 Scale interval definitions in theory/scale.rb are based on the Overtone project,
-also under the MIT license as printed above. The copyright in Overtone is owned
-by the contributors named in its README file, found at
+originally under the MIT license:
+https://github.com/overtone/overtone/blob/master/LICENSE.
+
+The copyright in Overtone is owned by the contributors named in its README file,
+found at
 https://github.com/overtone/overtone/blob/master/README.md.
 
 ---
 
 The Bézier curve implementation in math/bezier.rb is based on a class from the
-WebKit project: https://github.com/WebKit/WebKit/blob/36e87a1fba92223b5289008516037523be409fba/Source/WebCore/platform/graphics/UnitBezier.h. That file is subject to the
-following license:
+WebKit project:
+https://github.com/WebKit/WebKit/blob/36e87a1fba92223b5289008516037523be409fba/Source/WebCore/platform/graphics/UnitBezier.h.
+
+That file is subject to the following license:
 
 Copyright (C) 2008 Apple Inc. All Rights Reserved.
 Redistribution and use in source and binary forms, with or without
@@ -53,3 +52,12 @@ PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
 OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+---
+
+Many of the easing curve definitions in math/easings.rb are derived from the
+easings.net project, particularly:
+https://github.com/ai/easings.net/blob/master/src/easings.yml
+
+The easings.net source code is under the GPLv3:
+https://github.com/ai/easings.net/blob/master/LICENSE
