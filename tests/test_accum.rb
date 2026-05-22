@@ -344,4 +344,16 @@ class AccumTest < Test::Unit::TestCase
       [:c4, 6, 6.5]   # +0.4
     ], play_count: 7
   end
+
+  def test_tie
+    # Accumulation into another tied note should continue/end it.
+    t = QT[[S(:cs4, prob: Prob.first), S(:c4, gate: 0.25).accum(1)]]
+    assert_playback_events t, [
+      [:c4,  0, 0.25],
+      [:cs4, 0,         # unaccumulated cs4 triggers @ t=0
+                1.25],  # accumulation triggers @t=1 on the c4, ties into the prev slot & ends
+      [:d4,  2, 2.25],
+      [:ds4, 3, 3.25]
+    ], play_count: 4
+  end
 end
