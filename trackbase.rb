@@ -1107,11 +1107,12 @@ class TrackBase
   # @see #append
   # @see #set_slot
   def append_slot(idx, new_steps)
-    raise IndexError, "index #{idx} is past the end of the grid" if idx >= @grid.length
+    slot = @grid[idx]
+    raise IndexError, "index #{idx} is past the end of the grid" if slot.nil?
 
-    new_slot = @grid[idx] + self.class.slotify(new_steps)
+    slot += self.class.slotify(new_steps)
     new_grid = @grid.dup
-    new_grid[idx] = new_slot
+    new_grid[idx] = slot
     mutate(grid: new_grid)
   end
 
