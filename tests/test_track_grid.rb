@@ -564,11 +564,13 @@ class TrackGridTest < Test::Unit::TestCase
     assert_grid t.clear_slot(2..3), [[:a1], [:b1], [], [], [:e1]]
     assert_grid t.clear_slot(2..4), [[:a1], [:b1], [], [], []]
 
-    assert_raises(ArgumentError) { t.clear_slot(:nope) }
-    assert_raises(ArgumentError) { t.clear_slot(5, :nope) }
-    assert_raises(ArgumentError) { t.clear_slot(0..1, 3) }
-    assert_raises(ArgumentError) { t.clear_slot(1, 3.5) }
-    assert_raises(ArgumentError) { t.clear_slot(1.5, 3) }
+    assert_raises(TypeError) { t.clear_slot(:nope) }
+    assert_raises(TypeError) { t.clear_slot(5, :nope) }
+    assert_raises(TypeError) { t.clear_slot(0..1, 3) }
+
+    # Open ranges
+    assert_grid t.clear_slot(..2), [[], [], [], [:d1], [:e1]]
+    assert_grid t.clear_slot(2..), [[:a1], [:b1], [], [], []]
 
     # Negative indexes
     t = T[:a1, :b1, :c1, :d1]
@@ -576,6 +578,8 @@ class TrackGridTest < Test::Unit::TestCase
     assert_grid t.clear_slot(-2), [[:a1], [:b1], [], [:d1]]
     assert_grid t.clear_slot(-3, 2), [[:a1], [], [], [:d1]]
     assert_grid t.clear_slot(-4..-2), [[], [], [], [:d1]]
+    assert_grid t.clear_slot(-3..), [[:a1], [], [], []]
+    assert_grid t.clear_slot(..-3), [[], [], [:c1], [:d1]]
   end
 
   def test_append_slot

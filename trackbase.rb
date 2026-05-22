@@ -1064,21 +1064,16 @@ class TrackBase
   # @return [TrackBase]
   # @see set_slot
   def clear_slot(idx_or_range, length = nil)
-    raise ArgumentError, "the first argument must be either a range or an integer" unless idx_or_range.is_a?(Integer) || idx_or_range.is_a?(Range)
-    raise ArgumentError, "if a range is provided, a length must not be" if idx_or_range.is_a?(Range) && !length.nil?
-    raise ArgumentError, "length must be an integer" unless length.nil? || length.is_a?(Integer)
+    # The logic that Array#[] uses to resolve a range or size+length into
+    # indexes is suprisingly complicated, so let's be inefficient and use it on
+    # an array of integers, then use the result.
+    indexes = (0...@grid.length).to_a
+    indexes = length.nil? ? indexes[idx_or_range] : indexes[idx_or_range, length]
+    indexes = [] if indexes.nil?
+    indexes = [indexes] if indexes.is_a?(Integer)
 
-    range = if idx_or_range.is_a?(Range)
-      idx_or_range
-    elsif length.nil?
-      idx_or_range..idx_or_range
-    else
-      idx_or_range..(idx_or_range + length - 1)
-    end
-
-    # We'll end up doing nothing if the range is empty (e.g. if length is < idx)
     new_grid = mutable_grid_dup
-    range.each do |i|
+    indexes.each do |i|
       slot = new_grid[i]
       next if slot.nil?  # invalid index
       slot.clear
