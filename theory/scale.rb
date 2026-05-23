@@ -56,7 +56,7 @@ class Scale
   # aren't in Enumerable.
   def_delegators :@notes,
                  :each, :[], :slice, :length, :size, :last, :to_a, :to_ary,
-                 :values_at, :empty?
+                 :values_at, :empty?, :each_index, :fetch, :index, :rindex
 
   SCALES = lambda do
     # These scale definitions are taken from Overtone,
