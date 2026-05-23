@@ -60,29 +60,35 @@ class Chord
        double_third_down
        double_three_down
        double_3_down
-       double3_down]            => ->(intervals, root) { voice_double_interval(intervals, root, %i[m3 M3], -12) },
+       double3_down
+       double3down]             => ->(intervals, root) { voice_double_interval(intervals, root, %i[m3 M3], -12) },
     %i[double_third_up
        double_three_up
-       double_3_up double3_up]  => ->(intervals, root) { voice_double_interval(intervals, root, %i[m3 M3], 12) },
+       double_3_up double3_up
+       double3up]               => ->(intervals, root) { voice_double_interval(intervals, root, %i[m3 M3], 12) },
     %i[double_fifth double_five
        double_5 double5
        double_fifth_down
        double_five_down
        double_5_down
-       double5_down]            => ->(intervals, root) { voice_double_interval(intervals, root, [:P5], -12) },
+       double5_down
+       double5down]             => ->(intervals, root) { voice_double_interval(intervals, root, [:P5], -12) },
     %i[double_fifth_up
        double_five_up
-       double_5_up double5_up]  => ->(intervals, root) { voice_double_interval(intervals, root, [:P5], 12) },
+       double_5_up double5_up
+       double5up]               => ->(intervals, root) { voice_double_interval(intervals, root, [:P5], 12) },
     %i[double_seventh
        double_seven double_7
        double7
        double_seventh_down
        double_seven_down
        double_7_down
-       double7_down]            => ->(intervals, root) { voice_double_interval(intervals, root, %i[m7 M7], -12) },
+       double7_down
+       double7down]             => ->(intervals, root) { voice_double_interval(intervals, root, %i[m7 M7], -12) },
     %i[double_seventh_up
        double_seven_up
-       double_7_up double7_up]  => ->(intervals, root) { voice_double_interval(intervals, root, %i[m7 M7], 12) },
+       double_7_up double7_up
+       double7up]               => ->(intervals, root) { voice_double_interval(intervals, root, %i[m7 M7], 12) },
     %i[open]                    => :voice_open,
     %i[open2]                   => :voice_open2,
     %i[open3]                   => :voice_open3
