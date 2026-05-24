@@ -1247,28 +1247,28 @@ class Track < TrackBase
   # track will have the same length as this one, but will only contain steps
   # that match. Matches are evaluated with {MIDINote#match?}.
   #
-  # The result is equivalent to the first returned track of {#partition_notes}.
+  # The result is equivalent to the first track returned by {#partition_notes}.
   # The complement of this function is {#reject_notes}.
   #
   # @param (see #partition_notes)
   # @return [Track]
   # @see #partition_notes
-  # @see #filter_steps
   # @see #reject_notes
-  def filter_notes(note)
+  # @see #select_steps
+  def select_notes(note)
     t, = partition_note(note)
     t
   end
 
-  alias filter_note filter_notes
-  alias select_notes filter_notes
-  alias select_note filter_notes
+  alias select_note select_notes
+  alias filter_notes select_notes
+  alias filter_note select_notes
 
   # Returns a new track containing only steps that do not match the given note.
   # The new track will have the same length as this one, but will only contain
   # steps that do not match. Matches are evaluated with {MIDINote#match?}.
   #
-  # The result is equivalent to the second returned track of {#partition_notes}.
+  # The result is equivalent to the second track returned by {#partition_notes}.
   # The complement of this function is {#select_notes}.
   #
   # @param (see #partition_notes)

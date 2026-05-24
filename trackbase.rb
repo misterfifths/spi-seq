@@ -1640,7 +1640,7 @@ class TrackBase
   #
   # @return [Track]
   # @see #partition_slots
-  # @see #filter_steps
+  # @see #select_steps
   def filter_slots(&block)
     t, = partition_slots(&block)
     t
@@ -1662,7 +1662,7 @@ class TrackBase
   #
   # @return [Track]
   # @see #partition_slots
-  # @see #filter_steps
+  # @see #select_steps
   def reject_slots(&block)
     _, t = partition_slots(&block)
     t
@@ -1879,7 +1879,7 @@ class TrackBase
   #   the two returned tracks. If false, it will be placed in the second.
   #
   # @return [Array(TrackBase, TrackBase)]
-  # @see #filter_steps
+  # @see #select_steps
   # @see #reject_steps
   # @see #partition_slots
   # @see #partition_x_of_y
@@ -1915,8 +1915,9 @@ class TrackBase
   # The new track will have the same length as this one, but will only contain
   # the selected steps.
   #
-  # The result is equivalent to the first returned track of {#partition_steps},
-  # and the block is exactly as described on that method.
+  # The result is equivalent to the first track returned by {#partition_steps},
+  # and the block is exactly as described on that method. The complement of this
+  # function is {#reject_steps}.
   #
   # @yieldparam (see #partition_steps)
   # @yieldreturn [Boolean] If true, the step will be present in the returned
@@ -1924,22 +1925,24 @@ class TrackBase
   #
   # @return [Track]
   # @see #partition_steps
-  # @see #filter_slots
-  def filter_steps(&block)
+  # @see #select_slots
+  # @see #reject_steps
+  def select_steps(&block)
     t, = partition_steps(&block)
     t
   end
 
-  alias filter filter_steps
-  alias select_steps filter_steps
-  alias select filter_steps
+  alias select select_steps
+  alias filter_steps select_steps
+  alias filter select_steps
 
   # Returns a new track containing only steps for which a block returns false.
   # The new track will have the same length as this one, but will only contain
   # the selected steps.
   #
-  # The result is equivalent to the second returned track of {#partition_steps},
-  # and the block is exactly as described on that method.
+  # The result is equivalent to the second track returned by {#partition_steps},
+  # and the block is exactly as described on that method. The complement of this
+  # function is {#select_steps}.
   #
   # @yieldparam (see #partition_steps)
   # @yieldreturn [Boolean] If true, the step will be excluded from the returned
@@ -1947,7 +1950,8 @@ class TrackBase
   #
   # @return [Track]
   # @see #partition_steps
-  # @see #filter_slots
+  # @see #select_steps
+  # @see #select_slots
   def reject_steps(&block)
     _, t = partition_steps(&block)
     t
