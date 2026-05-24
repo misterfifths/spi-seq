@@ -521,20 +521,6 @@ class TrackGridTest < Test::Unit::TestCase
       ] * 2
   end
 
-  def test_rand_dropout
-    assert_grid T[:c4].rdropout(1), [[]]
-    assert_grid T[:c4].rdropout(0), [[:c4]]
-
-    t = T[:a1, :b2, :c3, :d4]
-    assert_grid t.rdropout(1), [[], [], [], []]
-    assert_grid t.rdropout(0), [[:a1], [:b2], [:c3], [:d4]]
-
-    unless ExtApi.in_sonic_pi?  # Not testing Sonic Pi's randomness
-      srand 1234
-      assert_grid t.rdropout, [[], [:b2], [], [:d4]]
-    end
-  end
-
   def test_replace_slot
     assert_grid T[:c4].set_slot(0, [:d5, :e5]), [[:d5, :e5]]
     assert_raises { T[:c4].set_slot(2, [:d5]) }
@@ -660,19 +646,40 @@ class TrackGridTest < Test::Unit::TestCase
     assert_grid t.append_slot(-2, [:f9]), [[:a1], [:b2, :f9], [:c3]]
   end
 
-  def assert_partition(track, a_grid, b_grid, method = :partition, *args, **kwargs, &block)
+  def assert_partition(track, a_grid, b_grid, method = :partition, *args, rand_seed: nil, **kwargs, &block)
+    srand rand_seed unless rand_seed.nil?
+
     a, b = track.send(method, *args, **kwargs, &block)
     assert_grid a, a_grid
     assert_grid b, b_grid
+    assert_grid a | b, track.grid
 
-    # Test the corresponding filter method too, if there is one.
+    # Test the corresponding filter & reject methods too, if they exist.
     filter_method = {
       partition: :filter,
       partition_slots: :filter_slots,
-      partition_note: :filter_note
+      partition_note: :filter_note,
+      partition_every: :filter_every,
+      partition_x_of_y: :filter_x_of_y,
+      rand_partition: :rand_filter
     }[method]
+    unless filter_method.nil?
+      srand rand_seed unless rand_seed.nil?
+      assert_grid track.send(filter_method, *args, **kwargs, &block), a_grid
+    end
 
-    assert_grid track.send(filter_method, *args, **kwargs, &block), a_grid unless filter_method.nil?
+    reject_method = {
+      partition: :reject,
+      partition_slots: :reject_slots,
+      partition_note: :reject_note,
+      partition_every: :reject_every,
+      partition_x_of_y: :reject_x_of_y,
+      rand_partition: :rand_reject
+    }[method]
+    unless reject_method.nil?
+      srand rand_seed unless rand_seed.nil?
+      assert_grid track.send(reject_method, *args, **kwargs, &block), b_grid
+    end
   end
 
   def test_partition
@@ -753,9 +760,7 @@ class TrackGridTest < Test::Unit::TestCase
   end
 
   def assert_gpartition(t, x, y, grid1, grid2, skip_empty: false)
-    t1, t2 = t.gpartition(x, y, skip_empty: skip_empty)
-    assert_grid t1, grid1
-    assert_grid t2, grid2
+    assert_partition t, grid1, grid2, :partition_x_of_y, x, y, skip_empty: skip_empty
   end
 
   def test_partition_x_of_y
@@ -814,6 +819,21 @@ class TrackGridTest < Test::Unit::TestCase
     assert_partition_note t, :b2, [[], [:b2], []], [[:a1], [:b3], [:c3]]
     assert_partition_note t, :c, [[], [], [:c3]], [[:a1], [:b2, :b3], []]
     assert_partition_note t, :c3, [[], [], [:c3]], [[:a1], [:b2, :b3], []]
+  end
+
+  def assert_rand_partition(track, p, a_grid, b_grid, rand_seed: nil)
+    assert_partition(track, a_grid, b_grid, :rand_partition, p, rand_seed: rand_seed)
+  end
+
+  def test_rand_dropout
+    t = T[:a1, :b2, :c3, :d4]
+
+    assert_rand_partition t, 1, [[:a1], [:b2], [:c3], [:d4]], [[], [], [], []]
+    assert_rand_partition t, 0, [[], [], [], []], [[:a1], [:b2], [:c3], [:d4]]
+
+    return unless ExtApi.in_sonic_pi?  # Not testing Sonic Pi's randomness
+
+    assert_rand_partition t, 0.5, [[:a1], [], [:c3], []], [[], [:b2], [], [:d4]], rand_seed: 1234
   end
 
   def test_extract_gates

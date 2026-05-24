@@ -1428,6 +1428,34 @@ class TrackBase
   alias dropout drop_every
   alias reject_every drop_every
 
+  # Returns a new track by selecting all steps in slots that are a certain
+  # distances apart. The duration of the track does not change; the emptied
+  # slots simply become rests.
+  #
+  # This is the complement of {#drop_every}.
+  #
+  # @example
+  #   t = T[:c4] * 9
+  #   u = t.select_every(3)
+  #   # u is equivalent to
+  #   T[:r, :r, :c4,
+  #     :r, :r, :c4,
+  #     :r, :r, :c4]
+  #
+  # @param gaps [Integer] Specifies the slots to select, as described in
+  #   {drop_every}. You must pass at least one value.
+  # @param skip_empty [Boolean] If true, empty slots (rests) are not considered
+  #   when counting slots.
+  # @return [TrackBase]
+  # @see #partition_every
+  # @see #filter_x_of_y
+  def filter_every(*gaps, skip_empty: false)
+    t, = partition_every(*gaps, skip_empty: skip_empty)
+    t
+  end
+
+  alias select_every filter_every
+
   # Considers the track in groups of `y` slots, and clears every `x`th slot
   # within each group. The length of the track is not changed; cleared slots
   # become rests.
@@ -1462,21 +1490,90 @@ class TrackBase
   alias grouped_reject drop_x_of_y
   alias greject drop_x_of_y
 
+  # Considers the track in groups of `y` slots, and clears every slot except the
+  # `x`th within each group. The length of the track is not changed; cleared
+  # slots become rests.
+  #
+  # This is the complement of {drop_x_of_y}.
+  #
+  # @example
+  #   T[:a1, :a2, :a3, :a4, :a5, :a6, :a7].filter_x_of_y(2, 3)
+  #   # is equivalent to
+  #   T[:r, :a2, :r,
+  #     :r, :a5, :r,
+  #     :r]
+  #
+  # @param x [Integer] Specifies the slot within each group of `y` slots to
+  #   select. Must be greater than 0 and <= `y`.
+  # @param y [Integer] The size of the groups of slots to consider. Must be
+  #   greater than 0 and >= `x`.
+  # @param skip_empty [Boolean] If true, empty slots (rests) are not considered
+  #   when counting slots.
+  # @return [TrackBase]
+  # @see #drop_x_of_y
+  # @see #partition_x_of_y
+  # @see #filter_every
+  def filter_x_of_y(x, y, skip_empty: false)
+    t, = partition_x_of_y(x, y, skip_empty: skip_empty)
+    t
+  end
+
+  alias select_x_of_y filter_x_of_y
+  alias grouped_select filter_x_of_y
+  alias gselect filter_x_of_y
+
+  # Returns two tracks randomly containing slots of this one. With probability
+  # `p`, a slot will be in the first track; others will be in the second. Both
+  # tracks have the same length; slots that are not selected into a track are
+  # rests.
+  # @param p [Number] The probability that any given slot will be in the first
+  #   returned track, 0 - 1 inclusive.
+  # @return [Array(TrackBase, TrackBase)]
+  # @see #partition
+  # @see #rand_dropout
+  # @see #rand_select
+  def rand_partition(p = 0.5)
+    partition_slots { |_| ExtApi.rand < p }
+  end
+
   # Return a new track by, with probability `p`, removing all steps in any given
   # slot. The length of the track is not changed; cleared slots become rests.
+  #
+  # This is the complement of {#rand_select}.
+  #
   # @param p [Number] The probability that any given slot will be cleared, 0 - 1
   #   inclusive.
   # @return [TrackBase]
   # @see #dropout
   # @see #drop_x_of_y
   def rand_dropout(p = 0.5)
-    new_grid = @grid.map { |slot| (ExtApi.rand < p) ? [] : slot }
-    mutate(grid: new_grid)
+    _, t = rand_partition(p)
+    t
   end
 
   alias rdropout rand_dropout
   alias rand_reject rand_dropout
   alias rreject rand_dropout
+
+  # Return a new track by, with probability `p`, selecting all steps in any
+  # given slot. The length of the track is not changed; unselected slots become
+  # rests.
+  #
+  # This is the complement of {#rand_reject}.
+  #
+  # @param p [Number] The probability that any given slot will be present in
+  #   the result, 0 - 1 inclusive.
+  # @return [TrackBase]
+  # @see #rand_dropout
+  # @see #rand_partition
+  def rand_select(p = 0.5)
+    t, = rand_partition(p)
+    t
+  end
+
+  alias rselect rand_select
+  alias rand_filter rand_select
+  alias rfilter rand_select
 
   # Returns two tracks, the first containing all the steps for block returns
   # true and the ssecond those for which it returns false. This is the slot
@@ -1508,6 +1605,8 @@ class TrackBase
   # @see #partition_steps
   # @see #partition_x_of_y
   # @see #partition_every
+  # @see #select_slots
+  # @see #reject_slots
   def partition_slots(&block)
     raise ArgumentError, "block must take <= 2 arguments" unless block.arity <= 2
 
@@ -1548,6 +1647,28 @@ class TrackBase
   end
 
   alias select_slots filter_slots
+
+  # Returns a new track containing only slots for which a block returns false.
+  # The new track will have the same length as this one, but will only contain
+  # contain steps in the slots according to the block; others will be rests.
+  #
+  # The result is equivalent to the first returned track of {#partition_slots},
+  # and the block is exactly as described on that method.
+  #
+  # @yieldparam (see #partition_slots)
+  # @yieldreturn [Boolean] If true, the corresponding slot will be excluded from
+  #   the returned track; it will be a rest. If false, the corresponding slot in
+  #   the new track contain the steps from this track.
+  #
+  # @return [Track]
+  # @see #partition_slots
+  # @see #filter_steps
+  def reject_slots(&block)
+    _, t = partition_slots(&block)
+    t
+  end
+
+  alias drop_slots reject_slots
 
   # Returns two tracks by selecting steps in slots that are certain distances
   # apart. This is an expanded version of {#drop_every}. The second track it
@@ -1759,6 +1880,7 @@ class TrackBase
   #
   # @return [Array(TrackBase, TrackBase)]
   # @see #filter_steps
+  # @see #reject_steps
   # @see #partition_slots
   # @see #partition_x_of_y
   # @see #partition_every
@@ -1811,6 +1933,28 @@ class TrackBase
   alias filter filter_steps
   alias select_steps filter_steps
   alias select filter_steps
+
+  # Returns a new track containing only steps for which a block returns false.
+  # The new track will have the same length as this one, but will only contain
+  # the selected steps.
+  #
+  # The result is equivalent to the second returned track of {#partition_steps},
+  # and the block is exactly as described on that method.
+  #
+  # @yieldparam (see #partition_steps)
+  # @yieldreturn [Boolean] If true, the step will be excluded from the returned
+  #   track.
+  #
+  # @return [Track]
+  # @see #partition_steps
+  # @see #filter_slots
+  def reject_steps(&block)
+    _, t = partition_steps(&block)
+    t
+  end
+
+  alias reject reject_steps
+  alias drop_steps reject_steps
 
 
   ## @!group Mutating steps
