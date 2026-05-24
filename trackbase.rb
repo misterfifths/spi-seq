@@ -559,24 +559,7 @@ class TrackBase
   # @see #grouped_zip
   # @see #space
   def zip(other_track, cycle: true, pad_with_rests: true)
-    other_track = compatibly_trackify(other_track)
-    assert_compatible_track(other_track)
-
-    new_grid = []
-    b_idx = 0
-    @grid.each do |slot|
-      new_grid << slot
-      b_idx %= other_track.length if cycle
-      if b_idx < other_track.length
-        new_grid << other_track.grid[b_idx]
-      elsif pad_with_rests
-        new_grid << []
-      end
-
-      b_idx += 1
-    end
-
-    mutate(grid: new_grid)
+    gzip(other_track, 1, 1, cycle: cycle, pad_with_rests: pad_with_rests)
   end
 
   # Creates a new track that inserts the slots of `other_track` after some
