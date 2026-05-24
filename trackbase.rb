@@ -1417,11 +1417,11 @@ class TrackBase
   # @param skip_empty [Boolean] If true, empty slots (rests) are not considered
   #   when counting slots.
   # @return [TrackBase]
-  # @see #extract_every
+  # @see #partition_every
   # @see #drop_x_of_y
   # @see #rand_dropout
   def drop_every(*gaps, skip_empty: false)
-    t, = extract_every(*gaps, skip_empty: skip_empty)
+    _, t = partition_every(*gaps, skip_empty: skip_empty)
     t
   end
 
@@ -1445,11 +1445,11 @@ class TrackBase
   # @param skip_empty [Boolean] If true, empty slots (rests) are not considered
   #   when counting slots.
   # @return [TrackBase]
-  # @see #extract_x_of_y
+  # @see #partition_x_of_y
   # @see #dropout
   # @see #rand_dropout
   def drop_x_of_y(x, y, skip_empty: false)
-    t, = extract_x_of_y(x, y, skip_empty: skip_empty)
+    _, t = partition_x_of_y(x, y, skip_empty: skip_empty)
     t
   end
 
@@ -1472,38 +1472,37 @@ class TrackBase
 
   alias rdropout rand_dropout
 
-  # Returns two tracks by extracting slots for which a block returns true. This
-  # is the slot equivalent of {#extract_steps}; the first returned track
-  # contains slots for which the block returns false, and the second ones for
-  # which the block returns true. Both tracks will have the same length; slots
-  # that are not selected into a particular track will be rests.
+  # Returns two tracks, the first containing all the steps for block returns
+  # true and the ssecond those for which it returns false. This is the slot
+  # equivalent of {#partition_steps}. Both tracks will have the same length;
+  # slots that are not selected into a particular track will be rests.
   #
   # @example
   #   t = T[[:c1, :c2], :d2, :e2, :f2]
   #
-  #   u, v = t.extract_slots { |slot| slot.length == 2 }
+  #   u, v = t.partition_slots { |slot| slot.length == 2 }
   #   # u is equivalent to
-  #   T[:r, :d2, :e2, :f2]
-  #   # and v is
   #   T[[:c1, :c2], :r, :r, :r]
+  #   # and v is
+  #   T[:r, :d2, :e2, :f2]
   #
-  #   x, y = t.extract_slots { |_, i| i % 2 == 0 }
+  #   x, y = t.partition_slots { |_, i| i % 2 == 0 }
   #   # x is equivalent to
-  #   T[:r, :d2, :r, :f2]
-  #   # and y is
   #   T[[:c1, :c2], :r, :e2, :r]
+  #   # and y is
+  #   T[:r, :d2, :r, :f2]
   #
   # @yieldparam slot [Array<StepBase>] The slot under consideration.
   # @yieldparam slot_idx [Integer] (optional) The index in the {#grid} of the
   #   slot.
-  # @yieldreturn [Boolean] If true, the slot will be placed in the second of
-  #   the two returned tracks. If false, it will be placed in the first.
+  # @yieldreturn [Boolean] If true, the slot will be placed in the first of the
+  #   two returned tracks. If false, it will be placed in the second.
   #
   # @return [Array(TrackBase, TrackBase)]
-  # @see #extract_steps
-  # @see #extract_x_of_y
-  # @see #extract_every
-  def extract_slots(&block)
+  # @see #partition_steps
+  # @see #partition_x_of_y
+  # @see #partition_every
+  def partition_slots(&block)
     raise ArgumentError, "block must take <= 2 arguments" unless block.arity <= 2
 
     grid1 = []
@@ -1511,11 +1510,11 @@ class TrackBase
 
     @grid.each_with_index do |slot, i|
       if __call_varargs(block, slot, i)
-        grid1 << []
-        grid2 << slot
-      else
         grid1 << slot
         grid2 << []
+      else
+        grid1 << []
+        grid2 << slot
       end
     end
 
@@ -1526,44 +1525,44 @@ class TrackBase
   # The new track will have the same length as this one, but will only contain
   # contain steps in the selected slots; others will be rests.
   #
-  # The result is equivalent to the second returned track of {#extract_slots},
+  # The result is equivalent to the first returned track of {#partition_slots},
   # and the block is exactly as described on that method.
   #
-  # @yieldparam (see #extract_slots)
+  # @yieldparam (see #partition_slots)
   # @yieldreturn [Boolean] If true, the slot will be present in the returned
   #   track. If false, the corresponding slot in the new track will be empty
   #   (i.e. a rest).
   #
   # @return [Track]
-  # @see #extract_slots
+  # @see #partition_slots
   # @see #filter_steps
   def filter_slots(&block)
-    _, t = extract_slots(&block)
+    t, = partition_slots(&block)
     t
   end
 
   alias select_slots filter_slots
 
   # Returns two tracks by selecting steps in slots that are certain distances
-  # apart. This is an expanded version of {#drop_every}. The first track it
-  # returns is exactly equal to the result of `drop_every`, and the second is
+  # apart. This is an expanded version of {#drop_every}. The second track it
+  # returns is exactly equal to the result of `drop_every`, and the first is
   # its complement. That is, slots that are empty in the first track will be
   # filled in the second.
   #
   # @example
   #   t = T[:a1, :b1, :c1, :d1, :e1, :f1]
   #
-  #   u, v = t.extract_every(3)
+  #   u, v = t.partition_every(3)
   #   # u is equivalent to
-  #   T[:a1, :b1, :r, :d1, :e1, :r]
-  #   # and v is
   #   T[:r, :r, :c4, :r, :r, :f1]
+  #   # and v is
+  #   T[:a1, :b1, :r, :d1, :e1, :r]
   #
   # @param (see #drop_every)
   # @return [TrackBase]
   # @see #drop_every
-  # @see #extract_x_of_y
-  def extract_every(*gaps, skip_empty: false)
+  # @see #partition_x_of_y
+  def partition_every(*gaps, skip_empty: false)
     raise ArgumentError, "you must pass at least one argument" if gaps.empty?
     gaps.map! { |n| Integer.try_convert(n) }
     raise TypeError, "all arguments must be convertible to integers" if gaps.any? { |n| n.nil? }
@@ -1576,7 +1575,7 @@ class TrackBase
 
     gap_idx = 0
     kept_slots = 0
-    extract_slots do |slot|
+    partition_slots do |slot|
       next false if skip_empty && slot.empty?
 
       gap = gaps[gap_idx % gaps.length]
@@ -1593,20 +1592,21 @@ class TrackBase
   end
 
   # Returns two tracks by selecting the `x`th slot in each group of `y`. This is
-  # an expanded version of {#drop_x_of_y}. The first track it returns is exactly
-  # equal to the result of `drop_x_of_y`, and the second is its complement. That
-  # is, slots that are empty in the first track will be filled in the second.
+  # an expanded version of {#drop_x_of_y}. The second track it returns is
+  # exactly equal to the result of `drop_x_of_y`, and the first is its
+  # complement. That is, slots that are empty in the first track will be filled
+  # in the second.
   #
   # @example
-  #   u, v = T[:a1, :a2, :a3, :a4, :a5, :a6, :a7].extract_x_of_y(2, 3)
+  #   u, v = T[:a1, :a2, :a3, :a4, :a5, :a6, :a7].partition_x_of_y(2, 3)
   #   # u is equivalent to
-  #   T[:a1, :r, :a3,
-  #     :a4, :r, :a6,
-  #     :a7]
-  #   # and v is
   #   T[:r, :a2, :r,
   #     :r, :a5, :r,
   #     :r]
+  #   # and v is
+  #   T[:a1, :r, :a3,
+  #     :a4, :r, :a6,
+  #     :a7]
   #
   # @param x [Integer] Specifies the slot within each group of `y` slots to
   #   place in the first returned track; other slots will be in the second. Must
@@ -1616,15 +1616,15 @@ class TrackBase
   # @param skip_empty [Boolean] If true, empty slots (rests) are not considered
   #   when counting slots.
   # @return [TrackBase]
-  # @see #extract_every
+  # @see #partition_every
   # @see #drop_x_of_y
-  def extract_x_of_y(x, y, skip_empty: false)
+  def partition_x_of_y(x, y, skip_empty: false)
     raise TypeError, "x and y must be integers" unless x.is_a?(Integer) && y.is_a?(Integer)
     raise RangeError, "x and y must be > 0" unless x > 0 && y > 0
     raise RangeError, "x must be <= y" unless x <= y
 
     i = 0
-    extract_slots do |slot|
+    partition_slots do |slot|
       next false if skip_empty && slot.empty?
 
       extract_this = i % y == x - 1
@@ -1633,8 +1633,8 @@ class TrackBase
     end
   end
 
-  alias grouped_extract extract_x_of_y
-  alias gextract extract_x_of_y
+  alias grouped_partition partition_x_of_y
+  alias gpartition partition_x_of_y
 
 
   ## @!group Combining and permuting slots
@@ -1722,8 +1722,8 @@ class TrackBase
 
   # Returns two tracks by extracting steps for which a block returns true.
   #
-  # If the block returns true, the step will be placed in the second of the two
-  # returned tracks. If it returns false, the step will be placed in the first.
+  # If the block returns true, the step will be placed in the first of the two
+  # returned tracks. If it returns false, the step will be placed in the second.
   # The returned tracks will have the same length; if the process results in all
   # steps in a slot winding up in only one of the tracks, the slot in the other
   # track will be empty (i.e., a rest).
@@ -1731,32 +1731,32 @@ class TrackBase
   # @example
   #   t = T[[:c1, :c2], :d2, :e2, :f2]
   #
-  #   u, v = t.extract_steps { |step| step.note.match?(:c) }
+  #   u, v = t.partition_steps { |step| step.note.match?(:c) }
   #   # u is equivalent to
-  #   T[:r, :d2, :e2, :f2]
-  #   # and v is
   #   T[[:c1, :c2], :r, :r, :r]
+  #   # and v is
+  #   T[:r, :d2, :e2, :f2]
   #
-  #   x, y = t.extract_steps { |step| step.note.octave == 2 }
+  #   x, y = t.partition_steps { |step| step.note.octave == 2 }
   #   # x is equivalent to
-  #   T[:c1, :r, :r, :r]
-  #   # and y is
   #   T[:c2, :d2, :e2, :f2]
+  #   # and y is
+  #   T[:c1, :r, :r, :r]
   #
   # @yieldparam step [StepBase] The step under consideration.
   # @yieldparam slot [Array<StepBase>] (optional) The slot to which the step
   #   belongs.
   # @yieldparam slot_idx [Integer] (optional) The index in the {#grid} of the
   #   slot the step belongs to.
-  # @yieldreturn [Boolean] If true, the step will be placed in the second of
-  #   the two returned tracks. If false, it will be placed in the first.
+  # @yieldreturn [Boolean] If true, the step will be placed in the first of
+  #   the two returned tracks. If false, it will be placed in the second.
   #
   # @return [Array(TrackBase, TrackBase)]
   # @see #filter_steps
-  # @see #extract_slots
-  # @see #extract_x_of_y
-  # @see #extract_every
-  def extract_steps(&block)
+  # @see #partition_slots
+  # @see #partition_x_of_y
+  # @see #partition_every
+  def partition_steps(&block)
     raise ArgumentError, "Block must take 1-3 arguments" if block.arity == 0 || block.arity > 3
 
     grid1 = []
@@ -1767,11 +1767,10 @@ class TrackBase
       slot2 = []
 
       slot.each do |step|
-        should_extract = __call_varargs(block, step, slot, i)
-        if should_extract
-          slot2 << step
-        else
+        if __call_varargs(block, step, slot, i)
           slot1 << step
+        else
+          slot2 << step
         end
       end
 
@@ -1782,24 +1781,24 @@ class TrackBase
     [mutate(grid: grid1), mutate(grid: grid2)]
   end
 
-  alias extract extract_steps
+  alias partition partition_steps
 
   # Returns a new track containing only steps for which a block returns true.
   # The new track will have the same length as this one, but will only contain
   # the selected steps.
   #
-  # The result is equivalent to the second returned track of {#extract_steps},
+  # The result is equivalent to the first returned track of {#partition_steps},
   # and the block is exactly as described on that method.
   #
-  # @yieldparam (see #extract_steps)
+  # @yieldparam (see #partition_steps)
   # @yieldreturn [Boolean] If true, the step will be present in the returned
   #   track.
   #
   # @return [Track]
-  # @see #extract_steps
+  # @see #partition_steps
   # @see #filter_slots
   def filter_steps(&block)
-    _, t = extract_steps(&block)
+    t, = partition_steps(&block)
     t
   end
 

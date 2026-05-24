@@ -335,7 +335,7 @@ track_live_loop :bass, t.down(2).dropout(3).gate(0.9)
 
 With the `midi`, `port` and `channel` arguments, the `:bass` track could easily be sent to another MIDI target and play on a separate synth than the melody.
 
-There are many more ways to manipulate tracks. You can replace notes in a track based on some pattern (`sub_note`), adjust gate or velocity based on a curve (`gate_curve` and `vel_curve`), split a track into multiple tracks (`extract`, e.g.), do targeted manipulation of each step (`mutate_steps`), and more.
+There are many more ways to manipulate tracks. You can replace notes in a track based on some pattern (`sub_note`), adjust gate or velocity based on a curve (`gate_curve` and `vel_curve`), split a track into multiple tracks (`partition`, e.g.), do targeted manipulation of each step (`mutate_steps`), and more.
 
 ### `track_live_loop` blocks
 

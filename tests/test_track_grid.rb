@@ -660,80 +660,88 @@ class TrackGridTest < Test::Unit::TestCase
     assert_grid t.append_slot(-2, [:f9]), [[:a1], [:b2, :f9], [:c3]]
   end
 
-  def assert_extract(track, a_grid, b_grid, method = :extract, *args, **kwargs, &block)
+  def assert_partition(track, a_grid, b_grid, method = :partition, *args, **kwargs, &block)
     a, b = track.send(method, *args, **kwargs, &block)
     assert_grid a, a_grid
     assert_grid b, b_grid
 
     # Test the corresponding filter method too, if there is one.
     filter_method = {
-      extract: :filter,
-      extract_slots: :filter_slots,
-      extract_note: :filter_note
+      partition: :filter,
+      partition_slots: :filter_slots,
+      partition_note: :filter_note
     }[method]
 
-    assert_grid track.send(filter_method, *args, **kwargs, &block), b_grid unless filter_method.nil?
+    assert_grid track.send(filter_method, *args, **kwargs, &block), a_grid unless filter_method.nil?
   end
 
-  def test_extract
+  def test_partition
     t = T[:a1, [:b2, :b3], :c3]
 
-    assert_extract(t, [[], [], []], [[:a1], [:b2, :b3], [:c3]]) { |_| true }
-    assert_extract(t, [[:a1], [:b2, :b3], [:c3]], [[], [], []]) { |_| false }
-    assert_extract(t, [[:a1], [:b2, :b3], [:c3]], [[], [], []]) { |_, _| false }
-    assert_extract(t, [[:a1], [:b2, :b3], [:c3]], [[], [], []]) { |_, _, _| false }
+    assert_partition(t, [[:a1], [:b2, :b3], [:c3]], [[], [], []]) { |_| true }
+    assert_partition(t, [[], [], []], [[:a1], [:b2, :b3], [:c3]]) { |_| false }
+    assert_partition(t, [[], [], []], [[:a1], [:b2, :b3], [:c3]]) { |_, _| false }
+    assert_partition(t, [[], [], []], [[:a1], [:b2, :b3], [:c3]]) { |_, _, _| false }
 
-    assert_extract(t, [[:a1], [:b3], [:c3]], [[], [:b2], []]) { |step| step.note == :b2 }
-    assert_extract(t, [[:a1], [], [:c3]], [[], [:b2, :b3], []]) { |step| step.note.pitch_class == :b }
+    assert_partition(t, [[], [:b2], []], [[:a1], [:b3], [:c3]]) { |step| step.note == :b2 }
+    assert_partition(t, [[], [:b2, :b3], []], [[:a1], [], [:c3]]) { |step| step.note.pitch_class == :b }
 
-    assert_extract(t, [[], [:b2, :b3], []], [[:a1], [], [:c3]]) { |_, slot| slot.length == 1 }
+    assert_partition(t, [[:a1], [], [:c3]], [[], [:b2, :b3], []]) { |_, slot| slot.length == 1 }
 
-    assert_extract(t, [[:a1], [:b2, :b3], []], [[], [], [:c3]]) { |_, _, idx| idx == 2 }
+    assert_partition(t, [[], [], [:c3]], [[:a1], [:b2, :b3], []]) { |_, _, idx| idx == 2 }
   end
 
-  def assert_extract_slots(track, a_grid, b_grid, &block)
-    assert_extract(track, a_grid, b_grid, :extract_slots, &block)
+  def assert_partition_slots(track, a_grid, b_grid, &block)
+    assert_partition(track, a_grid, b_grid, :partition_slots, &block)
   end
 
-  def test_extract_slots
+  def test_partition_slots
     t = T[:a1, [:b2, :b3], :c3]
 
-    assert_extract_slots(t, [[], [], []], [[:a1], [:b2, :b3], [:c3]]) { |_| true }
-    assert_extract_slots(t, [[:a1], [:b2, :b3], [:c3]], [[], [], []]) { |_| false }
-    assert_extract_slots(t, [[:a1], [:b2, :b3], [:c3]], [[], [], []]) { |_, _| false }
+    assert_partition_slots(t, [[:a1], [:b2, :b3], [:c3]], [[], [], []]) { |_| true }
+    assert_partition_slots(t, [[], [], []], [[:a1], [:b2, :b3], [:c3]]) { |_| false }
+    assert_partition_slots(t, [[], [], []], [[:a1], [:b2, :b3], [:c3]]) { |_, _| false }
 
-    assert_extract_slots(t, [[], [:b2, :b3], []], [[:a1], [], [:c3]]) { |slot| slot.length == 1 }
-    assert_extract_slots(t, [[:a1], [:b2, :b3], []], [[], [], [:c3]]) { |_, idx| idx == 2 }
+    assert_partition_slots(t, [[:a1], [], [:c3]], [[], [:b2, :b3], []]) { |slot| slot.length == 1 }
+    assert_partition_slots(t, [[], [], [:c3]], [[:a1], [:b2, :b3], []]) { |_, idx| idx == 2 }
   end
 
-  def assert_extract_every(track, ns, a_grid, b_grid, skip_empty: false)
+  def assert_partition_every(track, ns, a_grid, b_grid, skip_empty: false)
     ns = [ns] unless ns.is_a?(Enumerable)
-    assert_extract(track, a_grid, b_grid, :extract_every, *ns, skip_empty: skip_empty)
+    assert_partition(track, a_grid, b_grid, :partition_every, *ns, skip_empty: skip_empty)
   end
 
-  def test_extract_every
+  def test_partition_every
     t = T[:a1, [:b2, :b3], :c3]
 
-    assert_raises { t.extract_every(0) }
-    assert_extract_every t, 1, [[], [], []], [[:a1], [:b2, :b3], [:c3]]
-    assert_extract_every t, 2, [[:a1], [], [:c3]], [[], [:b2, :b3], []]
-    assert_extract_every t, 3, [[:a1], [:b2, :b3], []], [[], [], [:c3]]
-    assert_extract_every t, 4, [[:a1], [:b2, :b3], [:c3]], [[], [], []]
+    assert_raises { t.partition_every(0) }
+    assert_partition_every t, 1, [[:a1], [:b2, :b3], [:c3]], [[], [], []]
+    assert_partition_every t, 2, [[], [:b2, :b3], []], [[:a1], [], [:c3]]
+    assert_partition_every t, 3, [[], [], [:c3]], [[:a1], [:b2, :b3], []]
+    assert_partition_every t, 4, [[], [], []], [[:a1], [:b2, :b3], [:c3]]
 
     # Multiple gaps
     t = T[*[:a1] * 12]
-    assert_extract_every t, [1, 3],
-      [[], [:a1], [:a1], [], [], [:a1], [:a1], [], [], [:a1], [:a1], []],
-      [[:a1], [], [], [:a1], [:a1], [], [], [:a1], [:a1], [], [], [:a1]]
-    assert_extract_every t, [2, 4],
-      [[:a1], [], [:a1], [:a1], [:a1], [], [:a1], [], [:a1], [:a1], [:a1], []],
-      [[], [:a1], [], [], [], [:a1], [], [:a1], [], [], [], [:a1]]
-    assert_extract_every t, [2, 3, 4],
-      [[:a1], [], [:a1], [:a1], [], [:a1], [:a1], [:a1], [], [:a1], [], [:a1]],
-      [[], [:a1], [], [], [:a1], [], [], [], [:a1], [], [:a1], []]
+    assert_partition_every t, [1, 3],
+      [[:a1], [], [], [:a1], [:a1], [], [], [:a1], [:a1], [], [], [:a1]],
+      [[], [:a1], [:a1], [], [], [:a1], [:a1], [], [], [:a1], [:a1], []]
+    assert_partition_every t, [2, 4],
+      [[], [:a1], [], [], [], [:a1], [], [:a1], [], [], [], [:a1]],
+      [[:a1], [], [:a1], [:a1], [:a1], [], [:a1], [], [:a1], [:a1], [:a1], []]
+    assert_partition_every t, [2, 3, 4],
+      [[], [:a1], [], [], [:a1], [], [], [], [:a1], [], [:a1], []],
+      [[:a1], [], [:a1], [:a1], [], [:a1], [:a1], [:a1], [], [:a1], [], [:a1]]
 
     t = T[*[:a1, :r] * 6]
-    assert_extract_every t, [1, 3],
+    assert_partition_every t, [1, 3],
+      [
+        [:a1], [],
+        [], [],
+        [], [],
+        [:a1], [],
+        [:a1], [],
+        [], []
+      ],
       [
         [], [],    # drop (1), rest
         [:a1], [], # keep (3), rest
@@ -741,79 +749,71 @@ class TrackGridTest < Test::Unit::TestCase
         [], [],    # drop (3), rest
         [], [],    # drop (1), rest
         [:a1], []  # keep (3), rest
-      ],
-      [
-        [:a1], [],
-        [], [],
-        [], [],
-        [:a1], [],
-        [:a1], [],
-        [], []
       ], skip_empty: true
   end
 
-  def assert_gextract(t, x, y, grid1, grid2, skip_empty: false)
-    t1, t2 = t.gextract(x, y, skip_empty: skip_empty)
+  def assert_gpartition(t, x, y, grid1, grid2, skip_empty: false)
+    t1, t2 = t.gpartition(x, y, skip_empty: skip_empty)
     assert_grid t1, grid1
     assert_grid t2, grid2
   end
 
-  def test_extract_x_of_y
+  def test_partition_x_of_y
     t = T[*[:a1] * 12]
 
-    assert_raises { t.gextract(1, 0) }
-    assert_raises { t.gextract(0, 1) }
-    assert_raises { t.gextract(-1, 2) }
-    assert_raises { t.gextract(5, 3) }
-    assert_raises { t.gextract(0.25, 1) }
+    assert_raises { t.gpartition(1, 0) }
+    assert_raises { t.gpartition(0, 1) }
+    assert_raises { t.gpartition(-1, 2) }
+    assert_raises { t.gpartition(5, 3) }
+    assert_raises { t.gpartition(0.25, 1) }
 
-    assert_gextract t, 1, 3,
-                    [[], [:a1], [:a1]] * 4,
-                    [[:a1], [], []] * 4
-    assert_gextract t, 2, 3,
-                    [[:a1], [], [:a1]] * 4,
-                    [[], [:a1], []] * 4
-    assert_gextract t, 3, 3,
-                    [[:a1], [:a1], []] * 4,
-                    [[], [], [:a1]] * 4
+    assert_gpartition t, 1, 3,
+                      [[:a1], [], []] * 4,
+                      [[], [:a1], [:a1]] * 4
+    assert_gpartition t, 2, 3,
+                      [[], [:a1], []] * 4,
+                      [[:a1], [], [:a1]] * 4
+    assert_gpartition t, 3, 3,
+                      [[], [], [:a1]] * 4,
+                      [[:a1], [:a1], []] * 4
 
-    assert_gextract t, 1, 5,
-                    [[], [:a1], [:a1], [:a1], [:a1]] * 2 + [[], [:a1]],
-                    [[:a1], [], [], [], []] * 2 + [[:a1], []]
-    assert_gextract t, 3, 5,
-                    [[:a1], [:a1], [], [:a1], [:a1]] * 2 + [[:a1], [:a1]],
-                    [[], [], [:a1], [], []] * 2 + [[], []]
+    assert_gpartition t, 1, 5,
+                      [[:a1], [], [], [], []] * 2 + [[:a1], []],
+                      [[], [:a1], [:a1], [:a1], [:a1]] * 2 + [[], [:a1]]
+    assert_gpartition t, 3, 5,
+                      [[], [], [:a1], [], []] * 2 + [[], []],
+                      [[:a1], [:a1], [], [:a1], [:a1]] * 2 + [[:a1], [:a1]]
 
-    assert_gextract t, 2, 15,
-                    [[:a1], []] + [[:a1]] * 10,
-                    [[], [:a1]] + [[]] * 10
+    assert_gpartition t, 2, 15,
+                      [[], [:a1]] + [[]] * 10,
+                      [[:a1], []] + [[:a1]] * 10
 
     t = T[*[:a1, :r] * 6]
-    assert_gextract t, 2, 3,
-      [
-        [:a1], [],
-        [], [],
-        [:a1], []
-      ] * 2,
+    assert_gpartition t, 2, 3,
       [
         [], [],
         [:a1], [],
         [], []
+      ] * 2,
+      [
+        [:a1], [],
+        [], [],
+        [:a1], []
       ] * 2, skip_empty: true
   end
 
-  def assert_extract_note(track, note, a_grid, b_grid)
-    assert_extract(track, a_grid, b_grid, :extract_note, note)
+  def assert_partition_note(track, note, a_grid, b_grid)
+    assert_partition(track, a_grid, b_grid, :partition_note, note)
   end
 
-  def test_extract_note
+  def test_partition_note
     t = T[:a1, [:b2, :b3], :c3]
 
-    assert_extract_note t, :d, [[:a1], [:b2, :b3], [:c3]], [[], [], []]
-    assert_extract_note t, :b, [[:a1], [], [:c3]], [[], [:b2, :b3], []]
-    assert_extract_note t, :b2, [[:a1], [:b3], [:c3]], [[], [:b2], []]
-    assert_extract_note t, :c, [[:a1], [:b2, :b3], []], [[], [], [:c3]]
-    assert_extract_note t, :c3, [[:a1], [:b2, :b3], []], [[], [], [:c3]]
+    assert_partition_note t, :d, [[], [], []], [[:a1], [:b2, :b3], [:c3]]
+    assert_partition_note t, :b, [[], [:b2, :b3], []], [[:a1], [], [:c3]]
+    assert_partition_note t, :b2, [[], [:b2], []], [[:a1], [:b3], [:c3]]
+    assert_partition_note t, :c, [[], [], [:c3]], [[:a1], [:b2, :b3], []]
+    assert_partition_note t, :c3, [[], [], [:c3]], [[:a1], [:b2, :b3], []]
   end
 
   def test_extract_gates

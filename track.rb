@@ -1221,40 +1221,40 @@ class Track < TrackBase
 
   # Returns two Tracks by extracting steps that match the given note. Matches
   # are evaluated with {MIDINote#match?}. The first returned track contains the
-  # non-matching steps, and the second contains the matching ones.
+  # matching steps, and the second contains the non-matching ones.
   #
   # @example
   #   t = T[[:c1, :c2], :d2, :e2, :f2]
-  #   u, v = t.extract_note(:c)
+  #   u, v = t.partition_notes(:c)
   #   # u is equivalent to
-  #   T[:r, :d2, :e2, :f2]
-  #   # and v is
   #   T[[:c1, :c2], :r, :r, :r]
+  #   # and v is
+  #   T[:r, :d2, :e2, :f2]
   #
   # @param note [MIDINote, String, Symbol, Integer] The note or pitch class to
   #   match. See {MIDINote#match?} for precise rules.
   # @return {Array(Track, Track)}
   # @see MIDINote#match?
-  # @see #extract
+  # @see #partition
   # @see #filter_notes
-  def extract_note(note)
-    extract { |step| step.note.match?(note) }
+  def partition_notes(note)
+    partition { |step| step.note.match?(note) }
   end
 
-  alias extract_notes extract_note
+  alias partition_note partition_notes
 
   # Returns a new track containing only steps that match the given note. The new
   # The new track will have the same length as this one, but will only contain
   # steps that match. Matches are evaluated with {MIDINote#match?}.
   #
-  # The result is equivalent to the second returned track of {#extract_note}.
+  # The result is equivalent to the first returned track of {#partition_notes}.
   #
-  # @param (see #extract_note)
+  # @param (see #partition_notes)
   # @return [Track]
-  # @see #extract_note
+  # @see #partition_notes
   # @see #filter_steps
   def filter_notes(note)
-    _, t = extract_note(note)
+    t, = partition_note(note)
     t
   end
 
