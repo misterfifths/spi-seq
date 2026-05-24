@@ -1426,6 +1426,7 @@ class TrackBase
   end
 
   alias dropout drop_every
+  alias reject_every drop_every
 
   # Considers the track in groups of `y` slots, and clears every `x`th slot
   # within each group. The length of the track is not changed; cleared slots
@@ -1457,6 +1458,9 @@ class TrackBase
   alias grouped_droput drop_x_of_y
   alias gdropout drop_x_of_y
   alias gdrop drop_x_of_y
+  alias reject_x_of_y drop_x_of_y
+  alias grouped_reject drop_x_of_y
+  alias greject drop_x_of_y
 
   # Return a new track by, with probability `p`, removing all steps in any given
   # slot. The length of the track is not changed; cleared slots become rests.
@@ -1471,6 +1475,8 @@ class TrackBase
   end
 
   alias rdropout rand_dropout
+  alias rand_reject rand_dropout
+  alias rreject rand_dropout
 
   # Returns two tracks, the first containing all the steps for block returns
   # true and the ssecond those for which it returns false. This is the slot
