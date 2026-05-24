@@ -216,6 +216,19 @@ class TrackGridTest < Test::Unit::TestCase
     assert_grid t.cycle_to_length(6), [[:a1], [:b2], [:c3], [:a1], [:b2], [:c3]]
   end
 
+  def test_repeat_slots
+    t = T[:a1, :r, [:b1, :c1]]
+
+    assert_raises(ArgumentError) { t.repeat_slots(0) }
+    assert_raises(ArgumentError) { t.repeat_slots(0.5) }
+    assert_grid t.repeat_slots(1), t.grid
+    assert_grid t.repeat_slots, [[:a1], [:a1], [], [], [:b1, :c1], [:b1, :c1]]
+    assert_grid t.repeat_slots(2), t.repeat_slots.grid
+    assert_grid t.repeat_slots(3), [[:a1], [:a1], [:a1],
+                                    [], [], [],
+                                    [:b1, :c1], [:b1, :c1], [:b1, :c1]]
+  end
+
   def test_compact
     assert_grid T[:r, :r, :a1, :r, :b2, :r, :r, :c3, :r].compact, [[:a1], [:b2], [:c3]]
     assert_raises { Track.rest.compact }

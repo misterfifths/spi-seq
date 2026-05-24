@@ -1188,6 +1188,7 @@ class TrackBase
   # @param n [Integer]
   # @return [TrackBase]
   # @see #cycle_to_length
+  # @see #repeat_slots
   def repeat(n)
     mutate(grid: @grid * n)
   end
@@ -1207,9 +1208,39 @@ class TrackBase
   # @param n [Integer] The number of slots in the new track.
   # @return [TrackBase]
   # @see #repeat
+  # @see #repeat_slots
   def cycle_to_length(n)
     mutate(grid: @grid.cycle.take(n))
   end
+
+  # Returns a new track where each slot in this one is repeated `n` many times
+  # in a row.
+  #
+  # @example
+  #   T[:c4, :r, [:d4, :e4]].repeat(3)
+  #   # is equivalent to
+  #   T[:c4, :c4, :c4,
+  #     :r, :r, :r,
+  #     [:d4, :e4], [:d4, :e4], [:d4, :e4]]
+  #
+  # @param n [Integer] The number of times to repeat each slot. Must be >= 1,
+  #   though a value of 1 has no effect.
+  # @return [TrackBase]
+  # @see #repeat
+  # @see #cycle_to_length
+  def repeat_slots(n = 2)
+    raise ArgumentError, "n must be an integer" unless n.is_a?(Integer)
+    raise ArgumentError, "n must be >= 1" unless n >= 1
+
+    return self if n == 1
+
+    new_grid = []
+    @grid.each { |slot| new_grid += [slot] * n }
+    mutate(grid: new_grid)
+  end
+
+  alias double_slots repeat_slots
+  alias double repeat_slots
 
   # Returns a new track with the first `n` slots removed from this one. Or, if
   # `n` is negative, a new track with the final `n` slots removed.
