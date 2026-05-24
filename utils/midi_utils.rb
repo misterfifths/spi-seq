@@ -89,7 +89,7 @@ def cc_watcher_live_loop(loop_name, port: nil, channel: nil, &block)
     ExtApi.use_real_time
 
     cc, val = ExtApi.sync(cue_path)
-    block.call([cc, val].take(block.arity))
+    __call_varargs(block, cc, val)
   end
 end
 

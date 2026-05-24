@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "../theory/scale"
+require_relative "../utils/misc_utils"
 
 module TrackTestHelpers
   def equal_steps?(step, stepish, tol = 0.01)
@@ -52,8 +53,7 @@ module TrackTestHelpers
   def each_step(track, &block)
     track.grid.each do |slot|
       slot.each do |step|
-        args = [step, slot].take(block.arity)
-        block.call(*args)
+        __call_varargs(block, step, slot)
       end
     end
   end

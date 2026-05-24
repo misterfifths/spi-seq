@@ -949,8 +949,7 @@ class TrackBase
         pct = i.to_f / (num_slots - 1)
       end
 
-      args = [slot, i, pct].take(block.arity)
-      replacement = block.call(*args)
+      replacement = __call_varargs(block, slot, i, pct)
 
       # The block may return something convertible to a slot (step/note/etc.),
       # or a 1d array (which we will take as a slot), or an array that contains
@@ -1511,8 +1510,7 @@ class TrackBase
     grid2 = []
 
     @grid.each_with_index do |slot, i|
-      args = [slot, i].take(block.arity)
-      if block.call(*args)
+      if __call_varargs(block, slot, i)
         grid1 << []
         grid2 << slot
       else
@@ -1769,9 +1767,7 @@ class TrackBase
       slot2 = []
 
       slot.each do |step|
-        args = [step, slot, i].take(block.arity)
-        should_extract = block.call(*args)
-
+        should_extract = __call_varargs(block, step, slot, i)
         if should_extract
           slot2 << step
         else
@@ -1864,9 +1860,7 @@ class TrackBase
 
       new_slot = []
       slot.each do |step|
-        args = [step, i, pct].take(block.arity)
-        new_step = block.call(*args)
-
+        new_step = __call_varargs(block, step, i, pct)
         new_slot += self.class.slotify(new_step)
       end
 

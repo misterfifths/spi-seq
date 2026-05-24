@@ -37,11 +37,14 @@ def one_time_init(key = :default)
   end
 end
 
-# Given a proc and a hash of keyword arguments, returns a new hash containing
-# only the members of the hash that are valid keyword arguments for the proc.
-# If the proc takes a double-star **kwargs argument, the hash is not filtered.
+# Given a proc or lambda and a hash of keyword arguments, returns a new hash
+# containing only the members of the hash that are valid keyword arguments.
+# If the proc or lambda takes a double-star **kwargs argument, the hash is not
+# filtered.
 # @private
 def __filter_kwargs_for_proc(proc, kwargs)
+  return kwargs if kwargs.empty?
+
   params = proc.parameters
   return {} if params.empty?
 
@@ -52,6 +55,17 @@ def __filter_kwargs_for_proc(proc, kwargs)
   # [:keyreq, :keyname].
   key_args = params.filter { |p| [:key, :keyreq].member?(p[0]) }.map { |p| p[1] }
   kwargs.filter { |k, _| key_args.member?(k) }
+end
+
+# Calls a given proc or lambda with an appropriate subset of the provided
+# arguments. `arity` many of the positional arguments are passed, and only
+# the valid keyword arguments (as found by __filter_kwargs_for_proc). Does not
+# raise if the proc/lambda takes more positional arguments than are provided.
+# @private
+def __call_varargs(proc, *args, **kwargs)
+  args = args.take(proc.arity)
+  kwargs = __filter_kwargs_for_proc(proc, kwargs)
+  proc.call(*args, **kwargs)
 end
 
 # @private

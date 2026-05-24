@@ -238,12 +238,9 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
 
     res = nil
     unless block.nil?
-      args = [player.cycle, player.track, muted, was_muted, arg].take(block.arity)
-
-      block_kwargs = { cycle: player.cycle, track: player.track, muted: muted, was_muted: was_muted, arg: arg }
-      block_kwargs = __filter_kwargs_for_proc(block, block_kwargs)
-
-      res = block.call(*args, **block_kwargs)
+      res = __call_varargs(block,
+                           player.cycle, player.track, muted, was_muted, arg,
+                           cycle: player.cycle, track: player.track, muted: muted, was_muted: was_muted, arg: arg)
     end
 
     if res.is_a?(TrackBase)

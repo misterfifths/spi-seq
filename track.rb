@@ -855,9 +855,7 @@ class Track < TrackBase
     end
 
     mutate_each_step do |step, slot_idx, pct|
-      args = [pct, slot_idx].take(curve_func.arity)
-      gate = curve_func.call(*args)
-
+      gate = __call_varargs(curve_func, pct, slot_idx)
       step.with_gate(gate)
     end
   end
@@ -912,9 +910,7 @@ class Track < TrackBase
     end
 
     mutate_each_step do |step, slot_idx, pct|
-      args = [pct, slot_idx].take(curve_func.arity)
-      vel = curve_func.call(*args)
-
+      vel = __call_varargs(curve_func, pct, slot_idx)
       vel *= 127 if zero_to_one  # with_vel will round & clamp this
       step.with_vel(vel)
     end
@@ -1459,8 +1455,7 @@ class Track < TrackBase
         pct = i.to_f / (num_slots - 1)
       end
 
-      args = [slot, i, pct].take(block.arity)
-      replacement = block.call(*args)
+      replacement = __call_varargs(block, slot, i, pct)
 
       # The block may return something convertible to a slot (a CCStep), or a
       # 1d array (which we will take as a slot), or an array that contains some
@@ -1529,8 +1524,7 @@ class Track < TrackBase
         pct = i.to_f / (num_slots - 1)
       end
 
-      args = [slot, i, pct].take(block.arity)
-      replacement = block.call(*args)
+      replacement = __call_varargs(block, slot, i, pct)
 
       # The block may return a scalar (which we take as a CC value), or an array
       # (which we will take as a definition for a set of slots).
