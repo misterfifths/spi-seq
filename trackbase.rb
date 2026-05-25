@@ -1322,11 +1322,12 @@ class TrackBase
 
   # Returns a new track consisting of only the selected slots of this track.
   # Takes the same arguments as Array#slice (aka `[]`): a single integer index,
-  # an index and a length, or a range.
+  # an index and a length, or a range. Returns nil if the arguments constitute
+  # an invalid range of the grid.
   # @return [TrackBase]
   def slice(*args)
     s = @grid.slice(*args)
-    raise IndexError, "invalid grid index" if s.nil?
+    return nil if s.nil?
     s = [s] if s.empty? || !s[0].is_a?(Array)
     mutate(grid: s)
   end
