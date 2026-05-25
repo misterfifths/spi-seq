@@ -1923,7 +1923,7 @@ class TrackBase
   # @yieldreturn [Boolean] If true, the step will be present in the returned
   #   track.
   #
-  # @return [Track]
+  # @return [TrackBase]
   # @see #partition_steps
   # @see #select_slots
   # @see #reject_steps
@@ -1948,7 +1948,7 @@ class TrackBase
   # @yieldreturn [Boolean] If true, the step will be excluded from the returned
   #   track.
   #
-  # @return [Track]
+  # @return [TrackBase]
   # @see #partition_steps
   # @see #select_steps
   # @see #select_slots
