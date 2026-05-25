@@ -1419,6 +1419,9 @@ class TrackBase
   # steps in a slot winding up in only one of the tracks, the slot in the other
   # track will be empty (i.e., a rest).
   #
+  # {#select_steps} and {#reject_steps} are variants that return the first and
+  # second track of this method, respectively.
+  #
   # @example
   #   t = T[[:c1, :c2], :d2, :e2, :f2]
   #
@@ -1448,6 +1451,7 @@ class TrackBase
   # @see #partition_slots
   # @see #partition_x_of_y
   # @see #partition_every
+  # @see #partition_rand
   def partition_steps(&block)
     raise ArgumentError, "Block must take 1-3 arguments" if block.arity == 0 || block.arity > 3
 
@@ -1477,11 +1481,23 @@ class TrackBase
 
   # Returns a new track containing only steps for which a block returns true.
   # The new track will have the same length as this one, but will only contain
-  # the selected steps.
+  # the selected steps. Slots whose steps are all rejected will be empty (rests)
+  # in the result.
   #
   # The result is equivalent to the first track returned by {#partition_steps},
   # and the block is exactly as described on that method. The complement of this
   # function is {#reject_steps}.
+  #
+  # @example
+  #   t = T[[:c1, :c2], :d2, :e2, :f3]
+  #
+  #   t.select_steps { |step| step.note.octave == 2 }
+  #   # is equivalent to
+  #   T[:c2, :d2, :e2, :r]
+  #
+  #   t.select_steps { |_, i| i > 1 }
+  #   # is equivalent to
+  #   T[:r, :r, :e2, :f3]
   #
   # @yieldparam (see #partition_steps)
   # @yieldreturn [Boolean] If true, the step will be present in the returned
@@ -1502,11 +1518,23 @@ class TrackBase
 
   # Returns a new track containing only steps for which a block returns false.
   # The new track will have the same length as this one, but will only contain
-  # the selected steps.
+  # the selected steps. Slots whose steps are all rejected will be empty (rests)
+  # in the result.
   #
   # The result is equivalent to the second track returned by {#partition_steps},
   # and the block is exactly as described on that method. The complement of this
   # function is {#select_steps}.
+  #
+  # @example
+  #   t = T[[:c1, :c2], :d2, :e2, :f3]
+  #
+  #   t.reject_steps { |step| step.note.octave == 2 }
+  #   # is equivalent to
+  #   T[:c1, :r, :r, :f3]
+  #
+  #   t.reject_steps { |_, i| i > 1 }
+  #   # is equivalent to
+  #   T[[:c1, :c2], :d2, :r, :r]
   #
   # @yieldparam (see #partition_steps)
   # @yieldreturn [Boolean] If true, the step will be excluded from the returned
@@ -1515,7 +1543,7 @@ class TrackBase
   # @return [TrackBase]
   # @see #partition_steps
   # @see #select_steps
-  # @see #select_slots
+  # @see #reject_slots
   def reject_steps(&block)
     _, t = partition_steps(&block)
     t
