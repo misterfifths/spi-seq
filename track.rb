@@ -1217,7 +1217,7 @@ class Track < TrackBase
   end
 
 
-  ## @!group Adding, removing, and filtering steps
+  ## @!group Partitioning and filtering steps
 
   # Returns two Tracks by extracting steps that match the given note. Matches
   # are evaluated with {MIDINote#match?}. The first returned track contains the

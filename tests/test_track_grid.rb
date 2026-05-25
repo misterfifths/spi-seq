@@ -450,7 +450,7 @@ class TrackGridTest < Test::Unit::TestCase
     end
   end
 
-  def test_drop_every
+  def test_clear_every
     assert_raises { T[:c4].dropout }
     assert_raises { T[:c4].dropout(0) }
     assert_raises { T[:c4].dropout(-1) }
@@ -491,29 +491,29 @@ class TrackGridTest < Test::Unit::TestCase
       ]
   end
 
-  def test_drop_x_of_y
+  def test_clear_x_of_y
     t = T[*[:a1] * 12]
 
-    assert_raises { t.gdrop(1, 0) }
-    assert_raises { t.gdrop(0, 1) }
-    assert_raises { t.gdrop(-1, 2) }
-    assert_raises { t.gdrop(5, 3) }
-    assert_raises { t.gdrop(0.25, 1) }
+    assert_raises { t.gclear(1, 0) }
+    assert_raises { t.gclear(0, 1) }
+    assert_raises { t.gclear(-1, 2) }
+    assert_raises { t.gclear(5, 3) }
+    assert_raises { t.gclear(0.25, 1) }
 
-    assert_grid t.gdrop(1, 3), [[], [:a1], [:a1]] * 4
-    assert_grid t.gdrop(2, 3), [[:a1], [], [:a1]] * 4
-    assert_grid t.gdrop(3, 3), [[:a1], [:a1], []] * 4
+    assert_grid t.gclear(1, 3), [[], [:a1], [:a1]] * 4
+    assert_grid t.gclear(2, 3), [[:a1], [], [:a1]] * 4
+    assert_grid t.gclear(3, 3), [[:a1], [:a1], []] * 4
 
-    assert_grid t.gdrop(1, 5), [[], [:a1], [:a1], [:a1], [:a1]] * 2 + [[], [:a1]]
-    assert_grid t.gdrop(3, 5), [[:a1], [:a1], [], [:a1], [:a1]] * 2 + [[:a1], [:a1]]
+    assert_grid t.gclear(1, 5), [[], [:a1], [:a1], [:a1], [:a1]] * 2 + [[], [:a1]]
+    assert_grid t.gclear(3, 5), [[:a1], [:a1], [], [:a1], [:a1]] * 2 + [[:a1], [:a1]]
 
-    assert_grid t.gdrop(2, 15), [[:a1], []] + [[:a1]] * 10
+    assert_grid t.gclear(2, 15), [[:a1], []] + [[:a1]] * 10
 
     # this is useless but shouldn't be an error
-    assert_grid t.gdrop(1, 1), [[]] * 12
+    assert_grid t.gclear(1, 1), [[]] * 12
 
     t = T[*[:a1, :r] * 6]
-    assert_grid t.gdrop(2, 3, skip_empty: true),
+    assert_grid t.gclear(2, 3, skip_empty: true),
       [
         [:a1], [],
         [], [],
@@ -542,43 +542,73 @@ class TrackGridTest < Test::Unit::TestCase
     assert_grid t.set_slot(-3, [:f9]), [[:f9], [:b2], [:c3]]
   end
 
-  def test_clear_slot
-    t = T[:a1, [:b2, :c3], :r]
-    assert_grid t.clear_slot(0), [[], [:b2, :c3], []]
-    assert_grid t.clear_slot(1), [[:a1], [], []]
-    assert_grid t.clear_slot(2), [[:a1], [:b2, :c3], []]
-    assert_grid t.clear_slot(3), t.grid  # does nothing
+  # Assumes track has no rests, so we can easily test select & reject.
+  def assert_clear_slots(track, cleared_grid, idx_or_range, length = nil)
+    inverse_grid = track.grid.map.with_index do |slot, idx|
+      cleared_grid[idx].empty? ? slot : []
+    end
+
+    assert_grid track.clear_slots(idx_or_range, length), cleared_grid
+    assert_grid track.clear_slots_except(idx_or_range, length), inverse_grid
+
+    # These may drop slots, so they should match the coresponding compactified
+    # grid, or nil if everything gets dropped.
+    _assert_compact_grid_or_nil track.reject_slots(idx_or_range, length), cleared_grid
+    _assert_compact_grid_or_nil track.select_slots(idx_or_range, length), inverse_grid
+  end
+
+  def test_clear_slots
+    # Since this is in the partition_slots family, its block variant gets tested
+    # in test_partition_slots.
+
+    t = T[:a1, [:b2, :c3], :d4]
+    assert_clear_slots t, [[], [:b2, :c3], [:d4]], 0
+    assert_clear_slots t, [[:a1], [], [:d4]], 1
+    assert_clear_slots t, [[:a1], [:b2, :c3], []], 2
+    assert_clear_slots t, t.grid, 3  # does nothing
 
     t = T[:a1, :b1, :c1, :d1, :e1]
-    assert_grid t.clear_slot(0, 5), [[], [], [], [], []]
-    assert_grid t.clear_slot(0, 6), [[], [], [], [], []]  # the step outside the range was ignored
-    assert_grid t.clear_slot(1, 3), [[:a1], [], [], [], [:e1]]
-    assert_grid t.clear_slot(2, 2), [[:a1], [:b1], [], [], [:e1]]
-    assert_grid t.clear_slot(2, 3), [[:a1], [:b1], [], [], []]
-    assert_grid t.clear_slot(5, -9), t.grid  # the range is effectively empty; does nothing
+    assert_clear_slots t, [[], [], [], [], []], 0, 5
+    assert_clear_slots t, [[], [], [], [], []], 0, 6  # the step outside the range was ignored
+    assert_clear_slots t, [[:a1], [], [], [], [:e1]], 1, 3
+    assert_clear_slots t, [[:a1], [:b1], [], [], [:e1]], 2, 2
+    assert_clear_slots t, [[:a1], [:b1], [], [], []], 2, 3
+    assert_clear_slots t, t.grid, 5, -9  # the range is effectively empty; does nothing
 
-    assert_grid t.clear_slot(0..5), [[], [], [], [], []]
-    assert_grid t.clear_slot(0..10), [[], [], [], [], []]  # the step outside the range was ignored
-    assert_grid t.clear_slot(1..3), [[:a1], [], [], [], [:e1]]
-    assert_grid t.clear_slot(2..3), [[:a1], [:b1], [], [], [:e1]]
-    assert_grid t.clear_slot(2..4), [[:a1], [:b1], [], [], []]
-
-    assert_raises(TypeError) { t.clear_slot(:nope) }
-    assert_raises(TypeError) { t.clear_slot(5, :nope) }
-    assert_raises(TypeError) { t.clear_slot(0..1, 3) }
+    assert_clear_slots t, [[], [], [], [], []], 0..5
+    assert_clear_slots t, [[], [], [], [], []], 0..10  # the step outside the range was ignored
+    assert_clear_slots t, [[:a1], [], [], [], [:e1]], 1..3
+    assert_clear_slots t, [[:a1], [:b1], [], [], [:e1]], 2..3
+    assert_clear_slots t, [[:a1], [:b1], [], [], []], 2..4
 
     # Open ranges
-    assert_grid t.clear_slot(..2), [[], [], [], [:d1], [:e1]]
-    assert_grid t.clear_slot(2..), [[:a1], [:b1], [], [], []]
+    assert_clear_slots t, [[], [], [], [:d1], [:e1]], (..2)
+    assert_clear_slots t, [[:a1], [:b1], [], [], []], (2..)
 
     # Negative indexes
     t = T[:a1, :b1, :c1, :d1]
-    assert_grid t.clear_slot(-1), [[:a1], [:b1], [:c1], []]
-    assert_grid t.clear_slot(-2), [[:a1], [:b1], [], [:d1]]
-    assert_grid t.clear_slot(-3, 2), [[:a1], [], [], [:d1]]
-    assert_grid t.clear_slot(-4..-2), [[], [], [], [:d1]]
-    assert_grid t.clear_slot(-3..), [[:a1], [], [], []]
-    assert_grid t.clear_slot(..-3), [[], [], [:c1], [:d1]]
+    assert_clear_slots t, [[:a1], [:b1], [:c1], []], -1
+    assert_clear_slots t, [[:a1], [:b1], [], [:d1]], -2
+    assert_clear_slots t, [[:a1], [], [], [:d1]], -3, 2
+    assert_clear_slots t, [[], [], [], [:d1]], -4..-2
+    assert_clear_slots t, [[:a1], [], [], []], (-3..)
+    assert_clear_slots t, [[], [], [:c1], [:d1]], (..-3)
+
+    # Arguments
+    assert_raises(TypeError) { t.clear_slot(:nope) }
+    assert_raises(TypeError) { t.clear_slot(5, :nope) }
+    assert_raises(TypeError) { t.clear_slot(0..1, 3) }
+    assert_raises(ArgumentError) { t.clear_slot(nil, 5) }
+    assert_raises(ArgumentError) { t.clear_slots_except(nil, 5) }
+    assert_raises(ArgumentError) { t.reject_slots(nil, 5) }
+    assert_raises(ArgumentError) { t.select_slots(nil, 5) }
+    assert_raises(ArgumentError) { t.clear_slot(0, 5) { true } }
+    assert_raises(ArgumentError) { t.clear_slots_except(0, 5) { true } }
+    assert_raises(ArgumentError) { t.reject_slots(0, 5) { false } }
+    assert_raises(ArgumentError) { t.select_slots(0, 5) { true } }
+    assert_raises(ArgumentError) { t.clear_slots_except }
+    assert_raises(ArgumentError) { t.select_slots }
+    assert_raises(ArgumentError) { t.reject_slots }
   end
 
   def test_clear_filled_slot
@@ -646,39 +676,93 @@ class TrackGridTest < Test::Unit::TestCase
     assert_grid t.append_slot(-2, [:f9]), [[:a1], [:b2, :f9], [:c3]]
   end
 
-  def assert_partition(track, a_grid, b_grid, method = :partition, *args, rand_seed: nil, **kwargs, &block)
-    srand rand_seed unless rand_seed.nil?
+  def _assert_compact_grid_or_nil(track, grid)
+    compact_grid = grid.reject { |slot| slot.empty? }
+    if compact_grid.empty?
+      assert_nil track
+    else
+      assert_grid track, compact_grid
+    end
+  end
 
+  # For slot-based methods, assumes the track has no rests, so it's easy to test
+  # the dropping versions by compacting the grids. Won't attempt methods that
+  # drop slots if no_drop_tests is true.
+  def assert_partition(track, a_grid, b_grid, method = :partition, *args, rand_seed: nil, no_drop_tests: false, **kwargs, &block)
+    families = {
+      # Step-based
+      partition: [:select, :reject],
+      partition_note: [:select_note, :reject_note],
+
+      # Slot-based
+      partition_slots: [:select_slots, :reject_slots, :clear_slots, :clear_slots_unless],
+      partition_every: [:select_every, :reject_every, :clear_every, :clear_every_except],
+      partition_x_of_y: [:select_x_of_y, :reject_x_of_y, :clear_x_of_y, :clear_except_x_of_y],
+      rand_partition: [:rand_select, :rand_reject, :rand_clear, :rand_clear_except]
+    }
+    slot = families[method].length == 4
+
+    # Try the non-dropping version of slot-based partitions first
+    kwargs[:drop] = false if slot
+
+    srand rand_seed unless rand_seed.nil?
     a, b = track.send(method, *args, **kwargs, &block)
     assert_grid a, a_grid
     assert_grid b, b_grid
-    assert_grid a | b, track.grid
+    assert_grid a | b, track.grid  # Should reconstitute the original track
 
-    # Test the corresponding filter & reject methods too, if they exist.
-    filter_method = {
-      partition: :filter,
-      partition_slots: :filter_slots,
-      partition_note: :filter_note,
-      partition_every: :filter_every,
-      partition_x_of_y: :filter_x_of_y,
-      rand_partition: :rand_filter
-    }[method]
-    unless filter_method.nil?
+    kwargs.delete(:drop)
+
+    if slot && !no_drop_tests
+      # Now try the dropping version.
       srand rand_seed unless rand_seed.nil?
-      assert_grid track.send(filter_method, *args, **kwargs, &block), a_grid
+      a, b = track.send(method, *args, **kwargs, &block)
+      # Since this may have dropped slots, the result should be either nil (if
+      # the expected grid is all rests), or the compactified version of the grid
+      _assert_compact_grid_or_nil a, a_grid
+      _assert_compact_grid_or_nil b, b_grid
     end
 
-    reject_method = {
-      partition: :reject,
-      partition_slots: :reject_slots,
-      partition_note: :reject_note,
-      partition_every: :reject_every,
-      partition_x_of_y: :reject_x_of_y,
-      rand_partition: :rand_reject
-    }[method]
-    unless reject_method.nil?
+    select_method, reject_method, clear_method, clear_inv_method = families[method]
+
+    # Select
+    unless select_method.nil? || no_drop_tests
       srand rand_seed unless rand_seed.nil?
-      assert_grid track.send(reject_method, *args, **kwargs, &block), b_grid
+      res = track.send(select_method, *args, **kwargs, &block)
+      if slot
+        # We expect this to drop slots.
+        _assert_compact_grid_or_nil res, a_grid
+      else
+        assert_grid res, a_grid
+      end
+    end
+
+    # Reject
+    unless reject_method.nil? || no_drop_tests
+      srand rand_seed unless rand_seed.nil?
+      res = track.send(reject_method, *args, **kwargs, &block)
+      if slot
+        # We expect this to drop slots.
+        _assert_compact_grid_or_nil res, b_grid
+      else
+        assert_grid res, b_grid
+      end
+    end
+
+    # Clear
+    unless clear_method.nil?
+      srand rand_seed unless rand_seed.nil?
+      res = track.send(clear_method, *args, **kwargs, &block)
+      # We do not expect slots to be dropped here.
+      assert_grid res, b_grid
+    end
+
+    # Inverse of clear
+    unless clear_inv_method.nil?
+      srand rand_seed unless rand_seed.nil?
+      res = track.send(clear_inv_method, *args, **kwargs, &block)
+      # We do not expect slots to be dropped here.
+      assert_grid res, a_grid
     end
   end
 
@@ -713,9 +797,9 @@ class TrackGridTest < Test::Unit::TestCase
     assert_partition_slots(t, [[], [], [:c3]], [[:a1], [:b2, :b3], []]) { |_, idx| idx == 2 }
   end
 
-  def assert_partition_every(track, ns, a_grid, b_grid, skip_empty: false)
+  def assert_partition_every(track, ns, a_grid, b_grid, no_drop_tests: false, skip_empty: false)
     ns = [ns] unless ns.is_a?(Enumerable)
-    assert_partition(track, a_grid, b_grid, :partition_every, *ns, skip_empty: skip_empty)
+    assert_partition(track, a_grid, b_grid, :partition_every, *ns, no_drop_tests: no_drop_tests, skip_empty: skip_empty)
   end
 
   def test_partition_every
@@ -756,11 +840,11 @@ class TrackGridTest < Test::Unit::TestCase
         [], [],    # drop (3), rest
         [], [],    # drop (1), rest
         [:a1], []  # keep (3), rest
-      ], skip_empty: true
+      ], no_drop_tests: true, skip_empty: true
   end
 
-  def assert_gpartition(t, x, y, grid1, grid2, skip_empty: false)
-    assert_partition t, grid1, grid2, :partition_x_of_y, x, y, skip_empty: skip_empty
+  def assert_gpartition(t, x, y, grid1, grid2, no_drop_tests: false, skip_empty: false)
+    assert_partition t, grid1, grid2, :partition_x_of_y, x, y, no_drop_tests: no_drop_tests, skip_empty: skip_empty
   end
 
   def test_partition_x_of_y
@@ -804,7 +888,7 @@ class TrackGridTest < Test::Unit::TestCase
         [:a1], [],
         [], [],
         [:a1], []
-      ] * 2, skip_empty: true
+      ] * 2, no_drop_tests: true, skip_empty: true
   end
 
   def assert_partition_note(track, note, a_grid, b_grid)
@@ -825,13 +909,13 @@ class TrackGridTest < Test::Unit::TestCase
     assert_partition(track, a_grid, b_grid, :rand_partition, p, rand_seed: rand_seed)
   end
 
-  def test_rand_dropout
+  def test_rand_partition
     t = T[:a1, :b2, :c3, :d4]
 
     assert_rand_partition t, 1, [[:a1], [:b2], [:c3], [:d4]], [[], [], [], []]
     assert_rand_partition t, 0, [[], [], [], []], [[:a1], [:b2], [:c3], [:d4]]
 
-    return unless ExtApi.in_sonic_pi?  # Not testing Sonic Pi's randomness
+    return if ExtApi.in_sonic_pi?  # Not testing Sonic Pi's randomness
 
     assert_rand_partition t, 0.5, [[:a1], [], [:c3], []], [[], [:b2], [], [:d4]], rand_seed: 1234
   end

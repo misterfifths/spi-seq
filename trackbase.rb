@@ -5,6 +5,7 @@ require_relative "prob"
 require_relative "step"
 require_relative "theory/euclid"
 require_relative "theory/notelength"
+require_relative "trackbase_partitions"
 
 # @!group Steps and tracks
 
@@ -666,14 +667,6 @@ class TrackBase
     mutate(grid: @grid.reject { |slot| slot.empty? })
   end
 
-  # Returns a new track with the same length as this one, but with all slots
-  # cleared (i.e., rests).
-  # @return [TrackBase]
-  # @see .rest
-  def clear
-    mutate(grid: [[]] * @grid.length)
-  end
-
   # Returns a new track with all empty slots (rests) removed from the beginning
   # of this track. Raises an exception if this would result in an empty track.
   # @return [TrackBase]
@@ -1035,46 +1028,6 @@ class TrackBase
     indexes
   end
 
-  # Returns a new track with all steps in a slot index or indexes cleared (i.e.
-  # turned to a rest). Takes the same assortment of arguments as {#slice} - a
-  # single integer, a starting integer index and a length, or a range.
-  #
-  # @example
-  #   T[:a1, [:b1, :b2], :c3].clear_slot(1)
-  #   # is equivalent to
-  #   T[:a1, :r, :c3]
-  #
-  #   T[:a1, :b1, :c1, :d1, :e1, :f1].clear_slot(2, 3)
-  #   # is equivalent to
-  #   T[:a1, :b1, :r, :r, :r, :f1]
-  #
-  #   T[:a1, :b1, :c1, :d1, :e1, :f1].clear_slot(2..4)
-  #   # is equivalent to
-  #   T[:a1, :b1, :r, :r, :r, :f1]
-  #
-  # @param idx_or_range [Integer, Range] The index of the first slot to clear,
-  #   or a range of indexes to clear. Invalid indexes are ignored.
-  # @param length [Integer, nil] If `idx_or_range` is an integer, the number of
-  #   slots after that index to clear (nil will clear just that slot). It is an
-  #   error to provide a value for this parameter if the first argument is a
-  #   range.
-  # @return [TrackBase]
-  # @see #set_slot
-  # @see #clear_filled_slot
-  # @see #clear_last_slots
-  def clear_slot(idx_or_range, length = nil)
-    indexes = resolve_slice_idxs(@grid.length, idx_or_range, length)
-    new_grid = mutable_grid_dup
-    indexes.each do |i|
-      slot = new_grid[i]
-      next if slot.nil?  # invalid index
-      slot.clear
-    end
-    mutate(grid: new_grid)
-  end
-
-  alias clear_slots clear_slot
-
   # Returns a new track by removing all steps in the final `count` slots. Clears
   # all slots if `count` is greater than the length of the grid.
   #
@@ -1175,7 +1128,7 @@ class TrackBase
   end
 
 
-  ## @!group Adding, removing, and filtering slots
+  ## @!group Repeating slots
 
   # Returns a new track that repeats the slots of this track `n` times.
   #
@@ -1240,6 +1193,9 @@ class TrackBase
 
   alias double_slots repeat_slots
   alias double repeat_slots
+
+
+  ## @!group Selecting a range of slots
 
   # Returns a new track with the first `n` slots removed from this one. Or, if
   # `n` is negative, a new track with the final `n` slots removed.
@@ -1371,399 +1327,6 @@ class TrackBase
 
   alias sample_filled sample_filled_slots
 
-  # Returns a new track by removing all steps in slots that are certain
-  # distances apart. The duration of the track does not change; the emptied
-  # slots simply become rests.
-  #
-  # The arguments specify which slots to clear. They must all be integers > 0.
-  # This method will walk through the track and clear every nth slot, where n
-  # is the next number in the arguments. The function will cycle through the
-  # arguments if there are enough slots to warrant it.
-  #
-  # @example
-  #   t = T[:c4] * 9
-  #
-  #   u = t.dropout(3)
-  #   # u is equivalent to
-  #   T[:c4, :c4, :r,
-  #     :c4, :c4, :r,
-  #     :c4, :c4, :r]
-  #
-  #   v = t.dropout(2, 3)
-  #   # v is equivalent to
-  #   T[:c4, :r,
-  #     :c4, :c4, :r,
-  #     :c4, :r,
-  #     :c4, :c4]
-  #
-  # @example
-  #   t = T[:c4, :c4, :r, :c4, :r, :c4, :c4]
-  #
-  #   u = t.dropout(2)
-  #   # u is equivalent to
-  #   T[:c4, :r,
-  #     :r, :r,
-  #     :r, :r,
-  #     :c4]
-  #
-  #   v = t.dropout(2, skip_empty: true)
-  #   # v is equivalent to
-  #   T[:c4, :r,
-  #     :r, :c4, :r, :r,
-  #     :c4]
-  #   # The slots containing rests were ignored.
-  #
-  # @param gaps [Integer] Specifies the slots to clear; see above. You must pass
-  #   at least one value.
-  # @param skip_empty [Boolean] If true, empty slots (rests) are not considered
-  #   when counting slots.
-  # @return [TrackBase]
-  # @see #partition_every
-  # @see #drop_x_of_y
-  # @see #rand_dropout
-  def drop_every(*gaps, skip_empty: false)
-    _, t = partition_every(*gaps, skip_empty: skip_empty)
-    t
-  end
-
-  alias dropout drop_every
-  alias reject_every drop_every
-
-  # Returns a new track by selecting all steps in slots that are a certain
-  # distances apart. The duration of the track does not change; the emptied
-  # slots simply become rests.
-  #
-  # This is the complement of {#drop_every}.
-  #
-  # @example
-  #   t = T[:c4] * 9
-  #   u = t.select_every(3)
-  #   # u is equivalent to
-  #   T[:r, :r, :c4,
-  #     :r, :r, :c4,
-  #     :r, :r, :c4]
-  #
-  # @param gaps [Integer] Specifies the slots to select, as described in
-  #   {drop_every}. You must pass at least one value.
-  # @param skip_empty [Boolean] If true, empty slots (rests) are not considered
-  #   when counting slots.
-  # @return [TrackBase]
-  # @see #partition_every
-  # @see #filter_x_of_y
-  def filter_every(*gaps, skip_empty: false)
-    t, = partition_every(*gaps, skip_empty: skip_empty)
-    t
-  end
-
-  alias select_every filter_every
-
-  # Considers the track in groups of `y` slots, and clears every `x`th slot
-  # within each group. The length of the track is not changed; cleared slots
-  # become rests.
-  #
-  # @example
-  #   T[:a1, :a2, :a3, :a4, :a5, :a6, :a7].drop_x_of_y(2, 3)
-  #   # is equivalent to
-  #   T[:a1, :r, :a3,
-  #     :a4, :r, :a6,
-  #     :a7]
-  #
-  # @param x [Integer] Specifies the slot within each group of `y` slots to
-  #   turn into a rest. Must be greater than 0 and <= `y`.
-  # @param y [Integer] The size of the groups of slots to consider. Must be
-  #   greater than 0 and >= `x`.
-  # @param skip_empty [Boolean] If true, empty slots (rests) are not considered
-  #   when counting slots.
-  # @return [TrackBase]
-  # @see #partition_x_of_y
-  # @see #dropout
-  # @see #rand_dropout
-  def drop_x_of_y(x, y, skip_empty: false)
-    _, t = partition_x_of_y(x, y, skip_empty: skip_empty)
-    t
-  end
-
-  alias grouped_drop drop_x_of_y
-  alias grouped_droput drop_x_of_y
-  alias gdropout drop_x_of_y
-  alias gdrop drop_x_of_y
-  alias reject_x_of_y drop_x_of_y
-  alias grouped_reject drop_x_of_y
-  alias greject drop_x_of_y
-
-  # Considers the track in groups of `y` slots, and clears every slot except the
-  # `x`th within each group. The length of the track is not changed; cleared
-  # slots become rests.
-  #
-  # This is the complement of {drop_x_of_y}.
-  #
-  # @example
-  #   T[:a1, :a2, :a3, :a4, :a5, :a6, :a7].filter_x_of_y(2, 3)
-  #   # is equivalent to
-  #   T[:r, :a2, :r,
-  #     :r, :a5, :r,
-  #     :r]
-  #
-  # @param x [Integer] Specifies the slot within each group of `y` slots to
-  #   select. Must be greater than 0 and <= `y`.
-  # @param y [Integer] The size of the groups of slots to consider. Must be
-  #   greater than 0 and >= `x`.
-  # @param skip_empty [Boolean] If true, empty slots (rests) are not considered
-  #   when counting slots.
-  # @return [TrackBase]
-  # @see #drop_x_of_y
-  # @see #partition_x_of_y
-  # @see #filter_every
-  def filter_x_of_y(x, y, skip_empty: false)
-    t, = partition_x_of_y(x, y, skip_empty: skip_empty)
-    t
-  end
-
-  alias select_x_of_y filter_x_of_y
-  alias grouped_select filter_x_of_y
-  alias gselect filter_x_of_y
-
-  # Returns two tracks randomly containing slots of this one. With probability
-  # `p`, a slot will be in the first track; others will be in the second. Both
-  # tracks have the same length; slots that are not selected into a track are
-  # rests.
-  # @param p [Number] The probability that any given slot will be in the first
-  #   returned track, 0 - 1 inclusive.
-  # @return [Array(TrackBase, TrackBase)]
-  # @see #partition
-  # @see #rand_dropout
-  # @see #rand_select
-  def rand_partition(p = 0.5)
-    partition_slots { |_| ExtApi.rand < p }
-  end
-
-  # Return a new track by, with probability `p`, removing all steps in any given
-  # slot. The length of the track is not changed; cleared slots become rests.
-  #
-  # This is the complement of {#rand_select}.
-  #
-  # @param p [Number] The probability that any given slot will be cleared, 0 - 1
-  #   inclusive.
-  # @return [TrackBase]
-  # @see #dropout
-  # @see #drop_x_of_y
-  def rand_dropout(p = 0.5)
-    _, t = rand_partition(p)
-    t
-  end
-
-  alias rdropout rand_dropout
-  alias rand_reject rand_dropout
-  alias rreject rand_dropout
-
-  # Return a new track by, with probability `p`, selecting all steps in any
-  # given slot. The length of the track is not changed; unselected slots become
-  # rests.
-  #
-  # This is the complement of {#rand_reject}.
-  #
-  # @param p [Number] The probability that any given slot will be present in
-  #   the result, 0 - 1 inclusive.
-  # @return [TrackBase]
-  # @see #rand_dropout
-  # @see #rand_partition
-  def rand_select(p = 0.5)
-    t, = rand_partition(p)
-    t
-  end
-
-  alias rselect rand_select
-  alias rand_filter rand_select
-  alias rfilter rand_select
-
-  # Returns two tracks, the first containing all the steps for block returns
-  # true and the ssecond those for which it returns false. This is the slot
-  # equivalent of {#partition_steps}. Both tracks will have the same length;
-  # slots that are not selected into a particular track will be rests.
-  #
-  # @example
-  #   t = T[[:c1, :c2], :d2, :e2, :f2]
-  #
-  #   u, v = t.partition_slots { |slot| slot.length == 2 }
-  #   # u is equivalent to
-  #   T[[:c1, :c2], :r, :r, :r]
-  #   # and v is
-  #   T[:r, :d2, :e2, :f2]
-  #
-  #   x, y = t.partition_slots { |_, i| i % 2 == 0 }
-  #   # x is equivalent to
-  #   T[[:c1, :c2], :r, :e2, :r]
-  #   # and y is
-  #   T[:r, :d2, :r, :f2]
-  #
-  # @yieldparam slot [Array<StepBase>] The slot under consideration.
-  # @yieldparam slot_idx [Integer] (optional) The index in the {#grid} of the
-  #   slot.
-  # @yieldreturn [Boolean] If true, the slot will be placed in the first of the
-  #   two returned tracks. If false, it will be placed in the second.
-  #
-  # @return [Array(TrackBase, TrackBase)]
-  # @see #partition_steps
-  # @see #partition_x_of_y
-  # @see #partition_every
-  # @see #select_slots
-  # @see #reject_slots
-  def partition_slots(&block)
-    raise ArgumentError, "block must take <= 2 arguments" unless block.arity <= 2
-
-    grid1 = []
-    grid2 = []
-
-    @grid.each_with_index do |slot, i|
-      if __call_varargs(block, slot, i)
-        grid1 << slot
-        grid2 << []
-      else
-        grid1 << []
-        grid2 << slot
-      end
-    end
-
-    [mutate(grid: grid1), mutate(grid: grid2)]
-  end
-
-  # Returns a new track containing only slots for which a block returns true.
-  # The new track will have the same length as this one, but will only contain
-  # contain steps in the selected slots; others will be rests.
-  #
-  # The result is equivalent to the first returned track of {#partition_slots},
-  # and the block is exactly as described on that method.
-  #
-  # @yieldparam (see #partition_slots)
-  # @yieldreturn [Boolean] If true, the slot will be present in the returned
-  #   track. If false, the corresponding slot in the new track will be empty
-  #   (i.e. a rest).
-  #
-  # @return [Track]
-  # @see #partition_slots
-  # @see #select_steps
-  def filter_slots(&block)
-    t, = partition_slots(&block)
-    t
-  end
-
-  alias select_slots filter_slots
-
-  # Returns a new track containing only slots for which a block returns false.
-  # The new track will have the same length as this one, but will only contain
-  # contain steps in the slots according to the block; others will be rests.
-  #
-  # The result is equivalent to the first returned track of {#partition_slots},
-  # and the block is exactly as described on that method.
-  #
-  # @yieldparam (see #partition_slots)
-  # @yieldreturn [Boolean] If true, the corresponding slot will be excluded from
-  #   the returned track; it will be a rest. If false, the corresponding slot in
-  #   the new track contain the steps from this track.
-  #
-  # @return [Track]
-  # @see #partition_slots
-  # @see #select_steps
-  def reject_slots(&block)
-    _, t = partition_slots(&block)
-    t
-  end
-
-  alias drop_slots reject_slots
-
-  # Returns two tracks by selecting steps in slots that are certain distances
-  # apart. This is an expanded version of {#drop_every}. The second track it
-  # returns is exactly equal to the result of `drop_every`, and the first is
-  # its complement. That is, slots that are empty in the first track will be
-  # filled in the second.
-  #
-  # @example
-  #   t = T[:a1, :b1, :c1, :d1, :e1, :f1]
-  #
-  #   u, v = t.partition_every(3)
-  #   # u is equivalent to
-  #   T[:r, :r, :c4, :r, :r, :f1]
-  #   # and v is
-  #   T[:a1, :b1, :r, :d1, :e1, :r]
-  #
-  # @param (see #drop_every)
-  # @return [TrackBase]
-  # @see #drop_every
-  # @see #partition_x_of_y
-  def partition_every(*gaps, skip_empty: false)
-    raise ArgumentError, "you must pass at least one argument" if gaps.empty?
-    gaps.map! { |n| Integer.try_convert(n) }
-    raise TypeError, "all arguments must be convertible to integers" if gaps.any? { |n| n.nil? }
-    raise RangeError, "all arguments must be > 0" if gaps.any? { |n| n <= 0 }
-
-    # e.g., drop every 3:
-    # keep  | 0 1 - 3 4 - 6 7 - 9
-    # drop  |     2     5     8
-    # i % 3 | 0 1 2 0 1 2 0 1 2 0
-
-    gap_idx = 0
-    kept_slots = 0
-    partition_slots do |slot|
-      next false if skip_empty && slot.empty?
-
-      gap = gaps[gap_idx % gaps.length]
-      if kept_slots % gap == gap - 1
-        # We're extracting this slot; move on to the next gap and reset count
-        kept_slots = 0
-        gap_idx += 1
-        true
-      else
-        kept_slots += 1
-        false
-      end
-    end
-  end
-
-  # Returns two tracks by selecting the `x`th slot in each group of `y`. This is
-  # an expanded version of {#drop_x_of_y}. The second track it returns is
-  # exactly equal to the result of `drop_x_of_y`, and the first is its
-  # complement. That is, slots that are empty in the first track will be filled
-  # in the second.
-  #
-  # @example
-  #   u, v = T[:a1, :a2, :a3, :a4, :a5, :a6, :a7].partition_x_of_y(2, 3)
-  #   # u is equivalent to
-  #   T[:r, :a2, :r,
-  #     :r, :a5, :r,
-  #     :r]
-  #   # and v is
-  #   T[:a1, :r, :a3,
-  #     :a4, :r, :a6,
-  #     :a7]
-  #
-  # @param x [Integer] Specifies the slot within each group of `y` slots to
-  #   place in the first returned track; other slots will be in the second. Must
-  #   be greater than 0 and <= `y`.
-  # @param y [Integer] The size of the groups of slots to consider. Must be
-  #   greater than 0 and >= `x`.
-  # @param skip_empty [Boolean] If true, empty slots (rests) are not considered
-  #   when counting slots.
-  # @return [TrackBase]
-  # @see #partition_every
-  # @see #drop_x_of_y
-  def partition_x_of_y(x, y, skip_empty: false)
-    raise TypeError, "x and y must be integers" unless x.is_a?(Integer) && y.is_a?(Integer)
-    raise RangeError, "x and y must be > 0" unless x > 0 && y > 0
-    raise RangeError, "x must be <= y" unless x <= y
-
-    i = 0
-    partition_slots do |slot|
-      next false if skip_empty && slot.empty?
-
-      extract_this = i % y == x - 1
-      i += 1
-      extract_this
-    end
-  end
-
-  alias grouped_partition partition_x_of_y
-  alias gpartition partition_x_of_y
-
 
   ## @!group Combining and permuting slots
 
@@ -1846,7 +1409,7 @@ class TrackBase
   alias combinations combination
 
 
-  ## @!group Adding, removing, and filtering steps
+  ## @!group Partitioning and filtering steps
 
   # Returns two tracks by extracting steps for which a block returns true.
   #
