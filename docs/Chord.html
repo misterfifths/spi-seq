@@ -106,15 +106,36 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>theory/chord.rb<span class="defines">,<br>
-  theory/chordvoicing.rb</span>
+    <dd>theory/chordvoicing.rb<span class="defines">,<br>
+  theory/chord.rb</span>
 
 </dd>
   </dl>
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    <p>A grouping of Intervals that represents a chord.</p>
+<p>Sonic Pi already provides a class called <code>Chord</code>, so this class is aliased to
+<span class='object_link'><a href="top-level-namespace.html#Ch-constant" title="Ch (constant)">Ch</a></span>.</p>
+<p>Enumerable over its <span class='object_link'><a href="#intervals-instance_method" title="Chord#intervals (method)">#intervals</a></span>, and has most of the read-only methods of
+Array. The intervals are always sorted ascending and will never contain
+duplicates, even if a mutation might produce one.</p>
+<p>Note that this class only represents the intervals; it does not track a root
+note or inversions. Instances can be concretely expressed (i.e., converted to
+actual <span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span>s) on a particular root note with <span class='object_link'><a href="#voice-instance_method" title="Chord#voice (method)">#voice</a></span>, <span class='object_link'><a href="#voiced-class_method" title="Chord.voiced (method)">Chord.voiced</a></span> or the
+<span class='object_link'><a href="top-level-namespace.html#C-instance_method" title="#C (method)">#C</a></span> helper function. Inversions also happen at voice-time.</p>
+<p><strong>Chord objects are immutable.</strong> The various mutation methods it provides
+(e.g. <span class='object_link'><a href="#flat-instance_method" title="Chord#flat (method)">#flat</a></span>, <span class='object_link'><a href="#sus4-instance_method" title="Chord#sus4 (method)">#sus4</a></span>, <span class='object_link'><a href="#add-instance_method" title="Chord#add (method)">#add</a></span>) return new Chord instances with different
+intervals.</p>
 
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
   
     <h2>
       Constant Summary
@@ -189,6 +210,13 @@ as Sonic Pi's <code>chord</code> function and more.</p>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -255,6 +283,13 @@ to see all possible names.</p>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -1720,6 +1755,13 @@ by <span class='object_link'><a href="Interval.html#size-instance_method" title=
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -1740,12 +1782,12 @@ by <span class='object_link'><a href="Interval.html#size-instance_method" title=
       <pre class="lines">
 
 
-31
-32
-33</pre>
+17
+18
+19</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 31</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 17</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_intervals'>intervals</span>
   <span class='ivar'>@intervals</span>
@@ -1779,6 +1821,13 @@ by <span class='object_link'><a href="Interval.html#size-instance_method" title=
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -1799,12 +1848,12 @@ by <span class='object_link'><a href="Interval.html#size-instance_method" title=
       <pre class="lines">
 
 
-623
-624
-625</pre>
+609
+610
+611</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 623</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 609</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_aug_eleventh'>aug_eleventh</span>
   <span class='id identifier rubyid_aug_ninth'>aug_ninth</span> <span class='op'>+</span> <span class='symbol'>:P11</span>
@@ -1831,6 +1880,13 @@ by <span class='object_link'><a href="Interval.html#size-instance_method" title=
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -1851,12 +1907,12 @@ by <span class='object_link'><a href="Interval.html#size-instance_method" title=
       <pre class="lines">
 
 
-648
-649
-650</pre>
+634
+635
+636</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 648</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 634</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_aug_major_eleventh'>aug_major_eleventh</span>
   <span class='id identifier rubyid_major_eleventh'>major_eleventh</span><span class='period'>.</span><span class='id identifier rubyid_sharp_five'>sharp_five</span>
@@ -1883,6 +1939,13 @@ by <span class='object_link'><a href="Interval.html#size-instance_method" title=
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -1903,12 +1966,12 @@ by <span class='object_link'><a href="Interval.html#size-instance_method" title=
       <pre class="lines">
 
 
-642
-643
-644</pre>
+628
+629
+630</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 642</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 628</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_aug_major_ninth'>aug_major_ninth</span>
   <span class='id identifier rubyid_major_ninth'>major_ninth</span><span class='period'>.</span><span class='id identifier rubyid_sharp_five'>sharp_five</span>
@@ -1935,6 +1998,13 @@ by <span class='object_link'><a href="Interval.html#size-instance_method" title=
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -1955,12 +2025,12 @@ by <span class='object_link'><a href="Interval.html#size-instance_method" title=
       <pre class="lines">
 
 
-636
-637
-638</pre>
+622
+623
+624</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 636</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 622</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_aug_major_seventh'>aug_major_seventh</span>
   <span class='id identifier rubyid_major_seventh'>major_seventh</span><span class='period'>.</span><span class='id identifier rubyid_sharp_five'>sharp_five</span>
@@ -1987,6 +2057,13 @@ by <span class='object_link'><a href="Interval.html#size-instance_method" title=
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -2007,12 +2084,12 @@ by <span class='object_link'><a href="Interval.html#size-instance_method" title=
       <pre class="lines">
 
 
-654
-655
-656</pre>
+640
+641
+642</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 654</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 640</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_aug_major_thirteenth'>aug_major_thirteenth</span>
   <span class='id identifier rubyid_major_thirteenth'>major_thirteenth</span><span class='period'>.</span><span class='id identifier rubyid_sharp_five'>sharp_five</span>
@@ -2039,6 +2116,13 @@ by <span class='object_link'><a href="Interval.html#size-instance_method" title=
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -2059,12 +2143,12 @@ by <span class='object_link'><a href="Interval.html#size-instance_method" title=
       <pre class="lines">
 
 
-617
-618
-619</pre>
+603
+604
+605</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 617</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 603</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_aug_ninth'>aug_ninth</span>
   <span class='id identifier rubyid_aug_seventh'>aug_seventh</span> <span class='op'>+</span> <span class='symbol'>:M9</span>
@@ -2091,6 +2175,13 @@ by <span class='object_link'><a href="Interval.html#size-instance_method" title=
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -2111,12 +2202,12 @@ by <span class='object_link'><a href="Interval.html#size-instance_method" title=
       <pre class="lines">
 
 
-611
-612
-613</pre>
+597
+598
+599</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 611</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 597</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_aug_seventh'>aug_seventh</span>
   <span class='id identifier rubyid_aug_triad'>aug_triad</span> <span class='op'>+</span> <span class='symbol'>:m7</span>
@@ -2142,7 +2233,14 @@ by <span class='object_link'><a href="Interval.html#size-instance_method" title=
   </div>
 </div>
 <div class="tags">
-  <p class="tag_title">Parameters:</p>
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -2164,6 +2262,13 @@ German, French, or Italian.</p></div>
   
 </ul>
 
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -2184,21 +2289,21 @@ German, French, or Italian.</p></div>
       <pre class="lines">
 
 
-596
-597
-598
-599
-600
-601
-602
-603
-604
-605
-606
-607</pre>
+582
+583
+584
+585
+586
+587
+588
+589
+590
+591
+592
+593</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 596</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 582</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_aug_sixth'>aug_sixth</span><span class='lparen'>(</span><span class='id identifier rubyid_variation'>variation</span> <span class='op'>=</span> <span class='symbol'>:ger</span><span class='rparen'>)</span>
   <span class='kw'>case</span> <span class='id identifier rubyid_variation'>variation</span>
@@ -2234,6 +2339,13 @@ German, French, or Italian.</p></div>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -2254,12 +2366,12 @@ German, French, or Italian.</p></div>
       <pre class="lines">
 
 
-629
-630
-631</pre>
+615
+616
+617</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 629</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 615</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_aug_thirteenth'>aug_thirteenth</span>
   <span class='id identifier rubyid_aug_eleventh'>aug_eleventh</span> <span class='op'>+</span> <span class='symbol'>:M13</span>
@@ -2286,6 +2398,13 @@ German, French, or Italian.</p></div>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -2306,12 +2425,12 @@ German, French, or Italian.</p></div>
       <pre class="lines">
 
 
-588
-589
-590</pre>
+574
+575
+576</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 588</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 574</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_aug_triad'>aug_triad</span>
   <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='qsymbols_beg'>%i[</span><span class='tstring_content'>P1</span><span class='words_sep'> </span><span class='tstring_content'>M3</span><span class='words_sep'> </span><span class='tstring_content'>A5</span><span class='tstring_end'>]</span></span><span class='rparen'>)</span>
@@ -2363,6 +2482,13 @@ it does add <code>voicing</code>.</p>
 </span><span class='const'><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></span><span class='period'>.</span><span class='id identifier rubyid_degree'>degree</span><span class='lparen'>(</span><span class='int'>2</span><span class='comma'>,</span> <span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:major_pentatonic</span><span class='comma'>,</span> <span class='int'>5</span><span class='rparen'>)</span>  <span class='comment'># [:d4]; see above</span></code></pre>
     
   </div>
+
+
+
+
+
+
+
 <p class="tag_title">Parameters:</p>
 <ul class="param">
   
@@ -2467,6 +2593,13 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
   
 </ul>
 
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -2474,19 +2607,6 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
       
       
         <span class='type'>(<tt>Array&lt;<span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span>&gt;</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-<p class="tag_title">Raises:</p>
-<ul class="raise">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>RangeError</tt>)</span>
       
       
       
@@ -2509,32 +2629,6 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
       <pre class="lines">
 
 
-256
-257
-258
-259
-260
-261
-262
-263
-264
-265
-266
-267
-268
-269
-270
-271
-272
-273
-274
-275
-276
-277
-278
-279
-280
-281
 282
 283
 284
@@ -2552,10 +2646,36 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
 296
 297
 298
-299</pre>
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chordvoicing.rb', line 256</span>
+      <pre class="code"><span class="info file"># File 'theory/chordvoicing.rb', line 282</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_degree'>degree</span><span class='lparen'>(</span><span class='id identifier rubyid_d'>d</span><span class='comma'>,</span> <span class='id identifier rubyid_tonic'>tonic</span><span class='comma'>,</span> <span class='id identifier rubyid_scale_name'>scale_name</span><span class='comma'>,</span> <span class='id identifier rubyid_number_of_notes'>number_of_notes</span> <span class='op'>=</span> <span class='int'>4</span><span class='comma'>,</span> <span class='id identifier rubyid_voicing'>voicing</span> <span class='op'>=</span> <span class='symbol'>:closed</span><span class='comma'>,</span> <span class='label'>invert:</span> <span class='int'>0</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>RangeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>chord only has </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_number_of_notes'>number_of_notes</span> <span class='op'>-</span> <span class='int'>1</span><span class='embexpr_end'>}</span><span class='tstring_content'> inversions</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_invert'>invert</span> <span class='op'>&gt;=</span> <span class='id identifier rubyid_number_of_notes'>number_of_notes</span>
@@ -2623,6 +2743,13 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -2643,12 +2770,12 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
       <pre class="lines">
 
 
-685
-686
-687</pre>
+671
+672
+673</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 685</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 671</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_dim_eleventh'>dim_eleventh</span>
   <span class='id identifier rubyid_dim_ninth'>dim_ninth</span> <span class='op'>+</span> <span class='symbol'>:P11</span>
@@ -2675,6 +2802,13 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -2695,12 +2829,12 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
       <pre class="lines">
 
 
-679
-680
-681</pre>
+665
+666
+667</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 679</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 665</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_dim_ninth'>dim_ninth</span>
   <span class='id identifier rubyid_dim_seventh'>dim_seventh</span> <span class='op'>+</span> <span class='symbol'>:M9</span>
@@ -2727,6 +2861,13 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -2747,12 +2888,12 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
       <pre class="lines">
 
 
-673
-674
-675</pre>
+659
+660
+661</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 673</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 659</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_dim_seventh'>dim_seventh</span>
   <span class='id identifier rubyid_dim_triad'>dim_triad</span> <span class='op'>+</span> <span class='symbol'>:d7</span>
@@ -2779,6 +2920,13 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -2799,12 +2947,12 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
       <pre class="lines">
 
 
-667
-668
-669</pre>
+653
+654
+655</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 667</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 653</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_dim_sixth'>dim_sixth</span>
   <span class='id identifier rubyid_dim_triad'>dim_triad</span> <span class='op'>+</span> <span class='symbol'>:m6</span>
@@ -2831,6 +2979,13 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -2851,12 +3006,12 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
       <pre class="lines">
 
 
-691
-692
-693</pre>
+677
+678
+679</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 691</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 677</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_dim_thirteenth'>dim_thirteenth</span>
   <span class='id identifier rubyid_dim_eleventh'>dim_eleventh</span> <span class='op'>+</span> <span class='symbol'>:M13</span>
@@ -2883,6 +3038,13 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -2903,12 +3065,12 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
       <pre class="lines">
 
 
-661
-662
-663</pre>
+647
+648
+649</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 661</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 647</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_dim_triad'>dim_triad</span>
   <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='qsymbols_beg'>%i[</span><span class='tstring_content'>P1</span><span class='words_sep'> </span><span class='tstring_content'>m3</span><span class='words_sep'> </span><span class='tstring_content'>d5</span><span class='tstring_end'>]</span></span><span class='rparen'>)</span>
@@ -2935,6 +3097,13 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -2955,12 +3124,12 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
       <pre class="lines">
 
 
-747
-748
-749</pre>
+733
+734
+735</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 747</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 733</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_dom_eleventh'>dom_eleventh</span>
   <span class='id identifier rubyid_dom_ninth'>dom_ninth</span> <span class='op'>+</span> <span class='symbol'>:P11</span>
@@ -2987,6 +3156,13 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -3007,12 +3183,12 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
       <pre class="lines">
 
 
-741
-742
-743</pre>
+727
+728
+729</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 741</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 727</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_dom_ninth'>dom_ninth</span>
   <span class='id identifier rubyid_dom_seventh'>dom_seventh</span> <span class='op'>+</span> <span class='symbol'>:M9</span>
@@ -3039,6 +3215,13 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -3059,12 +3242,12 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
       <pre class="lines">
 
 
-729
-730
-731</pre>
+715
+716
+717</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 729</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 715</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_dom_parallel'>dom_parallel</span>
   <span class='id identifier rubyid_dom_triad'>dom_triad</span><span class='period'>.</span><span class='id identifier rubyid_flat_three'>flat_three</span>
@@ -3091,6 +3274,13 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -3111,12 +3301,12 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
       <pre class="lines">
 
 
-735
-736
-737</pre>
+721
+722
+723</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 735</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 721</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_dom_seventh'>dom_seventh</span>
   <span class='id identifier rubyid_dom_triad'>dom_triad</span> <span class='op'>+</span> <span class='symbol'>:m7</span>
@@ -3143,6 +3333,13 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -3163,12 +3360,12 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
       <pre class="lines">
 
 
-753
-754
-755</pre>
+739
+740
+741</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 753</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 739</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_dom_thirteenth'>dom_thirteenth</span>
   <span class='id identifier rubyid_dom_eleventh'>dom_eleventh</span> <span class='op'>+</span> <span class='symbol'>:M13</span>
@@ -3195,6 +3392,13 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -3215,12 +3419,12 @@ before applying the <code>voicing</code>. This must be &lt; <code>number_of_note
       <pre class="lines">
 
 
-723
-724
-725</pre>
+709
+710
+711</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 723</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 709</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_dom_triad'>dom_triad</span>
   <span class='id identifier rubyid_major_triad'>major_triad</span>
@@ -3247,7 +3451,14 @@ octaves.</p>
   </div>
 </div>
 <div class="tags">
-  <p class="tag_title">Parameters:</p>
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -3264,6 +3475,13 @@ octaves.</p>
     </li>
   
 </ul>
+
+
+
+
+
+
+
 
 <p class="tag_title">Returns:</p>
 <ul class="return">
@@ -3285,19 +3503,19 @@ octaves.</p>
       <pre class="lines">
 
 
-762
-763
-764
-765
-766
-767
-768
-769
-770
-771</pre>
+748
+749
+750
+751
+752
+753
+754
+755
+756
+757</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 762</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 748</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_fifth'>fifth</span><span class='lparen'>(</span><span class='id identifier rubyid_octaves'>octaves</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_p1'>p1</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Interval.html" title="Interval (class)">Interval</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Interval.html#new-class_method" title="Interval.new (method)">new</a></span></span><span class='lparen'>(</span><span class='symbol'>:P1</span><span class='rparen'>)</span>
@@ -3331,6 +3549,13 @@ octaves.</p>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -3351,12 +3576,12 @@ octaves.</p>
       <pre class="lines">
 
 
-710
-711
-712</pre>
+696
+697
+698</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 710</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 696</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_halfdim_eleventh'>halfdim_eleventh</span>
   <span class='id identifier rubyid_minor_eleventh'>minor_eleventh</span><span class='period'>.</span><span class='id identifier rubyid_flat_five'>flat_five</span>
@@ -3383,6 +3608,13 @@ octaves.</p>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -3403,12 +3635,12 @@ octaves.</p>
       <pre class="lines">
 
 
-704
-705
-706</pre>
+690
+691
+692</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 704</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 690</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_halfdim_ninth'>halfdim_ninth</span>
   <span class='id identifier rubyid_minor_ninth'>minor_ninth</span><span class='period'>.</span><span class='id identifier rubyid_flat_five'>flat_five</span>
@@ -3435,6 +3667,13 @@ octaves.</p>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -3455,12 +3694,12 @@ octaves.</p>
       <pre class="lines">
 
 
-698
-699
-700</pre>
+684
+685
+686</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 698</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 684</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_halfdim_seventh'>halfdim_seventh</span>
   <span class='id identifier rubyid_minor_seventh'>minor_seventh</span><span class='period'>.</span><span class='id identifier rubyid_flat_five'>flat_five</span>
@@ -3487,6 +3726,13 @@ octaves.</p>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -3507,12 +3753,12 @@ octaves.</p>
       <pre class="lines">
 
 
-716
-717
-718</pre>
+702
+703
+704</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 716</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 702</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_halfdim_thirteenth'>halfdim_thirteenth</span>
   <span class='id identifier rubyid_minor_thirteenth'>minor_thirteenth</span><span class='period'>.</span><span class='id identifier rubyid_flat_five'>flat_five</span>
@@ -3539,6 +3785,13 @@ octaves.</p>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -3559,12 +3812,12 @@ octaves.</p>
       <pre class="lines">
 
 
-513
-514
-515</pre>
+499
+500
+501</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 513</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 499</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_major_eleventh'>major_eleventh</span>
   <span class='id identifier rubyid_major_ninth'>major_ninth</span> <span class='op'>+</span> <span class='symbol'>:P11</span>
@@ -3591,6 +3844,13 @@ octaves.</p>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -3611,12 +3871,12 @@ octaves.</p>
       <pre class="lines">
 
 
-507
-508
-509</pre>
+493
+494
+495</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 507</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 493</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_major_ninth'>major_ninth</span>
   <span class='id identifier rubyid_major_seventh'>major_seventh</span> <span class='op'>+</span> <span class='symbol'>:M9</span>
@@ -3643,6 +3903,13 @@ octaves.</p>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -3663,12 +3930,12 @@ octaves.</p>
       <pre class="lines">
 
 
-501
-502
-503</pre>
+487
+488
+489</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 501</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 487</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_major_seventh'>major_seventh</span>
   <span class='id identifier rubyid_major_triad'>major_triad</span> <span class='op'>+</span> <span class='symbol'>:M7</span>
@@ -3695,6 +3962,13 @@ octaves.</p>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -3715,12 +3989,12 @@ octaves.</p>
       <pre class="lines">
 
 
-495
-496
-497</pre>
+481
+482
+483</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 495</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 481</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_major_sixth'>major_sixth</span>
   <span class='id identifier rubyid_major_triad'>major_triad</span> <span class='op'>+</span> <span class='symbol'>:M6</span>
@@ -3747,6 +4021,13 @@ octaves.</p>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -3767,12 +4048,12 @@ octaves.</p>
       <pre class="lines">
 
 
-519
-520
-521</pre>
+505
+506
+507</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 519</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 505</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_major_thirteenth'>major_thirteenth</span>
   <span class='id identifier rubyid_major_eleventh'>major_eleventh</span> <span class='op'>+</span> <span class='symbol'>:M13</span>
@@ -3799,6 +4080,13 @@ octaves.</p>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -3819,12 +4107,12 @@ octaves.</p>
       <pre class="lines">
 
 
-489
-490
-491</pre>
+475
+476
+477</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 489</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 475</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_major_triad'>major_triad</span>
   <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='qsymbols_beg'>%i[</span><span class='tstring_content'>P1</span><span class='words_sep'> </span><span class='tstring_content'>M3</span><span class='words_sep'> </span><span class='tstring_content'>P5</span><span class='tstring_end'>]</span></span><span class='rparen'>)</span>
@@ -3851,6 +4139,13 @@ octaves.</p>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -3871,12 +4166,12 @@ octaves.</p>
       <pre class="lines">
 
 
-550
-551
-552</pre>
+536
+537
+538</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 550</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 536</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_minor_eleventh'>minor_eleventh</span>
   <span class='id identifier rubyid_minor_ninth'>minor_ninth</span> <span class='op'>+</span> <span class='symbol'>:P11</span>
@@ -3903,6 +4198,13 @@ octaves.</p>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -3923,12 +4225,12 @@ octaves.</p>
       <pre class="lines">
 
 
-575
-576
-577</pre>
+561
+562
+563</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 575</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 561</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_minor_major_eleventh'>minor_major_eleventh</span>
   <span class='id identifier rubyid_major_eleventh'>major_eleventh</span><span class='period'>.</span><span class='id identifier rubyid_flat_three'>flat_three</span>
@@ -3955,6 +4257,13 @@ octaves.</p>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -3975,12 +4284,12 @@ octaves.</p>
       <pre class="lines">
 
 
-569
-570
-571</pre>
+555
+556
+557</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 569</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 555</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_minor_major_ninth'>minor_major_ninth</span>
   <span class='id identifier rubyid_major_ninth'>major_ninth</span><span class='period'>.</span><span class='id identifier rubyid_flat_three'>flat_three</span>
@@ -4007,6 +4316,13 @@ octaves.</p>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -4027,12 +4343,12 @@ octaves.</p>
       <pre class="lines">
 
 
-563
-564
-565</pre>
+549
+550
+551</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 563</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 549</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_minor_major_seventh'>minor_major_seventh</span>
   <span class='id identifier rubyid_major_seventh'>major_seventh</span><span class='period'>.</span><span class='id identifier rubyid_flat_three'>flat_three</span>
@@ -4059,6 +4375,13 @@ octaves.</p>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -4079,12 +4402,12 @@ octaves.</p>
       <pre class="lines">
 
 
-581
-582
-583</pre>
+567
+568
+569</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 581</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 567</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_minor_major_thirteenth'>minor_major_thirteenth</span>
   <span class='id identifier rubyid_major_thirteenth'>major_thirteenth</span><span class='period'>.</span><span class='id identifier rubyid_flat_three'>flat_three</span>
@@ -4111,6 +4434,13 @@ octaves.</p>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -4131,12 +4461,12 @@ octaves.</p>
       <pre class="lines">
 
 
-544
-545
-546</pre>
+530
+531
+532</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 544</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 530</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_minor_ninth'>minor_ninth</span>
   <span class='id identifier rubyid_minor_seventh'>minor_seventh</span> <span class='op'>+</span> <span class='symbol'>:M9</span>
@@ -4163,6 +4493,13 @@ octaves.</p>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -4183,12 +4520,12 @@ octaves.</p>
       <pre class="lines">
 
 
-538
-539
-540</pre>
+524
+525
+526</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 538</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 524</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_minor_seventh'>minor_seventh</span>
   <span class='id identifier rubyid_minor_triad'>minor_triad</span> <span class='op'>+</span> <span class='symbol'>:m7</span>
@@ -4215,6 +4552,13 @@ octaves.</p>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -4235,12 +4579,12 @@ octaves.</p>
       <pre class="lines">
 
 
-532
-533
-534</pre>
+518
+519
+520</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 532</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 518</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_minor_sixth'>minor_sixth</span>
   <span class='id identifier rubyid_minor_triad'>minor_triad</span> <span class='op'>+</span> <span class='symbol'>:M6</span>
@@ -4267,6 +4611,13 @@ octaves.</p>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -4287,12 +4638,12 @@ octaves.</p>
       <pre class="lines">
 
 
-556
-557
-558</pre>
+542
+543
+544</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 556</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 542</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_minor_thirteenth'>minor_thirteenth</span>
   <span class='id identifier rubyid_minor_eleventh'>minor_eleventh</span> <span class='op'>+</span> <span class='symbol'>:M13</span>
@@ -4319,6 +4670,13 @@ octaves.</p>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -4339,12 +4697,12 @@ octaves.</p>
       <pre class="lines">
 
 
-526
-527
-528</pre>
+512
+513
+514</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 526</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 512</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_minor_triad'>minor_triad</span>
   <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='qsymbols_beg'>%i[</span><span class='tstring_content'>P1</span><span class='words_sep'> </span><span class='tstring_content'>m3</span><span class='words_sep'> </span><span class='tstring_content'>P5</span><span class='tstring_end'>]</span></span><span class='rparen'>)</span>
@@ -4383,7 +4741,14 @@ common chords, such as <span class='object_link'><a href="#major_triad-class_met
   </div>
 </div>
 <div class="tags">
-  <p class="tag_title">Parameters:</p>
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -4399,6 +4764,13 @@ Integer&gt;</tt>)</span>
     </li>
   
 </ul>
+
+
+
+
+
+
+
 
 <p class="tag_title">Returns:</p>
 <ul class="return">
@@ -4420,20 +4792,20 @@ Integer&gt;</tt>)</span>
       <pre class="lines">
 
 
-249
-250
-251
-252
-253
-254
-255
-256
-257
-258
-259</pre>
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 249</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 235</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_intervals_or_name'>intervals_or_name</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_intervals_or_name'>intervals_or_name</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Symbol</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_intervals_or_name'>intervals_or_name</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>String</span><span class='rparen'>)</span>
@@ -4469,7 +4841,14 @@ creating a <span class='object_link'><a href="" title="Chord (class)">Chord</a><
   </div>
 </div>
 <div class="tags">
-  <p class="tag_title">Parameters:</p>
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -4556,6 +4935,13 @@ before voicing it.</p></div>
   
 </ul>
 
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -4585,12 +4971,12 @@ before voicing it.</p></div>
       <pre class="lines">
 
 
-149
-150
-151</pre>
+175
+176
+177</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chordvoicing.rb', line 149</span>
+      <pre class="code"><span class="info file"># File 'theory/chordvoicing.rb', line 175</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_voiced'>voiced</span><span class='lparen'>(</span><span class='id identifier rubyid_root'><span class='object_link'><a href="top-level-namespace.html" title="Top Level Namespace (root)">root</a></span></span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_voicing'>voicing</span> <span class='op'>=</span> <span class='symbol'>:closed</span><span class='comma'>,</span> <span class='label'>num_octaves:</span> <span class='int'>1</span><span class='comma'>,</span> <span class='label'>invert:</span> <span class='int'>0</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_voice'>voice</span><span class='lparen'>(</span><span class='id identifier rubyid_root'><span class='object_link'><a href="top-level-namespace.html" title="Top Level Namespace (root)">root</a></span></span><span class='comma'>,</span> <span class='id identifier rubyid_voicing'>voicing</span><span class='comma'>,</span> <span class='label'>num_octaves:</span> <span class='id identifier rubyid_num_octaves'>num_octaves</span><span class='comma'>,</span> <span class='label'>invert:</span> <span class='id identifier rubyid_invert'>invert</span><span class='rparen'>)</span>
@@ -4635,7 +5021,14 @@ which will be treated as in cases 2 - 5.</li>
   </div>
 </div>
 <div class="tags">
-  <p class="tag_title">Parameters:</p>
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -4650,6 +5043,13 @@ which will be treated as in cases 2 - 5.</li>
     </li>
   
 </ul>
+
+
+
+
+
+
+
 
 <p class="tag_title">Returns:</p>
 <ul class="return">
@@ -4671,29 +5071,29 @@ which will be treated as in cases 2 - 5.</li>
       <pre class="lines">
 
 
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
 293
 294
 295
 296
 297
-298
-299
-300
-301
-302
-303
-304
-305
-306
-307
-308
-309
-310
-311
-312</pre>
+298</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 293</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 279</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_append'>append</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></span><span class='rparen'>)</span>
@@ -4743,7 +5143,14 @@ semitone). The argument must be one of:</p>
   </div>
 </div>
 <div class="tags">
-  <p class="tag_title">Parameters:</p>
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -4758,6 +5165,13 @@ semitone). The argument must be one of:</p>
     </li>
   
 </ul>
+
+
+
+
+
+
+
 
 <p class="tag_title">Returns:</p>
 <ul class="return">
@@ -4779,12 +5193,12 @@ semitone). The argument must be one of:</p>
       <pre class="lines">
 
 
-412
-413
-414</pre>
+398
+399
+400</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 412</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 398</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_flat'>flat</span><span class='lparen'>(</span><span class='id identifier rubyid_interval'>interval</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_with_altered_interval'>with_altered_interval</span><span class='lparen'>(</span><span class='id identifier rubyid_interval'>interval</span><span class='comma'>,</span> <span class='op'>-</span><span class='int'>1</span><span class='rparen'>)</span>
@@ -4816,6 +5230,13 @@ Raises an ArgumentError if the chord does not contain a perfect fifth.</p>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -4836,12 +5257,12 @@ Raises an ArgumentError if the chord does not contain a perfect fifth.</p>
       <pre class="lines">
 
 
-442
-443
-444</pre>
+428
+429
+430</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 442</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 428</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_flat_five'>flat_five</span>
   <span class='id identifier rubyid_flat'>flat</span><span class='lparen'>(</span><span class='int'>5</span><span class='rparen'>)</span>
@@ -4873,6 +5294,13 @@ ArgumentError if the chord does not contain a major ninth.</p>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -4893,12 +5321,12 @@ ArgumentError if the chord does not contain a major ninth.</p>
       <pre class="lines">
 
 
-451
-452
-453</pre>
+437
+438
+439</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 451</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 437</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_flat_nine'>flat_nine</span>
   <span class='id identifier rubyid_flat'>flat</span><span class='lparen'>(</span><span class='int'>9</span><span class='rparen'>)</span>
@@ -4930,6 +5358,13 @@ ArgumentError if the chord does not contain a major third.</p>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -4950,12 +5385,12 @@ ArgumentError if the chord does not contain a major third.</p>
       <pre class="lines">
 
 
-433
-434
-435</pre>
+419
+420
+421</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 433</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 419</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_flat_three'>flat_three</span>
   <span class='id identifier rubyid_flat'>flat</span><span class='lparen'>(</span><span class='int'>3</span><span class='rparen'>)</span>
@@ -4993,7 +5428,14 @@ if the interval to remove is the only one in the chord.</p>
   </div>
 </div>
 <div class="tags">
-  <p class="tag_title">Parameters:</p>
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -5009,6 +5451,13 @@ if the interval to remove is the only one in the chord.</p>
   
 </ul>
 
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -5022,19 +5471,6 @@ if the interval to remove is the only one in the chord.</p>
     </li>
   
 </ul>
-<p class="tag_title">Raises:</p>
-<ul class="raise">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>ArgumentError</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
 
 </div><table class="source_code">
   <tr>
@@ -5042,17 +5478,17 @@ if the interval to remove is the only one in the chord.</p>
       <pre class="lines">
 
 
-331
-332
-333
-334
-335
-336
-337
-338</pre>
+317
+318
+319
+320
+321
+322
+323
+324</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 331</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 317</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_remove'>remove</span><span class='lparen'>(</span><span class='id identifier rubyid_interval'>interval</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_interval'>interval</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Interval.html" title="Interval (class)">Interval</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Interval.html#new-class_method" title="Interval.new (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>number:</span> <span class='id identifier rubyid_interval'>interval</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_interval'>interval</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Numeric</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='id identifier rubyid_interval'>interval</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="Interval.html" title="Interval (class)">Interval</a></span></span><span class='rparen'>)</span>
@@ -5090,7 +5526,14 @@ semitone). The argument must be one of:</p>
   </div>
 </div>
 <div class="tags">
-  <p class="tag_title">Parameters:</p>
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -5105,6 +5548,13 @@ semitone). The argument must be one of:</p>
     </li>
   
 </ul>
+
+
+
+
+
+
+
 
 <p class="tag_title">Returns:</p>
 <ul class="return">
@@ -5126,12 +5576,12 @@ semitone). The argument must be one of:</p>
       <pre class="lines">
 
 
-426
-427
-428</pre>
+412
+413
+414</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 426</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 412</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_sharp'>sharp</span><span class='lparen'>(</span><span class='id identifier rubyid_interval'>interval</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_with_altered_interval'>with_altered_interval</span><span class='lparen'>(</span><span class='id identifier rubyid_interval'>interval</span><span class='comma'>,</span> <span class='int'>1</span><span class='rparen'>)</span>
@@ -5163,6 +5613,13 @@ Raises an ArgumentError if the chord does not contain a perfect fifth.</p>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -5183,12 +5640,12 @@ Raises an ArgumentError if the chord does not contain a perfect fifth.</p>
       <pre class="lines">
 
 
-469
-470
-471</pre>
+455
+456
+457</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 469</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 455</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_sharp_five'>sharp_five</span>
   <span class='id identifier rubyid_sharp'>sharp</span><span class='lparen'>(</span><span class='int'>5</span><span class='rparen'>)</span>
@@ -5220,6 +5677,13 @@ Raises an ArgumentError if the chord does not contain a major ninth.</p>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -5240,12 +5704,12 @@ Raises an ArgumentError if the chord does not contain a major ninth.</p>
       <pre class="lines">
 
 
-478
-479
-480</pre>
+464
+465
+466</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 478</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 464</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_sharp_nine'>sharp_nine</span>
   <span class='id identifier rubyid_sharp'>sharp</span><span class='lparen'>(</span><span class='int'>9</span><span class='rparen'>)</span>
@@ -5277,6 +5741,13 @@ Raises an ArgumentError if the chord does not contain a major third.</p>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -5297,12 +5768,12 @@ Raises an ArgumentError if the chord does not contain a major third.</p>
       <pre class="lines">
 
 
-460
-461
-462</pre>
+446
+447
+448</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 460</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 446</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_sharp_three'>sharp_three</span>
   <span class='id identifier rubyid_sharp'>sharp</span><span class='lparen'>(</span><span class='int'>3</span><span class='rparen'>)</span>
@@ -5331,6 +5802,13 @@ both a major and a minor third.</p>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -5351,12 +5829,12 @@ both a major and a minor third.</p>
       <pre class="lines">
 
 
-376
-377
-378</pre>
+362
+363
+364</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 376</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 362</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_sus2'>sus2</span>
   <span class='id identifier rubyid_suspend'>suspend</span><span class='lparen'>(</span><span class='symbol'>:M2</span><span class='rparen'>)</span>
@@ -5389,6 +5867,13 @@ both a major and a minor third.</p>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -5409,12 +5894,12 @@ both a major and a minor third.</p>
       <pre class="lines">
 
 
-366
-367
-368</pre>
+352
+353
+354</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 366</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 352</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_sus4'>sus4</span>
   <span class='id identifier rubyid_suspend'>suspend</span><span class='lparen'>(</span><span class='symbol'>:P4</span><span class='rparen'>)</span>
@@ -5443,6 +5928,13 @@ no third, or if it has both a major and a minor third.</p>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -5463,12 +5955,12 @@ no third, or if it has both a major and a minor third.</p>
       <pre class="lines">
 
 
-384
-385
-386</pre>
+370
+371
+372</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 384</span>
+      <pre class="code"><span class="info file"># File 'theory/chord.rb', line 370</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_sus9'>sus9</span>
   <span class='id identifier rubyid_sus4'>sus4</span> <span class='op'>+</span> <span class='symbol'>:M9</span>
@@ -5497,7 +5989,14 @@ helper function.</p>
   </div>
 </div>
 <div class="tags">
-  <p class="tag_title">Parameters:</p>
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -5572,6 +6071,13 @@ before applying the <code>voicing</code>.</p></div>
   
 </ul>
 
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -5579,19 +6085,6 @@ before applying the <code>voicing</code>.</p></div>
       
       
         <span class='type'>(<tt>Array&lt;<span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span>&gt;</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-<p class="tag_title">Raises:</p>
-<ul class="raise">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>RangeError</tt>)</span>
       
       
       
@@ -5614,32 +6107,6 @@ before applying the <code>voicing</code>.</p></div>
       <pre class="lines">
 
 
-174
-175
-176
-177
-178
-179
-180
-181
-182
-183
-184
-185
-186
-187
-188
-189
-190
-191
-192
-193
-194
-195
-196
-197
-198
-199
 200
 201
 202
@@ -5651,10 +6118,36 @@ before applying the <code>voicing</code>.</p></div>
 208
 209
 210
-211</pre>
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chordvoicing.rb', line 174</span>
+      <pre class="code"><span class="info file"># File 'theory/chordvoicing.rb', line 200</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_voice'>voice</span><span class='lparen'>(</span><span class='id identifier rubyid_root'><span class='object_link'><a href="top-level-namespace.html" title="Top Level Namespace (root)">root</a></span></span><span class='comma'>,</span> <span class='id identifier rubyid_voicing'>voicing</span> <span class='op'>=</span> <span class='symbol'>:closed</span><span class='comma'>,</span> <span class='label'>num_octaves:</span> <span class='int'>1</span><span class='comma'>,</span> <span class='label'>invert:</span> <span class='int'>0</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>RangeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>inversion must be &gt;= 0</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_invert'>invert</span> <span class='op'>&gt;=</span> <span class='int'>0</span>

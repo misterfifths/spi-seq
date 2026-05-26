@@ -267,7 +267,7 @@ fill mode with the <code>fill_cc</code> parameter.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#play-instance_method" title="#play (instance method)">#<strong>play</strong>  &#x21d2; void </a>
+      <a href="#play-instance_method" title="#play (instance method)">#<strong>play</strong>  </a>
     
 
     
@@ -289,7 +289,7 @@ fill mode with the <code>fill_cc</code> parameter.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#sleep-instance_method" title="#sleep (instance method)">#<strong>sleep</strong>  &#x21d2; void </a>
+      <a href="#sleep-instance_method" title="#sleep (instance method)">#<strong>sleep</strong>  </a>
     
 
     
@@ -311,7 +311,7 @@ fill mode with the <code>fill_cc</code> parameter.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#stop-instance_method" title="#stop (instance method)">#<strong>stop</strong>  &#x21d2; void </a>
+      <a href="#stop-instance_method" title="#stop (instance method)">#<strong>stop</strong>  </a>
     
 
     
@@ -333,7 +333,7 @@ fill mode with the <code>fill_cc</code> parameter.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#swap_track-instance_method" title="#swap_track (instance method)">#<strong>swap_track</strong>(new_track, reset_cycle: false)  &#x21d2; void </a>
+      <a href="#swap_track-instance_method" title="#swap_track (instance method)">#<strong>swap_track</strong>(new_track, reset_cycle: false)  </a>
     
 
     
@@ -375,7 +375,14 @@ fill mode with the <code>fill_cc</code> parameter.</p>
   </div>
 </div>
 <div class="tags">
-  <p class="tag_title">Parameters:</p>
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
@@ -469,6 +476,13 @@ A call to <span class='object_link'><a href="#sleep-instance_method" title="Play
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -526,6 +540,13 @@ playback and will take effect when the next slot is played.</p>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -581,6 +602,13 @@ swap to a new track between cycles of playback with <span class='object_link'><a
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -626,7 +654,7 @@ swap to a new track between cycles of playback with <span class='object_link'><a
       <div class="method_details first">
   <h3 class="signature first" id="play-instance_method">
   
-    #<strong>play</strong>  &#x21d2; <tt>void</tt> 
+    #<strong>play</strong>  
   
 
   
@@ -634,7 +662,8 @@ swap to a new track between cycles of playback with <span class='object_link'><a
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p class="note returns_void">This method returns an undefined value.</p><p>Plays one cycle of the track. This method plays all slots in the track and
+    
+<p>Plays one cycle of the track. This method plays all slots in the track and
 sleeps (i.e. Sonic Pi's <code>sleep</code>) for the full <span class='object_link'><a href="TrackBase.html#beat_length-instance_method" title="TrackBase#beat_length (method)">length</a></span>
 of the track. It honors the track's <span class='object_link'><a href="TrackBase.html#timescale-instance_method" title="TrackBase#timescale (method)">timescale</a></span> by
 internally applying a BPM multiplier.</p>
@@ -707,7 +736,7 @@ internally applying a BPM multiplier.</p>
       <div class="method_details ">
   <h3 class="signature " id="sleep-instance_method">
   
-    #<strong>sleep</strong>  &#x21d2; <tt>void</tt> 
+    #<strong>sleep</strong>  
   
 
   
@@ -715,7 +744,8 @@ internally applying a BPM multiplier.</p>
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p class="note returns_void">This method returns an undefined value.</p><p>Sleeps (i.e. Sonic Pi's <code>sleep</code>) for the duration of the track. All ongoing
+    
+<p>Sleeps (i.e. Sonic Pi's <code>sleep</code>) for the duration of the track. All ongoing
 steps are stopped. The <span class='object_link'><a href="#cycle-instance_method" title="PlayerBase#cycle (method)">#cycle</a></span> is not incremented.</p>
 
   </div>
@@ -753,7 +783,7 @@ steps are stopped. The <span class='object_link'><a href="#cycle-instance_method
       <div class="method_details ">
   <h3 class="signature " id="stop-instance_method">
   
-    #<strong>stop</strong>  &#x21d2; <tt>void</tt> 
+    #<strong>stop</strong>  
   
 
   
@@ -761,7 +791,8 @@ steps are stopped. The <span class='object_link'><a href="#cycle-instance_method
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p class="note returns_void">This method returns an undefined value.</p><p>Cleans up after a track has been played via <span class='object_link'><a href="#play-instance_method" title="PlayerBase#play (method)">#play</a></span>. Intended to be used
+    
+<p>Cleans up after a track has been played via <span class='object_link'><a href="#play-instance_method" title="PlayerBase#play (method)">#play</a></span>. Intended to be used
 when the player is no longer necessary or if you want to restart it with a
 clean slate. Ends all ongoing steps and resets the internal state, like
 <code>cycle</code> and accumulation values.</p>
@@ -799,7 +830,7 @@ clean slate. Ends all ongoing steps and resets the internal state, like
       <div class="method_details ">
   <h3 class="signature " id="swap_track-instance_method">
   
-    #<strong>swap_track</strong>(new_track, reset_cycle: false)  &#x21d2; <tt>void</tt> 
+    #<strong>swap_track</strong>(new_track, reset_cycle: false)  
   
 
   
@@ -807,7 +838,8 @@ clean slate. Ends all ongoing steps and resets the internal state, like
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p class="note returns_void">This method returns an undefined value.</p><p>Swap out the track this player plays.</p>
+    
+<p>Swap out the track this player plays.</p>
 <p>This is intended to be called between calls to <span class='object_link'><a href="#play-instance_method" title="PlayerBase#play (method)">#play</a></span> or <span class='object_link'><a href="#sleep-instance_method" title="PlayerBase#sleep (method)">#sleep</a></span>. The new
 track will take effect on the next <code>play</code> or <code>sleep</code>, beginning with its
 first slot.</p>
@@ -823,7 +855,14 @@ of all of its steps will reset). If you call this with the same track as
   </div>
 </div>
 <div class="tags">
-  <p class="tag_title">Parameters:</p>
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
 <ul class="param">
   
     <li>
