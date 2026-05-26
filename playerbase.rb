@@ -8,8 +8,6 @@ require_relative "trackbase"
 # in play, but also need to consider what "cycle" means in some of the weirder
 # cases like a drunk walk.
 # TODO: swing?
-# TODO: seems like it would simplify a lot of code if we tracked the current
-# playback slot in @track in an ivar.
 
 
 # PlayerBase contains the core functionality for playing back tracks (i.e,
