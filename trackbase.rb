@@ -1437,7 +1437,7 @@ class TrackBase
   #   # and y is
   #   T[:c1, :r, :r, :r]
   #
-  # @yieldparam step [StepBase] The step under consideration.
+  # @yieldparam step [StepBase] (optional) The step under consideration.
   # @yieldparam slot [Array<StepBase>] (optional) The slot to which the step
   #   belongs.
   # @yieldparam slot_idx [Integer] (optional) The index in the {#grid} of the
@@ -1453,7 +1453,7 @@ class TrackBase
   # @see #partition_every
   # @see #partition_rand
   def partition_steps(&block)
-    raise ArgumentError, "Block must take 1-3 arguments" if block.arity == 0 || block.arity > 3
+    raise ArgumentError, "Block must take <= 3 arguments" unless block.arity <= 3
 
     grid1 = []
     grid2 = []

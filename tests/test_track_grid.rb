@@ -769,10 +769,11 @@ class TrackGridTest < Test::Unit::TestCase
   def test_partition
     t = T[:a1, [:b2, :b3], :c3]
 
-    assert_partition(t, [[:a1], [:b2, :b3], [:c3]], [[], [], []]) { |_| true }
-    assert_partition(t, [[], [], []], [[:a1], [:b2, :b3], [:c3]]) { |_| false }
-    assert_partition(t, [[], [], []], [[:a1], [:b2, :b3], [:c3]]) { |_, _| false }
-    assert_partition(t, [[], [], []], [[:a1], [:b2, :b3], [:c3]]) { |_, _, _| false }
+    assert_partition(t, t.grid, [[], [], []]) { true }
+    assert_partition(t, t.grid, [[], [], []]) { |_| true }
+    assert_partition(t, [[], [], []], t.grid) { |_| false }
+    assert_partition(t, [[], [], []], t.grid) { |_, _| false }
+    assert_partition(t, [[], [], []], t.grid) { |_, _, _| false }
 
     assert_partition(t, [[], [:b2], []], [[:a1], [:b3], [:c3]]) { |step| step.note == :b2 }
     assert_partition(t, [[], [:b2, :b3], []], [[:a1], [], [:c3]]) { |step| step.note.pitch_class == :b }
@@ -789,9 +790,10 @@ class TrackGridTest < Test::Unit::TestCase
   def test_partition_slots
     t = T[:a1, [:b2, :b3], :c3]
 
-    assert_partition_slots(t, [[:a1], [:b2, :b3], [:c3]], [[], [], []]) { |_| true }
-    assert_partition_slots(t, [[], [], []], [[:a1], [:b2, :b3], [:c3]]) { |_| false }
-    assert_partition_slots(t, [[], [], []], [[:a1], [:b2, :b3], [:c3]]) { |_, _| false }
+    assert_partition_slots(t, t.grid, [[], [], []]) { true }
+    assert_partition_slots(t, t.grid, [[], [], []]) { |_| true }
+    assert_partition_slots(t, [[], [], []], t.grid) { |_| false }
+    assert_partition_slots(t, [[], [], []], t.grid) { |_, _| false }
 
     assert_partition_slots(t, [[:a1], [], [:c3]], [[], [:b2, :b3], []]) { |slot| slot.length == 1 }
     assert_partition_slots(t, [[], [], [:c3]], [[:a1], [:b2, :b3], []]) { |_, idx| idx == 2 }
