@@ -1,5 +1,15 @@
 # frozen_string_literal: true
 
+# @!group Music theory
+# An alias for {Interval.new}.
+# @param (see Interval.new)
+# @return [Interval]
+def I(name = nil, number: nil, size: nil, quality: nil)
+  Interval.new(name, number: number, size: size, quality: quality)
+end
+# @!endgroup
+
+
 # An interval between two notes, represented both by its traditional {#number}
 # and {#quality}, and its {#size} (i.e. the number of semitones).
 #
@@ -140,6 +150,8 @@ class Interval < Numeric
   # If given, quality must be one of `:major`, `:minor`, `:perfect`, `:aug`, or
   # `:dim`. Note that not every combination number/size and quality is valid -
   # e.g. there is no such thing as a major 5th interval.
+  #
+  # This method is aliased to {I} for convenience.
   #
   # @param name [Symbol, String, nil] The abbreviated name of an interval.
   #   Optional; you may use some combination of keyword arguments instead.
