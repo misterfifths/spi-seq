@@ -158,7 +158,14 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
                     cc: nil, fill_cc: nil, cc_port: nil, cc_channel: nil,
                     send_cycle_cues: nil, debug: false,
                     init: nil, **kwargs, &block)
-  raise ArgumentError, "Block must take 0 - 5 arguments" if !block.nil? && block.arity > 5
+  unless block.nil?
+    req_pos_args, opt_pos_args, req_keywords, = __describe_args(block)
+    # We could allow optional required arguments, but a block's positional
+    # arguments are all reported as optional, so let's play it safe.
+    raise ArgumentError, "Block cannot have positional arguments" unless req_pos_args == 0 && opt_pos_args == 0
+    valid_keywords = %i[cycle track muted was_muted arg]
+    raise ArgumentError, "Block requires an invalid keyword argument" if req_keywords.any? { |k| !valid_keywords.include?(k) }
+  end
 
   raise ArgumentError, "If no track is provided, a block must be" if track.nil? && block.nil?
 
@@ -239,8 +246,8 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
     res = nil
     unless block.nil?
       res = __call_varargs(block,
-                           player.cycle, player.track, muted, was_muted, arg,
-                           cycle: player.cycle, track: player.track, muted: muted, was_muted: was_muted, arg: arg)
+                           cycle: player.cycle, track: player.track,
+                           muted: muted, was_muted: was_muted, arg: arg)
     end
 
     if res.is_a?(TrackBase)

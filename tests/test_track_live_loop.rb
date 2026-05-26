@@ -550,4 +550,17 @@ class TrackLiveLoopTest < Test::Unit::TestCase
       [:c4, 6, 6.5]
     ]
   end
+
+  def test_block_args
+    # rubocop:disable Lint/UnusedBlockArgument
+    assert_raises(ArgumentError) { tll(:t) { |x| :r } }  # positional arguments are invalid
+    assert_raises(ArgumentError) { tll(:t) { |x = 2| :r } }  # even optional ones
+
+    assert_raises(ArgumentError) { tll(:t) { |cycle:, nonsense:| :r } }
+    assert_nothing_raised do
+      l = tll(:t) { |cycle:, nonsense: false| :r }  # unknown optional kwargs are ok
+      l.stop
+    end
+    # rubocop:enable Lint/UnusedBlockArgument
+  end
 end
