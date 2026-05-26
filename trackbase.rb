@@ -962,6 +962,7 @@ class TrackBase
   end
 
   alias mutate_slots mutate_each_slot
+  alias map_slots mutate_each_slot
 
   # Returns a new track with the steps in slot `idx` replaced with the given
   # steps.
@@ -1616,6 +1617,7 @@ class TrackBase
   end
 
   alias mutate_steps mutate_each_step
+  alias map_steps mutate_each_step
 
   # Returns a new track by replacing the steps in the given slot with the result
   # of the given block. The block will be called once with each step in the
@@ -1656,6 +1658,9 @@ class TrackBase
 
   alias mutate_slot_steps mutate_steps_in_slot
   alias mutate_slot mutate_steps_in_slot
+  alias map_steps_in_slot mutate_steps_in_slot
+  alias map_slot_steps mutate_steps_in_slot
+  alias map_slot mutate_steps_in_slot
 
   # Return a new track, replacing the steps in the `n`th non-empty slot with the
   # result of the given block. This is equivalent to {#mutate_steps_in_slot}
@@ -1671,6 +1676,8 @@ class TrackBase
     idx = indexes_of_filled_slots[n]
     mutate_steps_in_slot(idx, &block)
   end
+
+  alias map_filled_slot mutate_filled_slot
 
 
   ## @!group Step attribute mutators
