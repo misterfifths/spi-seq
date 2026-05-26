@@ -57,6 +57,30 @@ def __filter_kwargs_for_proc(proc, kwargs)
   kwargs.filter { |k, _| key_args.member?(k) }
 end
 
+# Given a proc or lambda, returns the count of its required positional arguments
+# and the names of its required keyword arguments.
+# @private
+def __describe_args(proc)
+  req_pos_args = 0
+  opt_pos_args = 0
+  req_keywords = []
+  opt_keywords = []
+  proc.parameters.each do |type, name|
+    case type
+    when :req
+      req_pos_args += 1
+    when :opt
+      opt_pos_args += 1
+    when :keyreq
+      req_keywords << name
+    when :key
+      opt_keywords << name
+    end
+  end
+
+  [req_pos_args, opt_pos_args, req_keywords, opt_keywords]
+end
+
 # Calls a given proc or lambda with an appropriate subset of the provided
 # arguments. `arity` many of the positional arguments are passed, and only
 # the valid keyword arguments (as found by __filter_kwargs_for_proc). Does not

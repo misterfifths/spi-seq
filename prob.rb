@@ -253,13 +253,17 @@ class Prob
 
   private
 
-  def initialize(callable, desc, repr)
-    if callable.respond_to?(:call) && callable.respond_to?(:arity) && callable.arity <= 5
-      @callable = callable
-    else
-      raise ArgumentError, "Invalid probability predicate: must be a callable that takes <= 5 arguments"
-    end
+  VALID_KEYWORDS = %i[cycle fill step note prev_notes].freeze
+  private_constant :VALID_KEYWORDS
 
+  def initialize(callable, desc, repr)
+    req_pos_args, opt_pos_args, req_keywords, = __describe_args(callable)
+    # We could allow optional required arguments, but a Proc's positional
+    # arguments are all reported as optional, so let's play it safe.
+    raise ArgumentError, "custom predicates cannot have positional arguments" unless req_pos_args == 0 && opt_pos_args == 0
+    raise ArgumentError, "predicate requires an invalid keyword argument" if req_keywords.any? { |k| !VALID_KEYWORDS.include?(k) }
+
+    @callable = callable
     @desc = desc
     @repr = repr.nil? ? nil : "Prob.#{repr}"
   end

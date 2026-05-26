@@ -421,6 +421,14 @@ class ProbTest < Test::Unit::TestCase
       [:a1, 4, 5],
       [:b2, 5, nil]
     ], play_count: 3, fill: true
+
+    # Validity checks on custom predicates
+    # rubocop:disable Lint/UnusedBlockArgument
+    assert_raises(ArgumentError) { Prob.custom(->(x) { true }) }  # positional arguments are invalid
+    assert_raises(ArgumentError) { Prob.custom(->(x = 2) { true }) }  # even optional ones
+    assert_raises(ArgumentError) { Prob.custom(->(cycle:, nonsense:) { true }) }
+    assert_nothing_raised { Prob.custom(->(cycle:, nonsense: false) { true }) }  # this is ok because the invalid kwarg is optional
+    # rubocop:enable Lint/UnusedBlockArgument
   end
 
   def assert_repr(p)
