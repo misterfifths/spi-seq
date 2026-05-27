@@ -617,6 +617,34 @@ class TrackLiveLoopTest < Test::Unit::TestCase
     use_cc_control_defaults(**old_defaults)
   end
 
+  def test_mute_cc
+    # As with fill_cc, we can't test this very well, but we can test the initial
+    # send. track_live_loop delegates to cc_mutable_live_loop, so we don't need
+    # to be particularly thorough; that method has its own tests.
+
+    # Should send a CC at creation with a value matching start_muted. Recreating
+    # the same loop name should not send another CC.
+    es = events do
+      l1 = track_live_loop(:t, cc: 64) { ExtApi.sleep(1) }
+      l1.pump
+      fill_live_loop :t
+      l1.pump
+      l2 = track_live_loop(:t, cc: 64, start_muted: true) { ExtApi.sleep(1) }
+      l1.pump
+      l2.pump
+      l2.stop
+      l1.stop
+    end
+    assert_events es, [[64, 127, 0]]
+
+    es = events do
+      l = track_live_loop(:t, cc: 64, start_muted: true) { ExtApi.sleep(1) }
+      l.pump
+      l.stop
+    end
+    assert_events es, [[64, 0, 0]]
+  end
+
   def test_block_args
     # rubocop:disable Lint/UnusedBlockArgument
     assert_raises(ArgumentError) { tll(:t) { |x| :r } }  # positional arguments are invalid
