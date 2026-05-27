@@ -195,6 +195,7 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
   ### Resolve default arguments
   player_defaults = current_player_defaults
 
+  cc_port, cc_channel = __resolve_cc_port_and_channel(cc_port, cc_channel)
   fill_cc = player_defaults[:fill_cc] if fill_cc.nil?
   if fill_cc
     cc_watcher_live_loop(:"__#{loop_name}_cc_fill_watcher",
