@@ -551,6 +551,72 @@ class TrackLiveLoopTest < Test::Unit::TestCase
     ]
   end
 
+  def test_fill_cc
+    # Testing the actual CC fill functionality isn't possible without a *lot*
+    # more stubbing of Sonic Pi methods (actually making `sync` work, e.g.). But
+    # we can at least test the initial CC send and use_cc_control_defaults.
+
+    # Should send a CC at creation with value 0. Recreating the same loop name
+    # should not send another CC.
+    es = events do
+      l1 = track_live_loop(:t, fill_cc: 64) { ExtApi.sleep(1) }
+      l1.pump
+      fill_live_loop :t
+      l1.pump
+      l2 = track_live_loop(:t, fill_cc: 64) { ExtApi.sleep(1) }
+      l1.pump
+      l2.pump
+      l2.stop
+      l1.stop
+    end
+    assert_events es, [[64, 0, 0]]
+  end
+
+  def assert_fill_cc_port_channel(port = nil, channel = nil)
+    t = T[:r, granularity: :quarter]
+    es = events do
+      l = track_live_loop(:t, t, fill_cc: 10)
+      l.pump
+      l.stop
+
+      l = track_live_loop(:t, t, fill_cc: 10, cc_port: "specific port")
+      l.pump
+      l.stop
+
+      l = track_live_loop(:t, t, fill_cc: 10, cc_channel: 5)
+      l.pump
+      l.stop
+
+      l = track_live_loop(:t, t, fill_cc: 10, cc_port: "specific port", cc_channel: 3)
+      l.pump
+      l.stop
+    end
+    assert_events es, [
+      [10, 0, 0, port, channel],
+      [10, 0, 1, "specific port", channel],
+      [10, 0, 2, port, 5],
+      [10, 0, 3, "specific port", 3]
+    ]
+  end
+
+  def test_fill_cc_defaults
+    old_defaults = current_cc_control_defaults
+
+    use_cc_control_defaults(port: "default_device")
+    assert_fill_cc_port_channel("default_device")
+
+    use_cc_control_defaults(channel: 6)  # should have cleared the port
+    assert_fill_cc_port_channel(nil, 6)
+
+    use_cc_control_defaults(port: "default device", channel: 7)
+    assert_fill_cc_port_channel("default device", 7)
+
+    use_cc_control_defaults(channel: nil)
+    assert_fill_cc_port_channel(nil, nil)
+
+    use_cc_control_defaults(**old_defaults)
+  end
+
   def test_block_args
     # rubocop:disable Lint/UnusedBlockArgument
     assert_raises(ArgumentError) { tll(:t) { |x| :r } }  # positional arguments are invalid
