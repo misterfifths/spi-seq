@@ -203,13 +203,13 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
       next if incoming_cc != fill_cc
 
       player.fill = cc_val != 0
-      _log("CC #{cc} = #{cc_val} -> #{'un' unless player.fill}setting fill for live loop #{loop_name}", "cc_fill_control")
+      _log("CC #{fill_cc} = #{cc_val} -> #{'un' unless player.fill}setting fill for live loop #{loop_name}", "cc_fill_control")
     end
 
     # Don't send a 0 fill CC for restarts of the same sketch.
     unless LiveLoopTracker.live_loop_is_running(loop_name)
       _log("sending default CC #{fill_cc} value 0 for live loop #{loop_name}", "cc_fill_control")
-      ExtApi.midi_cc(cc, 0, port: cc_port, channel: cc_channel)
+      ExtApi.midi_cc(fill_cc, 0, port: cc_port, channel: cc_channel)
     end
   end
 
