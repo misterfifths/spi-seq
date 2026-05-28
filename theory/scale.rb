@@ -388,7 +388,7 @@ class Scale
   # equivalent to calling {#degree} on the result of {.full_scale}.
   #
   # This is analogous to Sonic Pi's `degree`, though note that it won't return
-  # notes outside of the MIDI scale.
+  # notes outside of the MIDI range.
   #
   # @param d [Integer, Symbol, String] The requested degree. See {#degree} for
   #   details.
