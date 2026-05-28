@@ -153,8 +153,7 @@ class Prob
   #
   # @return [Prob]
   def self.pre_same_note
-    pred = ->(note:, prev_notes:) { prev_notes.include?(note) }
-    @pre_same_note_inst ||= new(pred, "pre same note", "pre_same_note")
+    @pre_same_note_inst ||= new(->(note:, prev_notes:) { prev_notes.include?(note) }, "pre same note", "pre_same_note")
   end
 
   # Returns a Prob that will trigger the step only if none of the steps that
@@ -172,8 +171,7 @@ class Prob
   #
   # @return [Prob]
   def self.not_pre_same_note
-    pred = ->(note:, prev_notes:) { !prev_notes.include?(note) }
-    @not_pre_same_inst ||= new(pred, "!pre same note", "not_pre_same_note")
+    @not_pre_same_inst ||= new(->(note:, prev_notes:) { !prev_notes.include?(note) }, "!pre same note", "not_pre_same_note")
   end
 
   # Returns a Prob that will trigger the step if the {PlayerBase#fill fill
