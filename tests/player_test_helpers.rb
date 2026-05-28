@@ -88,8 +88,6 @@ module PlayerTestHelpers
     when :sync
       # form: [:sync, name, time]
       _, name, time = *shorthand
-      args ||= []
-      kwargs = args.last.is_a?(Hash) ? args.pop : {}
       raw_events.index do |ev|
         ev_type = ev[:type]
         ev_t = ev[:t]
