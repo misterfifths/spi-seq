@@ -29,8 +29,8 @@ require_relative "utils/misc_utils"
 # argument) or with the {mute_live_loop} function.
 #
 # The internal player can be put into {PlayerBase#fill fill mode} via a MIDI CC
-# if the `fill_cc` argument is provided. Unlike muting, changes to fill mode
-# take effect immediately.
+# if the `fill_cc` argument is provided, or with the {fill_live_loop} function.
+# Unlike muting, changes to fill mode take effect immediately.
 #
 # Any additional named arguments (e.g. `delay` or `seed`) to this function are
 # used verbatim when creating the internal `live_loop`. If a `sync` parameter is
@@ -43,10 +43,11 @@ require_relative "utils/misc_utils"
 # playback. The block may accept any of the following keyword arguments:
 # - `cycle` (Integer): The current {PlayerBase#cycle cycle} of the internal
 #   player.
-# - `track` ({Track} or {CCTrack}): The internal player's current track.
-# - `muted` (Boolean): Whether the loop is muted.
-# - `was_muted` (Boolean): Whether the track was muted in the previous loop.
-#   This argument is true the first time the block executes.
+# - `track` ({Track} or {CCTrack}): The track the internal player will in this
+#   cycle, unless the block returns a new one (see below).
+# - `muted` (Boolean): Whether playback from this loop is muted.
+# - `was_muted` (Boolean): Whether playback was muted in this loop in the
+#   previous cycle. This argument is true the first time the block executes.
 # - `arg`: The usual argument for a `live_loop` - the value of the `init`
 #   argument on the first iteration, and the return of the prior execution of
 #   the block afterwards.
@@ -60,7 +61,9 @@ require_relative "utils/misc_utils"
 # If the block returns a {Track} or {CCTrack}, the internal player instance
 # will swap to that track. The swap takes effect immediately; the new track will
 # play as soon as it is returned. The {PlayerBase#cycle cycle} will not reset to
-# 0 when a track is swapped in this way.
+# 0 when a track is swapped in this way. Any other return type from the block
+# is ignored, though it will be passed to the next iteration of the block via
+# the `arg` parameter.
 #
 # It is an error for the block to attempt to switch between types of tracks.
 # For example, the block cannot return a {CCTrack} when the initial call to
@@ -70,7 +73,7 @@ require_relative "utils/misc_utils"
 # it is invalid for a block to return a CCTrack when this method is not passed a
 # track, because that would constitute a switch in track type. If you find
 # yourself in that situation, you can use {cc_track_live_loop}, as that method
-# uses a single-slot rest {CCTrack} instead but is otherwise identical to this
+# uses a single-slot rest CCTrack instead but is otherwise identical to this
 # one.
 #
 # @example Simple playback
