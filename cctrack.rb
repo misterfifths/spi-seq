@@ -302,3 +302,15 @@ end
 CCT = CCTrack
 
 # @!endgroup
+
+
+# @!group Steps and tracks
+
+# An alias for {TrackBase.from_grid CCTrack.from_grid}.
+# @return [CCTrack]
+# @see CCTrack#initialize
+def CCTg(*args, **kwargs)
+  CCTrack.from_grid(*args, **kwargs)
+end
+
+# @!endgroup

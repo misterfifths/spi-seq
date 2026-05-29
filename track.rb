@@ -1714,3 +1714,15 @@ end
 T = Track
 
 # @!endgroup
+
+
+# @!group Steps and tracks
+
+# An alias for {TrackBase.from_grid Track.from_grid}.
+# @return [Track]
+# @see Track#initialize
+def Tg(*args, **kwargs)
+  Track.from_grid(*args, **kwargs)
+end
+
+# @!endgroup
