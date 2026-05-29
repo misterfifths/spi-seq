@@ -362,12 +362,16 @@ class TrackBase
   ### @!group String representations
 
   # Returns a string representation of the track as Ruby code.
+  # @param safe [Boolean] If true, no exception will be raised for tracks that
+  #   cannot be entirely back to Ruby code. This can happen if, for example,
+  #   a step has a {Prob.custom custom} {Step#prob probability}. In that case,
+  #   the result of this function will not be entirely valid Ruby code.
   # @param group [Integer, nil] The number of slots of the track to group
   #   together on a single line before adding a line break, or nil to keep all
   #   slots on the same line.
   # @return [String]
   # @see #inspect
-  def repr(group: 8)
+  def repr(safe: false, group: 8)
     ctor_invocation = "#{repr_ctor_method}["
     slot_line_indent = " " * ctor_invocation.length
 
@@ -375,9 +379,9 @@ class TrackBase
       if slot.empty?
         ":r"
       elsif slot.length == 1
-        slot[0].repr
+        slot[0].repr(safe: safe)
       else
-        "[" + slot.map { |step| step.repr }.join(", ") + "]"  # rubocop:disable Style/StringConcatenation
+        "[" + slot.map { |step| step.repr(safe: safe) }.join(", ") + "]"  # rubocop:disable Style/StringConcatenation
       end
     end
 
@@ -419,7 +423,7 @@ class TrackBase
     res = "#{self.class.name} slots=#{num_slots} granularity=#{granularity} timescale=#{timescale} grid:\n"
     @grid.each_with_index do |slot, i|
       res += "slot #{i} @ t=#{i * granularity.to_f}\n"
-      slot.each { |step| res += "  #{step.repr}\n" }
+      slot.each { |step| res += "  #{step.repr(safe: true)}\n" }
     end
     res
   end

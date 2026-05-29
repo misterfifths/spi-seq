@@ -220,13 +220,21 @@ class StepBase
   end
 
   # Returns a string representation of the step as Ruby code.
+  # @param safe [Boolean] If true, no exception will be raised for steps that
+  #   cannot be entirely back to Ruby code. This can happen if, for example,
+  #   a step has a {Prob.custom custom} {#prob probability}. In that case,
+  #   the result of this function will not be entirely valid Ruby code.
   # @param float_digits [Integer] The number of digits to show after the decimal
   #   point for floating point numbers.
   # @return [String]
-  def repr(float_digits: 2)
+  def repr(safe: false, float_digits: 2)
     stringify = lambda do |val|
       if val.respond_to?(:repr)
-        val.repr
+        if val.is_a?(Prob)
+          val.repr(safe: safe)
+        else
+          val.repr
+        end
       elsif val.is_a?(Symbol)
         ":#{val}"
       elsif val.is_a?(Float)
@@ -290,7 +298,10 @@ class StepBase
     res
   end
 
-  alias inspect repr
+  # @private
+  def inspect
+    repr(safe: true)
+  end
 
 
   protected

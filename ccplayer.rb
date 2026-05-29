@@ -63,7 +63,7 @@ class CCPlayer < PlayerBase
       ExtApi.midi_cc(step.cc, effective_val, **@midi_spi_kwargs)
 
       next unless @debug
-      debug_str = step.repr
+      debug_str = step.repr(safe: true)
       debug_str += " -> #{effective_val}" unless effective_val == step.value
       step_debug_strings << debug_str
     end

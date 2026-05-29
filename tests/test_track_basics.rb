@@ -100,5 +100,13 @@ class TrackBasicTest < Test::Unit::TestCase
     assert_repr T[:c4, granularity: :whole]
     assert_repr T[:c4, granularity: :whole, timescale: 2]
     assert_repr T[:c4, granularity: :whole, timescale: 2, scale: Scale.full_scale(:c, :major)]
+
+    # Custom probs
+    p = Prob.custom(-> { true })
+    s = S(:c4)
+    assert_raises(ArgumentError) { T[s.with_prob(p)].repr }
+    assert_nothing_raised { T[s.with_prob(p)].repr(safe: true) }
+    assert_raises(ArgumentError) { T[s.accum(1, prob: p)].repr }
+    assert_nothing_raised { T[s.accum(1, prob: p)].repr(safe: true) }
   end
 end

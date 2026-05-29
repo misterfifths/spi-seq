@@ -116,5 +116,12 @@ class CCStepTest < Test::Unit::TestCase
     assert_repr a.with_prob(Prob.every_other).accum(1, min: -5, max: 22, mode: :freeze)
     assert_repr a.with_prob(Prob.x_of_y(2, 5)).accum(1, min: -5, max: 22, mode: :freeze)
     assert_repr a.with_prob(0.25).accum(1, min: -5, max: 22, mode: :freeze)
+
+    # Custom probs
+    p = Prob.custom(-> { true })
+    assert_raises(ArgumentError) { a.with_prob(p).repr }
+    assert_nothing_raised { a.with_prob(p).repr(safe: true) }
+    assert_raises(ArgumentError) { a.accum(1, prob: p).repr }
+    assert_nothing_raised { a.accum(1, prob: p).repr(safe: true) }
   end
 end

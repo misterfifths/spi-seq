@@ -441,7 +441,9 @@ class ProbTest < Test::Unit::TestCase
     assert_repr Prob.every_other
     assert_repr Prob.x_of_y(2, 5)
     assert_repr Prob.chance(0.25)
-    assert_raises { Prob.custom(->{ true }).repr }
+
+    assert_raises(ArgumentError) { Prob.custom(->{ true }).repr }
+    assert_nothing_raised { Prob.custom(->{ true }).repr(safe: true) }
   end
 
   def test_eql

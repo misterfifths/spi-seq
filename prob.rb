@@ -216,11 +216,20 @@ class Prob
   end
 
   # Returns a representation of the Prob as Ruby code. Note that this is
-  # impossible for Probs made with {.custom}, and will raise an error in that
-  # case.
+  # impossible for Probs made with {.custom}. For such Probs, if `safe` is
+  # false, this method will raise. If `safe` is true, this method will return
+  # a string that is not valid Ruby.
+  # @param safe [Boolean]
   # @return [String]
-  def repr
-    raise ArgumentError, "cannot get code representation of probability #{self}" if @repr.nil?
+  def repr(safe: false)
+    if @repr.nil?
+      if safe
+        return "<custom Prob>"
+      else
+        raise ArgumentError, "cannot get code representation of probability #{self}"
+      end
+    end
+
     @repr
   end
 

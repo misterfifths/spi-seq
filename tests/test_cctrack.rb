@@ -166,6 +166,9 @@ class CCTrackTest < Test::Unit::TestCase
     assert_repr CCT[a, :r, b]
     assert_repr CCT[[a, b], :r, c]
 
+    assert_repr CCT[a, granularity: :whole]
+    assert_repr CCT[a, granularity: :whole, timescale: 2]
+
     assert_repr CCT[a.accum(1)]
     assert_repr CCT[a.accum(1, min: -5)]
     assert_repr CCT[a.accum(1, min: -5, max: 22)]
@@ -176,7 +179,11 @@ class CCTrackTest < Test::Unit::TestCase
     assert_repr CCT[a.with_prob(Prob.x_of_y(2, 5)).accum(1, min: -5, max: 22, mode: :freeze)]
     assert_repr CCT[a.with_prob(0.25).accum(1, min: -5, max: 22, mode: :freeze)]
 
-    assert_repr CCT[a, granularity: :whole]
-    assert_repr CCT[a, granularity: :whole, timescale: 2]
+    # Custom probs
+    p = Prob.custom(-> { true })
+    assert_raises(ArgumentError) { CCT[a.with_prob(p)].repr }
+    assert_nothing_raised { CCT[a.with_prob(p)].repr(safe: true) }
+    assert_raises(ArgumentError) { CCT[a.accum(1, prob: p)].repr }
+    assert_nothing_raised { CCT[a.accum(1, prob: p)].repr(safe: true) }
   end
 end

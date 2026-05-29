@@ -16,11 +16,11 @@ module PlayerTestHelpers
 
   QT = ->(*gridish, **kwargs) { Track.new(*gridish, granularity: :quarter, **kwargs) }
 
-  def player(track, port: nil, channel: nil)
+  def player(track, port: nil, channel: nil, debug: false)
     if track.is_a?(Track)
-      Player.new(track, midi: true, port: port, channel: channel)
+      Player.new(track, midi: true, port: port, channel: channel, debug: debug)
     else
-      CCPlayer.new(track, port: port, channel: channel)
+      CCPlayer.new(track, port: port, channel: channel, debug: debug)
     end
   end
 

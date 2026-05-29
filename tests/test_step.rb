@@ -189,5 +189,13 @@ class StepTest < Test::Unit::TestCase
     assert_repr S(:c4, gate: 0.25, vel: 50, prob: Prob.every_other).accum(1, min: -5, max: 22, mode: :freeze)
     assert_repr S(:c4, gate: 0.25, vel: 50, prob: Prob.x_of_y(2, 5)).accum(1, min: -5, max: 22, mode: :freeze)
     assert_repr S(:c4, gate: 0.25, vel: 50, prob: 0.25).accum(1, min: -5, max: 22, mode: :freeze)
+
+    # Custom probs
+    p = Prob.custom(-> { true })
+    s = S(:c4)
+    assert_raises(ArgumentError) { s.with_prob(p).repr }
+    assert_nothing_raised { s.with_prob(p).repr(safe: true) }
+    assert_raises(ArgumentError) { s.accum(1, prob: p).repr }
+    assert_nothing_raised { s.accum(1, prob: p).repr(safe: true) }
   end
 end
