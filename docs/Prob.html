@@ -505,7 +505,7 @@ represent notes. The documentation will call out such cases.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#repr-instance_method" title="#repr (instance method)">#<strong>repr</strong>  &#x21d2; String </a>
+      <a href="#repr-instance_method" title="#repr (instance method)">#<strong>repr</strong>(safe: false)  &#x21d2; String </a>
     
 
     
@@ -947,12 +947,12 @@ this argument is an empty array.</li>
       <pre class="lines">
 
 
-183
-184
-185</pre>
+181
+182
+183</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'prob.rb', line 183</span>
+      <pre class="code"><span class="info file"># File 'prob.rb', line 181</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_fill'>fill</span>
   <span class='ivar'>@fill_inst</span> <span class='op'>||=</span> <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='label'>fill:</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_fill'>fill</span> <span class='rbrace'>}</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>fill</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>fill</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
@@ -1055,12 +1055,12 @@ return [Prob]</p>
       <pre class="lines">
 
 
-191
-192
-193</pre>
+189
+190
+191</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'prob.rb', line 191</span>
+      <pre class="code"><span class="info file"># File 'prob.rb', line 189</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_not_fill'>not_fill</span>
   <span class='ivar'>@not_fill_inst</span> <span class='op'>||=</span> <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='label'>fill:</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='op'>!</span><span class='id identifier rubyid_fill'>fill</span> <span class='rbrace'>}</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>!fill</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>not_fill</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
@@ -1245,17 +1245,15 @@ used as an <code>accum_prob</code>.</p>
       <pre class="lines">
 
 
+173
 174
-175
-176
-177</pre>
+175</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'prob.rb', line 174</span>
+      <pre class="code"><span class="info file"># File 'prob.rb', line 173</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_not_pre_same_note'>not_pre_same_note</span>
-  <span class='id identifier rubyid_pred'>pred</span> <span class='op'>=</span> <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='label'>note:</span><span class='comma'>,</span> <span class='label'>prev_notes:</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='op'>!</span><span class='id identifier rubyid_prev_notes'>prev_notes</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_note'>note</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
-  <span class='ivar'>@not_pre_same_inst</span> <span class='op'>||=</span> <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_pred'>pred</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>!pre same note</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>not_pre_same_note</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='ivar'>@not_pre_same_inst</span> <span class='op'>||=</span> <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='label'>note:</span><span class='comma'>,</span> <span class='label'>prev_notes:</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='op'>!</span><span class='id identifier rubyid_prev_notes'>prev_notes</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_note'>note</span><span class='rparen'>)</span> <span class='rbrace'>}</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>!pre same note</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>not_pre_same_note</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1553,15 +1551,13 @@ used as an <code>accum_prob</code>.</p>
 
 155
 156
-157
-158</pre>
+157</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'prob.rb', line 155</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_pre_same_note'>pre_same_note</span>
-  <span class='id identifier rubyid_pred'>pred</span> <span class='op'>=</span> <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='label'>note:</span><span class='comma'>,</span> <span class='label'>prev_notes:</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_prev_notes'>prev_notes</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_note'>note</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
-  <span class='ivar'>@pre_same_note_inst</span> <span class='op'>||=</span> <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_pred'>pred</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>pre same note</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>pre_same_note</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+  <span class='ivar'>@pre_same_note_inst</span> <span class='op'>||=</span> <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='label'>note:</span><span class='comma'>,</span> <span class='label'>prev_notes:</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_prev_notes'>prev_notes</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_note'>note</span><span class='rparen'>)</span> <span class='rbrace'>}</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>pre same note</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>pre_same_note</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1713,12 +1709,12 @@ every four cycles.</p>
       <pre class="lines">
 
 
-216
-217
-218</pre>
+214
+215
+216</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'prob.rb', line 216</span>
+      <pre class="code"><span class="info file"># File 'prob.rb', line 214</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_inspect'>inspect</span>
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&lt;Prob </span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='embexpr_end'>}</span><span class='tstring_content'>&gt;</span><span class='tstring_end'>&quot;</span></span>
@@ -1731,7 +1727,7 @@ every four cycles.</p>
       <div class="method_details ">
   <h3 class="signature " id="repr-instance_method">
   
-    #<strong>repr</strong>  &#x21d2; <tt><span class='object_link'>String</span></tt> 
+    #<strong>repr</strong>(safe: false)  &#x21d2; <tt><span class='object_link'>String</span></tt> 
   
 
   
@@ -1740,13 +1736,38 @@ every four cycles.</p>
 </h3><div class="docstring">
   <div class="discussion">
     <p>Returns a representation of the Prob as Ruby code. Note that this is
-impossible for Probs made with <span class='object_link'><a href="#custom-class_method" title="Prob.custom (method)">custom</a></span>, and will raise an error in that
-case.</p>
+impossible for Probs made with <span class='object_link'><a href="#custom-class_method" title="Prob.custom (method)">custom</a></span>. For such Probs, if <code>safe</code> is
+false, this method will raise. If <code>safe</code> is true, this method will return
+a string that is not valid Ruby.</p>
 
   </div>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>safe</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+    </li>
+  
+</ul>
+
 
 
 
@@ -1777,13 +1798,27 @@ case.</p>
 224
 225
 226
-227</pre>
+227
+228
+229
+230
+231
+232
+233
+234</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'prob.rb', line 224</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_repr'>repr</span>
-  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>cannot get code representation of probability </span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='ivar'>@repr</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_repr'>repr</span><span class='lparen'>(</span><span class='label'>safe:</span> <span class='kw'>false</span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='ivar'>@repr</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+    <span class='kw'>if</span> <span class='id identifier rubyid_safe'>safe</span>
+      <span class='kw'>return</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&lt;custom Prob&gt;</span><span class='tstring_end'>&quot;</span></span>
+    <span class='kw'>else</span>
+      <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>cannot get code representation of probability </span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+
   <span class='ivar'>@repr</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -1835,12 +1870,12 @@ case.</p>
       <pre class="lines">
 
 
-211
-212
-213</pre>
+209
+210
+211</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'prob.rb', line 211</span>
+      <pre class="code"><span class="info file"># File 'prob.rb', line 209</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_s'>to_s</span>
   <span class='ivar'>@desc</span>

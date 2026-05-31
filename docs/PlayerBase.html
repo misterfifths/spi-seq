@@ -425,17 +425,17 @@ about its state during playback.</p></div>
       <pre class="lines">
 
 
+64
+65
 66
 67
 68
 69
 70
-71
-72
-73</pre>
+71</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'playerbase.rb', line 66</span>
+      <pre class="code"><span class="info file"># File 'playerbase.rb', line 64</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_track'>track</span><span class='comma'>,</span> <span class='label'>debug:</span> <span class='kw'>false</span><span class='rparen'>)</span>
   <span class='ivar'>@track</span> <span class='op'>=</span> <span class='id identifier rubyid_track'>track</span>
@@ -503,12 +503,12 @@ A call to <span class='object_link'><a href="#sleep-instance_method" title="Play
       <pre class="lines">
 
 
-53
-54
-55</pre>
+51
+52
+53</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'playerbase.rb', line 53</span>
+      <pre class="code"><span class="info file"># File 'playerbase.rb', line 51</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_cycle'>cycle</span>
   <span class='ivar'>@cycle</span>
@@ -567,12 +567,12 @@ playback and will take effect when the next slot is played.</p>
       <pre class="lines">
 
 
-60
-61
-62</pre>
+58
+59
+60</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'playerbase.rb', line 60</span>
+      <pre class="code"><span class="info file"># File 'playerbase.rb', line 58</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_fill'>fill</span>
   <span class='ivar'>@fill</span>
@@ -629,12 +629,12 @@ swap to a new track between cycles of playback with <span class='object_link'><a
       <pre class="lines">
 
 
-47
-48
-49</pre>
+45
+46
+47</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'playerbase.rb', line 47</span>
+      <pre class="code"><span class="info file"># File 'playerbase.rb', line 45</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_track'>track</span>
   <span class='ivar'>@track</span>
@@ -680,6 +680,8 @@ internally applying a BPM multiplier.</p>
       <pre class="lines">
 
 
+92
+93
 94
 95
 96
@@ -699,12 +701,10 @@ internally applying a BPM multiplier.</p>
 110
 111
 112
-113
-114
-115</pre>
+113</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'playerbase.rb', line 94</span>
+      <pre class="code"><span class="info file"># File 'playerbase.rb', line 92</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_play'>play</span>
   <span class='ivar'>@slot_idx</span> <span class='op'>=</span> <span class='int'>0</span>
@@ -759,15 +759,15 @@ steps are stopped. The <span class='object_link'><a href="#cycle-instance_method
       <pre class="lines">
 
 
+118
+119
 120
 121
 122
-123
-124
-125</pre>
+123</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'playerbase.rb', line 120</span>
+      <pre class="code"><span class="info file"># File 'playerbase.rb', line 118</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_sleep'>sleep</span>
   <span class='id identifier rubyid_end_all_steps'>end_all_steps</span>
@@ -808,14 +808,14 @@ clean slate. Ends all ongoing steps and resets the internal state, like
       <pre class="lines">
 
 
+78
+79
 80
 81
-82
-83
-84</pre>
+82</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'playerbase.rb', line 80</span>
+      <pre class="code"><span class="info file"># File 'playerbase.rb', line 78</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_stop'>stop</span>
   <span class='id identifier rubyid_end_all_steps'>end_all_steps</span>
@@ -905,15 +905,15 @@ of all of its steps will reset). If you call this with the same track as
       <pre class="lines">
 
 
+145
+146
 147
 148
 149
-150
-151
-152</pre>
+150</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'playerbase.rb', line 147</span>
+      <pre class="code"><span class="info file"># File 'playerbase.rb', line 145</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_swap_track'>swap_track</span><span class='lparen'>(</span><span class='id identifier rubyid_new_track'>new_track</span><span class='comma'>,</span> <span class='label'>reset_cycle:</span> <span class='kw'>false</span><span class='rparen'>)</span>
   <span class='ivar'>@accum_data</span><span class='op'>&amp;.</span><span class='id identifier rubyid_clear'>clear</span> <span class='kw'>unless</span> <span class='ivar'>@track</span><span class='period'>.</span><span class='id identifier rubyid_equal?'>equal?</span><span class='lparen'>(</span><span class='id identifier rubyid_new_track'>new_track</span><span class='rparen'>)</span>

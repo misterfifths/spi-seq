@@ -560,7 +560,7 @@ are also available for use with <span class='object_link'><a href="CCTrack.html"
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#inspect-instance_method" title="#inspect (instance method)">#<strong>inspect</strong>  &#x21d2; String </a>
+      <a href="#inspect_slots-instance_method" title="#inspect_slots (instance method)">#<strong>inspect_slots</strong>  &#x21d2; String </a>
     
 
     
@@ -574,7 +574,7 @@ are also available for use with <span class='object_link'><a href="CCTrack.html"
   
 
   
-    <span class="summary_desc"><div class='inline'><p>Returns a friendly string representation of the track.</p></div></span>
+    <span class="summary_desc"><div class='inline'><p>Returns a detailed string describing the track and its steps.</p></div></span>
   
 </li>
 
@@ -582,7 +582,7 @@ are also available for use with <span class='object_link'><a href="CCTrack.html"
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#repr-instance_method" title="#repr (instance method)">#<strong>repr</strong>(group: 8)  &#x21d2; String </a>
+      <a href="#repr-instance_method" title="#repr (instance method)">#<strong>repr</strong>(safe: false, group: 8)  &#x21d2; String </a>
     
 
     
@@ -1236,7 +1236,7 @@ are also available for use with <span class='object_link'><a href="CCTrack.html"
     
 
     
-      (also: #mutate_slots)
+      (also: #mutate_slots, #map_slots)
     
   </span>
   
@@ -1752,7 +1752,7 @@ are also available for use with <span class='object_link'><a href="CCTrack.html"
     
 
     
-      (also: #mutate_steps)
+      (also: #mutate_steps, #map_steps)
     
   </span>
   
@@ -1776,6 +1776,8 @@ are also available for use with <span class='object_link'><a href="CCTrack.html"
     
 
     
+      (also: #map_filled_slot)
+    
   </span>
   
   
@@ -1798,7 +1800,7 @@ are also available for use with <span class='object_link'><a href="CCTrack.html"
     
 
     
-      (also: #mutate_slot_steps, #mutate_slot)
+      (also: #mutate_slot_steps, #mutate_slot, #map_steps_in_slot, #map_slot_steps, #map_slot)
     
   </span>
   
@@ -3489,14 +3491,14 @@ subclass initializer for details.</p></div>
       <pre class="lines">
 
 
-475
-476
-477
-478
-479</pre>
+495
+496
+497
+498
+499</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 475</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 495</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_append'>append</span><span class='lparen'>(</span><span class='id identifier rubyid_other_track'>other_track</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_other_track'>other_track</span> <span class='op'>=</span> <span class='id identifier rubyid_compatibly_trackify'>compatibly_trackify</span><span class='lparen'>(</span><span class='id identifier rubyid_other_track'>other_track</span><span class='rparen'>)</span>
@@ -3616,18 +3618,18 @@ for <span class='object_link'><a href="Track.html" title="Track (class)">Track</
       <pre class="lines">
 
 
-1120
-1121
-1122
-1123
-1124
-1125
-1126
-1127
-1128</pre>
+1141
+1142
+1143
+1144
+1145
+1146
+1147
+1148
+1149</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1120</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1141</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_append_slot'>append_slot</span><span class='lparen'>(</span><span class='id identifier rubyid_idx'>idx</span><span class='comma'>,</span> <span class='id identifier rubyid_new_steps'>new_steps</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_slot'>slot</span> <span class='op'>=</span> <span class='ivar'>@grid</span><span class='lbracket'>[</span><span class='id identifier rubyid_idx'>idx</span><span class='rbracket'>]</span>
@@ -3782,8 +3784,8 @@ You must pass at least one value.</p></div>
       
       
         &mdash;
-        <div class='inline'><p>If true, empty slots (rests) are not considered
-when counting slots.</p></div>
+        <div class='inline'><p>If true, empty slots (rests) are not
+considered when counting slots.</p></div>
       
     </li>
   
@@ -3925,8 +3927,8 @@ remove the slots that this method converts to rests, use <span class='object_lin
       
       
         &mdash;
-        <div class='inline'><p>If true, empty slots (rests) are not considered
-when counting slots.</p></div>
+        <div class='inline'><p>If true, empty slots (rests) are not
+considered when counting slots.</p></div>
       
     </li>
   
@@ -4213,8 +4215,8 @@ greater than 0 and &gt;= <code>x</code>.</p></div>
       
       
         &mdash;
-        <div class='inline'><p>If true, empty slots (rests) are not considered
-when counting slots.</p></div>
+        <div class='inline'><p>If true, empty slots (rests) are not
+considered when counting slots.</p></div>
       
     </li>
   
@@ -4402,20 +4404,20 @@ a range.</p></div>
       <pre class="lines">
 
 
-1070
-1071
-1072
-1073
-1074
-1075
-1076
-1077
-1078
-1079
-1080</pre>
+1091
+1092
+1093
+1094
+1095
+1096
+1097
+1098
+1099
+1100
+1101</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1070</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1091</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_clear_filled_slot'>clear_filled_slot</span><span class='lparen'>(</span><span class='id identifier rubyid_idx_or_range'>idx_or_range</span><span class='comma'>,</span> <span class='id identifier rubyid_length'>length</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_filled_indexes'>filled_indexes</span> <span class='op'>=</span> <span class='id identifier rubyid_indexes_of_filled_slots'>indexes_of_filled_slots</span>
@@ -4515,17 +4517,17 @@ Clears all slots if <code>count</code> is greater than the number of filled slot
       <pre class="lines">
 
 
-1091
-1092
-1093
-1094
-1095
-1096
-1097
-1098</pre>
+1112
+1113
+1114
+1115
+1116
+1117
+1118
+1119</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1091</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1112</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_clear_last_filled_slots'>clear_last_filled_slots</span><span class='lparen'>(</span><span class='id identifier rubyid_count'>count</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>self</span> <span class='kw'>if</span> <span class='id identifier rubyid_count'>count</span> <span class='op'>==</span> <span class='int'>0</span>
@@ -4622,17 +4624,17 @@ all slots if <code>count</code> is greater than the length of the grid.</p>
       <pre class="lines">
 
 
-1038
-1039
-1040
-1041
-1042
-1043
-1044
-1045</pre>
+1059
+1060
+1061
+1062
+1063
+1064
+1065
+1066</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1038</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1059</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_clear_last_slots'>clear_last_slots</span><span class='lparen'>(</span><span class='id identifier rubyid_count'>count</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>self</span> <span class='kw'>if</span> <span class='id identifier rubyid_count'>count</span> <span class='op'>==</span> <span class='int'>0</span>
@@ -5379,8 +5381,8 @@ greater than 0 and &gt;= <code>x</code>.</p></div>
       
       
         &mdash;
-        <div class='inline'><p>If true, empty slots (rests) are not considered
-when counting slots.</p></div>
+        <div class='inline'><p>If true, empty slots (rests) are not
+considered when counting slots.</p></div>
       
     </li>
   
@@ -5527,12 +5529,12 @@ of the combinations is indeterminate.</p>
       <pre class="lines">
 
 
-1405
-1406
-1407</pre>
+1426
+1427
+1428</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1405</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1426</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_combination'>combination</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>grid:</span> <span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_combination'>combination</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_a'>to_a</span><span class='period'>.</span><span class='id identifier rubyid_flatten'>flatten</span><span class='lparen'>(</span><span class='int'>1</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -5598,12 +5600,12 @@ Raises an exception if this would result in an empty track.</p>
       <pre class="lines">
 
 
-666
-667
-668</pre>
+686
+687
+688</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 666</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 686</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_compact'>compact</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>grid:</span> <span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_reject'>reject</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_slot'>slot</span><span class='op'>|</span> <span class='id identifier rubyid_slot'>slot</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span> <span class='rbrace'>}</span><span class='rparen'>)</span>
@@ -5642,6 +5644,23 @@ Raises an exception if this would result in an empty track.</p>
   
     <li>
       
+        <span class='name'>safe</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>If true, no exception will be raised for tracks that
+cannot be entirely back to Ruby code. This can happen if, for example,
+a step has a <span class='object_link'><a href="Prob.html#custom-class_method" title="Prob.custom (method)">custom</a></span> <span class='object_link'><a href="StepBase.html#prob-instance_method" title="StepBase#prob (method)">probability</a></span>. In that case,
+the result of this function will not be entirely valid Ruby code.</p></div>
+      
+    </li>
+  
+    <li>
+      
         <span class='name'>group</span>
       
       
@@ -5667,12 +5686,12 @@ slots on the same line.</p></div>
       <pre class="lines">
 
 
-411
-412
-413</pre>
+415
+416
+417</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 411</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 415</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_copy_repr'>copy_repr</span><span class='lparen'>(</span><span class='label'>group:</span> <span class='int'>8</span><span class='rparen'>)</span>
   <span class='const'>Clipboard</span><span class='period'>.</span><span class='id identifier rubyid_copy'>copy</span><span class='lparen'>(</span><span class='id identifier rubyid_repr'>repr</span><span class='lparen'>(</span><span class='label'>group:</span> <span class='id identifier rubyid_group'>group</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -5773,12 +5792,12 @@ slots.</p>
       <pre class="lines">
 
 
-1164
-1165
-1166</pre>
+1185
+1186
+1187</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1164</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1185</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_cycle_to_length'>cycle_to_length</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>grid:</span> <span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_cycle'>cycle</span><span class='period'>.</span><span class='id identifier rubyid_take'>take</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -5882,17 +5901,17 @@ slots.</p>
       <pre class="lines">
 
 
-1217
-1218
-1219
-1220
-1221
-1222
-1223
-1224</pre>
+1238
+1239
+1240
+1241
+1242
+1243
+1244
+1245</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1217</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1238</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_drop'>drop</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>self</span> <span class='kw'>if</span> <span class='id identifier rubyid_n'>n</span> <span class='op'>==</span> <span class='int'>0</span>
@@ -5997,12 +6016,12 @@ equivalent to <span class='object_link'><a href="#drop-instance_method" title="T
       <pre class="lines">
 
 
-1239
-1240
-1241</pre>
+1260
+1261
+1262</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1239</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1260</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_drop_last'>drop_last</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_drop'>drop</span><span class='lparen'>(</span><span class='op'>-</span><span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span>
@@ -6127,20 +6146,20 @@ into single slots.</p></div>
       <pre class="lines">
 
 
-1377
-1378
-1379
-1380
-1381
-1382
-1383
-1384
-1385
-1386
-1387</pre>
+1398
+1399
+1400
+1401
+1402
+1403
+1404
+1405
+1406
+1407
+1408</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1377</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1398</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_each_cons'>each_cons</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='comma'>,</span> <span class='label'>flatten:</span> <span class='kw'>true</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>IndexError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>n=</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_n'>n</span><span class='embexpr_end'>}</span><span class='tstring_content'> is greater than the length of the track (</span><span class='embexpr_beg'>#{</span><span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_length'>length</span><span class='embexpr_end'>}</span><span class='tstring_content'>)</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_n'>n</span> <span class='op'>&gt;</span> <span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_length'>length</span>
@@ -6317,20 +6336,20 @@ probabilities are left unchanged).</p>
       <pre class="lines">
 
 
-1724
-1725
-1726
-1727
-1728
-1729
-1730
-1731
-1732
-1733
-1734</pre>
+1751
+1752
+1753
+1754
+1755
+1756
+1757
+1758
+1759
+1760
+1761</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1724</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1751</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_fill'>fill</span><span class='lparen'>(</span><span class='id identifier rubyid_fill'>fill</span> <span class='op'>=</span> <span class='kw'>true</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span>
@@ -6440,13 +6459,13 @@ track, the final slot will merge the remaining slots.</p>
       <pre class="lines">
 
 
-1345
-1346
-1347
-1348</pre>
+1366
+1367
+1368
+1369</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1345</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1366</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_grouped_merge'>grouped_merge</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_new_grid'>new_grid</span> <span class='op'>=</span> <span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_each_slice'>each_slice</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_slots'>slots</span><span class='op'>|</span> <span class='id identifier rubyid_slots'>slots</span><span class='period'>.</span><span class='id identifier rubyid_flatten'>flatten</span> <span class='rbrace'>}</span>
@@ -6644,26 +6663,6 @@ when <code>other_track</code>'s slots are exhausted. See above.</p></div>
       <pre class="lines">
 
 
-620
-621
-622
-623
-624
-625
-626
-627
-628
-629
-630
-631
-632
-633
-634
-635
-636
-637
-638
-639
 640
 641
 642
@@ -6677,10 +6676,30 @@ when <code>other_track</code>'s slots are exhausted. See above.</p></div>
 650
 651
 652
-653</pre>
+653
+654
+655
+656
+657
+658
+659
+660
+661
+662
+663
+664
+665
+666
+667
+668
+669
+670
+671
+672
+673</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 620</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 640</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_grouped_zip'>grouped_zip</span><span class='lparen'>(</span><span class='id identifier rubyid_other_track'>other_track</span><span class='comma'>,</span> <span class='id identifier rubyid_group_size'>group_size</span><span class='comma'>,</span> <span class='id identifier rubyid_other_group_size'>other_group_size</span><span class='comma'>,</span> <span class='label'>cycle:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>pad_with_rests:</span> <span class='kw'>true</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_other_track'>other_track</span> <span class='op'>=</span> <span class='id identifier rubyid_compatibly_trackify'>compatibly_trackify</span><span class='lparen'>(</span><span class='id identifier rubyid_other_track'>other_track</span><span class='rparen'>)</span>
@@ -6785,9 +6804,9 @@ when <code>other_track</code>'s slots are exhausted. See above.</p></div>
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="inspect-instance_method">
+  <h3 class="signature " id="inspect_slots-instance_method">
   
-    #<strong>inspect</strong>  &#x21d2; <tt><span class='object_link'>String</span></tt> 
+    #<strong>inspect_slots</strong>  &#x21d2; <tt><span class='object_link'>String</span></tt> 
   
 
   
@@ -6795,7 +6814,7 @@ when <code>other_track</code>'s slots are exhausted. See above.</p></div>
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p>Returns a friendly string representation of the track.</p>
+    <p>Returns a detailed string describing the track and its steps.</p>
 
   </div>
 </div>
@@ -6835,23 +6854,45 @@ when <code>other_track</code>'s slots are exhausted. See above.</p></div>
       <pre class="lines">
 
 
-418
-419
-420
-421
-422
-423
-424
-425</pre>
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 418</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 427</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_inspect'>inspect</span>
-  <span class='id identifier rubyid_res'>res</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'> slots=</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_num_slots'>num_slots</span><span class='embexpr_end'>}</span><span class='tstring_content'> granularity=</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_granularity'>granularity</span><span class='embexpr_end'>}</span><span class='tstring_content'> timescale=</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_timescale'>timescale</span><span class='embexpr_end'>}</span><span class='tstring_content'> grid:\n</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>def</span> <span class='id identifier rubyid_inspect_slots'>inspect_slots</span>
+  <span class='id identifier rubyid_attrs'>attrs</span> <span class='op'>=</span> <span class='id identifier rubyid_ctor_kwargs'>ctor_kwargs</span><span class='period'>.</span><span class='id identifier rubyid_keys'>keys</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_attr'>attr</span><span class='op'>|</span>
+    <span class='id identifier rubyid_val'>val</span> <span class='op'>=</span> <span class='id identifier rubyid_send'>send</span><span class='lparen'>(</span><span class='id identifier rubyid_attr'>attr</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_val_str'>val_str</span> <span class='op'>=</span> <span class='id identifier rubyid_val'>val</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>?</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>nil</span><span class='tstring_end'>&quot;</span></span> <span class='op'>:</span> <span class='id identifier rubyid_val'>val</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_attr'>attr</span><span class='embexpr_end'>}</span><span class='tstring_content'>=</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_val_str'>val_str</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'> </span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+
+  <span class='id identifier rubyid_res'>res</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_content'>: </span><span class='embexpr_beg'>#{</span><span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_length'>length</span><span class='embexpr_end'>}</span><span class='tstring_content'> slots, </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_attrs'>attrs</span><span class='embexpr_end'>}</span><span class='tstring_content'>\n</span><span class='tstring_end'>&quot;</span></span>
   <span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_each_with_index'>each_with_index</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_slot'>slot</span><span class='comma'>,</span> <span class='id identifier rubyid_i'>i</span><span class='op'>|</span>
-    <span class='id identifier rubyid_res'>res</span> <span class='op'>+=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>slot </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_i'>i</span><span class='embexpr_end'>}</span><span class='tstring_content'> @ t=</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_i'>i</span> <span class='op'>*</span> <span class='id identifier rubyid_granularity'>granularity</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span><span class='embexpr_end'>}</span><span class='tstring_content'>\n</span><span class='tstring_end'>&quot;</span></span>
-    <span class='id identifier rubyid_slot'>slot</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span> <span class='id identifier rubyid_res'>res</span> <span class='op'>+=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>  </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_repr'>repr</span><span class='embexpr_end'>}</span><span class='tstring_content'>\n</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span>
+    <span class='id identifier rubyid_res'>res</span> <span class='op'>+=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>slot </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_i'>i</span><span class='embexpr_end'>}</span><span class='tstring_content'> @ t=</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_i'>i</span> <span class='op'>*</span> <span class='ivar'>@granularity</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+    <span class='kw'>if</span> <span class='id identifier rubyid_slot'>slot</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
+      <span class='id identifier rubyid_res'>res</span> <span class='op'>+=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'> (rest)\n</span><span class='tstring_end'>&quot;</span></span>
+    <span class='kw'>else</span>
+      <span class='id identifier rubyid_res'>res</span> <span class='op'>+=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>\n</span><span class='tstring_end'>&quot;</span></span>
+      <span class='id identifier rubyid_slot'>slot</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span> <span class='id identifier rubyid_res'>res</span> <span class='op'>+=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>  </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_repr'>repr</span><span class='lparen'>(</span><span class='label'>safe:</span> <span class='kw'>true</span><span class='rparen'>)</span><span class='embexpr_end'>}</span><span class='tstring_content'>\n</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span>
+    <span class='kw'>end</span>
   <span class='kw'>end</span>
   <span class='id identifier rubyid_res'>res</span>
 <span class='kw'>end</span></pre>
@@ -6946,12 +6987,12 @@ beginning of the track.</p>
       <pre class="lines">
 
 
-717
-718
-719</pre>
+737
+738
+739</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 717</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 737</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_left_pad'>left_pad</span><span class='lparen'>(</span><span class='id identifier rubyid_num_rests'>num_rests</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>grid:</span> <span class='lbracket'>[</span><span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rbracket'>]</span> <span class='op'>*</span> <span class='id identifier rubyid_num_rests'>num_rests</span> <span class='op'>+</span> <span class='ivar'>@grid</span><span class='rparen'>)</span>
@@ -7021,12 +7062,12 @@ of this track. Raises an exception if this would result in an empty track.</p>
       <pre class="lines">
 
 
-678
-679
-680</pre>
+698
+699
+700</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 678</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 698</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_ltrim'>ltrim</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>grid:</span> <span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_drop_while'>drop_while</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_slot'>slot</span><span class='op'>|</span> <span class='id identifier rubyid_slot'>slot</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span> <span class='rbrace'>}</span><span class='rparen'>)</span>
@@ -7132,26 +7173,26 @@ track. See the subclass initializer for details.</p></div>
       <pre class="lines">
 
 
-502
-503
-504
-505
-506
-507
-508
-509
-510
-511
-512
-513
-514
-515
-516
-517
-518</pre>
+522
+523
+524
+525
+526
+527
+528
+529
+530
+531
+532
+533
+534
+535
+536
+537
+538</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 502</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 522</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_merge'>merge</span><span class='lparen'>(</span><span class='id identifier rubyid_other_track'>other_track</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_other_track'>other_track</span> <span class='op'>=</span> <span class='id identifier rubyid_compatibly_trackify'>compatibly_trackify</span><span class='lparen'>(</span><span class='id identifier rubyid_other_track'>other_track</span><span class='rparen'>)</span>
@@ -7239,12 +7280,12 @@ repeating the slot in the middle.</p>
       <pre class="lines">
 
 
-810
-811
-812</pre>
+830
+831
+832</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 810</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 830</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_mirror'>mirror</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>grid:</span> <span class='ivar'>@grid</span> <span class='op'>+</span> <span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_reverse'>reverse</span><span class='rparen'>)</span>
@@ -7330,7 +7371,7 @@ repeating the slot in the middle.</p>
 
   
     <span class="aliases">Also known as:
-    <span class="names"><span id='mutate_slots-instance_method'>mutate_slots</span></span>
+    <span class="names"><span id='mutate_slots-instance_method'>mutate_slots</span>, <span id='map_slots-instance_method'>map_slots</span></span>
     </span>
   
 
@@ -7491,26 +7532,6 @@ the slot in the resulting track; see above.</p></div>
       <pre class="lines">
 
 
-932
-933
-934
-935
-936
-937
-938
-939
-940
-941
-942
-943
-944
-945
-946
-947
-948
-949
-950
-951
 952
 953
 954
@@ -7521,10 +7542,30 @@ the slot in the resulting track; see above.</p></div>
 959
 960
 961
-962</pre>
+962
+963
+964
+965
+966
+967
+968
+969
+970
+971
+972
+973
+974
+975
+976
+977
+978
+979
+980
+981
+982</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 932</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 952</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_mutate_each_slot'>mutate_each_slot</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Block must take 1-3 arguments</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>==</span> <span class='int'>0</span> <span class='op'>||</span> <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>&gt;</span> <span class='int'>3</span>
@@ -7570,7 +7611,7 @@ the slot in the resulting track; see above.</p></div>
 
   
     <span class="aliases">Also known as:
-    <span class="names"><span id='mutate_steps-instance_method'>mutate_steps</span></span>
+    <span class="names"><span id='mutate_steps-instance_method'>mutate_steps</span>, <span id='map_steps-instance_method'>map_steps</span></span>
     </span>
   
 
@@ -7726,32 +7767,32 @@ resulting track; see above.</p></div>
       <pre class="lines">
 
 
-1594
-1595
-1596
-1597
-1598
-1599
-1600
-1601
-1602
-1603
-1604
-1605
-1606
-1607
-1608
-1609
-1610
-1611
-1612
-1613
-1614
 1615
-1616</pre>
+1616
+1617
+1618
+1619
+1620
+1621
+1622
+1623
+1624
+1625
+1626
+1627
+1628
+1629
+1630
+1631
+1632
+1633
+1634
+1635
+1636
+1637</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1594</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1615</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Block must take 1-3 arguments</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>==</span> <span class='int'>0</span> <span class='op'>||</span> <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>&gt;</span> <span class='int'>3</span>
@@ -7787,6 +7828,10 @@ resulting track; see above.</p></div>
     #<strong>mutate_filled_slot</strong>(n) {|step| ... } &#x21d2; <tt><span class='object_link'><a href="" title="TrackBase (class)">TrackBase</a></span></tt> 
   
 
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='map_filled_slot-instance_method'>map_filled_slot</span></span>
+    </span>
   
 
   
@@ -7913,13 +7958,13 @@ resulting track; see above.</p></div>
       <pre class="lines">
 
 
-1670
-1671
-1672
-1673</pre>
+1695
+1696
+1697
+1698</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1670</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1695</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_mutate_filled_slot'>mutate_filled_slot</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_idx'>idx</span> <span class='op'>=</span> <span class='id identifier rubyid_indexes_of_filled_slots'>indexes_of_filled_slots</span><span class='lbracket'>[</span><span class='id identifier rubyid_n'>n</span><span class='rbracket'>]</span>
@@ -7938,7 +7983,7 @@ resulting track; see above.</p></div>
 
   
     <span class="aliases">Also known as:
-    <span class="names"><span id='mutate_slot_steps-instance_method'>mutate_slot_steps</span>, <span id='mutate_slot-instance_method'>mutate_slot</span></span>
+    <span class="names"><span id='mutate_slot_steps-instance_method'>mutate_slot_steps</span>, <span id='mutate_slot-instance_method'>mutate_slot</span>, <span id='map_steps_in_slot-instance_method'>map_steps_in_slot</span>, <span id='map_slot_steps-instance_method'>map_slot_steps</span>, <span id='map_slot-instance_method'>map_slot</span></span>
     </span>
   
 
@@ -8087,15 +8132,15 @@ resulting track; see above.</p></div>
       <pre class="lines">
 
 
-1650
-1651
-1652
-1653
-1654
-1655</pre>
+1672
+1673
+1674
+1675
+1676
+1677</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1650</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1672</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_mutate_steps_in_slot'>mutate_steps_in_slot</span><span class='lparen'>(</span><span class='id identifier rubyid_idx'>idx</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Block must take 1 argument</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>!=</span> <span class='int'>1</span>
@@ -8400,8 +8445,8 @@ rests; see above.</p></div>
       
       
         &mdash;
-        <div class='inline'><p>If true, empty slots (rests) are not considered
-when counting slots.</p></div>
+        <div class='inline'><p>If true, empty slots (rests) are not
+considered when counting slots.</p></div>
       
     </li>
   
@@ -8685,7 +8730,7 @@ it.</p></div>
       <pre class="code"><span class="info file"># File 'trackbase_partitions.rb', line 911</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_partition_rand'>partition_rand</span><span class='lparen'>(</span><span class='id identifier rubyid_p'>p</span> <span class='op'>=</span> <span class='float'>0.5</span><span class='comma'>,</span> <span class='label'>drop:</span> <span class='kw'>true</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_partition_slots'>partition_slots</span><span class='lparen'>(</span><span class='label'>drop:</span> <span class='id identifier rubyid_drop'>drop</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid__'>_</span><span class='op'>|</span> <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_rand'>rand</span> <span class='op'>&lt;</span> <span class='id identifier rubyid_p'>p</span> <span class='rbrace'>}</span>
+  <span class='id identifier rubyid_partition_slots'>partition_slots</span><span class='lparen'>(</span><span class='label'>drop:</span> <span class='id identifier rubyid_drop'>drop</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_rand'>rand</span> <span class='op'>&lt;</span> <span class='id identifier rubyid_p'>p</span> <span class='rbrace'>}</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -9106,33 +9151,33 @@ the two returned tracks. If false, it will be placed in the second.</p></div>
       <pre class="lines">
 
 
-1455
-1456
-1457
-1458
-1459
-1460
-1461
-1462
-1463
-1464
-1465
-1466
-1467
-1468
-1469
-1470
-1471
-1472
-1473
-1474
-1475
 1476
 1477
-1478</pre>
+1478
+1479
+1480
+1481
+1482
+1483
+1484
+1485
+1486
+1487
+1488
+1489
+1490
+1491
+1492
+1493
+1494
+1495
+1496
+1497
+1498
+1499</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1455</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1476</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_partition_steps'>partition_steps</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Block must take &lt;= 3 arguments</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>&lt;=</span> <span class='int'>3</span>
@@ -9228,7 +9273,7 @@ them entirely, see <span class='object_link'><a href="#clear_x_of_y-instance_met
 <span class='comment'># and v is everything else:
 </span><span class='const'><span class='object_link'><a href="top-level-namespace.html#T-constant" title="T (constant)">T</a></span></span><span class='lbracket'>[</span><span class='symbol'>:b4</span><span class='comma'>,</span> <span class='symbol'>:r</span><span class='comma'>,</span> <span class='symbol'>:r</span><span class='comma'>,</span> <span class='symbol'>:c4</span><span class='rbracket'>]</span>
 
-<span class='comment'># but you can ignore then for selecting slots with `skip_empty`
+<span class='comment'># but you can ignore them for selecting slots with `skip_empty`
 </span><span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span> <span class='op'>=</span> <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_partition_x_of_y'>partition_x_of_y</span><span class='lparen'>(</span><span class='int'>1</span><span class='comma'>,</span> <span class='int'>3</span><span class='comma'>,</span> <span class='label'>skip_empty:</span> <span class='kw'>true</span><span class='rparen'>)</span>
 <span class='comment'># x is equivalent to
 </span><span class='const'><span class='object_link'><a href="top-level-namespace.html#T-constant" title="T (constant)">T</a></span></span><span class='lbracket'>[</span><span class='symbol'>:a4</span><span class='comma'>,</span> <span class='symbol'>:d4</span><span class='rbracket'>]</span>  <span class='comment'># two groups were formed - [:a4, :b4, :c4] and [:d4, :e4]
@@ -9305,8 +9350,8 @@ rests; see above.</p></div>
       
       
         &mdash;
-        <div class='inline'><p>If true, empty slots (rests) are not considered
-when counting slots.</p></div>
+        <div class='inline'><p>If true, empty slots (rests) are not
+considered when counting slots.</p></div>
       
     </li>
   
@@ -9483,12 +9528,12 @@ of the permutations is indeterminate. If <code>n</code> is nil, permutes all slo
       <pre class="lines">
 
 
-1394
-1395
-1396</pre>
+1415
+1416
+1417</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1394</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1415</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_permutation'>permutation</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>grid:</span> <span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_permutation'>permutation</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_a'>to_a</span><span class='period'>.</span><span class='id identifier rubyid_flatten'>flatten</span><span class='lparen'>(</span><span class='int'>1</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -9634,12 +9679,12 @@ without repeating the slot in the middle.</p>
       <pre class="lines">
 
 
-825
-826
-827</pre>
+845
+846
+847</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 825</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 845</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_reflect'>reflect</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>grid:</span> <span class='ivar'>@grid</span> <span class='op'>+</span> <span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_reverse'>reverse</span><span class='period'>.</span><span class='id identifier rubyid_drop'>drop</span><span class='lparen'>(</span><span class='int'>1</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -9726,8 +9771,8 @@ You must pass at least one value.</p></div>
       
       
         &mdash;
-        <div class='inline'><p>If true, empty slots (rests) are not considered
-when counting slots.</p></div>
+        <div class='inline'><p>If true, empty slots (rests) are not
+considered when counting slots.</p></div>
       
     </li>
   
@@ -10337,13 +10382,13 @@ track.</p></div>
       <pre class="lines">
 
 
-1547
-1548
-1549
-1550</pre>
+1568
+1569
+1570
+1571</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1547</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1568</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_reject_steps'>reject_steps</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid__'>_</span><span class='comma'>,</span> <span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='id identifier rubyid_partition_steps'>partition_steps</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
@@ -10444,8 +10489,8 @@ greater than 0 and &gt;= <code>x</code>.</p></div>
       
       
         &mdash;
-        <div class='inline'><p>If true, empty slots (rests) are not considered
-when counting slots.</p></div>
+        <div class='inline'><p>If true, empty slots (rests) are not
+considered when counting slots.</p></div>
       
     </li>
   
@@ -10603,12 +10648,12 @@ when counting slots.</p></div>
       <pre class="lines">
 
 
-1144
-1145
-1146</pre>
+1165
+1166
+1167</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1144</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1165</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_repeat'>repeat</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>grid:</span> <span class='ivar'>@grid</span> <span class='op'>*</span> <span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span>
@@ -10644,7 +10689,7 @@ in a row.</p>
     <h4 class="tag_title">Examples:</h4>
     
       
-      <pre class="example code"><code><span class='const'><span class='object_link'><a href="top-level-namespace.html#T-constant" title="T (constant)">T</a></span></span><span class='lbracket'>[</span><span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:r</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='symbol'>:d4</span><span class='comma'>,</span> <span class='symbol'>:e4</span><span class='rbracket'>]</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_repeat'>repeat</span><span class='lparen'>(</span><span class='int'>3</span><span class='rparen'>)</span>
+      <pre class="example code"><code><span class='const'><span class='object_link'><a href="top-level-namespace.html#T-constant" title="T (constant)">T</a></span></span><span class='lbracket'>[</span><span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:r</span><span class='comma'>,</span> <span class='lbracket'>[</span><span class='symbol'>:d4</span><span class='comma'>,</span> <span class='symbol'>:e4</span><span class='rbracket'>]</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_repeat_slots'>repeat_slots</span><span class='lparen'>(</span><span class='int'>3</span><span class='rparen'>)</span>
 <span class='comment'># is equivalent to
 </span><span class='const'><span class='object_link'><a href="top-level-namespace.html#T-constant" title="T (constant)">T</a></span></span><span class='lbracket'>[</span><span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:c4</span><span class='comma'>,</span>
   <span class='symbol'>:r</span><span class='comma'>,</span> <span class='symbol'>:r</span><span class='comma'>,</span> <span class='symbol'>:r</span><span class='comma'>,</span>
@@ -10716,19 +10761,19 @@ though a value of 1 has no effect.</p></div>
       <pre class="lines">
 
 
-1183
-1184
-1185
-1186
-1187
-1188
-1189
-1190
-1191
-1192</pre>
+1204
+1205
+1206
+1207
+1208
+1209
+1210
+1211
+1212
+1213</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1183</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1204</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_repeat_slots'>repeat_slots</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span> <span class='op'>=</span> <span class='int'>2</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>n must be an integer</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_n'>n</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Integer</span><span class='rparen'>)</span>
@@ -10850,13 +10895,13 @@ a <span class='object_link'><a href="MIDINote.html#rest%3F-class_method" title="
       <pre class="lines">
 
 
-1009
-1010
-1011
-1012</pre>
+1030
+1031
+1032
+1033</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1009</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1030</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_replace_filled_slot'>replace_filled_slot</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='comma'>,</span> <span class='id identifier rubyid_new_steps'>new_steps</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_idx'>idx</span> <span class='op'>=</span> <span class='id identifier rubyid_indexes_of_filled_slots'>indexes_of_filled_slots</span><span class='lbracket'>[</span><span class='id identifier rubyid_n'>n</span><span class='rbracket'>]</span>
@@ -10982,15 +11027,15 @@ a <span class='object_link'><a href="MIDINote.html#rest%3F-class_method" title="
       <pre class="lines">
 
 
-986
-987
-988
-989
-990
-991</pre>
+1007
+1008
+1009
+1010
+1011
+1012</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 986</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1007</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_replace_slot'>replace_slot</span><span class='lparen'>(</span><span class='id identifier rubyid_idx'>idx</span><span class='comma'>,</span> <span class='id identifier rubyid_new_steps'>new_steps</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>IndexError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Index </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_idx'>idx</span><span class='embexpr_end'>}</span><span class='tstring_content'> is beyond the length of the track (</span><span class='embexpr_beg'>#{</span><span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_length'>length</span><span class='embexpr_end'>}</span><span class='tstring_content'>)</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_idx'>idx</span> <span class='op'>&gt;=</span> <span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_length'>length</span>
@@ -11006,7 +11051,7 @@ a <span class='object_link'><a href="MIDINote.html#rest%3F-class_method" title="
       <div class="method_details ">
   <h3 class="signature " id="repr-instance_method">
   
-    #<strong>repr</strong>(group: 8)  &#x21d2; <tt><span class='object_link'>String</span></tt> 
+    #<strong>repr</strong>(safe: false, group: 8)  &#x21d2; <tt><span class='object_link'>String</span></tt> 
   
 
   
@@ -11028,6 +11073,25 @@ a <span class='object_link'><a href="MIDINote.html#rest%3F-class_method" title="
 
 <p class="tag_title">Parameters:</p>
 <ul class="param">
+  
+    <li>
+      
+        <span class='name'>safe</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>If true, no exception will be raised for tracks that
+cannot be entirely back to Ruby code. This can happen if, for example,
+a step has a <span class='object_link'><a href="Prob.html#custom-class_method" title="Prob.custom (method)">custom</a></span> <span class='object_link'><a href="StepBase.html#prob-instance_method" title="StepBase#prob (method)">probability</a></span>. In that case,
+the result of this function will not be entirely valid Ruby code.</p></div>
+      
+    </li>
   
     <li>
       
@@ -11073,7 +11137,7 @@ slots on the same line.</p></div>
   <p class="tag_title">See Also:</p>
   <ul class="see">
     
-      <li><span class='object_link'><a href="#inspect-instance_method" title="TrackBase#inspect (method)">#inspect</a></span></li>
+      <li><span class='object_link'><a href="#inspect_slots-instance_method" title="TrackBase#inspect_slots (method)">#inspect_slots</a></span></li>
     
   </ul>
 
@@ -11083,10 +11147,6 @@ slots on the same line.</p></div>
       <pre class="lines">
 
 
-370
-371
-372
-373
 374
 375
 376
@@ -11119,12 +11179,16 @@ slots on the same line.</p></div>
 403
 404
 405
-406</pre>
+406
+407
+408
+409
+410</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 370</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 374</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_repr'>repr</span><span class='lparen'>(</span><span class='label'>group:</span> <span class='int'>8</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_repr'>repr</span><span class='lparen'>(</span><span class='label'>safe:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>group:</span> <span class='int'>8</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_ctor_invocation'>ctor_invocation</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_repr_ctor_method'>repr_ctor_method</span><span class='embexpr_end'>}</span><span class='tstring_content'>[</span><span class='tstring_end'>&quot;</span></span>
   <span class='id identifier rubyid_slot_line_indent'>slot_line_indent</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'> </span><span class='tstring_end'>&quot;</span></span> <span class='op'>*</span> <span class='id identifier rubyid_ctor_invocation'>ctor_invocation</span><span class='period'>.</span><span class='id identifier rubyid_length'>length</span>
 
@@ -11132,9 +11196,9 @@ slots on the same line.</p></div>
     <span class='kw'>if</span> <span class='id identifier rubyid_slot'>slot</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
       <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>:r</span><span class='tstring_end'>&quot;</span></span>
     <span class='kw'>elsif</span> <span class='id identifier rubyid_slot'>slot</span><span class='period'>.</span><span class='id identifier rubyid_length'>length</span> <span class='op'>==</span> <span class='int'>1</span>
-      <span class='id identifier rubyid_slot'>slot</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_repr'>repr</span>
+      <span class='id identifier rubyid_slot'>slot</span><span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_repr'>repr</span><span class='lparen'>(</span><span class='label'>safe:</span> <span class='id identifier rubyid_safe'>safe</span><span class='rparen'>)</span>
     <span class='kw'>else</span>
-      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>[</span><span class='tstring_end'>&quot;</span></span> <span class='op'>+</span> <span class='id identifier rubyid_slot'>slot</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span> <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_repr'>repr</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>, </span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='op'>+</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>]</span><span class='tstring_end'>&quot;</span></span>  <span class='comment'># rubocop:disable Style/StringConcatenation
+      <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>[</span><span class='tstring_end'>&quot;</span></span> <span class='op'>+</span> <span class='id identifier rubyid_slot'>slot</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span> <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_repr'>repr</span><span class='lparen'>(</span><span class='label'>safe:</span> <span class='id identifier rubyid_safe'>safe</span><span class='rparen'>)</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>, </span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='op'>+</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>]</span><span class='tstring_end'>&quot;</span></span>  <span class='comment'># rubocop:disable Style/StringConcatenation
 </span>    <span class='kw'>end</span>
   <span class='kw'>end</span>
 
@@ -11233,12 +11297,12 @@ slots on the same line.</p></div>
       <pre class="lines">
 
 
-792
-793
-794</pre>
+812
+813
+814</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 792</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 812</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_reverse'>reverse</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>grid:</span> <span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_reverse'>reverse</span><span class='rparen'>)</span>
@@ -11329,12 +11393,12 @@ to the end of the grid as needed.</p>
       <pre class="lines">
 
 
-883
-884
-885</pre>
+903
+904
+905</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 883</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 903</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_right'>right</span><span class='lparen'>(</span><span class='id identifier rubyid_rightward_shift'>rightward_shift</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_rotate'>rotate</span><span class='lparen'>(</span><span class='op'>-</span><span class='id identifier rubyid_rightward_shift'>rightward_shift</span><span class='rparen'>)</span>
@@ -11430,12 +11494,12 @@ end of the track.</p>
       <pre class="lines">
 
 
-731
-732
-733</pre>
+751
+752
+753</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 731</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 751</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_right_pad'>right_pad</span><span class='lparen'>(</span><span class='id identifier rubyid_num_rests'>num_rests</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>grid:</span> <span class='ivar'>@grid</span> <span class='op'>+</span> <span class='lbracket'>[</span><span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rbracket'>]</span> <span class='op'>*</span> <span class='id identifier rubyid_num_rests'>num_rests</span><span class='rparen'>)</span>
@@ -11536,12 +11600,12 @@ to the end of the grid as needed.</p>
       <pre class="lines">
 
 
-869
-870
-871</pre>
+889
+890
+891</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 869</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 889</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_rotate'>rotate</span><span class='lparen'>(</span><span class='id identifier rubyid_leftward_shift'>leftward_shift</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>grid:</span> <span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_rotate'>rotate</span><span class='lparen'>(</span><span class='id identifier rubyid_leftward_shift'>leftward_shift</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -11611,14 +11675,14 @@ this track. Raises an exception if this would result in an empty track.</p>
       <pre class="lines">
 
 
-690
-691
-692
-693
-694</pre>
+710
+711
+712
+713
+714</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 690</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 710</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_rtrim'>rtrim</span>
   <span class='comment'># We could obviously be more clever about this but I&#39;m feeling lazy.
@@ -11719,13 +11783,13 @@ The relative order of the selected slots is maintained.</p>
       <pre class="lines">
 
 
-1312
-1313
-1314
-1315</pre>
+1333
+1334
+1335
+1336</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1312</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1333</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_sample'>sample</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_idxs'>idxs</span> <span class='op'>=</span> <span class='id identifier rubyid_sample_enum'>sample_enum</span><span class='lparen'>(</span><span class='int'>0</span><span class='op'>...</span><span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_length'>length</span><span class='comma'>,</span> <span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_sort'>sort</span>
@@ -11818,13 +11882,13 @@ relative order of the slots is maintained.</p>
       <pre class="lines">
 
 
-1323
-1324
-1325
-1326</pre>
+1344
+1345
+1346
+1347</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1323</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1344</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_sample_filled_slots'>sample_filled_slots</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_idxs'>idxs</span> <span class='op'>=</span> <span class='id identifier rubyid_sample_enum'>sample_enum</span><span class='lparen'>(</span><span class='id identifier rubyid_indexes_of_filled_slots'>indexes_of_filled_slots</span><span class='comma'>,</span> <span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_sort'>sort</span>
@@ -11913,8 +11977,8 @@ You must pass at least one value.</p></div>
       
       
         &mdash;
-        <div class='inline'><p>If true, empty slots (rests) are not considered
-when counting slots.</p></div>
+        <div class='inline'><p>If true, empty slots (rests) are not
+considered when counting slots.</p></div>
       
     </li>
   
@@ -12529,13 +12593,13 @@ track.</p></div>
       <pre class="lines">
 
 
-1510
-1511
-1512
-1513</pre>
+1531
+1532
+1533
+1534</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1510</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1531</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_select_steps'>select_steps</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_t'>t</span><span class='comma'>,</span> <span class='op'>=</span> <span class='id identifier rubyid_partition_steps'>partition_steps</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
@@ -12637,8 +12701,8 @@ greater than 0 and &gt;= <code>x</code>.</p></div>
       
       
         &mdash;
-        <div class='inline'><p>If true, empty slots (rests) are not considered
-when counting slots.</p></div>
+        <div class='inline'><p>If true, empty slots (rests) are not
+considered when counting slots.</p></div>
       
     </li>
   
@@ -12760,12 +12824,12 @@ when counting slots.</p></div>
       <pre class="lines">
 
 
-834
-835
-836</pre>
+854
+855
+856</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 834</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 854</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_shuffle'>shuffle</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>grid:</span> <span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_shuffle'>shuffle</span><span class='rparen'>)</span>
@@ -12832,20 +12896,20 @@ effected.</p>
       <pre class="lines">
 
 
-843
-844
-845
-846
-847
-848
-849
-850
-851
-852
-853</pre>
+863
+864
+865
+866
+867
+868
+869
+870
+871
+872
+873</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 843</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 863</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_shuffle_filled_slots'>shuffle_filled_slots</span>
   <span class='id identifier rubyid_shuffled_idxs'>shuffled_idxs</span> <span class='op'>=</span> <span class='id identifier rubyid_indexes_of_filled_slots'>indexes_of_filled_slots</span><span class='period'>.</span><span class='id identifier rubyid_shuffle'>shuffle</span>
@@ -12914,15 +12978,15 @@ an invalid range of the grid.</p>
       <pre class="lines">
 
 
-1284
-1285
-1286
-1287
-1288
-1289</pre>
+1305
+1306
+1307
+1308
+1309
+1310</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1284</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1305</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_slice'>slice</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_s'>s</span> <span class='op'>=</span> <span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_slice'>slice</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span>
@@ -13021,18 +13085,18 @@ each slot in this track.</p>
       <pre class="lines">
 
 
-748
-749
-750
-751
-752
-753
-754
-755
-756</pre>
+768
+769
+770
+771
+772
+773
+774
+775
+776</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 748</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 768</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_space'>space</span><span class='lparen'>(</span><span class='id identifier rubyid_num_rests'>num_rests</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_new_grid'>new_grid</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
@@ -13145,18 +13209,18 @@ each group of <code>group_size</code> slots from this track.</p>
       <pre class="lines">
 
 
-770
-771
-772
-773
-774
-775
-776
-777
-778</pre>
+790
+791
+792
+793
+794
+795
+796
+797
+798</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 770</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 790</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_space_every'>space_every</span><span class='lparen'>(</span><span class='id identifier rubyid_group_size'>group_size</span><span class='comma'>,</span> <span class='id identifier rubyid_num_rests'>num_rests</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_new_grid'>new_grid</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
@@ -13262,13 +13326,13 @@ Or, if <code>n</code> is negative, a new track with the final <code>n</code> slo
       <pre class="lines">
 
 
-1259
-1260
-1261
-1262</pre>
+1280
+1281
+1282
+1283</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1259</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1280</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_take'>take</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>grid:</span> <span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_take'>take</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_n'>n</span> <span class='op'>&gt;=</span> <span class='int'>0</span>  <span class='comment'># will raise for 0
@@ -13360,12 +13424,12 @@ equivalent to <span class='object_link'><a href="#take-instance_method" title="T
       <pre class="lines">
 
 
-1275
-1276
-1277</pre>
+1296
+1297
+1298</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1275</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1296</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_take_last'>take_last</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_take'>take</span><span class='lparen'>(</span><span class='op'>-</span><span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span>
@@ -13436,12 +13500,12 @@ empty track.</p>
       <pre class="lines">
 
 
-705
-706
-707</pre>
+725
+726
+727</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 705</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 725</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_trim'>trim</span>
   <span class='id identifier rubyid_ltrim'>ltrim</span><span class='period'>.</span><span class='id identifier rubyid_rtrim'>rtrim</span>
@@ -13616,15 +13680,15 @@ described in <span class='object_link'><a href="StepBase.html#initialize-instanc
       <pre class="lines">
 
 
-1742
-1743
-1744
-1745
-1746
-1747</pre>
+1769
+1770
+1771
+1772
+1773
+1774</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1742</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1769</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_accum'>with_accum</span><span class='lparen'>(</span><span class='id identifier rubyid_delta'>delta</span><span class='comma'>,</span> <span class='label'>min:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>max:</span> <span class='int'>12</span><span class='comma'>,</span> <span class='label'>mode:</span> <span class='symbol'>:wrap</span><span class='comma'>,</span> <span class='label'>prob:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>target:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span>
@@ -13711,12 +13775,12 @@ Can be a <span class='object_link'><a href="NoteLength.html" title="NoteLength (
       <pre class="lines">
 
 
-440
-441
-442</pre>
+460
+461
+462</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 440</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 460</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_granularity'>with_granularity</span><span class='lparen'>(</span><span class='id identifier rubyid_granularity'>granularity</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>granularity:</span> <span class='id identifier rubyid_granularity'>granularity</span><span class='rparen'>)</span>
@@ -13829,18 +13893,18 @@ are left unchanged.</p></div>
       <pre class="lines">
 
 
-1690
-1691
-1692
-1693
-1694
-1695
-1696
-1697
-1698</pre>
+1717
+1718
+1719
+1720
+1721
+1722
+1723
+1724
+1725</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1690</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1717</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_prob'>with_prob</span><span class='lparen'>(</span><span class='id identifier rubyid_p'>p</span><span class='comma'>,</span> <span class='label'>overwrite:</span> <span class='kw'>true</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span>
@@ -13926,12 +13990,12 @@ are left unchanged.</p></div>
       <pre class="lines">
 
 
-447
-448
-449</pre>
+467
+468
+469</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 447</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 467</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_timescale'>with_timescale</span><span class='lparen'>(</span><span class='id identifier rubyid_scale'>scale</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>timescale:</span> <span class='id identifier rubyid_scale'>scale</span><span class='rparen'>)</span>
@@ -13999,12 +14063,12 @@ step.</p>
       <pre class="lines">
 
 
-1756
-1757
-1758</pre>
+1783
+1784
+1785</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1756</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1783</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_without_accum'>without_accum</span>
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span> <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_without_accum'>without_accum</span> <span class='rbrace'>}</span>
@@ -14074,12 +14138,12 @@ step. That is, the steps in the resulting track will always trigger.</p>
       <pre class="lines">
 
 
-1708
-1709
-1710</pre>
+1735
+1736
+1737</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1708</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 1735</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_without_prob'>without_prob</span>
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span> <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_without_prob'>without_prob</span> <span class='rbrace'>}</span>
@@ -14233,12 +14297,12 @@ when <code>other_track</code>'s slots are exhausted. See above.</p></div>
       <pre class="lines">
 
 
-562
-563
-564</pre>
+582
+583
+584</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 562</span>
+      <pre class="code"><span class="info file"># File 'trackbase.rb', line 582</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_zip'>zip</span><span class='lparen'>(</span><span class='id identifier rubyid_other_track'>other_track</span><span class='comma'>,</span> <span class='label'>cycle:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>pad_with_rests:</span> <span class='kw'>true</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_gzip'>gzip</span><span class='lparen'>(</span><span class='id identifier rubyid_other_track'>other_track</span><span class='comma'>,</span> <span class='int'>1</span><span class='comma'>,</span> <span class='int'>1</span><span class='comma'>,</span> <span class='label'>cycle:</span> <span class='id identifier rubyid_cycle'>cycle</span><span class='comma'>,</span> <span class='label'>pad_with_rests:</span> <span class='id identifier rubyid_pad_with_rests'>pad_with_rests</span><span class='rparen'>)</span>
