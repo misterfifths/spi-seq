@@ -763,7 +763,8 @@ class Chord
   # @return [String]
   # @private
   def to_s
-    "<Chord #{@intervals}>"
+    int_names = @intervals.join(" ")
+    "<Chord #{int_names}>"
   end
 end
 
