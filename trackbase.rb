@@ -370,7 +370,7 @@ class TrackBase
   #   together on a single line before adding a line break, or nil to keep all
   #   slots on the same line.
   # @return [String]
-  # @see #inspect
+  # @see #inspect_slots
   def repr(safe: false, group: 8)
     ctor_invocation = "#{repr_ctor_method}["
     slot_line_indent = " " * ctor_invocation.length
@@ -416,14 +416,30 @@ class TrackBase
     Clipboard.copy(repr(group: group))
   end
 
-  # Returns a friendly string representation of the track.
+  # @private
+  def inspect
+    repr(safe: true)
+  end
+
+  # Returns a detailed string describing the track and its steps.
   # @return [String]
   # @see #repr
-  def inspect
-    res = "#{self.class.name} slots=#{num_slots} granularity=#{granularity} timescale=#{timescale} grid:\n"
+  def inspect_slots
+    attrs = ctor_kwargs.keys.map do |attr|
+      val = send(attr)
+      val_str = val.nil? ? "nil" : val.to_s
+      "#{attr}=#{val_str}"
+    end.join(" ")
+
+    res = "#{self.class.name}: #{@grid.length} slots, #{attrs}\n"
     @grid.each_with_index do |slot, i|
-      res += "slot #{i} @ t=#{i * granularity.to_f}\n"
-      slot.each { |step| res += "  #{step.repr(safe: true)}\n" }
+      res += "slot #{i} @ t=#{i * @granularity.to_f}"
+      if slot.empty?
+        res += " (rest)\n"
+      else
+        res += "\n"
+        slot.each { |step| res += "  #{step.repr(safe: true)}\n" }
+      end
     end
     res
   end
