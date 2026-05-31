@@ -117,7 +117,7 @@ class Chord
   # - `drop2`: Applies a closed voicing, then drops the 2nd highest note in the
   #   result an octave.
   # - `drop3`: Same as drop2, but drops the third highest note.
-  # - `drop4`: Sane as drop2, but only drops the 4th highest note.
+  # - `drop4`: Same as drop2, but only drops the 4th highest note.
   # - `drop23`: Combines drop2 and drop3.
   # - `drop24`: Combines drop2 and drop4.
   # - `drop34`: Combines drop3 and drop4.

@@ -1174,7 +1174,7 @@ class TrackBase
   # in a row.
   #
   # @example
-  #   T[:c4, :r, [:d4, :e4]].repeat(3)
+  #   T[:c4, :r, [:d4, :e4]].repeat_slots(3)
   #   # is equivalent to
   #   T[:c4, :c4, :c4,
   #     :r, :r, :r,

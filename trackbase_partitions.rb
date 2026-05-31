@@ -26,8 +26,8 @@ class TrackBase
   #     it.
 
   # @!macro [new] skip_empty_param
-  #   @param skip_empty [Boolean] If true, empty slots (rests) are not considered
-  #     when counting slots.
+  #   @param skip_empty [Boolean] If true, empty slots (rests) are not
+  #     considered when counting slots.
   
   # @!macro [new] group_y_param
   #   @param y [Integer] The size of the groups of slots to consider. Must be
@@ -671,7 +671,7 @@ class TrackBase
   #   # and v is everything else:
   #   T[:b4, :r, :r, :c4]
   #
-  #   # but you can ignore then for selecting slots with `skip_empty`
+  #   # but you can ignore them for selecting slots with `skip_empty`
   #   x, y = t.partition_x_of_y(1, 3, skip_empty: true)
   #   # x is equivalent to
   #   T[:a4, :d4]  # two groups were formed - [:a4, :b4, :c4] and [:d4, :e4]
