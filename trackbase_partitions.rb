@@ -909,7 +909,7 @@ class TrackBase
   # @see #clear_rand
   # @see #clear_except_rand
   def partition_rand(p = 0.5, drop: true)
-    partition_slots(drop: drop) { |_| ExtApi.rand < p }
+    partition_slots(drop: drop) { ExtApi.rand < p }
   end
 
   alias rand_partition partition_rand
