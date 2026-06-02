@@ -419,36 +419,30 @@ end
 # Some overrides so equality works when a string or symbol is on the left.
 # Note that comparison to left-hand side numerics already works because the
 # MIDINote will be coerced automatically.
+#
 # TODO: do we care to do all the comparison operators? Kind of a slippery slope
 # I think, and doesn't feel worth it. This is nice because it gets things like
 # [:c4].include?(N(:c4)) working.
 #
 # @private
-class Symbol
-  alias _midinote_orig_eql eql?
+module MIDINoteEqualityPatches
   def eql?(other)
     return other == self if other.instance_of?(MIDINote)
-    _midinote_orig_eql(other)
+    super
   end
 
-  alias _midinote_orig_eql_op ==
   def ==(other)
     return other == self if other.instance_of?(MIDINote)
-    _midinote_orig_eql_op(other)
+    super
   end
 end
 
 # @private
-class String
-  alias _midinote_orig_eql eql?
-  def eql?(other)
-    return other == self if other.instance_of?(MIDINote)
-    _midinote_orig_eql(other)
-  end
+class Symbol
+  prepend MIDINoteEqualityPatches
+end
 
-  alias _midinote_orig_eql_op ==
-  def ==(other)
-    return other == self if other.instance_of?(MIDINote)
-    _midinote_orig_eql_op(other)
-  end
+# @private
+class String
+  prepend MIDINoteEqualityPatches
 end
