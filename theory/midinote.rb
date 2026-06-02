@@ -37,8 +37,7 @@ end
 #   MIDINote.new(:c5) > :c4
 #   "bf3" == MIDINote.new(:as3)
 class MIDINote < Numeric
-  # See https://github.com/sonic-pi-net/sonic-pi/blob/714d33316620d46d6815e554f17c5a76e4967471/app/server/ruby/lib/sonicpi/note.rb#L65
-  NOTE_REGEX = /^:?(?<pitch_class>[a-g][sbf]?)(?<octave>-?\d*)$/i.freeze
+  NOTE_REGEX = /^(?<pitch_class>[a-g][sbf]?)(?<octave>-?\d+)?$/i.freeze
   private_constant :NOTE_REGEX
 
   # Order is significant, both in the subarrays and the array as a whole. The
@@ -139,7 +138,7 @@ class MIDINote < Numeric
       match = NOTE_REGEX.match(note.to_s.downcase)
       raise ArgumentError, "Invalid note name #{note}" if match.nil?
 
-      @octave = match[:octave].empty? ? 4 : match[:octave].to_i
+      @octave = match[:octave].nil? ? 4 : match[:octave].to_i
       @pitch_class = match[:pitch_class].to_sym
 
       # Check for octave boundary crossings: cb (down an octave) and bs (up)
@@ -402,7 +401,7 @@ class MIDINote < Numeric
 
     match = NOTE_REGEX.match(note.to_s)
     raise ArgumentError, "Invalid note symbol #{note}" if match.nil?
-    !match[:octave].empty?
+    !match[:octave].nil?
   end
 
   # Returns true if the given value represents a rest. nil, `:r`, and `:rest`

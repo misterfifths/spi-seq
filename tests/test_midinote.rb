@@ -21,6 +21,12 @@ class MIDINoteTest < Test::Unit::TestCase
 
     c4 = N(:c4)
     assert_same N(c4), c4
+
+    # Regex edge cases
+    assert_raises { N("c-") }
+    assert_raises { N(:"c-") }
+    assert_raises { N(":c-4") }
+    assert_raises { N(:":c-4") }
   end
 
   def assert_attrs(note, number, sym, pitch_class)
