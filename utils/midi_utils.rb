@@ -136,20 +136,15 @@ alias midi_uber_stop midi_panic
 # function a second time with the same name will remove the previous hook with
 # that name.
 #
-# Takes the same arguments as {midi_panic}, with the addition of `quiet` and
-# `hook_name`.
+# Takes the same arguments as {midi_panic}, with the addition of `hook_name`.
 #
 # `midi_panic` will *not* be called if a Sonic Pi sketch exits gracefully (e.g.
 # if it has no `live_loops` or they all stop). It is only executed when hitting
 # the stop button or quitting the app.
 #
-# @param quiet [Boolean] Controls whether Sonic Pi's MIDI logging is enabled
-#   during the hook.
 # @return [void]
-def midi_panic_on_stop(*args, hook_name: :midi_panic, quiet: true, **kwargs)
+def midi_panic_on_stop(*args, hook_name: :midi_panic, **kwargs)
   on_stop(hook_name) do
-    ExtApi.with_midi_logging(!quiet) do
-      midi_panic(*args, **kwargs)
-    end
+    midi_panic(*args, **kwargs)
   end
 end
