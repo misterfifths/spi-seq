@@ -119,6 +119,7 @@ class MIDINote < Numeric
     instance = super
     @note_cache[note] = instance
     @note_cache[cache_key] = instance
+    @note_cache[instance.to_i] = instance
     @note_cache[instance.to_f] = instance
     @note_cache[instance.to_s] = instance
 
