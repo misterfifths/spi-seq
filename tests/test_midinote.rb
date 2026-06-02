@@ -5,12 +5,6 @@ require_relative "test_helper"
 require_relative "../theory/midinote"
 
 class MIDINoteTest < Test::Unit::TestCase
-  def self.startup
-    # Attempt some cache poisoning (this should not get cached as the canonical
-    # representation for :c4, e.g.).
-    N(60.5)
-  end
-
   def test_initialization
     assert_instance_of MIDINote, N(:c4)
     assert_instance_of MIDINote, N(:c)
