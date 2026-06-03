@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "internal_utils"
+
 # @!group Music theory
 # An alias for {Interval.new}.
 # @param (see Interval.new)
@@ -511,28 +513,20 @@ class Interval < Numeric
 end
 
 
-# Some overrides so equality works when a string or symbol is on the left.
+# Some overrides so comparison works when a string or symbol is on the left.
 # Note that comparison to left-hand side numerics already works because the
 # Interval will be coerced automatically.
 # @private
-module IntervalEqualityPatches
-  def eql?(other)
-    return other == self if other.instance_of?(Interval)
-    super
-  end
-
-  def ==(other)
-    return other == self if other.instance_of?(Interval)
-    super
-  end
+module IntervalComparisonPatches
+  SpiSeqUtils.define_reverse_comparison_ops(self, Interval)
 end
 
 # @private
 class Symbol
-  prepend IntervalEqualityPatches
+  prepend IntervalComparisonPatches
 end
 
 # @private
 class String
-  prepend IntervalEqualityPatches
+  prepend IntervalComparisonPatches
 end

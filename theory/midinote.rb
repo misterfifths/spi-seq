@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "scale"
+require_relative "internal_utils"
 
 # @!group Music theory
 # An alias for {MIDINote.new}.
@@ -416,33 +417,20 @@ class MIDINote < Numeric
 end
 
 
-# Some overrides so equality works when a string or symbol is on the left.
+# Some overrides so comparison works when a string or symbol is on the left.
 # Note that comparison to left-hand side numerics already works because the
 # MIDINote will be coerced automatically.
-#
-# TODO: do we care to do all the comparison operators? Kind of a slippery slope
-# I think, and doesn't feel worth it. This is nice because it gets things like
-# [:c4].include?(N(:c4)) working.
-#
 # @private
-module MIDINoteEqualityPatches
-  def eql?(other)
-    return other == self if other.instance_of?(MIDINote)
-    super
-  end
-
-  def ==(other)
-    return other == self if other.instance_of?(MIDINote)
-    super
-  end
+module MIDINoteComparisonPatches
+  SpiSeqUtils.define_reverse_comparison_ops(self, MIDINote)
 end
 
 # @private
 class Symbol
-  prepend MIDINoteEqualityPatches
+  prepend MIDINoteComparisonPatches
 end
 
 # @private
 class String
-  prepend MIDINoteEqualityPatches
+  prepend MIDINoteComparisonPatches
 end

@@ -273,11 +273,21 @@ class MIDINoteTest < Test::Unit::TestCase
       assert N(a) >= a
       assert_equal N(a) <=> a, 0
 
+      assert_equal N(a), N(a)
+      assert_equal N(a), a
+      assert_equal a, N(a)
+      assert a <= N(a)
+      assert a >= N(a)
+      assert_equal a <=> N(a), 0
+
       # a < b
       assert N(a) < N(b)
       assert N(a) < b
       assert_equal N(a) <=> N(b), -1
       assert_equal N(a) <=> b, -1
+
+      assert a < N(b)
+      assert_equal a <=> N(b), -1
 
       # b > a
       assert N(b) > N(a)
@@ -285,17 +295,26 @@ class MIDINoteTest < Test::Unit::TestCase
       assert_equal N(b) <=> N(a), 1
       assert_equal N(b) <=> a, 1
 
+      assert b > N(a)
+      assert_equal b <=> N(a), 1
+
       # b < c
       assert N(b) < N(c)
       assert N(b) < c
       assert_equal N(b) <=> N(c), -1
       assert_equal N(b) <=> c, -1
 
+      assert b < N(c)
+      assert_equal b <=> N(c), -1
+
       # c > b
       assert N(c) > N(b)
       assert N(c) > b
       assert_equal N(c) <=> N(b), 1
       assert_equal N(c) <=> b, 1
+
+      assert c > N(b)
+      assert_equal c <=> N(b), 1
     end
 
     assert_equal [N(:c3), N(:c2), N(:c1)].sort, [N(:c1), N(:c2), N(:c3)]

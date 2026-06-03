@@ -272,6 +272,11 @@ class IntervalTest < Test::Unit::TestCase
       assert ai >= ai.size
       assert_equal ai <=> ai.size, 0
 
+      assert_equal a, ai
+      assert a >= ai
+      assert a <= ai
+      assert_equal a <=> ai, 0
+
       # a < b
       refute_equal ai, bi
       refute_equal ai, b
@@ -284,6 +289,9 @@ class IntervalTest < Test::Unit::TestCase
       assert_equal ai <=> bi.size, -1
       assert_equal ai <=> b, -1
 
+      assert a < bi
+      assert_equal a <=> bi, -1
+
       # b > a
       assert bi > ai
       assert bi > ai.size
@@ -291,6 +299,9 @@ class IntervalTest < Test::Unit::TestCase
       assert_equal bi <=> ai, 1
       assert_equal bi <=> ai.size, 1
       assert_equal bi <=> a, 1
+
+      assert b > ai
+      assert_equal b <=> ai, 1
 
       # b < c
       refute_equal bi, ci
@@ -304,6 +315,9 @@ class IntervalTest < Test::Unit::TestCase
       assert_equal bi <=> ci.size, -1
       assert_equal bi <=> c, -1
 
+      assert b < ci
+      assert_equal b <=> ci, -1
+
       # c > b
       assert ci > bi
       assert ci > bi.size
@@ -311,6 +325,9 @@ class IntervalTest < Test::Unit::TestCase
       assert_equal ci <=> bi, 1
       assert_equal ci <=> bi.size, 1
       assert_equal ci <=> b, 1
+
+      assert c > bi
+      assert_equal c <=> bi, 1
     end
 
     # Equality is based solely on the size; quality is ignored.
