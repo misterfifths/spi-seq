@@ -389,8 +389,8 @@ class Track
                   trim_start: false, trim_end: false,
                   min_gate: 0.1, quantize_gates: true,
                   ignore_vel: false)
-    cc_port, cc_channel = __resolve_cc_port_and_channel(cc_port, cc_channel)
-    port, channel = __resolve_midi_port_and_channel(port, channel)
+    cc_port, cc_channel = SpiSeqUtils.resolve_cc_port_and_channel(cc_port, cc_channel)
+    port, channel = SpiSeqUtils.resolve_midi_port_and_channel(port, channel)
 
     start_time = end_time = timeline = nil
     ExtApi.with_real_time do

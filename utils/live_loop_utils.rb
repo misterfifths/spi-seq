@@ -166,7 +166,7 @@ end
 # @see mutable_live_loop
 # @see track_live_loop
 def cc_mutable_live_loop(loop_name, cc:, port: nil, channel: nil, start_muted: false, **kwargs, &block)
-  port, channel = __resolve_cc_port_and_channel(port, channel)
+  port, channel = SpiSeqUtils.resolve_cc_port_and_channel(port, channel)
 
   cc_watcher_live_loop(:"__#{loop_name}_cc_mute_watcher",
                        port: port, channel: channel) do |incoming_cc, cc_val|
