@@ -758,21 +758,18 @@ class TrackBase
   # each slot in this track.
   #
   # @example
-  #   T[:a1, :b1, :c1].space(2)
+  #   T[:a1, :b1, :r, :c1].space(2)
   #   # is equivalent to
-  #   T[:a1, :r, :r, :b1, :r, :r, :c1, :r, :r]
+  #   T[:a1, :r, :r,
+  #     :b1, :r, :r,
+  #     :r,  :r, :r,
+  #     :c1, :r, :r]
   #
   # @param num_rests [Integer]
   # @return [TrackBase]
   # @see #space_every
   def space(num_rests = 1)
-    new_grid = []
-    @grid.each do |slot|
-      new_grid << slot
-      new_grid.concat([[]] * num_rests)
-    end
-
-    mutate(grid: new_grid)
+    space_every(1, num_rests)
   end
 
   # Returns a new track by adding `num_rests` many empty slots (rests) between
