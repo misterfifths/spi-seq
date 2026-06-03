@@ -17,7 +17,7 @@ begin
     add_filter "core.rb"
     # Most of utils/ is not very testable since it's very niche Sonic Pi stuff.
     add_filter "utils/midi_utils.rb"
-    add_filter "utils/misc_utils.rb"
+    add_filter "utils/internal_utils.rb"
     add_filter "utils/lifecycle_utils.rb"
   end
 rescue LoadError  # rubocop:disable Lint/SuppressedException

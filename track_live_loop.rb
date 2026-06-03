@@ -7,7 +7,7 @@ require_relative "player"
 require_relative "trackbase"
 require_relative "track"
 require_relative "utils/live_loop_utils"
-require_relative "utils/misc_utils"
+require_relative "utils/internal_utils"
 
 # @!group Playback and live loops
 
@@ -162,7 +162,7 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
                     send_cycle_cues: nil, debug: false,
                     init: nil, **kwargs, &block)
   unless block.nil?
-    req_pos_args, opt_pos_args, req_keywords, = __describe_args(block)
+    req_pos_args, opt_pos_args, req_keywords, = SpiSeqUtils.describe_args(block)
     # We could allow optional required arguments, but a block's positional
     # arguments are all reported as optional, so let's play it safe.
     raise ArgumentError, "Block cannot have positional arguments" unless req_pos_args == 0 && opt_pos_args == 0
@@ -249,9 +249,9 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
 
     res = nil
     unless block.nil?
-      res = __call_varargs(block,
-                           cycle: player.cycle, track: player.track,
-                           muted: muted, was_muted: was_muted, arg: arg)
+      res = SpiSeqUtils.call_varargs(block,
+                                     cycle: player.cycle, track: player.track,
+                                     muted: muted, was_muted: was_muted, arg: arg)
     end
 
     if res.is_a?(TrackBase)

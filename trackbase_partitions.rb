@@ -88,7 +88,7 @@ class TrackBase
     grid2 = []
 
     @grid.each_with_index do |slot, i|
-      if __call_varargs(block, slot, i)
+      if SpiSeqUtils.call_varargs(block, slot, i)
         grid1 << slot
         grid2 << [] unless drop
       else

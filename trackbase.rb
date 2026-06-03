@@ -413,7 +413,7 @@ class TrackBase
   # @param (see #repr)
   # @return [void]
   def copy_repr(group: 8)
-    Clipboard.copy(repr(group: group))
+    SpiSeqUtils::Clipboard.copy(repr(group: group))
   end
 
   # @private
@@ -962,7 +962,7 @@ class TrackBase
         pct = i.to_f / (num_slots - 1)
       end
 
-      replacement = __call_varargs(block, slot, i, pct)
+      replacement = SpiSeqUtils.call_varargs(block, slot, i, pct)
 
       # The block may return something convertible to a slot (step/note/etc.),
       # or a 1d array (which we will take as a slot), or an array that contains
@@ -1484,7 +1484,7 @@ class TrackBase
       slot2 = []
 
       slot.each do |step|
-        if __call_varargs(block, step, slot, i)
+        if SpiSeqUtils.call_varargs(block, step, slot, i)
           slot1 << step
         else
           slot2 << step
@@ -1626,7 +1626,7 @@ class TrackBase
 
       new_slot = []
       slot.each do |step|
-        new_step = __call_varargs(block, step, i, pct)
+        new_step = SpiSeqUtils.call_varargs(block, step, i, pct)
         new_slot += self.class.slotify(new_step)
       end
 

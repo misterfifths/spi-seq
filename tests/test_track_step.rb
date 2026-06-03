@@ -4,7 +4,7 @@
 require_relative "test_helper"
 require_relative "../track"
 require_relative "track_test_helpers"
-require_relative "../utils/misc_utils"
+require_relative "../utils/internal_utils"
 
 # Test Track's step manipulation methods.
 # This is mostly things that deal with individual steps in the Track, rather
@@ -254,7 +254,7 @@ class TrackStepTest < Test::Unit::TestCase
       slot.each do |step|
         attr_val = step.send(attr)
 
-        curve_val = __call_varargs(curve_func, pct, idx) * attr_scale_factor
+        curve_val = SpiSeqUtils.call_varargs(curve_func, pct, idx) * attr_scale_factor
         curve_val = curve_val.to_i if integer
         assert_in_delta attr_val, curve_val, tol, "expected #{step.inspect} #{attr} to be #{curve_val}, but got #{attr_val}, track: #{track.repr}"
       end

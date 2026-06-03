@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "../extapi"
-require_relative "../utils/misc_utils"
+require_relative "../utils/internal_utils"
 
 # @!group MIDI utilities
 
@@ -89,7 +89,7 @@ def cc_watcher_live_loop(loop_name, port: nil, channel: nil, &block)
     ExtApi.use_real_time
 
     cc, val = ExtApi.sync(cue_path)
-    __call_varargs(block, cc, val)
+    SpiSeqUtils.call_varargs(block, cc, val)
   end
 end
 
