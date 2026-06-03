@@ -249,6 +249,11 @@ class Track
     timeline = []
     in_progress_timeline_events = {}  # by note
 
+    cc_port, cc_channel = SpiSeqUtils.resolve_cc_port_and_channel(cc_port, cc_channel)
+    # If these are nil for the default, we need to actually retrieve the default
+    # since we're going to be doing string comparisons against the port/channel.
+    port, channel = SpiSeqUtils.resolve_midi_port_and_channel(port, channel)
+
     event_re = %r{^/midi:(?<port>[^:]+):(?<channel>\d+)/(?<event>.+)$}
     event_glob = "/midi:*/{control_change,note_on,note_off}"
     loop do
@@ -389,9 +394,6 @@ class Track
                   trim_start: false, trim_end: false,
                   min_gate: 0.1, quantize_gates: true,
                   ignore_vel: false)
-    cc_port, cc_channel = SpiSeqUtils.resolve_cc_port_and_channel(cc_port, cc_channel)
-    port, channel = SpiSeqUtils.resolve_midi_port_and_channel(port, channel)
-
     start_time = end_time = timeline = nil
     ExtApi.with_real_time do
       start_time, end_time, timeline = record_timeline(control_cc: cc, cc_port: cc_port, cc_channel: cc_channel,
