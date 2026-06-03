@@ -1,8 +1,41 @@
 # frozen_string_literal: true
 
-$__STOP_HOOKS = {}
-
 # @!group Sonic Pi lifecycle utilities
+
+# Executes its block the first time this sketch runs, and whenever it is
+# restarted after having been stopped. The block will not run if the sketch is
+# simply restarted while already running. `key` is used to uniquely identify
+# each cold-run block. If you need independent cold-run blocks, you should
+# provide different keys for each call to this function.
+# @param key [Symbol] A unique name for the handler.
+# @return [void]
+# @yield
+def on_cold_run(key = :default, &block)
+  thread_name = :"__cold_run_#{key}"
+  ExtApi.in_thread(name: thread_name) do
+    block.call
+
+    # spin to keep this thread alive until the script is manually stopped
+    loop { ExtApi.sleep(100) }
+  end
+end
+
+# Executes its block exactly once per run of Sonic Pi. The `key` argument, if
+# provided, disambiguates different blocks; if you need independent one-time
+# initializers, you should provide different keys for each call to this
+# function.
+# @param key [Symbol] A unique name for the handler.
+# @return [void]
+# @yield
+def one_time_init(key = :default)
+  $__ONE_TIME_INIT_KEYS ||= Set.new
+  unless $__ONE_TIME_INIT_KEYS.include?(key)
+    yield
+    $__ONE_TIME_INIT_KEYS.add(key)
+  end
+end
+
+$__STOP_HOOKS = {}
 
 # Registers a block to execute when Sonic Pi's execution is stopped or when
 # quitting the application. Note that the work you do in the block should be

@@ -6,8 +6,7 @@ AllCops:
 
 Style/GlobalVars:
   Exclude:
-    - 'utils/misc_utils.rb'
-    - 'utils/stop_hooks.rb'
+    - 'utils/lifecycle_utils.rb'
 
 Style/RedundantException:
   Enabled: false
