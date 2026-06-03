@@ -20,22 +20,6 @@ class ExtApiTest < Test::Unit::TestCase
     assert ExtApi.rand(1..5) <= 6
   end
 
-  def test_rand_i
-    assert_instance_of Integer, ExtApi.rand_i
-    assert_instance_of Integer, ExtApi.rand_i(5)
-    assert_instance_of Integer, ExtApi.rand_i(1..3)
-    assert_instance_of Integer, ExtApi.rand_i(0)
-
-    # Again, these are kind of silly, just looking for glaring issues.
-    assert ExtApi.rand_i >= 0
-    assert ExtApi.rand_i <= 1
-    assert ExtApi.rand_i(5) >= 0
-    assert ExtApi.rand_i(5) < 5
-    assert ExtApi.rand_i(1..3) >= 1
-    assert ExtApi.rand_i(1...3) < 3
-    assert ExtApi.rand_i(1..3) <= 3
-  end
-
   def test_choose
     assert_includes [1, 2, 3], ExtApi.choose([1, 2, 3])
     assert_equal 1, ExtApi.choose([1])

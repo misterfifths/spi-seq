@@ -37,7 +37,7 @@ module ExtApi
 
       # Randomness. These would be easy to replace with builtins, but we want to
       # tie into Sonic Pi's seed functionality.
-      :rand, :rand_i, :choose, :one_in,
+      :rand, :choose, :one_in,
 
       # Internal synth playback
       :play, :kill,
@@ -119,11 +119,6 @@ module ExtApiStubs
       # Sonic Pi's is float-oriented
       max_or_range = 0..max_or_range if max_or_range.is_a?(Numeric)
       max_or_range.min + Kernel.rand * max_or_range.max
-    end
-
-    def rand_i(max_or_range = 2)
-      return 0 if max_or_range == 0
-      Kernel.rand(max_or_range)
     end
 
     def choose(list = nil)
