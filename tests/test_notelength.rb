@@ -96,6 +96,9 @@ class NoteLengthTest < Test::Unit::TestCase
       assert nl >= nl
       assert nl >= nl.to_f
       assert nl >= nl.to_sym
+      assert_equal nl <=> nl, 0
+      assert_equal nl <=> nl.to_f, 0
+      assert_equal nl <=> nl.to_sym, 0
 
       LENGTHS_IN_ORDER.each do |other_nl|
         next if nl.to_sym == other_nl.to_sym
@@ -124,12 +127,20 @@ class NoteLengthTest < Test::Unit::TestCase
         assert greater >= lesser.to_sym
         assert greater >= lesser.to_f
 
+        assert_equal greater <=> lesser, 1
+        assert_equal greater <=> lesser.to_sym, 1
+        assert_equal greater <=> lesser.to_f, 1
+
         assert lesser < greater
         assert lesser < greater.to_sym
         assert lesser < greater.to_f
         assert lesser <= greater
         assert lesser <= greater.to_sym
         assert lesser <= greater.to_f
+
+        assert_equal lesser <=> greater, -1
+        assert_equal lesser <=> greater.to_sym, -1
+        assert_equal lesser <=> greater.to_f, -1
       end
     end
 

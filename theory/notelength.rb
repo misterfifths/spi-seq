@@ -151,6 +151,11 @@ class NoteLength
   end
 
   # (see #<)
+  def <=>(other)
+    delegate_comp(:<=>, other)
+  end
+
+  # (see #<)
   def ==(other)
     delegate_comp(:==, other)
   end
