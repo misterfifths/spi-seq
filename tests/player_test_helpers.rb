@@ -185,8 +185,7 @@ module PlayerTestHelpers
     assert_empty raw_events, "unexpected extra events: #{raw_events.inspect}"
   end
 
-  def assert_playback_events(track, shorthands, play_count: 1, fill: false, reset_vt: true, port: nil, channel: nil)
-    self.reset_vt if reset_vt
+  def assert_playback_events(track, shorthands, play_count: 1, fill: false, port: nil, channel: nil)
     events = playback_events(track, play_count: play_count, fill: fill, port: port, channel: channel)
     assert_events(events, shorthands)
   end
