@@ -52,8 +52,22 @@ $__STOP_HOOKS = {}
 # @return [void]
 # @yield
 def on_stop(name = :default, &block)
-  __ensure_stop_watcher
   $__STOP_HOOKS[name] = block
+
+  # Since we give this a name, Sonic Pi will only define it once.
+  ExtApi.in_thread(name: :__stop_hook_watcher) do
+    kq = Thread::Queue.new
+    Thread.current[:__kill_queue] = kq
+    kq.pop
+
+    hooks = $__STOP_HOOKS
+    unless hooks.empty?
+      _log "Running stop hooks...", "stop-hooks"
+      hooks.each_value { |b| b.call }
+      hooks.clear
+      _log "Stop hooks complete", "stop-hooks"
+    end
+  end
 end
 
 # @!endgroup
@@ -79,22 +93,4 @@ end
 # @private
 class Thread
   prepend ThreadKillPatch
-end
-
-# Ensures that the thread that services stop hooks is running.
-# @private
-def __ensure_stop_watcher
-  ExtApi.in_thread(name: :__stop_hook_watcher) do
-    kq = Thread::Queue.new
-    Thread.current[:__kill_queue] = kq
-    kq.pop
-
-    hooks = $__STOP_HOOKS
-    unless hooks.empty?
-      _log "Running stop hooks...", "stop-hooks"
-      hooks.each_value { |b| b.call }
-      hooks.clear
-      _log "Stop hooks complete", "stop-hooks"
-    end
-  end
 end
