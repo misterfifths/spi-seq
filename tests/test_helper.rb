@@ -9,15 +9,17 @@ begin
     root(root_dir)
 
     track_files "{math/,theory/,utils/}*.rb"
+
     add_group("core") { |f| File.dirname(f.filename) == root_dir }
     add_group "theory", "theory/"
     add_group "utils", "utils/"
     add_group "math", "math/"
     add_group "tests", "tests/"
+
     add_filter "core.rb"
-    # Most of utils/ is not very testable since it's very niche Sonic Pi stuff.
+
+    # Some of utils/ is not very testable since it's niche Sonic Pi stuff.
     add_filter "utils/midi_utils.rb"
-    add_filter "utils/internal_utils.rb"
     add_filter "utils/lifecycle_utils.rb"
   end
 rescue LoadError  # rubocop:disable Lint/SuppressedException
