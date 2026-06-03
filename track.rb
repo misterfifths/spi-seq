@@ -316,7 +316,7 @@ class Track < TrackBase
 
   ## @!group Granularity manipulation
 
-  private def expand_once
+  protected def expand_once
     raise RangeError, "Cannot expand past 64th-note granularity" if @granularity == NoteLength::SixtyFourth
 
     # Gameplan: each slot in the grid will expand to two slots. Consider each
@@ -395,14 +395,14 @@ class Track < TrackBase
   def expand(times = 1)
     t = self
     while times > 0
-      t = t.send(:expand_once)
+      t = t.expand_once
       times -= 1
     end
 
     t
   end
 
-  private def condense_once
+  protected def condense_once
     raise RangeError, "Cannot condense past whole-note granularity" if @granularity == NoteLength::Whole
 
     # Gameplan: each pair of slots in the grid will collapse into one slot in a
@@ -491,7 +491,7 @@ class Track < TrackBase
   def condense(times = 1)
     t = self
     while times > 0
-      t = t.send(:condense_once)
+      t = t.condense_once
       times -= 1
     end
 
