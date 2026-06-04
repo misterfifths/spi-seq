@@ -4,10 +4,6 @@ AllCops:
     - 'scratch/*.rb'
     - 'examples/*.rb'
 
-Style/GlobalVars:
-  Exclude:
-    - 'utils/lifecycle_utils.rb'
-
 Style/RedundantException:
   Enabled: false
 
