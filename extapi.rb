@@ -22,9 +22,9 @@
 # @return [void]
 def init_spi_seq
   raise RuntimeError, "init_spi_seq must be called from the global scope" unless is_a?(SonicPi::Runtime)
-  ExtApi.instance_variable_set(:@spi, self)
+  ExtApi.set_spi_context(self)
 rescue NameError
-  ExtApi.instance_variable_set(:@spi, nil)
+  # SonicPi::Runtime didn't resolve; we're not in Sonic Pi. Nothing to do.
 end
 # @!endgroup
 
@@ -65,24 +65,26 @@ module ExtApi
       :get_event  # undocumented; see trackrecorder.rb for some notes
     ].each do |fwd|
       define_method(fwd) do |*args, **kwargs, &block|
-        m = @spi.nil? ? ExtApiStubs.method(fwd) : @spi.method(fwd)
+        m = @spi.nil? ? Stubs.method(fwd) : @spi.method(fwd)
         m.call(*args, **kwargs, &block)
       end
     end
 
+    def set_spi_context(ctx)
+      @spi = ctx
+    end
+
     def in_sonic_pi?
-      # We could check for the existence of a particular module like below, but
-      # what we really mean here is: was init_spi_seq called from within Sonic
-      # Pi?
+      # We could check for the existence of a Sonic Pi module, but what we
+      # really mean here is: was init_spi_seq called from within Sonic Pi?
       !@spi.nil?
     end
 
-    if Object.const_defined?("SonicPi::Runtime")
-      # Make a direct call to a method in the Sonic Pi context. Only for use by
-      # tests, to call methods that would not otherwise be exposed on ExtApi.
-      def spi_call(method, *args, **kwargs, &block)
-        @spi.send(method, *args, **kwargs, &block)
-      end
+    # Make a direct call to a method on the Sonic Pi context. Only for use by
+    # tests, to call methods that would not otherwise be exposed on ExtApi.
+    def spi_call(method, *args, **kwargs, &block)
+      raise RuntimeError, "not in Sonic Pi" unless in_sonic_pi?
+      @spi.send(method, *args, **kwargs, &block)
     end
   end
 end
@@ -93,19 +95,19 @@ end
 # tests - see tests/player_extapi_stubs.rb, for example. The delegator above
 # will call these if we're not in Sonic Pi.
 # @private
-module ExtApiStubs
-  class << self
-    def puts(s)
+module ExtApi
+  module Stubs
+    def self.puts(s)
       Kernel.puts(s)
     end
 
-    def rand(max_or_range = 1)
+    def self.rand(max_or_range = 1)
       # Sonic Pi's is float-oriented
       max_or_range = 0..max_or_range if max_or_range.is_a?(Numeric)
       max_or_range.min + Kernel.rand * max_or_range.max
     end
 
-    def get(key = nil)
+    def self.get(key = nil)
       @timespace_vals ||= {}
 
       # This behavior is kind of undocumented, but shows up in the examples.
@@ -114,7 +116,7 @@ module ExtApiStubs
       @timespace_vals[key]
     end
 
-    def set(key, val)
+    def self.set(key, val)
       @timespace_vals ||= {}
       @timespace_vals[key] = val
     end

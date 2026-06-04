@@ -10,7 +10,7 @@
 # There is only one global set of events; having multiple active players - much
 # less threads - is a bad idea.
 #
-# These are not included in the ExtApiStubs module because they are not of
+# These are not included in the ExtApi::Stubs module because they are not of
 # practical use outside of the tests.
 #
 # Note that since these are applied to the ExtApi module itself, they will be
