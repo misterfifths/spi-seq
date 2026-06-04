@@ -143,7 +143,7 @@ module Arp
   def self.arpeggiate(notes, direction, spread: 0, extra_octaves: [])
     return [] if notes.empty?
 
-    # See the note in SpiSeqUtils.enumerable? about why we need to call to_a.
+    # See the note in SpiSeq::Utils.enumerable? about why we need to call to_a.
     notes = notes.to_a.map { |n| MIDINote.new(n) }
     orig_notes = notes.dup
 

@@ -176,7 +176,7 @@ class TrackBase
   # @return [TrackBase]
   # @see #initialize
   def self.from_grid(gridish, granularity: NoteLength::Eighth, timescale: 1)
-    if SpiSeqUtils.enumerable?(gridish) && !gridish.empty?
+    if SpiSeq::Utils.enumerable?(gridish) && !gridish.empty?
       new(*gridish, granularity: granularity, timescale: timescale)
     else
       new(gridish, granularity: granularity, timescale: timescale)
@@ -414,7 +414,7 @@ class TrackBase
   # @param (see #repr)
   # @return [void]
   def copy_repr(group: 8)
-    SpiSeqUtils::Clipboard.copy(repr(group: group))
+    SpiSeq::Clipboard.copy(repr(group: group))
   end
 
   # @private
@@ -960,15 +960,15 @@ class TrackBase
         pct = i.to_f / (num_slots - 1)
       end
 
-      replacement = SpiSeqUtils.call_varargs(block, slot, i, pct)
+      replacement = SpiSeq::Utils.call_varargs(block, slot, i, pct)
 
       # The block may return something convertible to a slot (step/note/etc.),
       # or a 1d array (which we will take as a slot), or an array that contains
       # some number of other arrays (which we will take as a set of slots). This
       # behavior is pretty odd. But, it's somewhat in keeping with set_slot, and
       # having the ability to expand one slot into multiple here is nice...
-      replacement = [replacement] unless SpiSeqUtils.enumerable?(replacement)
-      is_gridish = replacement.any? { |e| SpiSeqUtils.enumerable?(e) }
+      replacement = [replacement] unless SpiSeq::Utils.enumerable?(replacement)
+      is_gridish = replacement.any? { |e| SpiSeq::Utils.enumerable?(e) }
 
       if is_gridish
         new_grid += self.class.gridify(replacement)
@@ -1482,7 +1482,7 @@ class TrackBase
       slot2 = []
 
       slot.each do |step|
-        if SpiSeqUtils.call_varargs(block, step, slot, i)
+        if SpiSeq::Utils.call_varargs(block, step, slot, i)
           slot1 << step
         else
           slot2 << step
@@ -1624,7 +1624,7 @@ class TrackBase
 
       new_slot = []
       slot.each do |step|
-        new_step = SpiSeqUtils.call_varargs(block, step, i, pct)
+        new_step = SpiSeq::Utils.call_varargs(block, step, i, pct)
         new_slot += self.class.slotify(new_step)
       end
 

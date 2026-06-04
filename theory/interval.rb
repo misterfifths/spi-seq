@@ -518,7 +518,7 @@ end
 # Interval will be coerced automatically.
 # @private
 module IntervalComparisonPatches
-  SpiSeqUtils.define_reverse_comparison_ops(self, Interval)
+  SpiSeq::Utils.define_reverse_comparison_ops(self, Interval)
 end
 
 # @private

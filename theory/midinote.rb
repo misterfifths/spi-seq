@@ -422,7 +422,7 @@ end
 # MIDINote will be coerced automatically.
 # @private
 module MIDINoteComparisonPatches
-  SpiSeqUtils.define_reverse_comparison_ops(self, MIDINote)
+  SpiSeq::Utils.define_reverse_comparison_ops(self, MIDINote)
 end
 
 # @private

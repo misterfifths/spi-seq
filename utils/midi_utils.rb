@@ -6,29 +6,31 @@ require_relative "../utils/internal_utils"
 # @!group MIDI utilities
 
 # @private
-module SpiSeqUtils
-  # Given values for a MIDI port and channel, returns an array [port, channel]
-  # either of which is either the given value if it is not nil, the default set
-  # via use_cc_control_defaults, or the wildcard "*" if no defaults are set, in
-  # that order.
-  def self.resolve_cc_port_and_channel(port, channel)
-    # TODO: it would be good to fall back to defaults here, but it's a little
-    # tricky - we do need actual port and channel strings so we can construct
-    # the name of the control_change event we want to sync to.
-    defaults = current_cc_control_defaults
-    port = defaults[:port] || "*" if port.nil?
-    channel = defaults[:channel] || "*" if channel.nil?
-    [port, channel]
-  end
+module SpiSeq
+  module MIDI
+    # Given values for a MIDI port and channel, returns an array [port, channel]
+    # either of which is either the given value if it is not nil, the default
+    # set via use_cc_control_defaults, or the wildcard "*" if no defaults are
+    # set, in that order.
+    def self.resolve_cc_port_and_channel(port, channel)
+      # TODO: it would be good to fall back to defaults here, but it's a little
+      # tricky - we do need actual port and channel strings so we can construct
+      # the name of the control_change event we want to sync to.
+      defaults = current_cc_control_defaults
+      port = defaults[:port] || "*" if port.nil?
+      channel = defaults[:channel] || "*" if channel.nil?
+      [port, channel]
+    end
 
-  # Resolves a MIDI port and channel in the same manner as
-  # resolve_cc_port_and_channel, except it considers the values set by Sonic
-  # Pi's use_midi_defaults instead of use_cc_control_defaults.
-  def self.resolve_midi_port_and_channel(port, channel)
-    defaults = ExtApi.current_midi_defaults || {}
-    port = defaults[:port] || "*" if port.nil?
-    channel = defaults[:channel] || "*" if channel.nil?
-    [port, channel]
+    # Resolves a MIDI port and channel in the same manner as
+    # resolve_cc_port_and_channel, except it considers the values set by Sonic
+    # Pi's use_midi_defaults instead of use_cc_control_defaults.
+    def self.resolve_port_and_channel(port, channel)
+      defaults = ExtApi.current_midi_defaults || {}
+      port = defaults[:port] || "*" if port.nil?
+      channel = defaults[:channel] || "*" if channel.nil?
+      [port, channel]
+    end
   end
 end
 
@@ -83,14 +85,14 @@ end
 def cc_watcher_live_loop(loop_name, port: nil, channel: nil, &block)
   raise ArgumentError, "block must take 1 - 2 arguments" if block.arity == 0 || block.arity > 2
 
-  port, channel = SpiSeqUtils.resolve_cc_port_and_channel(port, channel)
+  port, channel = SpiSeq::MIDI.resolve_cc_port_and_channel(port, channel)
   cue_path = "/midi:#{port}:#{channel}/control_change"
 
   ExtApi.live_loop loop_name do
     ExtApi.use_real_time
 
     cc, val = ExtApi.sync(cue_path)
-    SpiSeqUtils.call_varargs(block, cc, val)
+    SpiSeq::Utils.call_varargs(block, cc, val)
   end
 end
 

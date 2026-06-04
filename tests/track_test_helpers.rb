@@ -53,7 +53,7 @@ module TrackTestHelpers
   def each_step(track, &block)
     track.grid.each do |slot|
       slot.each do |step|
-        SpiSeqUtils.call_varargs(block, step, slot)
+        SpiSeq::Utils.call_varargs(block, step, slot)
       end
     end
   end

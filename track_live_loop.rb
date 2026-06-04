@@ -162,7 +162,7 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
                     send_cycle_cues: nil, debug: false,
                     init: nil, **kwargs, &block)
   unless block.nil?
-    req_pos_args, opt_pos_args, req_keywords, = SpiSeqUtils.describe_args(block)
+    req_pos_args, opt_pos_args, req_keywords, = SpiSeq::Utils.describe_args(block)
     # We could allow optional required arguments, but a block's positional
     # arguments are all reported as optional, so let's play it safe.
     raise ArgumentError, "Block cannot have positional arguments" unless req_pos_args == 0 && opt_pos_args == 0
@@ -198,7 +198,7 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
   ### Resolve default arguments
   player_defaults = current_player_defaults
 
-  cc_port, cc_channel = SpiSeqUtils.resolve_cc_port_and_channel(cc_port, cc_channel)
+  cc_port, cc_channel = SpiSeq::MIDI.resolve_cc_port_and_channel(cc_port, cc_channel)
   fill_cc = player_defaults[:fill_cc] if fill_cc.nil?
   if fill_cc
     cc_watcher_live_loop(:"__#{loop_name}_cc_fill_watcher",
@@ -249,9 +249,9 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
 
     res = nil
     unless block.nil?
-      res = SpiSeqUtils.call_varargs(block,
-                                     cycle: player.cycle, track: player.track,
-                                     muted: muted, was_muted: was_muted, arg: arg)
+      res = SpiSeq::Utils.call_varargs(block,
+                                       cycle: player.cycle, track: player.track,
+                                       muted: muted, was_muted: was_muted, arg: arg)
     end
 
     if res.is_a?(TrackBase)

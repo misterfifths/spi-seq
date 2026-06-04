@@ -249,10 +249,10 @@ class Track
     timeline = []
     in_progress_timeline_events = {}  # by note
 
-    cc_port, cc_channel = SpiSeqUtils.resolve_cc_port_and_channel(cc_port, cc_channel)
+    cc_port, cc_channel = SpiSeq::MIDI.resolve_cc_port_and_channel(cc_port, cc_channel)
     # If these are nil for the default, we need to actually retrieve the default
     # since we're going to be doing string comparisons against the port/channel.
-    port, channel = SpiSeqUtils.resolve_midi_port_and_channel(port, channel)
+    port, channel = SpiSeq::MIDI.resolve_port_and_channel(port, channel)
 
     event_re = %r{^/midi:(?<port>[^:]+):(?<channel>\d+)/(?<event>.+)$}
     event_glob = "/midi:*/{control_change,note_on,note_off}"

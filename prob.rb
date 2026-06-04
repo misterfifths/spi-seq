@@ -203,8 +203,8 @@ class Prob
   #   this should be the empty array.
   # @private
   def should_trigger?(cycle:, fill:, step:, effective_note: nil, prev_notes: [])
-    SpiSeqUtils.call_varargs(@callable, cycle: cycle, fill: fill, step: step,
-                             note: effective_note, prev_notes: prev_notes)
+    SpiSeq::Utils.call_varargs(@callable, cycle: cycle, fill: fill, step: step,
+                               note: effective_note, prev_notes: prev_notes)
   end
 
   # Returns a human-readable description of the Prob.
@@ -267,7 +267,7 @@ class Prob
   private_constant :VALID_KEYWORDS
 
   def initialize(callable, desc, repr)
-    req_pos_args, opt_pos_args, req_keywords, = SpiSeqUtils.describe_args(callable)
+    req_pos_args, opt_pos_args, req_keywords, = SpiSeq::Utils.describe_args(callable)
     # We could allow optional required arguments, but a Proc's positional
     # arguments are all reported as optional, so let's play it safe.
     raise ArgumentError, "custom predicates cannot have positional arguments" unless req_pos_args == 0 && opt_pos_args == 0

@@ -280,7 +280,7 @@ class Chord
   def append(other)
     if other.is_a?(Chord)
       other = other.intervals
-    elsif !SpiSeqUtils.enumerable?(other)
+    elsif !SpiSeq::Utils.enumerable?(other)
       other = [other]
     end
 

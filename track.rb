@@ -856,7 +856,7 @@ class Track < TrackBase
     end
 
     mutate_each_step do |step, slot_idx, pct|
-      gate = SpiSeqUtils.call_varargs(curve_func, pct, slot_idx)
+      gate = SpiSeq::Utils.call_varargs(curve_func, pct, slot_idx)
       step.with_gate(gate)
     end
   end
@@ -911,7 +911,7 @@ class Track < TrackBase
     end
 
     mutate_each_step do |step, slot_idx, pct|
-      vel = SpiSeqUtils.call_varargs(curve_func, pct, slot_idx)
+      vel = SpiSeq::Utils.call_varargs(curve_func, pct, slot_idx)
       vel *= 127 if zero_to_one  # with_vel will round & clamp this
       step.with_vel(vel)
     end
@@ -1479,14 +1479,14 @@ class Track < TrackBase
         pct = i.to_f / (num_slots - 1)
       end
 
-      replacement = SpiSeqUtils.call_varargs(block, slot, i, pct)
+      replacement = SpiSeq::Utils.call_varargs(block, slot, i, pct)
 
       # The block may return something convertible to a slot (a CCStep), or a
       # 1d array (which we will take as a slot), or an array that contains some
       # number of other arrays (which we will take as a set of slots). This
       # behavior is in keeping with mutate_slots.
-      replacement = [replacement] unless SpiSeqUtils.enumerable?(replacement)
-      is_gridish = replacement.any? { |e| SpiSeqUtils.enumerable?(e) }
+      replacement = [replacement] unless SpiSeq::Utils.enumerable?(replacement)
+      is_gridish = replacement.any? { |e| SpiSeq::Utils.enumerable?(e) }
 
       if is_gridish
         new_grid += CCTrack.gridify(replacement)
@@ -1548,11 +1548,11 @@ class Track < TrackBase
         pct = i.to_f / (num_slots - 1)
       end
 
-      replacement = SpiSeqUtils.call_varargs(block, slot, i, pct)
+      replacement = SpiSeq::Utils.call_varargs(block, slot, i, pct)
 
       # The block may return a scalar (which we take as a CC value), or an array
       # (which we will take as a definition for a set of slots).
-      if SpiSeqUtils.enumerable?(replacement)
+      if SpiSeq::Utils.enumerable?(replacement)
         if replacement.empty?
           slots << :r
         else
@@ -1648,8 +1648,8 @@ class Track < TrackBase
     when Symbol, String, Numeric, MIDINote
       [stepify(x, def_gate: def_gate, def_vel: def_vel)].freeze
     else
-      if SpiSeqUtils.enumerable?(x)
-        # See the note in SpiSeqUtils about why we need to explicitly call to_a.
+      if SpiSeq::Utils.enumerable?(x)
+        # See the note in SpiSeq about why we need to explicitly call to_a.
         raw_slot = x.to_a.reject { |s| MIDINote.rest?(s) }.map { |s| stepify(s, def_gate: def_gate, def_vel: def_vel) }
         dedupe_slot(raw_slot).freeze
       else
@@ -1680,12 +1680,12 @@ class Track < TrackBase
     when Symbol, String, Numeric, MIDINote
       [slotify(x, def_gate: def_gate, def_vel: def_vel)].freeze
     else
-      if SpiSeqUtils.enumerable?(x)
+      if SpiSeq::Utils.enumerable?(x)
         # NOTE: this will convert non-array child elements into individual slots.
         # E.g. gridify([:a1, :b1]) will turn into [[:a1], [:b1]]. I think that's
         # desirable - it's a sort of 'smart' conversion, preferring mono-like
         # behavior unless notes are explicitly grouped into their own array.
-        # See the note in SpiSeqUtils about why we need to explicitly call to_a.
+        # See the note in SpiSeq about why we need to explicitly call to_a.
         x.to_a.map { |s| slotify(s, def_gate: def_gate, def_vel: def_vel) }.freeze
       else
         raise TypeError, "Not a valid value for a grid: #{x.inspect}"
