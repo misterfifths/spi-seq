@@ -9,50 +9,51 @@ require_relative "../extapi"
 
 # Helpers to track running live_loops and associate values with them.
 # @private
-module LiveLoopTracker
-  # Record the live loop with `name` as being associated with `thread` (which is
-  # the return value of `live_loop`). You must call this after creating a live
-  # loop for this module to be able to track the loop.
-  def self.register_live_loop(name, thread)
-    @ll_threads ||= {}
-    @ll_threads[name] = WeakRef.new(thread)
+module SpiSeq
+  module LiveLoops
+    # Record the live loop with the given name as being associated with `thread`
+    # (which is the return value of `live_loop`). You must call this after
+    # creating a live loop for this module to be able to track the loop.
+    def self.register(loop_name, thread)
+      @ll_threads ||= {}
+      @ll_threads[loop_name] = WeakRef.new(thread)
+    end
+
+    # Returns the Thread object associated with the live loop with the given
+    # name. If the live loop is not running (or has not been created), returns
+    # nil.
+    def self.get_thread(loop_name)
+      @ll_threads ||= {}
+      thread = @ll_threads[loop_name]
+      return thread if !thread.nil? && thread.weakref_alive? && thread.alive?
+      nil
+    end
+
+    # Returns true if a live loop with the given name is running.
+    def self.is_running?(loop_name)
+      !get_thread(loop_name).nil?
+    end
+
+    # Associates a value with the live loop with the given name. The value can
+    # be retrieved with live_loop_var_get. When the live loop stops, this value
+    # will no longer be accessible.
+    def self.loop_var_set(loop_name, var_name, value)
+      get_thread(loop_name)&.thread_variable_set(var_name, value)
+    end
+
+    # Returns the value of a variable associated with the live loop with the
+    # given name, as set by live_loop_var_set. Returns nil if there is no such
+    # variable associated with the loop, or if the live loop has stopped.
+    def self.loop_var_get(loop_name, var_name)
+      get_thread(loop_name)&.thread_variable_get(var_name)
+    end
+
+    # Returns the Time State key that can be used to control muting of a mutable
+    # `live_loop` created by that family of functions.
+    def self.mute_key(loop_name)
+      :"__live_loop_#{loop_name}_muted"
+    end
   end
-
-  # Returns the Thread object associated with the live loop with the given name.
-  # If the live loop is not running (or has not been created), returns nil.
-  def self.thread_for_live_loop(name)
-    @ll_threads ||= {}
-    thread = @ll_threads[name]
-    return thread if !thread.nil? && thread.weakref_alive? && thread.alive?
-    nil
-  end
-
-  # Returns true if a live loop with the given name is running.
-  def self.live_loop_is_running(name)
-    !thread_for_live_loop(name).nil?
-  end
-
-  # Associates a value with the live loop with the given name. The value can be
-  # retrieved with live_loop_var_get. When the live loop stops, this value will
-  # no longer be accessible.
-  def self.live_loop_var_set(loop_name, var_name, value)
-    thread_for_live_loop(loop_name)&.thread_variable_set(var_name, value)
-  end
-
-  # Returns the value of a variable associated with the live loop with the given
-  # name, as set by live_loop_var_set. Returns nil if there is no such variable
-  # associated with the loop, or if the live loop has stopped.
-  def self.live_loop_var_get(loop_name, var_name)
-    thread_for_live_loop(loop_name)&.thread_variable_get(var_name)
-  end
-end
-
-
-# Returns the Time State key that can be used to control muting of a mutable
-# `live_loop` created by that family of functions.
-# @private
-def __mute_key(loop_name)
-  :"__live_loop_#{loop_name}_muted"
 end
 
 # Mutes or unmutes the given `live_loop`, assuming it was created by
@@ -64,7 +65,7 @@ end
 # @return [void]
 # @see unmute_live_loop
 def mute_live_loop(loop_name, mute=true)
-  ExtApi.set(__mute_key(loop_name), mute)
+  ExtApi.set(SpiSeq::LiveLoops.mute_key(loop_name), mute)
 end
 
 # Unmutes the given mutable `live_loop`. An alias passing false to
@@ -101,11 +102,11 @@ end
 def mutable_live_loop(loop_name, start_muted: false, **kwargs, &block)
   raise ArgumentError, "Block must take 1 or 2 arguments" if block.arity == 0 || block.arity > 2
 
-  key = __mute_key(loop_name)
+  key = SpiSeq::LiveLoops.mute_key(loop_name)
 
   # Only apply start_muted if this is a fresh definition of the loop (i.e, not a
   # restart of the same sketch).
-  ExtApi.set(key, start_muted) unless LiveLoopTracker.live_loop_is_running(loop_name)
+  ExtApi.set(key, start_muted) unless SpiSeq::LiveLoops.is_running?(loop_name)
 
   ll = ExtApi.live_loop(loop_name, **kwargs) do |arg|
     muted = ExtApi.get(key)
@@ -117,7 +118,7 @@ def mutable_live_loop(loop_name, start_muted: false, **kwargs, &block)
     end
   end
 
-  LiveLoopTracker.register_live_loop(loop_name, ll)
+  SpiSeq::LiveLoops.register(loop_name, ll)
   ll
 end
 
@@ -179,7 +180,7 @@ def cc_mutable_live_loop(loop_name, cc:, port: nil, channel: nil, start_muted: f
 
   # Only send a CC for the start_muted value if this is a fresh definition of
   # the loop (i.e., not a restart of the same sketch).
-  unless LiveLoopTracker.live_loop_is_running(loop_name)
+  unless SpiSeq::LiveLoops.is_running?(loop_name)
     default_cc_val = start_muted ? 0 : 127
     SpiSeq::Log.log("sending default CC #{cc} value #{default_cc_val} for live loop #{loop_name}", "cc_mute_control")
     ExtApi.midi_cc(cc, default_cc_val, port: port, channel: channel)

@@ -7,7 +7,7 @@ require_relative "../track_live_loop"
 require_relative "player_test_helpers"
 
 # NOTE: It is very important that you remember to `stop` the mocked live loop
-# threads! LiveLoopTracker stores player state by loop name, and that's only
+# threads! SpiSeq::LiveLoops stores player state by loop name, and that's only
 # cleared when a thread exits. So if you don't stop the thread, its state will
 # linger and may break distant tests that use the same loop name.
 

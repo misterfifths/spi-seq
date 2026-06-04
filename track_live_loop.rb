@@ -9,6 +9,19 @@ require_relative "track"
 require_relative "utils/live_loop_utils"
 require_relative "utils/internal_utils"
 
+# @private
+module SpiSeq
+  module LiveLoops
+    def self.get_player(loop_name)
+      loop_var_get(loop_name, :__player)
+    end
+
+    def self.set_player(loop_name, player)
+      loop_var_set(loop_name, :__player, player)
+    end
+  end
+end
+
 # @!group Playback and live loops
 
 # Creates a `live_loop` that plays a track.
@@ -190,7 +203,7 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
   # should wait until the old player finishes its final loop so that its
   # internal state is accurate. So we do the inheriting on the first iteration
   # of the new live loop, below.
-  old_player = __player_for_live_loop(loop_name)
+  old_player = SpiSeq::LiveLoops.get_player(loop_name)
 
   raise TypeError, "cannot switch track live loop #{loop_name} between track types" unless old_player.nil? || player.is_a?(old_player.class)
 
@@ -210,7 +223,7 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
     end
 
     # Don't send a 0 fill CC for restarts of the same sketch.
-    unless LiveLoopTracker.live_loop_is_running(loop_name)
+    unless SpiSeq::LiveLoops.is_running?(loop_name)
       SpiSeq::Log.log("sending default CC #{fill_cc} value 0 for live loop #{loop_name}", "cc_fill_control")
       ExtApi.midi_cc(fill_cc, 0, port: cc_port, channel: cc_channel)
     end
@@ -306,7 +319,7 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
     ll = cc_mutable_live_loop(loop_name, start_muted: start_muted, init: init_arg, cc: cc, port: cc_port, channel: cc_channel, **kwargs, &wrapped_block)
   end
 
-  LiveLoopTracker.live_loop_var_set(loop_name, :__player, player)
+  SpiSeq::LiveLoops.set_player(loop_name, player)
 
   ll
 end
@@ -329,13 +342,6 @@ end
 alias cctll cc_track_live_loop
 
 
-# Returns the player instance for a live loop with the given name, or nil if
-# the loop is not running or doesn't have a player.
-# @private
-def __player_for_live_loop(loop_name)
-  LiveLoopTracker.live_loop_var_get(loop_name, :__player)
-end
-
 # Sets the {PlayerBase#fill fill mode} on the player associated with a
 # `live_loop` made by {track_live_loop}. Unlike {mute_live_loop muting}, setting
 # fill mode takes effect immediately.
@@ -346,7 +352,7 @@ end
 # @see Prob.fill
 # @see unset_live_loop_fill
 def set_live_loop_fill(loop_name, fill = true)
-  __player_for_live_loop(loop_name)&.fill = fill
+  SpiSeq::LiveLoops.get_player(loop_name)&.fill = fill
 end
 alias fill_live_loop set_live_loop_fill
 
