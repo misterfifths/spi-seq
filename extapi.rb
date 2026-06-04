@@ -65,7 +65,14 @@ module ExtApi
       :get_event  # undocumented; see trackrecorder.rb for some notes
     ].each do |fwd|
       define_method(fwd) do |*args, **kwargs, &block|
-        m = @spi.nil? ? Stubs.method(fwd) : @spi.method(fwd)
+        if @spi.nil?
+          # Detect if we're clearly in Sonic Pi but init_spi_seq wasn't called
+          raise RuntimeError, "call init_spi_seq before using spi-seq" if Object.const_defined?("SonicPi::Runtime")
+          m = Stubs.method(fwd)
+        else
+          m = @spi.method(fwd)
+        end
+
         m.call(*args, **kwargs, &block)
       end
     end
