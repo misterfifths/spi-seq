@@ -6,6 +6,7 @@ require_relative "step"
 require_relative "theory/euclid"
 require_relative "theory/notelength"
 require_relative "trackbase_partitions"
+require_relative "utils/internal_utils"
 
 # @!group Steps and tracks
 
@@ -175,7 +176,7 @@ class TrackBase
   # @return [TrackBase]
   # @see #initialize
   def self.from_grid(gridish, granularity: NoteLength::Eighth, timescale: 1)
-    if ExtApi.enumerable?(gridish) && !gridish.empty?
+    if SpiSeqUtils.enumerable?(gridish) && !gridish.empty?
       new(*gridish, granularity: granularity, timescale: timescale)
     else
       new(gridish, granularity: granularity, timescale: timescale)
@@ -966,8 +967,8 @@ class TrackBase
       # some number of other arrays (which we will take as a set of slots). This
       # behavior is pretty odd. But, it's somewhat in keeping with set_slot, and
       # having the ability to expand one slot into multiple here is nice...
-      replacement = [replacement] unless ExtApi.enumerable?(replacement)
-      is_gridish = replacement.any? { |e| ExtApi.enumerable?(e) }
+      replacement = [replacement] unless SpiSeqUtils.enumerable?(replacement)
+      is_gridish = replacement.any? { |e| SpiSeqUtils.enumerable?(e) }
 
       if is_gridish
         new_grid += self.class.gridify(replacement)

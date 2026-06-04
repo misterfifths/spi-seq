@@ -5,6 +5,7 @@ require_relative "extapi"
 require_relative "theory/midinote"  # Only for `rest?`
 require_relative "theory/notelength"
 require_relative "trackbase"
+require_relative "utils/internal_utils"
 
 # A CCTrack deals with a grid whose slots contain {CCStep}s. CCStep instances
 # represent MIDI CC events, consisting of a {CCStep#number CC number} and a
@@ -258,8 +259,8 @@ class CCTrack < TrackBase
       [].freeze
     elsif x.is_a?(CCStep)
       [x].freeze
-    elsif ExtApi.enumerable?(x)
-      # See the note in ExtApi about why we need to explicitly call to_a here.
+    elsif SpiSeqUtils.enumerable?(x)
+      # See the note in SpiSeqUtils about why we need to explicitly call to_a.
       raw_slot = x.to_a.reject { |s| MIDINote.rest?(s) }.map { |s| stepify(s) }
       dedupe_slot(raw_slot).freeze
     else
@@ -279,8 +280,8 @@ class CCTrack < TrackBase
       [[].freeze].freeze
     elsif x.is_a?(CCStep)
       [[x].freeze].freeze
-    elsif ExtApi.enumerable?(x)
-      # See the note in ExtApi about why we need to explicitly call to_a here.
+    elsif SpiSeqUtils.enumerable?(x)
+      # See the note in SpiSeqUtils about why we need to explicitly call to_a.
       x.to_a.map { |s| slotify(s) }.freeze
     else
       raise TypeError, "Not a valid value for a grid: #{x.inspect}"

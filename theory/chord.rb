@@ -3,6 +3,7 @@
 require "forwardable"
 require_relative "interval"
 require_relative "chordvoicing"
+require_relative "../utils/internal_utils"
 
 # Class documentation lives in chordvoicing.rb; I couldn't convince yard to
 # parse this file first.
@@ -279,7 +280,7 @@ class Chord
   def append(other)
     if other.is_a?(Chord)
       other = other.intervals
-    elsif !ExtApi.enumerable?(other)
+    elsif !SpiSeqUtils.enumerable?(other)
       other = [other]
     end
 

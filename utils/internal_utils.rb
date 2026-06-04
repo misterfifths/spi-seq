@@ -57,6 +57,24 @@ module SpiSeqUtils
     [req_pos_args, opt_pos_args, req_keywords, opt_keywords]
   end
 
+  if Object.const_defined?("SonicPi::Core::SPVector")
+    # 'Enumerable' resolves to SonicPi::RuntimeMethods::Enumerable from within
+    # Sonic Pi, which e.g. Array does not have as a superclass. So we need to
+    # use ::Enumerable to get the built-in class.
+    # SPVector is the parent class of RingVector, from e.g. `ring` and
+    # `chord`, and potentially other list types in SP. It unfortunately does
+    # not derive from (either) Enumerable, so we need to check for it
+    # manually. You must make sure to call `to_a` on SPVectors before calling
+    # Enumerable methods on them!
+    def self.enumerable?(e)
+      e.is_a?(::Enumerable) || e.is_a?(SonicPi::Core::SPVector)
+    end
+  else
+    def self.enumerable?(e)
+      e.is_a?(Enumerable)
+    end
+  end
+
   module Clipboard
     # Copies the given string to the clipboard. Only supported on macOS.
     def self.copy(s)

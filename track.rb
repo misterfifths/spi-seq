@@ -10,6 +10,7 @@ require_relative "theory/midinote"
 require_relative "theory/notelength"
 require_relative "theory/scale"
 require_relative "trackbase"
+require_relative "utils/internal_utils"
 
 # A Track deals with a grid whose slots contain {Step}s. Step instances
 # represent MIDI notes and properties controlling their expression (e.g.
@@ -1484,8 +1485,8 @@ class Track < TrackBase
       # 1d array (which we will take as a slot), or an array that contains some
       # number of other arrays (which we will take as a set of slots). This
       # behavior is in keeping with mutate_slots.
-      replacement = [replacement] unless ExtApi.enumerable?(replacement)
-      is_gridish = replacement.any? { |e| ExtApi.enumerable?(e) }
+      replacement = [replacement] unless SpiSeqUtils.enumerable?(replacement)
+      is_gridish = replacement.any? { |e| SpiSeqUtils.enumerable?(e) }
 
       if is_gridish
         new_grid += CCTrack.gridify(replacement)
@@ -1551,7 +1552,7 @@ class Track < TrackBase
 
       # The block may return a scalar (which we take as a CC value), or an array
       # (which we will take as a definition for a set of slots).
-      if ExtApi.enumerable?(replacement)
+      if SpiSeqUtils.enumerable?(replacement)
         if replacement.empty?
           slots << :r
         else
@@ -1647,8 +1648,8 @@ class Track < TrackBase
     when Symbol, String, Numeric, MIDINote
       [stepify(x, def_gate: def_gate, def_vel: def_vel)].freeze
     else
-      if ExtApi.enumerable?(x)
-        # See the note in ExtApi about why we need to explicitly call to_a here.
+      if SpiSeqUtils.enumerable?(x)
+        # See the note in SpiSeqUtils about why we need to explicitly call to_a.
         raw_slot = x.to_a.reject { |s| MIDINote.rest?(s) }.map { |s| stepify(s, def_gate: def_gate, def_vel: def_vel) }
         dedupe_slot(raw_slot).freeze
       else
@@ -1679,12 +1680,12 @@ class Track < TrackBase
     when Symbol, String, Numeric, MIDINote
       [slotify(x, def_gate: def_gate, def_vel: def_vel)].freeze
     else
-      if ExtApi.enumerable?(x)
+      if SpiSeqUtils.enumerable?(x)
         # NOTE: this will convert non-array child elements into individual slots.
         # E.g. gridify([:a1, :b1]) will turn into [[:a1], [:b1]]. I think that's
         # desirable - it's a sort of 'smart' conversion, preferring mono-like
         # behavior unless notes are explicitly grouped into their own array.
-        # See the note in ExtApi about why we need to explicitly call to_a here.
+        # See the note in SpiSeqUtils about why we need to explicitly call to_a.
         x.to_a.map { |s| slotify(s, def_gate: def_gate, def_vel: def_vel) }.freeze
       else
         raise TypeError, "Not a valid value for a grid: #{x.inspect}"

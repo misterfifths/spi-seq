@@ -78,26 +78,10 @@ module ExtApi
     end
 
     if Object.const_defined?("SonicPi::Runtime")
-      # 'Enumerable' resolves to SonicPi::RuntimeMethods::Enumerable from within
-      # Sonic Pi, which e.g. Array does not have as a superclass. So we need to
-      # use ::Enumerable to get the built-in class.
-      # SPVector is the parent class of RingVector, from e.g. `ring` and
-      # `chord`, and potentially other list types in SP. It unfortunately does
-      # not derive from (either) Enumerable, so we need to check for it
-      # manually. You must make sure to call `to_a` on SPVectors before calling
-      # Enumerable methods on them!
-      def enumerable?(e)
-        e.is_a?(::Enumerable) || e.is_a?(SonicPi::Core::SPVector)
-      end
-
       # Make a direct call to a method in the Sonic Pi context. Only for use by
       # tests, to call methods that would not otherwise be exposed on ExtApi.
       def spi_call(method, *args, **kwargs, &block)
         @spi.send(method, *args, **kwargs, &block)
-      end
-    else
-      def enumerable?(e)
-        e.is_a?(Enumerable)
       end
     end
   end
