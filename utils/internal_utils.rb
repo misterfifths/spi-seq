@@ -29,7 +29,6 @@ module SpiSeq
     # the valid keyword arguments (as found by filter_kwargs_for_proc). Does not
     # raise if the proc/lambda takes more positional arguments than are
     # provided.
-    # @private
     def self.call_varargs(proc, *args, **kwargs)
       args = args.take(proc.arity)
       kwargs = filter_kwargs_for_proc(proc, kwargs)
@@ -39,7 +38,6 @@ module SpiSeq
     # Given a proc or lambda, returns an array:
     # [count of required positional args, count of optional required args,
     #  [required keyword name symbols], [optional keyword name symbols]]
-    # @private
     def self.describe_args(proc)
       req_pos_args = 0
       opt_pos_args = 0
