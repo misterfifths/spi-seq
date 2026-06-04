@@ -4,7 +4,6 @@
 # test_helper should be required first so coverage catches other requires.
 require_relative "test_helper"
 require_relative "../extapi"
-require_relative "../utils/internal_utils"
 
 BASE_DIR = File.expand_path("#{File.dirname(__FILE__)}/..")
 TEST_DIR = File.join(BASE_DIR, "tests")
@@ -24,11 +23,12 @@ exit Test::Unit::AutoRunner.run(true, TEST_DIR) unless ExtApi.in_sonic_pi?
 # Sonic Pi for the the changes to take effect.
 #
 # Also note that some tests may overwrite the implementations of Sonic Pi
-# methods and thus break playback from spi-seq. Do not expect the Sonic Pi
-# environment to be particularly usable after running the tests until you
-# restart.
+# methods and thus break playback from spi-seq. You will need to restart Sonic
+# Pi after running the tests to return to a usable environment.
 
 def run_tests(output_path)
+  require_relative "../utils/internal_utils"
+
   require "test/unit/collector/dir"
   require "test/unit/ui/console/testrunner"
 
