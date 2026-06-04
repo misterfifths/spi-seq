@@ -1395,7 +1395,7 @@ class Track < TrackBase
     tone_shifts = [0] if tone_shifts == 0 || tone_shifts.nil?
 
     mutate_each_step do |step|
-      tone_shift = (ExtApi.rand < p) ? ExtApi.choose(tone_shifts) : 0
+      tone_shift = (ExtApi.rand < p) ? tone_shifts.sample : 0
       gate_shift = (ExtApi.rand < p) ? ExtApi.rand(gate_delta) : 0
       velf_shift = (ExtApi.rand < p) ? ExtApi.rand(velf_delta) : 0
 

@@ -52,9 +52,7 @@ class ProbTest < Test::Unit::TestCase
       [:b2, 0, nil]
     ]
 
-    assert_playback_events QT[[:a1, S(:b2, prob: Prob.one_in(0))]], [
-      [:a1, 0, nil]
-    ]
+    assert_raises(ArgumentError) { Prob.one_in(0) }
   end
 
   def test_x_of_y

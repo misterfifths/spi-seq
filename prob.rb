@@ -56,10 +56,12 @@ class Prob
   end
 
   # Returns a Prob that will trigger the step with a probability of 1 in `n`.
+  # `n` must be > 0.
   # @param [Integer] n
   # @return [Prob]
   def self.one_in(n)
-    new(->{ ExtApi.one_in(n) }, "one in #{n}", "one_in(#{n})")
+    raise ArgumentError, "n must be greater than zero" unless n > 0
+    new(->{ ExtApi.rand < (1 / n.to_f) }, "one in #{n}", "one_in(#{n})")
   end
 
   # Returns a Prob that will trigger the step in the `x`th out of each set of

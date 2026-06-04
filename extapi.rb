@@ -35,9 +35,9 @@ module ExtApi
       # General helpers
       :puts,
 
-      # Randomness. These would be easy to replace with builtins, but we want to
-      # tie into Sonic Pi's seed functionality.
-      :rand, :choose, :one_in,
+      # Randomness. We could easily use builtins, but we want to tie into Sonic
+      # Pi's seed functionality.
+      :rand,
 
       # Internal synth playback
       :play, :kill,
@@ -119,16 +119,6 @@ module ExtApiStubs
       # Sonic Pi's is float-oriented
       max_or_range = 0..max_or_range if max_or_range.is_a?(Numeric)
       max_or_range.min + Kernel.rand * max_or_range.max
-    end
-
-    def choose(list = nil)
-      return ->(l) { l.sample } if list.nil?
-      list.sample
-    end
-
-    def one_in(n)
-      return false if n == 0
-      Kernel.rand < (1 / n.to_f)
     end
 
     def get(key = nil)

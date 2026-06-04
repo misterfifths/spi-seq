@@ -20,26 +20,6 @@ class ExtApiTest < Test::Unit::TestCase
     assert ExtApi.rand(1..5) <= 6
   end
 
-  def test_choose
-    assert_includes [1, 2, 3], ExtApi.choose([1, 2, 3])
-    assert_equal 1, ExtApi.choose([1])
-
-    callable = ExtApi.choose
-    assert_includes [1, 2, 3], callable[[1, 2, 3]]
-    assert_equal 1, callable[[1]]
-  end
-
-  def test_one_in
-    assert_equal false, ExtApi.one_in(0)
-
-    1.upto(10) do |n|
-      avg = 0
-      10000.times { avg += ExtApi.one_in(n) ? 1 : 0 }
-      avg /= 10000.0
-      assert_in_delta avg, 1 / n.to_f, 0.02
-    end
-  end
-
   def test_get_set
     assert_nil ExtApi.get(:key)
 
