@@ -1,7 +1,6 @@
 use_bpm 111
 
 require "~/spi-seq/core"
-init_spi_seq
 
 # Uncomment these if you want to use MIDI output
 # use_player_defaults(midi: true, sync: :midi_clock)

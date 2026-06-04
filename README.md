@@ -14,11 +14,10 @@ Under the name [Full Empty](https://soundcloud.com/full-empty-214000746), with t
 
 You will of course need to install [Sonic Pi](https://sonic-pi.net/).
 
-Clone or download this repository somewhere on your computer. Then, in a Sonic Pi workspace, `require` the `core.rb` file, which loads all the components of spi-seq, and call the `init_spi_seq` method. For example, if you downloaded the code to your home directory:
+Clone or download this repository somewhere on your computer. Then, in a Sonic Pi workspace, `require` the `core.rb` file, which loads all the components of spi-seq. For example, if you downloaded the code to your home directory:
 
 ```ruby
 require "~/spi-seq/core"
-init_spi_seq
 ```
 
 Read on for an introduction to using the library, or see the [examples](examples) or [documentation](https://misterfifths.github.io/spi-seq).
@@ -481,7 +480,6 @@ Here's an example use of `Track.record`:
 use_bpm 95
 
 require "~/spi-seq/core"
-init_spi_seq
 
 t = Track.record(cc: 119,
                  granularity: :sixteenth,
@@ -503,7 +501,6 @@ use_midi_logging false
 use_debug false
 
 require "~/spi-seq/core"
-init_spi_seq
 
 uf = {port: "arturia_microfreak", channel: 7}
 mf = {port: "minifreak_midi", channel: 8}

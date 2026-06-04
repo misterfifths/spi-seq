@@ -1,36 +1,44 @@
 # frozen_string_literal: true
 
-# The goal here is to keep track of direct calls into SonicPi's library, with
-# the long-term plan of allowing (at least some of) the code to run outside of
-# that environment.
-# For now, there are direct calls to ExtApi scattered around the code. A medium-
-# term goal is to move things out of ExtApi into their own higher-level modules
-# which can individually call into Sonic Pi, or provide some other
-# implementation.
-
-# For the life of me, I cannot figure out a good way to get a reference to the
-# context that Sonic Pi code executes in when trying to do so from a required
-# file. Forcing a call to something like this is the best I've come up with.
-# This method must be global (otherwise `self` will evaluate to the module that
-# contains it).
-
-# @!group Initialization
-# Initializes spi-seq. This must be called before attempting to use any other
-# functionality. You must call this at the top level of a sketch; you cannot
-# call it inside a function or from a module. It is safe to call it multiple
-# times, e.g. when you re-run a sketch.
-# @return [void]
-def init_spi_seq
-  raise RuntimeError, "init_spi_seq must be called from the global scope" unless is_a?(SonicPi::Runtime)
-  ExtApi.set_spi_context(self)
-rescue NameError
-  # SonicPi::Runtime didn't resolve; we're not in Sonic Pi. Nothing to do.
-end
-# @!endgroup
+# All direct calls to Sonic Pi functionality should go through delegating
+# methods on ExtApi. The goal is to precisely track what methods we use, for two
+# reasons:
+# 1. We'd like to have as little dependence on Sonic Pi as possible, so this
+#    module serves as sort of a to-do list for what spi-seq needs from the
+#    external environment.
+# 2. It allows an easy way to mock these methods (and to know which ones we need
+#    to mock), both for tests and so that some portion of the code can run
+#    outside of Sonic Pi.
 
 # @private
 module ExtApi
   class << self
+    private def ensure_inited
+      return if @tried_init
+      @tried_init = true
+
+      # Other extensions seem to get away with just calling Sonic Pi methods
+      # without any preamble, but I've never been able to get that to work from
+      # a `require`d file. Unfortunately it's pretty tricky to get ahold of the
+      # context in which user code runs. This is the best thing I've come up
+      # with.
+      #
+      # See server/ruby/bin/spider-server.rb in Sonic Pi. User code is eval'd
+      # in an instance of a dynamic class named SonicPiLang. There should be
+      # only one instance of it, so let's hackily try to find it.
+
+      begin
+        spi_ctx_cls = Object.const_get("SonicPiLang")
+      rescue NameError
+        # We're not in Sonic Pi.
+        return
+      end
+
+      instances = ObjectSpace.each_object(spi_ctx_cls).to_a
+      raise RuntimeError, "Didn't find exactly one instance of SonicPiLang. This is a spi-seq bug; please report it" unless instances.one?
+      @spi = instances[0]
+    end
+
     [
       # General helpers
       :puts,
@@ -65,25 +73,14 @@ module ExtApi
       :get_event  # undocumented; see trackrecorder.rb for some notes
     ].each do |fwd|
       define_method(fwd) do |*args, **kwargs, &block|
-        if @spi.nil?
-          # Detect if we're clearly in Sonic Pi but init_spi_seq wasn't called
-          raise RuntimeError, "call init_spi_seq before using spi-seq" if Object.const_defined?("SonicPi::Runtime")
-          m = Stubs.method(fwd)
-        else
-          m = @spi.method(fwd)
-        end
-
+        ensure_inited
+        m = @spi.nil? ? Stubs.method(fwd) : @spi.method(fwd)
         m.call(*args, **kwargs, &block)
       end
     end
 
-    def set_spi_context(ctx)
-      @spi = ctx
-    end
-
     def in_sonic_pi?
-      # We could check for the existence of a Sonic Pi module, but what we
-      # really mean here is: was init_spi_seq called from within Sonic Pi?
+      ensure_inited
       !@spi.nil?
     end
 

@@ -10,11 +10,9 @@ TEST_DIR = File.join(BASE_DIR, "tests")
 exit Test::Unit::AutoRunner.run(true, TEST_DIR) unless ExtApi.in_sonic_pi?
 
 
-# To run the tests from inside Sonic Pi, call `init_spi_seq`, then require this
-# file, then call `run_tests("path/to/output.log")`. E.g.:
+# To run the tests from inside Sonic Pi, require this file, then call
+# `run_tests("path/to/output.log")`. E.g.:
 #
-# require "~/spi-seq/core"
-# init_spi_seq
 # require "~/spi-seq/tests/run"
 # run_tests("~/spi-seq-tests.log")
 #
