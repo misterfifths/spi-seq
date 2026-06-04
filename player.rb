@@ -7,6 +7,15 @@ require_relative "utils/internal_utils"
 
 # @!group Playback and live loops
 
+# @private
+module SpiSeq
+  module Defaults
+    class << self
+      attr_accessor :player_defaults
+    end
+  end
+end
+
 # Set global default {Player} and {track_live_loop} behaviors. Removes any
 # previous defaults.
 # @param midi [Boolean, nil] The default value for the `midi` parameter of
@@ -28,14 +37,14 @@ def use_player_defaults(midi: nil, sync: nil, start_muted: nil, fill_cc: nil, se
   defaults[:start_muted] = start_muted unless start_muted.nil?
   defaults[:fill_cc] = fill_cc unless fill_cc.nil?
   defaults[:send_cycle_cues] = send_cycle_cues unless send_cycle_cues.nil?
-  $__PLAYER_DEFAULTS = defaults  # rubocop:disable Style/GlobalVars
+  SpiSeq::Defaults.player_defaults = defaults
 end
 
 # Returns the current player defaults as set by {use_player_defaults}, or an
 # empty hash if no defaults have been set.
 # @return [Hash{Symbol => Object}]
 def current_player_defaults
-  $__PLAYER_DEFAULTS || {}  # rubocop:disable Style/GlobalVars
+  SpiSeq::Defaults.player_defaults || {}
 end
 
 # @!endgroup

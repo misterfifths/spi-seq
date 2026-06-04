@@ -10,6 +10,15 @@ require_relative "utils/internal_utils"
 
 # @!group Steps and tracks
 
+# @private
+module SpiSeq
+  module Defaults
+    class << self
+      attr_accessor :track_defaults
+    end
+  end
+end
+
 # Set global track-related behaviors.
 # @param strict_track_merging [Boolean] If true, tracks with mismatched
 #   {TrackBase#granularity granularities}, {TrackBase#timescale timescales},
@@ -23,14 +32,14 @@ require_relative "utils/internal_utils"
 # @return [void]
 # @see current_track_defaults
 def use_track_defaults(strict_track_merging:)
-  $__TRACK_DEFAULTS = { strict_track_merging: strict_track_merging }  # rubocop:disable Style/GlobalVars
+  SpiSeq::Defaults.track_defaults = { strict_track_merging: strict_track_merging }
 end
 
 # Returns the current track defaults as set by {use_track_defaults}, or an
 # empty hash if no defaults have been set.
 # @return [Hash{Symbol => Object}]
 def current_track_defaults
-  $__TRACK_DEFAULTS || {}  # rubocop:disable Style/GlobalVars
+  SpiSeq::Defaults.track_defaults || {}
 end
 
 # @!endgroup

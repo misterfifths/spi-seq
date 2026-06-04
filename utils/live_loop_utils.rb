@@ -122,6 +122,15 @@ def mutable_live_loop(loop_name, start_muted: false, **kwargs, &block)
   ll
 end
 
+# @private
+module SpiSeq
+  module Defaults
+    class << self
+      attr_accessor :cc_control_defaults
+    end
+  end
+end
+
 # Set global default MIDI parameters to use when watching for incoming CC
 # messages. Such events are used to control various features, such as muting
 # live loops (e.g. those made from {cc_mutable_live_loop} and
@@ -137,14 +146,14 @@ def use_cc_control_defaults(port: nil, channel: nil)
   defaults = {}
   defaults[:port] = port unless port.nil?
   defaults[:channel] = channel unless channel.nil?
-  $__CC_CONTROL_DEFAULTS = defaults  # rubocop:disable Style/GlobalVars
+  SpiSeq::Defaults.cc_control_defaults = defaults
 end
 
 # Returns the current CC control defaults as set by {use_cc_control_defaults},
 # or an empty hash if no defaults have been set.
 # @return [Hash{Symbol => Object}]
 def current_cc_control_defaults
-  $__CC_CONTROL_DEFAULTS || {}  # rubocop:disable Style/GlobalVars
+  SpiSeq::Defaults.cc_control_defaults || {}
 end
 
 # Starts a new `live_loop` that can be muted by a MIDI CC message. A value of 0
