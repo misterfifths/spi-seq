@@ -3,6 +3,7 @@
 require_relative "extapi"
 require_relative "playerbase"
 require_relative "track"
+require_relative "utils/internal_utils"
 
 # @!group Playback and live loops
 
@@ -230,7 +231,7 @@ class Player < PlayerBase
         steps_by_note[step_note] = step
       else
         if @debug && !yelled
-          _warn("wound up with more than one Step with note #{step_note} in the same slot! Picking one with the longest gate!", "player")
+          SpiSeq::Log.warn("wound up with more than one Step with note #{step_note} in the same slot! Picking one with the longest gate!", "player")
           yelled = true
         end
         old_step_gate = effective_gate(old_step_with_same_note)
@@ -325,10 +326,10 @@ class Player < PlayerBase
     new_steps, tied_steps, ended_steps = categorize_steps(steps)
 
     if @debug
-      _log("@ t=#{ExtApi.vt} slot=#{slot_idx} cycle=#{@cycle} fill=#{@fill}", "player")
-      _log("new steps: #{steps_debug_string(new_steps)}", "player")
-      _log("tied steps: #{steps_debug_string(tied_steps)}", "player")
-      _log("ended steps: #{steps_debug_string(ended_steps, from_prev: true)}", "player")
+      SpiSeq::Log.log("@ t=#{ExtApi.vt} slot=#{slot_idx} cycle=#{@cycle} fill=#{@fill}", "player")
+      SpiSeq::Log.log("new steps: #{steps_debug_string(new_steps)}", "player")
+      SpiSeq::Log.log("tied steps: #{steps_debug_string(tied_steps)}", "player")
+      SpiSeq::Log.log("ended steps: #{steps_debug_string(ended_steps, from_prev: true)}", "player")
     end
 
     # Turn off or kill ended steps. Note that ended_steps is a subset of
@@ -369,7 +370,7 @@ class Player < PlayerBase
       next if gate == 1
 
       ExtApi.at(gate * @track.granularity.to_f) do
-        _log("killing #{step.inspect} @ t=#{ExtApi.vt}", "player") if @debug
+        SpiSeq::Log.log("killing #{step.inspect} @ t=#{ExtApi.vt}", "player") if @debug
         end_step(step)
       end
     end

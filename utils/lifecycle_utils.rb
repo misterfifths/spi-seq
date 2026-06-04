@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require_relative "../extapi"
+require_relative "internal_utils"
+
 # @!group Sonic Pi lifecycle utilities
 
 # Executes its block the first time this sketch runs, and whenever it is
@@ -62,10 +65,10 @@ def on_stop(name = :default, &block)
 
     hooks = $__STOP_HOOKS
     unless hooks.empty?
-      _log "Running stop hooks...", "stop-hooks"
+      SpiSeq::Log.log("Running stop hooks...", "stop-hooks")
       hooks.each_value { |b| b.call }
       hooks.clear
-      _log "Stop hooks complete", "stop-hooks"
+      SpiSeq::Log.log("Stop hooks complete", "stop-hooks")
     end
   end
 end

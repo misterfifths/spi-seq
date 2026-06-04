@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "../extapi"
+
 # @private
 module SpiSeq
   module Utils
@@ -93,6 +95,16 @@ module SpiSeq
       IO.popen("/usr/bin/pbpaste", "r") do |pipe|
         return pipe.read
       end
+    end
+  end
+
+  module Log
+    def self.log(msg, channel = "spi-seq")
+      ExtApi.puts("[#{channel}] #{msg}")
+    end
+
+    def self.warn(msg, channel = "spi-seq")
+      log("warning: #{msg}", channel)
     end
   end
 end

@@ -6,6 +6,7 @@ require_relative "theory/notelength"
 require_relative "theory/midinote"
 require_relative "extapi"
 require_relative "utils/midi_utils"
+require_relative "utils/internal_utils"
 
 class Track
   private_class_method def self.float_lt(a, b, threshold = 0.01)
@@ -103,7 +104,7 @@ class Track
 
     if final_gate > 0
       if (start_slot + tied_steps) >= slots.length
-        _warn("dropping a note that would go past the end of the track", "recorder")
+        SpiSeq::Log.warn("dropping a note that would go past the end of the track", "recorder")
       else
         slots[start_slot + tied_steps] << Step.new(note, vel: velocity, gate: final_gate)
       end
@@ -200,7 +201,7 @@ class Track
       note_end = duration if note_end > duration
 
       if note_end <= note_start
-        _warn("timeline event ends before it starts or has 0 duration; ignoring", "recorder")
+        SpiSeq::Log.warn("timeline event ends before it starts or has 0 duration; ignoring", "recorder")
         next
       end
 
@@ -281,13 +282,13 @@ class Track
         next if cc_channel != "*" && cue_channel != cc_channel
 
         if recording
-          _log("ending recording @ #{cue_time}", "recorder")
+          SpiSeq::Log.log("ending recording @ #{cue_time}", "recorder")
 
           recording = false
           end_time = cue_time
           break
         else
-          _log("starting recording @ #{cue_time}", "recorder")
+          SpiSeq::Log.log("starting recording @ #{cue_time}", "recorder")
 
           recording = true
           start_time = cue_time
@@ -306,10 +307,10 @@ class Track
           if active_event.nil?
             in_progress_timeline_events[note] = [note, cue_time, -1, vel]
           else
-            _warn("got a note on for #{note}, but it's already on", "recorder")
+            SpiSeq::Log.warn("got a note on for #{note}, but it's already on", "recorder")
           end
         elsif active_event.nil?
-          _warn("got a note off for #{note}, but we didn't see it come on", "recorder")
+          SpiSeq::Log.warn("got a note off for #{note}, but we didn't see it come on", "recorder")
         else
           active_event[2] = cue_time
           timeline << active_event

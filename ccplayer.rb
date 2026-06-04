@@ -3,6 +3,7 @@
 require_relative "cctrack"
 require_relative "extapi"
 require_relative "playerbase"
+require_relative "utils/internal_utils"
 
 # A CCPlayer plays a {CCTrack} by sending its {CCStep}s' CC messages over MIDI.
 #
@@ -69,8 +70,8 @@ class CCPlayer < PlayerBase
     end
 
     if @debug
-      _log("@ t=#{ExtApi.vt} slot=#{slot_idx} cycle=#{@cycle} fill=#{@fill}", "ccplayer")
-      _log("new steps: [#{step_debug_strings.join(', ')}]", "ccplayer")
+      SpiSeq::Log.log("@ t=#{ExtApi.vt} slot=#{slot_idx} cycle=#{@cycle} fill=#{@fill}", "ccplayer")
+      SpiSeq::Log.log("new steps: [#{step_debug_strings.join(', ')}]", "ccplayer")
     end
   end
 end
