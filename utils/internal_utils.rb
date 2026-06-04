@@ -63,17 +63,36 @@ module SpiSeq
       # 'Enumerable' resolves to SonicPi::RuntimeMethods::Enumerable from within
       # Sonic Pi, which e.g. Array does not have as a superclass. So we need to
       # use ::Enumerable to get the built-in class.
-      # SPVector is the parent class of RingVector, from e.g. `ring` and
-      # `chord`, and potentially other list types in SP. It unfortunately does
-      # not derive from (either) Enumerable, so we need to check for it
-      # manually. You must make sure to call `to_a` on SPVectors before calling
-      # Enumerable methods on them!
+      #
+      # SPVector is the parent class of most list-like things from Sonic Pi
+      # (e.g. `ring`s and `ramp`s). It unfortunately does mix in Enumerable, so
+      # we need to check for it specially. Since SPVectors are missing some
+      # Enumerable/Array methods (e.g. `reject`), and have idiosyncratic
+      # implementations of others, you should really call `arrayify` on anything
+      # for which this method returns true!
       def self.enumerable?(e)
         e.is_a?(::Enumerable) || e.is_a?(SonicPi::Core::SPVector)
+      end
+
+      # A souped up version of `to_a` that tries very hard to unwrap Sonic Pi's
+      # enumerable classes and actually return an Array.
+      def self.arrayify(x)
+        return x if x.is_a?(Array)
+        # For certain values, like the return of `chord`, there is an outer
+        # SPVector whose `to_a` returns an array subclass. That inner class is
+        # broken when it comes to mutating methods, so let's unwrap it too.
+        x = x.to_a
+        return x if x.class == Array  # rubocop:disable Style/ClassEqualityComparison
+        x.to_a
       end
     else
       def self.enumerable?(e)
         e.is_a?(Enumerable)
+      end
+
+      def self.arrayify(x)
+        return x if x.is_a?(Array)
+        x.to_a
       end
     end
   end

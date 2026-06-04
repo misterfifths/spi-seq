@@ -143,8 +143,8 @@ module Arp
   def self.arpeggiate(notes, direction, spread: 0, extra_octaves: [])
     return [] if notes.empty?
 
-    # See the note in SpiSeq::Utils.enumerable? about why we need to call to_a.
-    notes = notes.to_a.map { |n| MIDINote.new(n) }
+    # See the note in SpiSeq::Utils.enumerable? about arrayify.
+    notes = SpiSeq::Utils.arrayify(notes).map { |n| MIDINote.new(n) }
     orig_notes = notes.dup
 
     extra_octaves.each do |octave_shift|

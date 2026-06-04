@@ -186,6 +186,7 @@ class TrackBase
   # @see #initialize
   def self.from_grid(gridish, granularity: NoteLength::Eighth, timescale: 1)
     if SpiSeq::Utils.enumerable?(gridish) && !gridish.empty?
+      gridish = SpiSeq::Utils.arrayify(gridish)  # see note in enumerable?
       new(*gridish, granularity: granularity, timescale: timescale)
     else
       new(gridish, granularity: granularity, timescale: timescale)
@@ -976,7 +977,11 @@ class TrackBase
       # some number of other arrays (which we will take as a set of slots). This
       # behavior is pretty odd. But, it's somewhat in keeping with set_slot, and
       # having the ability to expand one slot into multiple here is nice...
-      replacement = [replacement] unless SpiSeq::Utils.enumerable?(replacement)
+      replacement = if SpiSeq::Utils.enumerable?(replacement)
+        SpiSeq::Utils.arrayify(replacement)  # see note in enumerable?
+      else
+        [replacement]
+      end
       is_gridish = replacement.any? { |e| SpiSeq::Utils.enumerable?(e) }
 
       if is_gridish

@@ -1485,7 +1485,11 @@ class Track < TrackBase
       # 1d array (which we will take as a slot), or an array that contains some
       # number of other arrays (which we will take as a set of slots). This
       # behavior is in keeping with mutate_slots.
-      replacement = [replacement] unless SpiSeq::Utils.enumerable?(replacement)
+      replacement = if SpiSeq::Utils.enumerable?(replacement)
+        SpiSeq::Utils.arrayify(replacement)  # see note in enumerable?
+      else
+        [replacement]
+      end
       is_gridish = replacement.any? { |e| SpiSeq::Utils.enumerable?(e) }
 
       if is_gridish
@@ -1553,6 +1557,7 @@ class Track < TrackBase
       # The block may return a scalar (which we take as a CC value), or an array
       # (which we will take as a definition for a set of slots).
       if SpiSeq::Utils.enumerable?(replacement)
+        replacement = SpiSeq::Utils.arrayify(replacement)  # see note in enumerable?
         if replacement.empty?
           slots << :r
         else
@@ -1649,8 +1654,10 @@ class Track < TrackBase
       [stepify(x, def_gate: def_gate, def_vel: def_vel)].freeze
     else
       if SpiSeq::Utils.enumerable?(x)
-        # See the note in SpiSeq about why we need to explicitly call to_a.
-        raw_slot = x.to_a.reject { |s| MIDINote.rest?(s) }.map { |s| stepify(s, def_gate: def_gate, def_vel: def_vel) }
+        # See the note in enumerable? about arrayify
+        raw_slot = SpiSeq::Utils.arrayify(x)
+                     .reject { |s| MIDINote.rest?(s) }
+                     .map { |s| stepify(s, def_gate: def_gate, def_vel: def_vel) }
         dedupe_slot(raw_slot).freeze
       else
         raise TypeError, "Not a valid value for a slot: #{x.inspect}"
@@ -1685,8 +1692,8 @@ class Track < TrackBase
         # E.g. gridify([:a1, :b1]) will turn into [[:a1], [:b1]]. I think that's
         # desirable - it's a sort of 'smart' conversion, preferring mono-like
         # behavior unless notes are explicitly grouped into their own array.
-        # See the note in SpiSeq about why we need to explicitly call to_a.
-        x.to_a.map { |s| slotify(s, def_gate: def_gate, def_vel: def_vel) }.freeze
+        # See the note in enumerable? about why we need to call arrayify.
+        SpiSeq::Utils.arrayify(x).map { |s| slotify(s, def_gate: def_gate, def_vel: def_vel) }.freeze
       else
         raise TypeError, "Not a valid value for a grid: #{x.inspect}"
       end

@@ -260,8 +260,8 @@ class CCTrack < TrackBase
     elsif x.is_a?(CCStep)
       [x].freeze
     elsif SpiSeq::Utils.enumerable?(x)
-      # See the note in SpiSeq about why we need to explicitly call to_a.
-      raw_slot = x.to_a.reject { |s| MIDINote.rest?(s) }.map { |s| stepify(s) }
+      # See the note in enumerable? about arrayify.
+      raw_slot = SpiSeq::Utils.arrayify(x).reject { |s| MIDINote.rest?(s) }.map { |s| stepify(s) }
       dedupe_slot(raw_slot).freeze
     else
       raise TypeError, "Not a valid value for a slot: #{x.inspect}"
@@ -281,8 +281,8 @@ class CCTrack < TrackBase
     elsif x.is_a?(CCStep)
       [[x].freeze].freeze
     elsif SpiSeq::Utils.enumerable?(x)
-      # See the note in SpiSeq about why we need to explicitly call to_a.
-      x.to_a.map { |s| slotify(s) }.freeze
+      # See the note in enumerable? about arrayify.
+      SpiSeq::Utils.arrayify(x).map { |s| slotify(s) }.freeze
     else
       raise TypeError, "Not a valid value for a grid: #{x.inspect}"
     end

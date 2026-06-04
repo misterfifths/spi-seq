@@ -280,11 +280,13 @@ class Chord
   def append(other)
     if other.is_a?(Chord)
       other = other.intervals
-    elsif !SpiSeq::Utils.enumerable?(other)
+    elsif SpiSeq::Utils.enumerable?(other)
+      other = SpiSeq::Utils.arrayify(other)  # see note in enumerable?
+    else
       other = [other]
     end
 
-    new_intervals = other.to_a.map do |i|
+    new_intervals = other.map do |i|
       case i
       when Interval
         i
