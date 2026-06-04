@@ -1,9 +1,10 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+# test_helper should be required first so coverage catches other requires.
+require_relative "test_helper"
 require_relative "../extapi"
 require_relative "../utils/internal_utils"
-require_relative "test_helper"
 
 BASE_DIR = File.expand_path("#{File.dirname(__FILE__)}/..")
 TEST_DIR = File.join(BASE_DIR, "tests")
