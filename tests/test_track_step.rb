@@ -164,7 +164,14 @@ class TrackStepTest < Test::Unit::TestCase
   end
 
   def test_rand_octave
-    unless ExtApi.in_sonic_pi?  # Not testing Sonic Pi's randomness
+    if ExtApi.in_sonic_pi?
+      ExtApi.spi_call(:use_random_seed, 1234)
+      assert_grid T[:c4].roct, [[:c5]]
+      assert_grid T[:c4, :d5].roct(p: 1), [[:c5], [:d6]]
+      assert_grid T[:c4, [:d5, :e6]].roct(3, p: 1), [[:c6], [:d6, :e4]]
+      assert_grid T[:c4, [:d5, :e6]].roct(0..2), [[:c4], [:d5, :e6]]
+      assert_grid T[:c4, [:d5, :e6]].roct(-2..2), [[:c4], [:d6, :e6]]
+    else
       srand 123456
       assert_grid T[:c4].roct, [[:c3]]
       assert_grid T[:c4, :d5].roct(p: 1), [[:c3], [:d4]]
@@ -437,7 +444,25 @@ class TrackStepTest < Test::Unit::TestCase
   def test_evolve
     t = T[S(:c1, gate: 0.5, vel: 63), :c2, S(:c3, gate: 0.1, vel: 10)]
 
-    unless ExtApi.in_sonic_pi?  # Not testing Sonic Pi's randomness
+    if ExtApi.in_sonic_pi?
+      ExtApi.spi_call(:use_random_seed, 1234)
+      assert_grid t.evolve(tone_shifts: [-12, 12], octave_limit: 0..4, gate_delta: 0, velf_delta: 0, p: 1),
+                  T[S(:c0, vel: 63, gate: 0.5), :c1, S(:c4, vel: 10, gate: 0.1)].grid
+      assert_grid t.evolve(tone_shifts: [-7, 7], octave_limit: 0..4, gate_delta: 0, velf_delta: 0, p: 1),
+                  T[S(:g1, vel: 63, gate: 0.5), :g2, S(:g3, vel: 10, gate: 0.1)].grid
+      assert_grid t.evolve(tone_shifts: [0, 24, 48], octave_limit: 1..4, gate_delta: 0, velf_delta: 0, p: 1),
+                  T[S(:c3, vel: 63, gate: 0.5), :c4, S(:c4, vel: 10, gate: 0.1)].grid
+
+      assert_grid t.evolve(tone_shifts: 0, gate_delta: 0.5, gate_limit: 0.1..1, velf_delta: 0, p: 1),
+                  T[S(:c1, vel: 63, gate: 0.86), S(:c2, gate: 0.9), S(:c3, vel: 10, gate: 0.1)].grid
+      assert_grid t.evolve(tone_shifts: 0, gate_delta: 1, gate_limit: 0..1, velf_delta: 0, p: 1),
+                  T[S(:c1, vel: 63, gate: 0), S(:c2, gate: 0.35), S(:c3, vel: 10, gate: 0)].grid
+
+      assert_grid t.evolve(tone_shifts: 0, gate_delta: 0, velf_delta: 0.5, velf_limit: 0.1..1, p: 1),
+                  T[S(:c1, vel: 26, gate: 0.5), S(:c2, vel: 108), S(:c3, vel: 12, gate: 0.1)].grid
+      assert_grid t.evolve(tone_shifts: 0, gate_delta: 0, velf_delta: 0.3, velf_limit: 0.5..0.9, p: 1),
+                  T[S(:c1, vel: 63, gate: 0.5), S(:c2, vel: 114), S(:c3, vel: 63, gate: 0.1)].grid
+    else
       srand 1234
       assert_grid t.evolve(tone_shifts: [-12, 12], octave_limit: 0..4, gate_delta: 0, velf_delta: 0, p: 1),
                   [[S(:c0, vel: 63, gate: 0.5)], [:c1], [S(:c4, gate: 0.1, vel: 10)]]

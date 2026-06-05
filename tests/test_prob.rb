@@ -16,15 +16,20 @@ class ProbTest < Test::Unit::TestCase
   end
 
   def test_chance
-    return if ExtApi.in_sonic_pi?  # Not testing Sonic Pi's randomness
-
-    srand 143131231
-
-    assert_playback_events QT[[:a1, S(:b2, prob: Prob.chance(0.5))]], [
-      [:a1, 0, nil],
-      [:b2, 0, 1],
-      [:b2, 2, nil]
-    ], play_count: 4
+    if ExtApi.in_sonic_pi?
+      ExtApi.spi_call(:use_random_seed, 1234)
+      assert_playback_events QT[[:a1, S(:b2, prob: Prob.chance(0.5))]], [
+        [:a1, 0, nil],
+        [:b2, 0, 2]
+      ], play_count: 4
+    else
+      srand 143131231
+      assert_playback_events QT[[:a1, S(:b2, prob: Prob.chance(0.5))]], [
+        [:a1, 0, nil],
+        [:b2, 0, 1],
+        [:b2, 2, nil]
+      ], play_count: 4
+    end
 
     assert_playback_events QT[[:a1, S(:b2, prob: Prob.chance(1))]], [
       [:a1, 0, nil],
@@ -37,15 +42,20 @@ class ProbTest < Test::Unit::TestCase
   end
 
   def test_one_in
-    return if ExtApi.in_sonic_pi?  # Not testing Sonic Pi's randomness
-
-    srand 2
-
-    assert_playback_events QT[[:a1, S(:b2, prob: Prob.one_in(2))]], [
-      [:a1, 0, nil],
-      [:b2, 0, 2],
-      [:b2, 3, nil]
-    ], play_count: 4
+    if ExtApi.in_sonic_pi?
+      ExtApi.spi_call(:use_random_seed, 1234)
+      assert_playback_events QT[[:a1, S(:b2, prob: Prob.one_in(2))]], [
+        [:a1, 0, nil],
+        [:b2, 0, 2]
+      ], play_count: 4
+    else
+      srand 2
+      assert_playback_events QT[[:a1, S(:b2, prob: Prob.one_in(2))]], [
+        [:a1, 0, nil],
+        [:b2, 0, 2],
+        [:b2, 3, nil]
+      ], play_count: 4
+    end
 
     assert_playback_events QT[[:a1, S(:b2, prob: Prob.one_in(1))]], [
       [:a1, 0, nil],

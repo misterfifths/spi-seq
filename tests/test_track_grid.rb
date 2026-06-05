@@ -275,7 +275,11 @@ class TrackGridTest < Test::Unit::TestCase
   def test_shuffle
     assert_grid T[:c4].shuffle, [[:c4]]
 
-    unless ExtApi.in_sonic_pi?  # Not testing Sonic Pi's randomness
+    if ExtApi.in_sonic_pi?
+      ExtApi.spi_call(:use_random_seed, 1234)
+      assert_grid T[:a1, :b2, :c3, :d4].shuffle, [[:a1], [:d4], [:c3], [:b2]]
+      assert_grid T[:a1, :b2, :c3, :d4].shuffle, [[:d4], [:a1], [:c3], [:b2]]
+    else
       srand 1234
       # Inexplicably, Array.shuffle does nothing immediately after an srand?
       assert_grid T[:a1, :b2, :c3, :d4].shuffle, [[:a1], [:b2], [:c3], [:d4]]
@@ -288,14 +292,23 @@ class TrackGridTest < Test::Unit::TestCase
     assert_grid T[:c4, :r].shuffle_filled, [[:c4], []]
     assert_grid Track.rest(2).shuffle_filled, [[], []]
 
+    # rubocop:disable Style/IdenticalConditionalBranches
+
     t = T[:a1, :r, :r, :b2, [:c3, :d4]]
-    unless ExtApi.in_sonic_pi?  # Not testing Sonic Pi's randomness
+    if ExtApi.in_sonic_pi?
+      ExtApi.spi_call(:use_random_seed, 1234)
+      assert_grid t.shuffle_filled, [[:a1], [], [], [:b2], [:c3, :d4]]
+      assert_grid t.shuffle_filled, [[:a1], [], [], [:c3, :d4], [:b2]]
+      assert_grid t.shuffle_filled, [[:c3, :d4], [], [], [:b2], [:a1]]
+    else
       srand 1234
       # Inexplicably, Array.shuffle does nothing immediately after an srand?
       assert_grid t.shuffle_filled, [[:a1], [], [], [:b2], [:c3, :d4]]
       assert_grid t.shuffle_filled, [[:b2], [], [], [:c3, :d4], [:a1]]
       assert_grid t.shuffle_filled, [[:c3, :d4], [], [], [:b2], [:a1]]
     end
+
+    # rubocop:enable Style/IdenticalConditionalBranches
   end
 
   def test_rotate
@@ -432,9 +445,24 @@ class TrackGridTest < Test::Unit::TestCase
     assert_grid T[:c4].sample(1), [[:c4]]
     assert_grid T[:c4].sample(2), [[:c4]]
 
-    unless ExtApi.in_sonic_pi?  # Not testing Sonic Pi's randomness
+    t = T[:a1, :b2, :r, :c3, :d4]
+
+    if ExtApi.in_sonic_pi?
+      ExtApi.spi_call(:use_random_seed, 1234)
+      assert_grid t.sample(5), [[:a1], [:b2], [], [:c3], [:d4]]
+      assert_grid t.sample(4), [[:b2], [], [:c3], [:d4]]
+      assert_grid t.sample(3), [[], [:c3], [:d4]]
+      assert_grid t.sample(2), [[:a1], [:d4]]
+      assert_grid t.sample(1), [[]]
+
+      ExtApi.spi_call(:use_random_seed, 789)
+      assert_grid t.sample_filled(5), [[:a1], [:b2], [:c3], [:d4]]
+      assert_grid t.sample_filled(4), [[:a1], [:b2], [:c3], [:d4]]
+      assert_grid t.sample_filled(3), [[:b2], [:c3], [:d4]]
+      assert_grid t.sample_filled(2), [[:b2], [:c3]]
+      assert_grid t.sample_filled(1), [[:d4]]
+    else
       srand 1234
-      t = T[:a1, :b2, :r, :c3, :d4]
       assert_grid t.sample(5), [[:a1], [:b2], [], [:c3], [:d4]]
       assert_grid t.sample(4), [[:a1], [:b2], [], [:c3]]
       assert_grid t.sample(3), [[:a1], [], [:d4]]
@@ -689,6 +717,16 @@ class TrackGridTest < Test::Unit::TestCase
   # the dropping versions by compacting the grids. Won't attempt methods that
   # drop slots if no_drop_tests is true.
   def assert_partition(track, a_grid, b_grid, method = :partition, *args, rand_seed: nil, no_drop_tests: false, **kwargs, &block)
+    apply_seed = lambda do
+      next if rand_seed.nil?
+
+      if ExtApi.in_sonic_pi?
+        ExtApi.spi_call(:use_random_seed, rand_seed)
+      else
+        srand(rand_seed)
+      end
+    end
+
     families = {
       # Step-based
       partition: [:select, :reject],
@@ -705,7 +743,7 @@ class TrackGridTest < Test::Unit::TestCase
     # Try the non-dropping version of slot-based partitions first
     kwargs[:drop] = false if slot
 
-    srand rand_seed unless rand_seed.nil?
+    apply_seed.call
     a, b = track.send(method, *args, **kwargs, &block)
     assert_grid a, a_grid
     assert_grid b, b_grid
@@ -715,7 +753,7 @@ class TrackGridTest < Test::Unit::TestCase
 
     if slot && !no_drop_tests
       # Now try the dropping version.
-      srand rand_seed unless rand_seed.nil?
+      apply_seed.call
       a, b = track.send(method, *args, **kwargs, &block)
       # Since this may have dropped slots, the result should be either nil (if
       # the expected grid is all rests), or the compactified version of the grid
@@ -727,7 +765,7 @@ class TrackGridTest < Test::Unit::TestCase
 
     # Select
     unless select_method.nil? || no_drop_tests
-      srand rand_seed unless rand_seed.nil?
+      apply_seed.call
       res = track.send(select_method, *args, **kwargs, &block)
       if slot
         # We expect this to drop slots.
@@ -739,7 +777,7 @@ class TrackGridTest < Test::Unit::TestCase
 
     # Reject
     unless reject_method.nil? || no_drop_tests
-      srand rand_seed unless rand_seed.nil?
+      apply_seed.call
       res = track.send(reject_method, *args, **kwargs, &block)
       if slot
         # We expect this to drop slots.
@@ -751,7 +789,7 @@ class TrackGridTest < Test::Unit::TestCase
 
     # Clear
     unless clear_method.nil?
-      srand rand_seed unless rand_seed.nil?
+      apply_seed.call
       res = track.send(clear_method, *args, **kwargs, &block)
       # We do not expect slots to be dropped here.
       assert_grid res, b_grid
@@ -759,7 +797,7 @@ class TrackGridTest < Test::Unit::TestCase
 
     # Inverse of clear
     unless clear_inv_method.nil?
-      srand rand_seed unless rand_seed.nil?
+      apply_seed.call
       res = track.send(clear_inv_method, *args, **kwargs, &block)
       # We do not expect slots to be dropped here.
       assert_grid res, a_grid
@@ -917,9 +955,11 @@ class TrackGridTest < Test::Unit::TestCase
     assert_rand_partition t, 1, [[:a1], [:b2], [:c3], [:d4]], [[], [], [], []]
     assert_rand_partition t, 0, [[], [], [], []], [[:a1], [:b2], [:c3], [:d4]]
 
-    return if ExtApi.in_sonic_pi?  # Not testing Sonic Pi's randomness
-
-    assert_rand_partition t, 0.5, [[:a1], [], [:c3], []], [[], [:b2], [], [:d4]], rand_seed: 1234
+    if ExtApi.in_sonic_pi?
+      assert_rand_partition t, 0.5, [[:a1], [:b2], [], []], [[], [], [:c3], [:d4]], rand_seed: 1234
+    else
+      assert_rand_partition t, 0.5, [[:a1], [], [:c3], []], [[], [:b2], [], [:d4]], rand_seed: 1234
+    end
   end
 
   def test_extract_gates

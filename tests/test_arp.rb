@@ -84,7 +84,12 @@ class ArpTest < Test::Unit::TestCase
   def test_random
     ns = %i[a1 c0 d3 a0]
 
-    unless ExtApi.in_sonic_pi?  # Not testing Sonic Pi's randomness
+    if ExtApi.in_sonic_pi?
+      ExtApi.spi_call(:use_random_seed, 1234)
+      assert_arp ns, :random, %i[a1 a0 d3 c0]
+      assert_arp ns, :random, %i[a0 a1 d3 c0]
+      assert_arp ns, :random, %i[a0 c0 d3 a1]
+    else
       srand 1234
       # Inexplicably, Array.shuffle does nothing immediately after an srand?
       assert_arp ns, :random, ns
