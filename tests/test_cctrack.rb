@@ -186,4 +186,12 @@ class CCTrackTest < Test::Unit::TestCase
     assert_raises(ArgumentError) { CCT[a.accum(1, prob: p)].repr }
     assert_nothing_raised { CCT[a.accum(1, prob: p)].repr(safe: true) }
   end
+
+  def test_enums
+    a = CC(127, 5)
+    b = CC(127, 10)
+    steps = [a, b].lazy.cycle.take(5)
+    assert_grid CCT[steps], [[b]]  # duplicate CC numbers collapsed
+    assert_grid CCT.from_grid(steps), [[a], [b], [a], [b], [a]]
+  end
 end

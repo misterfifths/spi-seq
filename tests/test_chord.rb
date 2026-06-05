@@ -25,6 +25,9 @@ class ChordTest < Test::Unit::TestCase
     assert_raises(ArgumentError) { Chord.new([]) }
     assert_raises(ArgumentError) { Chord.new([:P1]).without(1) }
 
+    # Non-Array enumerables should work
+    assert_equal Chord.new(1...5).intervals, [:P1, :M2, :M3, :P4]
+
     # Sonic Pi's wrapped enumerables should work
     if ExtApi.in_sonic_pi?
       int_ring = ExtApi.spi_call(:ring, :P1, :m3, :P5)
@@ -55,6 +58,8 @@ class ChordTest < Test::Unit::TestCase
     assert_equal c.intervals, [:P1, :m3, :P5]
     c = Chord.new([:P1]) + Chord.new([:P5, :m3])
     assert_equal c.intervals, [:P1, :m3, :P5]
+    c = Chord.new([:P1]) + (1...5)
+    assert_equal c.intervals, [:P1, :M2, :M3, :P4]
 
     # Sonic Pi's enumerables
     if ExtApi.in_sonic_pi?

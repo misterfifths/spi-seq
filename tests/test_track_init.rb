@@ -21,7 +21,10 @@ class TrackInitTest < Test::Unit::TestCase
     assert_raises { T[] }
   end
 
-  def test_sonic_pi_enums
+  def test_enums
+    assert_grid T[60...65], [[:c4, :cs4, :d4, :ds4, :e4]]
+    assert_grid T.from_grid(60...65), [[:c4], [:cs4], [:d4], [:ds4], [:e4]]
+
     return unless ExtApi.in_sonic_pi?
 
     # Make sure things work with Sonic Pi's wrapped enumerables.
@@ -274,8 +277,6 @@ class TrackInitTest < Test::Unit::TestCase
   end
 
   def test_arp
-    # .arp(notes, direction = Arp::Up, spread: 0, extra_octaves: [], pulses: nil, length: nil, rotate: 0, full_cycle: true, granularity: NoteLength::Eighth, timescale: 1)
-
     directions = [:up, :alterninout]
     spreads = (0..2).to_a
     extra_octaves = [[], [1], [-2, 1]]

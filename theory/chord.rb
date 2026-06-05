@@ -246,7 +246,8 @@ class Chord
   end
 
   private def initialize(intervals)
-    @intervals = intervals.to_a.dup.map! do |i|
+    # See the note in Utils::enumerable? about arrayify.
+    @intervals = SpiSeq::Utils.arrayify(intervals).dup.map! do |i|
       case i
       when Interval
         i

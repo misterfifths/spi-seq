@@ -134,7 +134,9 @@ class ArpTest < Test::Unit::TestCase
     assert_arp ns, :order, %i[c5 c3 c1 c2 c4 c6], spread: 3
   end
 
-  def test_sonic_pi_enums
+  def test_enums
+    assert_arp 60...65, :order, %i[c4 cs4 d4 ds4 e4]
+
     return unless ExtApi.in_sonic_pi?
 
     # The thing returned by Sonic Pi's chord method is very strange (doubly-

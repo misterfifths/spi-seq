@@ -185,8 +185,9 @@ class TrackBase
   # @return [TrackBase]
   # @see #initialize
   def self.from_grid(gridish, granularity: NoteLength::Eighth, timescale: 1)
-    if SpiSeq::Utils.enumerable?(gridish) && !gridish.empty?
+    if SpiSeq::Utils.enumerable?(gridish)
       gridish = SpiSeq::Utils.arrayify(gridish)  # see note in enumerable?
+      gridish = [[]] if gridish.empty?
       new(*gridish, granularity: granularity, timescale: timescale)
     else
       new(gridish, granularity: granularity, timescale: timescale)
