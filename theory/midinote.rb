@@ -273,54 +273,22 @@ class MIDINote < Numeric
     @number.to_f
   end
 
-  # Compares this MIDINote to another value, which should be a MIDINote or one
-  # of the values understood by {.new}.
-  # @param other [MIDINote, String, Symbol, Integer]
-  # @return [Boolean]
-  def <(other)
-    return @number < other.to_i if other.is_a?(Numeric)
-    @number < MIDINote.new(other).number
-  end
-
-  # (see #<)
-  def <=(other)
-    return @number <= other.to_i if other.is_a?(Numeric)
-    @number <= MIDINote.new(other).number
-  end
-
-  # (see #<)
-  def >(other)
-    return @number > other.to_i if other.is_a?(Numeric)
-    @number > MIDINote.new(other).number
-  end
-
-  # (see #<)
-  def >=(other)
-    return @number >= other.to_i if other.is_a?(Numeric)
-    @number >= MIDINote.new(other).number
-  end
-
-  # (see #<)
+  # @private
   def <=>(other)
-    return @number <=> other.to_i if other.is_a?(Numeric)
-    @number <=> MIDINote.new(other).number
-  end
+    case other
+    when Numeric
+      @number <=> other.to_i
+    when Symbol, String
+      # Equality fast paths
+      return 0 if other.is_a?(Symbol) && @sym == other
+      return 0 if other.is_a?(String) && @sym.to_s == other
 
-  # (see #<)
-  def ==(other)
-    return false if MIDINote.rest?(other)
-    return @number == other.to_i if other.is_a?(Numeric)
-    # The symbol and string checks are just fast paths. :c4 and :C4 are still
-    # equal, e.g., so we have to normalize if they don't match.
-    return true if other.is_a?(Symbol) && @sym == other
-    return true if other.is_a?(String) && @sym.to_s == other
-    # rubocop:disable Style/RescueStandardError
-    begin
-      @sym == MIDINote.new(other).to_sym
-    rescue
-      false
+      begin
+        @number <=> MIDINote.new(other).number
+      rescue ArgumentError
+        nil
+      end
     end
-    # rubocop:enable Style/RescueStandardError
   end
 
   alias eql? ==

@@ -393,55 +393,22 @@ class Interval < Numeric
     @size.to_f
   end
 
-  private def delegate_comp(method, other)
+  # @private
+  def <=>(other)
     case other
     when Numeric
-      @size.send(method, other.to_f)
+      @size <=> other.to_i
     when Symbol, String
+      # Equality fast paths
+      return 0 if other.is_a?(Symbol) && @sym == other
+      return 0 if other.is_a?(String) && @sym.to_s == other
+
       begin
-        @size.send(method, Interval.new(other))
+        @size <=> Interval.new(other).size
       rescue ArgumentError
-        return false if method == :==
-        raise
+        nil
       end
-    else
-      return false if method == :==
-      raise ArgumentError, "cannot compare an Interval to #{other.inspect}"
     end
-  end
-
-  # Compares this Interval to another value, which should be an Interval, an
-  # interval abbreviation symbol or string understood by {.new}, or a number,
-  # which will be compared with this interval's {#size}.
-  # @param other [Interval, String, Symbol, Integer]
-  # @return [Boolean]
-  def <(other)
-    delegate_comp(:<, other)
-  end
-
-  # (see #<)
-  def <=(other)
-    delegate_comp(:<=, other)
-  end
-
-  # (see #<)
-  def >(other)
-    delegate_comp(:>, other)
-  end
-
-  # (see #<)
-  def >=(other)
-    delegate_comp(:>=, other)
-  end
-
-  # (see #<)
-  def <=>(other)
-    delegate_comp(:<=>, other)
-  end
-
-  # (see #<)
-  def ==(other)
-    delegate_comp(:==, other)
   end
 
   alias eql? ==
