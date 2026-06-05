@@ -252,6 +252,9 @@ class IntervalTest < Test::Unit::TestCase
     # I don't know why anyone would use division but it's there.
     assert_attrs Interval.new(size: 6) / 2, 3, :minor, 3, :m3
     assert_attrs Interval.new(size: 6) / Interval.new(size: 2), 3, :minor, 3, :m3
+
+    # Math with a non-Interval LHS will excercise .coerce()
+    assert_attrs 1 + aug1, 2, :major, 2, :M2
   end
 
   def test_comparisons
