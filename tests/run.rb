@@ -21,6 +21,9 @@ end
 # require "~/spi-seq/tests/run"
 # run_tests("~/spi-seq-tests.log")
 #
+# Note that you should *not* require `core.rb` in this case, or coverage will
+# miss quite a few files.
+#
 # Note that since Sonic Pi maintains a single persistent Ruby context per
 # launch, if you edit a test or any Ruby file you will have to quit and reopen
 # Sonic Pi for the the changes to take effect.
@@ -32,6 +35,10 @@ end
 def run_tests(output_path)
   require "test/unit/collector/dir"
   require "test/unit/ui/console/testrunner"
+
+  # For some reason not everything gets picked up for coverage when manually
+  # setting up Test::Unit as below. Requiring core gets us most of the way there
+  require_relative "../core"
 
   collector = Test::Unit::Collector::Dir.new
   suite = collector.collect(TEST_DIR)

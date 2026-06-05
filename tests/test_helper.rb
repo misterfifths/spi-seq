@@ -23,7 +23,9 @@ begin
     add_filter "utils/midi_utils.rb"
     add_filter "utils/lifecycle_utils.rb"
   end
-rescue LoadError  # rubocop:disable Lint/SuppressedException
+rescue LoadError
+  require_relative "../utils/internal_utils"
+  SpiSeq::Log.warn("coverage is unavailable")
 end
 
 require "test/unit"
