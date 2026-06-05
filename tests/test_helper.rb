@@ -18,7 +18,8 @@ begin
 
     add_filter "core.rb"
 
-    # Some of utils/ is not very testable since it's niche Sonic Pi stuff.
+    # ExtApi is purely Sonic Pi stuff, as is a lot of utils/.
+    add_filter "extapi.rb"
     add_filter "utils/midi_utils.rb"
     add_filter "utils/lifecycle_utils.rb"
   end
