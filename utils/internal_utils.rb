@@ -129,4 +129,23 @@ module SpiSeq
       log("warning: #{msg}", channel)
     end
   end
+
+  module Random
+    # This is compatible with Sonic Pi's, which always returns a float.
+    def self.rand_f(max_or_range = 1)
+      return ExtApi.rand(max_or_range) if ExtApi.in_sonic_pi?
+
+      max_or_range = 0..max_or_range if max_or_range.is_a?(Numeric)
+      max_or_range.min + Kernel.rand * max_or_range.max
+    end
+
+    def self.chance(p)
+      rand_f < p
+    end
+
+    def self.one_in(n)
+      # Sonic Pi offers this but it's easy enough to implement on top of rand.
+      chance(1 / n.to_f)
+    end
+  end
 end

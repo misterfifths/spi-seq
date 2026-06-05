@@ -10,9 +10,6 @@
 # There is only one global set of events; having multiple active players - much
 # less threads - is a bad idea.
 #
-# These are not included in the ExtApi::Stubs module because they are not of
-# practical use outside of the tests.
-#
 # Note that since these are applied to the ExtApi module itself, they will be
 # used even if we're inside Sonic Pi. Because Sonic Pi uses a single Ruby
 # context per launch, loading this module will break playback from spi-seq in

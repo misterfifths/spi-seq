@@ -7,8 +7,7 @@
 #    module serves as sort of a to-do list for what spi-seq needs from the
 #    external environment.
 # 2. It allows an easy way to mock these methods (and to know which ones we need
-#    to mock), both for tests and so that some portion of the code can run
-#    outside of Sonic Pi.
+#    to mock) for tests.
 
 # @private
 module ExtApi
@@ -40,11 +39,10 @@ module ExtApi
     end
 
     [
-      # General helpers
+      # Output, wrapped in SpiSeq::Log
       :puts,
 
-      # Randomness. We could easily use builtins, but we want to tie into Sonic
-      # Pi's seed functionality.
+      # Randomness, wrapped in SpiSeq::Random
       :rand,
 
       # Internal synth playback
@@ -62,20 +60,18 @@ module ExtApi
       :current_bpm, :with_bpm_mul,
 
       # Timing
-      :vt, :at,
-      :sleep,
+      :vt, :sleep,
       :use_real_time, :with_real_time,
 
       # Timestate, threading, synchronization
-      :live_loop, :in_thread,
+      :live_loop,
+      :in_thread, :at,
       :get, :set,
       :cue, :sync,
       :get_event  # undocumented; see trackrecorder.rb for some notes
     ].each do |fwd|
       define_method(fwd) do |*args, **kwargs, &block|
-        ensure_inited
-        m = @spi.nil? ? Stubs.method(fwd) : @spi.method(fwd)
-        m.call(*args, **kwargs, &block)
+        spi_call(fwd, *args, **kwargs, &block)
       end
     end
 
@@ -87,24 +83,9 @@ module ExtApi
     # Make a direct call to a method on the Sonic Pi context. Only for use by
     # tests, to call methods that would not otherwise be exposed on ExtApi.
     def spi_call(method, *args, **kwargs, &block)
-      raise RuntimeError, "not in Sonic Pi" unless in_sonic_pi?
+      ensure_inited
+      raise RuntimeError, "not in Sonic Pi" if @spi.nil?
       @spi.send(method, *args, **kwargs, &block)
-    end
-  end
-end
-
-# Implementations of some Sonic Pi methods that are both accurate to the
-# original and useful for getting spi-seq code running outside of Sonic Pi.
-# Various other methods are mocked in far less functional or niche ways for the
-# tests - see tests/player_extapi_stubs.rb, for example. The delegator above
-# will call these if we're not in Sonic Pi.
-# @private
-module ExtApi
-  module Stubs
-    def self.rand(max_or_range = 1)
-      # Sonic Pi's is float-oriented
-      max_or_range = 0..max_or_range if max_or_range.is_a?(Numeric)
-      max_or_range.min + Kernel.rand * max_or_range.max
     end
   end
 end

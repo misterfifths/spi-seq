@@ -716,16 +716,16 @@ class Track < TrackBase
   # @see #down
   def rand_octave(range = 1, p: 0.5)
     mutate_each_step do |step|
-      next step unless ExtApi.rand < p
+      next step unless SpiSeq::Random.chance(p)
 
       # We've already decided to shift, so ignore random 0 values. Not using
       # rand_i here since it's exclusive. rand is too, but we're rounding.
       shift = 0
       while shift == 0
         if range.is_a?(Range)
-          shift = ExtApi.rand(range).round
+          shift = SpiSeq::Random.rand_f(range).round
         else
-          shift = ExtApi.rand(-range..range).round
+          shift = SpiSeq::Random.rand_f(-range..range).round
         end
       end
 
@@ -1396,9 +1396,9 @@ class Track < TrackBase
     tone_shifts = [0] if tone_shifts == 0 || tone_shifts.nil?
 
     mutate_each_step do |step|
-      tone_shift = (ExtApi.rand < p) ? tone_shifts.sample : 0
-      gate_shift = (ExtApi.rand < p) ? ExtApi.rand(gate_delta) : 0
-      velf_shift = (ExtApi.rand < p) ? ExtApi.rand(velf_delta) : 0
+      tone_shift = SpiSeq::Random.chance(p) ? tone_shifts.sample : 0
+      gate_shift = SpiSeq::Random.chance(p) ? SpiSeq::Random.rand_f(gate_delta) : 0
+      velf_shift = SpiSeq::Random.chance(p) ? SpiSeq::Random.rand_f(velf_delta) : 0
 
       if tone_shift != 0
         step = step.transpose(tone_shift)

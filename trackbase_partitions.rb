@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "trackbase"
+require_relative "utils/internal_utils"
 
 # The slot partition methods and their select/reject/clear/inverse clear
 # variants. There's really very little code in here, but there is a shocking
@@ -909,7 +910,7 @@ class TrackBase
   # @see #clear_rand
   # @see #clear_except_rand
   def partition_rand(p = 0.5, drop: true)
-    partition_slots(drop: drop) { ExtApi.rand < p }
+    partition_slots(drop: drop) { SpiSeq::Random.chance(p) }
   end
 
   alias rand_partition partition_rand
