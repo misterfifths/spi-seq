@@ -34,9 +34,9 @@ class AccumTest < Test::Unit::TestCase
     assert_std_accum 12, max: 13, mode: :freeze, play_count: 4, deltas: [0, 12, 13, 13]
 
     # shouldn't step below min
-    assert_std_accum -1, min: -3, mode: :freeze, play_count: 6, deltas: [0, -1, -2, -3, -3, -3]
-    assert_std_accum -1, min: -1, mode: :freeze, play_count: 4, deltas: [0, -1, -1, -1]
-    assert_std_accum -12, min: -13, mode: :freeze, play_count: 4, deltas: [0, -12, -13, -13]
+    assert_std_accum(-1, min: -3, mode: :freeze, play_count: 6, deltas: [0, -1, -2, -3, -3, -3])
+    assert_std_accum(-1, min: -1, mode: :freeze, play_count: 4, deltas: [0, -1, -1, -1])
+    assert_std_accum(-12, min: -13, mode: :freeze, play_count: 4, deltas: [0, -12, -13, -13])
   end
 
   def test_wrap
@@ -49,13 +49,13 @@ class AccumTest < Test::Unit::TestCase
     assert_std_accum 3, max: 4, mode: :wrap, play_count: 6, deltas: [0, 3, 1, 4, 2, 0]
 
     # 0 -3 -6->4 1 -2 -5 -8->2
-    assert_std_accum -3, min: -5, max: 4, mode: :wrap, play_count: 7, deltas: [0, -3, 4, 1, -2, -5, 2]
+    assert_std_accum(-3, min: -5, max: 4, mode: :wrap, play_count: 7, deltas: [0, -3, 4, 1, -2, -5, 2])
 
     # 0 -3 -6 -9->0 -3 -6
-    assert_std_accum -3, min: -6, max: 2, mode: :wrap, play_count: 6, deltas: [0, -3, -6, 0, -3, -6]
+    assert_std_accum(-3, min: -6, max: 2, mode: :wrap, play_count: 6, deltas: [0, -3, -6, 0, -3, -6])
 
     # 0 -1 -2 -3->0 -1
-    assert_std_accum -1, min: -2, max: 0, mode: :wrap, play_count: 5, deltas: [0, -1, -2, 0, -1]
+    assert_std_accum(-1, min: -2, max: 0, mode: :wrap, play_count: 5, deltas: [0, -1, -2, 0, -1])
   end
 
   def test_reverse

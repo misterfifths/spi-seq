@@ -61,10 +61,6 @@ Lint/BinaryOperatorWithIdenticalOperands:
     - 'tests/test_interval.rb'
     - 'tests/test_notelength.rb'
 
-Lint/AmbiguousOperator:
-  Exclude:
-    - 'tests/test_accum.rb'
-
 Layout:
   Enabled: false
 
