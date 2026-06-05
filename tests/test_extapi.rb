@@ -19,20 +19,4 @@ class ExtApiTest < Test::Unit::TestCase
     assert ExtApi.rand(1...5) < 5
     assert ExtApi.rand(1..5) <= 6
   end
-
-  def test_get_set
-    assert_nil ExtApi.get(:key)
-
-    ExtApi.set(:key, 123)
-    assert_equal ExtApi.get(:key), 123
-    ExtApi.set(:key, "abc")
-    assert_equal ExtApi.get(:key), "abc"
-
-    callable = ExtApi.get
-    assert_equal callable[:key], "abc"
-
-    ExtApi.set(:key, nil)
-    assert_nil ExtApi.get(:key)
-    assert_nil callable[:key]
-  end
 end

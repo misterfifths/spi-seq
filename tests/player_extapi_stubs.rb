@@ -171,5 +171,15 @@ module ExtApi
     def sync(name)
       @events << {type: :sync, t: vt, name: name}
     end
+
+    def get(key)
+      @timespace_vals ||= {}
+      @timespace_vals[key]
+    end
+
+    def set(key, val)
+      @timespace_vals ||= {}
+      @timespace_vals[key] = val
+    end
   end
 end

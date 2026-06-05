@@ -110,19 +110,5 @@ module ExtApi
       max_or_range = 0..max_or_range if max_or_range.is_a?(Numeric)
       max_or_range.min + Kernel.rand * max_or_range.max
     end
-
-    def self.get(key = nil)
-      @timespace_vals ||= {}
-
-      # This behavior is kind of undocumented, but shows up in the examples.
-      return ->(k) { @timespace_vals[k] } if key.nil?
-
-      @timespace_vals[key]
-    end
-
-    def self.set(key, val)
-      @timespace_vals ||= {}
-      @timespace_vals[key] = val
-    end
   end
 end
