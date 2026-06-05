@@ -89,10 +89,10 @@ def cc_watcher_live_loop(loop_name, port: nil, channel: nil, &block)
   cue_path = "/midi:#{port}:#{channel}/control_change"
 
   ExtApi.live_loop loop_name do
-    ExtApi.use_real_time
-
-    cc, val = ExtApi.sync(cue_path)
-    SpiSeq::Utils.call_varargs(block, cc, val)
+    ExtApi.with_real_time do
+      cc, val = ExtApi.sync(cue_path)
+      SpiSeq::Utils.call_varargs(block, cc, val)
+    end
   end
 end
 

@@ -61,7 +61,7 @@ module ExtApi
 
       # Timing
       :vt, :sleep,
-      :use_real_time, :with_real_time,
+      :with_real_time,
 
       # Timestate, threading, synchronization
       :live_loop,
