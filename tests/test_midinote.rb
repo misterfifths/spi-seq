@@ -18,6 +18,7 @@ class MIDINoteTest < Test::Unit::TestCase
     assert_raises { N(nil) }
     assert_raises { N(:nonsense) }
     assert_raises { N("nope") }
+    assert_raises { N([]) }
 
     c4 = N(:c4)
     assert_same N(c4), c4
@@ -242,9 +243,6 @@ class MIDINoteTest < Test::Unit::TestCase
     assert_attrs 1.5 + N(:c4), 61, :cs4, :cs
     assert_attrs N(:c4) - 1.5, 59, :b3, :b
 
-    # Doesn't seem worth worrying about multiplication and division, or the
-    # odd case of both operands being MIDINotes.
-
     assert N(:c4) >= 60
     assert N(:c4) >= 59
     assert N(:c4) > 59
@@ -318,6 +316,13 @@ class MIDINoteTest < Test::Unit::TestCase
     end
 
     assert_equal [N(:c3), N(:c2), N(:c1)].sort, [N(:c1), N(:c2), N(:c3)]
+
+    # Very niche things about Numeric that no one should ever use...
+    assert_equal N(60) + N(30), N(90)
+    assert_equal N(60) * 2, N(120)
+    assert_equal N(60) * N(2), N(120)
+    assert_equal N(60) / 2, N(30)
+    assert_equal N(60) / N(2), N(30)
   end
 
   def test_snap

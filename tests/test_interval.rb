@@ -22,14 +22,25 @@ class IntervalTest < Test::Unit::TestCase
   def assert_new(size, quality, number, sym, octave_span = 1, simple_interval = nil)
     # Instances constructed in any of these ways should be equivalent.
 
-    i = Interval.new(sym)
+    i = I(sym)
     assert_attrs i, size, quality, number, sym, octave_span, simple_interval
 
-    i = Interval.new(size: size, quality: quality)
+    i = I(size: size, quality: quality)
     assert_attrs i, size, quality, number, sym, octave_span, simple_interval
 
-    i = Interval.new(number: number, quality: quality)
+    i = I(number: number, quality: quality)
     assert_attrs i, size, quality, number, sym, octave_span, simple_interval
+  end
+
+  def test_initialization
+    assert_raises(ArgumentError) { Interval.new }
+
+    assert_raises(ArgumentError) { Interval.new(:P1, number: 1)}
+    assert_raises(ArgumentError) { Interval.new(:P1, size: 0)}
+    assert_raises(ArgumentError) { Interval.new(:P1, quality: :perfect)}
+
+    assert_raises(ArgumentError) { Interval.new(number: 1, size: 0) }
+    assert_raises(RangeError) { Interval.new(number: -1) }
   end
 
   def test_simple_intervals
@@ -238,7 +249,9 @@ class IntervalTest < Test::Unit::TestCase
     assert_attrs aug1 - 1, 0, :perfect, 1, :P1
     assert_attrs Interval.new(:A6) - 2, 8, :minor, 6, :m6
 
-    # Doesn't seem worth testing division.
+    # I don't know why anyone would use division but it's there.
+    assert_attrs Interval.new(size: 6) / 2, 3, :minor, 3, :m3
+    assert_attrs Interval.new(size: 6) / Interval.new(size: 2), 3, :minor, 3, :m3
   end
 
   def test_comparisons

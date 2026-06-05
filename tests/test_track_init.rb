@@ -19,6 +19,8 @@ class TrackInitTest < Test::Unit::TestCase
     assert_grid T[:a1, :b2, :c3], [[:a1], [:b2], [:c3]]
 
     assert_raises { T[] }
+    assert_raises(TypeError) { T[false] }
+    assert_raises(TypeError) { T[[false]] }
   end
 
   def test_enums
@@ -57,6 +59,9 @@ class TrackInitTest < Test::Unit::TestCase
     assert_grid Track.from_grid([[:a1, :b2], [:c3]]), [[:a1, :b2], [:c3]]
     assert_grid Track.from_grid([[:a1, :b2], :c3]), [[:a1, :b2], [:c3]]
     assert_grid Track.from_grid([:a1, :b2, :c3]), [[:a1], [:b2], [:c3]]
+
+    # Make sure the alias works
+    assert_grid Tg([:a1, :b2, :c3]), [[:a1], [:b2], [:c3]]
   end
 
   def test_granularity_and_timescale

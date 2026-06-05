@@ -45,8 +45,13 @@ class CCTrackTest < Test::Unit::TestCase
     assert_grid CCT[[a, b], [c]], [[a, b], [c]]
     assert_grid CCT[[a, b], c], [[a, b], [c]]
     assert_grid CCT[a, b, c], [[a], [b], [c]]
+    assert_grid CCT.from_grid([a, b, c]), [[a], [b], [c]]
+    assert_grid CCTg([a, b, c]), [[a], [b], [c]]
 
     assert_raises { CCT[] }
+    assert_raises(TypeError) { CCT[:c4] }
+    assert_raises(TypeError) { CCT[[:c4]] }
+    assert_raises(TypeError) { CCT.from_grid([[:c4]]) }
   end
 
   def test_dupe_numbers
@@ -67,6 +72,8 @@ class CCTrackTest < Test::Unit::TestCase
 
     x = CC(50, 50)
     assert_grid CCTrack.simple(5, [1, x, 3]), [[a], [x], [c]]
+
+    assert_raises(TypeError) { CCTrack.simple(5, [:nope]) }
   end
 
   def test_track_to_cc
