@@ -4,10 +4,15 @@
 # test_helper should be required first so coverage catches other requires.
 require_relative "test_helper"
 require_relative "../extapi"
+require_relative "../utils/internal_utils"
 
 BASE_DIR = File.expand_path("#{File.dirname(__FILE__)}/..")
 TEST_DIR = File.join(BASE_DIR, "tests")
-exit Test::Unit::AutoRunner.run(true, TEST_DIR) unless ExtApi.in_sonic_pi?
+
+unless ExtApi.in_sonic_pi?
+  SpiSeq::Log.silence!
+  exit Test::Unit::AutoRunner.run(true, TEST_DIR)
+end
 
 
 # To run the tests from inside Sonic Pi, require this file, then call
@@ -25,8 +30,6 @@ exit Test::Unit::AutoRunner.run(true, TEST_DIR) unless ExtApi.in_sonic_pi?
 # Pi after running the tests to return to a usable environment.
 
 def run_tests(output_path)
-  require_relative "../utils/internal_utils"
-
   require "test/unit/collector/dir"
   require "test/unit/ui/console/testrunner"
 
@@ -45,11 +48,13 @@ def run_tests(output_path)
   end
   subsuites_to_remove.each { |subsuite| suite.delete(subsuite) }
 
-  Test::Unit::UI::Console::TestRunner.run(suite, {
-    use_color: false,
-    progress_style: :mark,
-    output: File.open(File.expand_path(output_path), "w")
-  })
+  SpiSeq::Log.with_silence do
+    Test::Unit::UI::Console::TestRunner.run(suite, {
+      use_color: false,
+      progress_style: :mark,
+      output: File.open(File.expand_path(output_path), "w")
+    })
+  end
 
   if suite.passed?
     SpiSeq::Log.log("Tests passed!")

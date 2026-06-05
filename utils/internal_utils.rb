@@ -116,7 +116,20 @@ module SpiSeq
   end
 
   module Log
+    def self.silence!(flag = true)
+      @silent = flag
+    end
+
+    def self.with_silence
+      old_silent = @silent
+      @silent = true
+      yield
+      @silent = old_silent
+    end
+
     def self.log(msg, channel = "spi-seq")
+      return if @silent
+
       s = "[#{channel}] #{msg}"
       if ExtApi.in_sonic_pi?
         ExtApi.puts(s)
