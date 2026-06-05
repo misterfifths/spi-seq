@@ -616,18 +616,16 @@ details.</p></div>
 213
 214
 215
-216
-217</pre>
+216</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'theory/arp.rb', line 143</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_arpeggiate'>arpeggiate</span><span class='lparen'>(</span><span class='id identifier rubyid_notes'>notes</span><span class='comma'>,</span> <span class='id identifier rubyid_direction'>direction</span><span class='comma'>,</span> <span class='label'>spread:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>extra_octaves:</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+  <span class='comment'># See the note in SpiSeq::Utils.enumerable? about arrayify.
+</span>  <span class='id identifier rubyid_notes'>notes</span> <span class='op'>=</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_arrayify'>arrayify</span><span class='lparen'>(</span><span class='id identifier rubyid_notes'>notes</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_n'>n</span><span class='op'>|</span> <span class='const'><span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="MIDINote.html#new-class_method" title="MIDINote.new (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
   <span class='kw'>return</span> <span class='lbracket'>[</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id identifier rubyid_notes'>notes</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
 
-  <span class='comment'># See the note in ExtApi.enumerable? about why we need to explicitly call
-</span>  <span class='comment'># to_a here.
-</span>  <span class='id identifier rubyid_notes'>notes</span> <span class='op'>=</span> <span class='id identifier rubyid_notes'>notes</span><span class='period'>.</span><span class='id identifier rubyid_to_a'>to_a</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_n'>n</span><span class='op'>|</span> <span class='const'><span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="MIDINote.html#new-class_method" title="MIDINote.new (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
   <span class='id identifier rubyid_orig_notes'>orig_notes</span> <span class='op'>=</span> <span class='id identifier rubyid_notes'>notes</span><span class='period'>.</span><span class='id identifier rubyid_dup'>dup</span>
 
   <span class='id identifier rubyid_extra_octaves'>extra_octaves</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_octave_shift'>octave_shift</span><span class='op'>|</span>

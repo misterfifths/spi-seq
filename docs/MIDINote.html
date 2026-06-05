@@ -1097,23 +1097,23 @@ number, e.g. <code>:cs4</code>.</p>
       <pre class="lines">
 
 
-399
 400
 401
 402
 403
 404
-405</pre>
+405
+406</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 399</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 400</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_has_octave?'>has_octave?</span><span class='lparen'>(</span><span class='id identifier rubyid_note'>note</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>true</span> <span class='kw'>if</span> <span class='id identifier rubyid_note'>note</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Numeric</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_note'>note</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="" title="MIDINote (class)">MIDINote</a></span></span><span class='rparen'>)</span>
 
   <span class='id identifier rubyid_match'>match</span> <span class='op'>=</span> <span class='const'>NOTE_REGEX</span><span class='period'>.</span><span class='id identifier rubyid_match'>match</span><span class='lparen'>(</span><span class='id identifier rubyid_note'>note</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Invalid note symbol </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_note'>note</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_match'>match</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
-  <span class='op'>!</span><span class='id identifier rubyid_match'>match</span><span class='lbracket'>[</span><span class='symbol'>:octave</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
+  <span class='op'>!</span><span class='id identifier rubyid_match'>match</span><span class='lbracket'>[</span><span class='symbol'>:octave</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1234,7 +1234,8 @@ octave 4.</p>
 123
 124
 125
-126</pre>
+126
+127</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 89</span>
@@ -1272,6 +1273,7 @@ octave 4.</p>
 </span>  <span class='id identifier rubyid_instance'>instance</span> <span class='op'>=</span> <span class='kw'>super</span>
   <span class='ivar'>@note_cache</span><span class='lbracket'>[</span><span class='id identifier rubyid_note'>note</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_instance'>instance</span>
   <span class='ivar'>@note_cache</span><span class='lbracket'>[</span><span class='id identifier rubyid_cache_key'>cache_key</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_instance'>instance</span>
+  <span class='ivar'>@note_cache</span><span class='lbracket'>[</span><span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_instance'>instance</span>
   <span class='ivar'>@note_cache</span><span class='lbracket'>[</span><span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_instance'>instance</span>
   <span class='ivar'>@note_cache</span><span class='lbracket'>[</span><span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_instance'>instance</span>
 
@@ -1349,14 +1351,14 @@ are considered rests.</p>
       <pre class="lines">
 
 
-411
 412
 413
 414
-415</pre>
+415
+416</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 411</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 412</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_rest?'>rest?</span><span class='lparen'>(</span><span class='id identifier rubyid_val'>val</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>true</span> <span class='kw'>if</span> <span class='id identifier rubyid_val'>val</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
@@ -1440,12 +1442,12 @@ are considered rests.</p>
       <pre class="lines">
 
 
-354
 355
-356</pre>
+356
+357</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 354</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 355</span>
 
 <span class='kw'>def</span> <span class='op'>*</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-class_method" title="MIDINote.new (method)">new</a></span></span><span class='lparen'>(</span><span class='ivar'>@number</span> <span class='op'>*</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span><span class='rparen'>)</span>
@@ -1521,12 +1523,12 @@ are considered rests.</p>
       <pre class="lines">
 
 
-340
 341
-342</pre>
+342
+343</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 340</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 341</span>
 
 <span class='kw'>def</span> <span class='op'>+</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_transpose'>transpose</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span><span class='rparen'>)</span>
@@ -1602,12 +1604,12 @@ are considered rests.</p>
       <pre class="lines">
 
 
-347
 348
-349</pre>
+349
+350</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 347</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 348</span>
 
 <span class='kw'>def</span> <span class='op'>-</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_transpose'>transpose</span><span class='lparen'>(</span><span class='op'>-</span><span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span><span class='rparen'>)</span>
@@ -1683,12 +1685,12 @@ are considered rests.</p>
       <pre class="lines">
 
 
-361
 362
-363</pre>
+363
+364</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 361</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 362</span>
 
 <span class='kw'>def</span> <span class='op'>/</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-class_method" title="MIDINote.new (method)">new</a></span></span><span class='lparen'>(</span><span class='ivar'>@number</span> <span class='op'>/</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span><span class='rparen'>)</span>
@@ -1765,13 +1767,13 @@ of the values understood by <span class='object_link'><a href="#new-class_method
       <pre class="lines">
 
 
-279
 280
 281
-282</pre>
+282
+283</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 279</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 280</span>
 
 <span class='kw'>def</span> <span class='op'>&lt;</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='ivar'>@number</span> <span class='op'>&lt;</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span> <span class='kw'>if</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Numeric</span><span class='rparen'>)</span>
@@ -1849,13 +1851,13 @@ of the values understood by <span class='object_link'><a href="#new-class_method
       <pre class="lines">
 
 
-285
 286
 287
-288</pre>
+288
+289</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 285</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 286</span>
 
 <span class='kw'>def</span> <span class='op'>&lt;=</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='ivar'>@number</span> <span class='op'>&lt;=</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span> <span class='kw'>if</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Numeric</span><span class='rparen'>)</span>
@@ -1933,13 +1935,13 @@ of the values understood by <span class='object_link'><a href="#new-class_method
       <pre class="lines">
 
 
-303
 304
 305
-306</pre>
+306
+307</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 303</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 304</span>
 
 <span class='kw'>def</span> <span class='op'>&lt;=&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='ivar'>@number</span> <span class='op'>&lt;=&gt;</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span> <span class='kw'>if</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Numeric</span><span class='rparen'>)</span>
@@ -2021,7 +2023,6 @@ of the values understood by <span class='object_link'><a href="#new-class_method
       <pre class="lines">
 
 
-309
 310
 311
 312
@@ -2035,10 +2036,11 @@ of the values understood by <span class='object_link'><a href="#new-class_method
 320
 321
 322
-323</pre>
+323
+324</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 309</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 310</span>
 
 <span class='kw'>def</span> <span class='op'>==</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>false</span> <span class='kw'>if</span> <span class='const'><span class='object_link'><a href="" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_rest?'><span class='object_link'><a href="#rest%3F-class_method" title="MIDINote.rest? (method)">rest?</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
@@ -2127,13 +2129,13 @@ of the values understood by <span class='object_link'><a href="#new-class_method
       <pre class="lines">
 
 
-291
 292
 293
-294</pre>
+294
+295</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 291</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 292</span>
 
 <span class='kw'>def</span> <span class='op'>&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='ivar'>@number</span> <span class='op'>&gt;</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span> <span class='kw'>if</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Numeric</span><span class='rparen'>)</span>
@@ -2211,13 +2213,13 @@ of the values understood by <span class='object_link'><a href="#new-class_method
       <pre class="lines">
 
 
-297
 298
 299
-300</pre>
+300
+301</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 297</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 298</span>
 
 <span class='kw'>def</span> <span class='op'>&gt;=</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='ivar'>@number</span> <span class='op'>&gt;=</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span> <span class='kw'>if</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Numeric</span><span class='rparen'>)</span>
@@ -2297,12 +2299,12 @@ down by the given amount.</p>
       <pre class="lines">
 
 
-186
 187
-188</pre>
+188
+189</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 186</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 187</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_down'>down</span><span class='lparen'>(</span><span class='id identifier rubyid_octave_shift'>octave_shift</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_shift_octave'>shift_octave</span><span class='lparen'>(</span><span class='op'>-</span><span class='id identifier rubyid_octave_shift'>octave_shift</span><span class='rparen'>)</span>
@@ -2386,14 +2388,14 @@ and <code>:db</code>.</li>
       <pre class="lines">
 
 
-225
 226
 227
 228
-229</pre>
+229
+230</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 225</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 226</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_match?'>match?</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>false</span> <span class='kw'>if</span> <span class='const'><span class='object_link'><a href="" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_rest?'><span class='object_link'><a href="#rest%3F-class_method" title="MIDINote.rest? (method)">rest?</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
@@ -2449,12 +2451,12 @@ and <code>:db</code>.</li>
       <pre class="lines">
 
 
-386
 387
-388</pre>
+388
+389</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 386</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 387</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_repr'>repr</span>
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@sym</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
@@ -2531,13 +2533,13 @@ by the given amount.</p>
       <pre class="lines">
 
 
-169
 170
 171
-172</pre>
+172
+173</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 169</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 170</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_shift_octave'>shift_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>self</span> <span class='kw'>if</span> <span class='id identifier rubyid_shift'>shift</span> <span class='op'>==</span> <span class='int'>0</span>
@@ -2627,7 +2629,6 @@ notes to which this note can snap. Must consist of values understood by
       <pre class="lines">
 
 
-238
 239
 240
 241
@@ -2643,10 +2644,11 @@ notes to which this note can snap. Must consist of values understood by
 251
 252
 253
-254</pre>
+254
+255</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 238</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 239</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_snap'>snap</span><span class='lparen'>(</span><span class='id identifier rubyid_notes'>notes</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_notes'>notes</span> <span class='op'>=</span> <span class='id identifier rubyid_notes'>notes</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_n'>n</span><span class='op'>|</span> <span class='const'><span class='object_link'><a href="" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-class_method" title="MIDINote.new (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -2755,12 +2757,12 @@ one of the scales known to the <span class='object_link'><a href="Scale.html" ti
       <pre class="lines">
 
 
-262
 263
-264</pre>
+264
+265</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 262</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 263</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_snap_to_scale'>snap_to_scale</span><span class='lparen'>(</span><span class='id identifier rubyid_tonic'>tonic</span><span class='comma'>,</span> <span class='id identifier rubyid_scale_name'>scale_name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_snap'>snap</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="Scale.html" title="Scale (class)">Scale</a></span></span><span class='period'>.</span><span class='id identifier rubyid_full_scale'><span class='object_link'><a href="Scale.html#full_scale-class_method" title="Scale.full_scale (method)">full_scale</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_tonic'>tonic</span><span class='comma'>,</span> <span class='id identifier rubyid_scale_name'>scale_name</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -2814,12 +2816,12 @@ one of the scales known to the <span class='object_link'><a href="Scale.html" ti
       <pre class="lines">
 
 
-271
 272
-273</pre>
+273
+274</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 271</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 272</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_f'>to_f</span>
   <span class='ivar'>@number</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span>
@@ -2873,12 +2875,12 @@ one of the scales known to the <span class='object_link'><a href="Scale.html" ti
       <pre class="lines">
 
 
-375
 376
-377</pre>
+377
+378</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 375</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 376</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_s'>to_s</span>
   <span class='ivar'>@sym</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
@@ -2934,12 +2936,12 @@ a natural (when possible) or a sharp.</p>
       <pre class="lines">
 
 
-369
 370
-371</pre>
+371
+372</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 369</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 370</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_sym'>to_sym</span>
   <span class='ivar'>@sym</span>
@@ -3019,13 +3021,13 @@ a natural (when possible) or a sharp.</p>
       <pre class="lines">
 
 
-193
 194
 195
-196</pre>
+196
+197</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 193</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 194</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_transpose'>transpose</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>self</span> <span class='kw'>if</span> <span class='id identifier rubyid_shift'>shift</span> <span class='op'>==</span> <span class='int'>0</span>
@@ -3105,12 +3107,12 @@ by the given amount.</p>
       <pre class="lines">
 
 
-178
 179
-180</pre>
+180
+181</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 178</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 179</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_up'>up</span><span class='lparen'>(</span><span class='id identifier rubyid_octave_shift'>octave_shift</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_shift_octave'>shift_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_octave_shift'>octave_shift</span><span class='rparen'>)</span>
@@ -3186,13 +3188,13 @@ by the given amount.</p>
       <pre class="lines">
 
 
-160
 161
 162
-163</pre>
+163
+164</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 160</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 161</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_octave'>with_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_new_octave'>new_octave</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>self</span> <span class='kw'>if</span> <span class='id identifier rubyid_new_octave'>new_octave</span> <span class='op'>==</span> <span class='ivar'>@octave</span>
@@ -3274,12 +3276,12 @@ octave down) or <code>:bs</code> (one octave up). For example,</p>
       <pre class="lines">
 
 
-212
 213
-214</pre>
+214
+215</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 212</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 213</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_pitch_class'>with_pitch_class</span><span class='lparen'>(</span><span class='id identifier rubyid_cls'>cls</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-class_method" title="MIDINote.new (method)">new</a></span></span><span class='lparen'>(</span><span class='symbol'>:&quot;#{</span><span class='id identifier rubyid_cls'>cls</span><span class='embexpr_end'>}</span><span class='embexpr_beg'>#{</span><span class='ivar'>@octave</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>

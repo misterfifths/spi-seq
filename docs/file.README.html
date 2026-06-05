@@ -67,9 +67,8 @@
 <p>Under the name <a href="https://soundcloud.com/full-empty-214000746">Full Empty</a>, with the aid of a few hardware synthesizers, I've made quite a few tracks with spi-seq. Some personal favorites are <a href="https://soundcloud.com/full-empty-214000746/2-8-26">&quot;2-18-26&quot;</a> and <a href="https://soundcloud.com/full-empty-214000746/f00f-redux">&quot;F00F Redux&quot;</a>. The source for the melody of the latter is in <a href="examples/f00f.rb">the examples</a>.</p>
 <h2 id="Installation">Installation</h2>
 <p>You will of course need to install <a href="https://sonic-pi.net/">Sonic Pi</a>.</p>
-<p>Clone or download this repository somewhere on your computer. Then, in a Sonic Pi workspace, <code>require</code> the <code>core.rb</code> file, which loads all the components of spi-seq, and call the <code>init_spi_seq</code> method. For example, if you downloaded the code to your home directory:</p>
+<p>Clone or download this repository somewhere on your computer. Then, in a Sonic Pi workspace, <code>require</code> the <code>core.rb</code> file, which loads all the components of spi-seq. For example, if you downloaded the code to your home directory:</p>
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_require'>require</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>~/spi-seq/core</span><span class='tstring_end'>&quot;</span></span>
-<span class='id identifier rubyid_init_spi_seq'><span class='object_link'><a href="top-level-namespace.html#init_spi_seq-instance_method" title="#init_spi_seq (method)">init_spi_seq</a></span></span>
 </code></pre>
 <p>Read on for an introduction to using the library, or see the <a href="examples">examples</a> or <a href="https://misterfifths.github.io/spi-seq">documentation</a>.</p>
 <h2 id="Whirlwind_tour">Whirlwind tour</h2>
@@ -382,7 +381,6 @@
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_use_bpm'>use_bpm</span> <span class='int'>95</span>
 
 <span class='id identifier rubyid_require'>require</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>~/spi-seq/core</span><span class='tstring_end'>&quot;</span></span>
-<span class='id identifier rubyid_init_spi_seq'><span class='object_link'><a href="top-level-namespace.html#init_spi_seq-instance_method" title="#init_spi_seq (method)">init_spi_seq</a></span></span>
 
 <span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Track.html" title="Track (class)">Track</a></span></span><span class='period'>.</span><span class='id identifier rubyid_record'><span class='object_link'><a href="Track.html#record-class_method" title="Track.record (method)">record</a></span></span><span class='lparen'>(</span><span class='label'>cc:</span> <span class='int'>119</span><span class='comma'>,</span>
                  <span class='label'>granularity:</span> <span class='symbol'>:sixteenth</span><span class='comma'>,</span>
@@ -398,7 +396,6 @@
 <span class='id identifier rubyid_use_debug'>use_debug</span> <span class='kw'>false</span>
 
 <span class='id identifier rubyid_require'>require</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>~/spi-seq/core</span><span class='tstring_end'>&quot;</span></span>
-<span class='id identifier rubyid_init_spi_seq'><span class='object_link'><a href="top-level-namespace.html#init_spi_seq-instance_method" title="#init_spi_seq (method)">init_spi_seq</a></span></span>
 
 <span class='id identifier rubyid_uf'>uf</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='label'>port:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>arturia_microfreak</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='int'>7</span><span class='rbrace'>}</span>
 <span class='id identifier rubyid_mf'>mf</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='label'>port:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>minifreak_midi</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='int'>8</span><span class='rbrace'>}</span>

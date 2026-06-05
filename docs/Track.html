@@ -1406,16 +1406,16 @@ new track. Can be a <span class='object_link'><a href="NoteLength.html" title="N
       <pre class="lines">
 
 
-110
 111
 112
 113
 114
 115
-116</pre>
+116
+117</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 110</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 111</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_gridish'>gridish</span><span class='comma'>,</span> <span class='label'>granularity:</span> <span class='const'><span class='object_link'><a href="NoteLength.html" title="NoteLength (class)">NoteLength</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="NoteLength.html#Eighth-constant" title="NoteLength::Eighth (constant)">Eighth</a></span></span><span class='comma'>,</span> <span class='label'>scale:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>timescale:</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='comment'># Track itself does basically nothing with the scale; it&#39;s all handled by
@@ -1490,12 +1490,12 @@ it is played. See <span class='object_link'><a href="#initialize-instance_method
       <pre class="lines">
 
 
-37
 38
-39</pre>
+39
+40</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 37</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 38</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_scale'>scale</span>
   <span class='ivar'>@scale</span>
@@ -1772,7 +1772,6 @@ by <span class='object_link'><a href="NoteLength.html#new-class_method" title="N
       <pre class="lines">
 
 
-169
 170
 171
 172
@@ -1781,10 +1780,11 @@ by <span class='object_link'><a href="NoteLength.html#new-class_method" title="N
 175
 176
 177
-178</pre>
+178
+179</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 169</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 170</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_arp'><span class='object_link'><a href="top-level-namespace.html#arp-instance_method" title="#arp (method)">arp</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_notes'>notes</span><span class='comma'>,</span> <span class='id identifier rubyid_direction'>direction</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Arp.html" title="Arp (module)">Arp</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Arp.html#Up-constant" title="Arp::Up (constant)">Up</a></span></span><span class='comma'>,</span> <span class='label'>spread:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>extra_octaves:</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>pulses:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>length:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>rotate:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>full_cycle:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>granularity:</span> <span class='const'><span class='object_link'><a href="NoteLength.html" title="NoteLength (class)">NoteLength</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="NoteLength.html#Eighth-constant" title="NoteLength::Eighth (constant)">Eighth</a></span></span><span class='comma'>,</span> <span class='label'>timescale:</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_notes'>notes</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Arp.html" title="Arp (module)">Arp</a></span></span><span class='period'>.</span><span class='id identifier rubyid_arpeggiate'><span class='object_link'><a href="Arp.html#arpeggiate-class_method" title="Arp.arpeggiate (method)">arpeggiate</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_notes'>notes</span><span class='comma'>,</span> <span class='id identifier rubyid_direction'>direction</span><span class='comma'>,</span> <span class='label'>spread:</span> <span class='id identifier rubyid_spread'>spread</span><span class='comma'>,</span> <span class='label'>extra_octaves:</span> <span class='id identifier rubyid_extra_octaves'>extra_octaves</span><span class='rparen'>)</span>
@@ -1966,7 +1966,6 @@ new track. Can be a <span class='object_link'><a href="NoteLength.html" title="N
       <pre class="lines">
 
 
-225
 226
 227
 228
@@ -2024,10 +2023,11 @@ new track. Can be a <span class='object_link'><a href="NoteLength.html" title="N
 280
 281
 282
-283</pre>
+283
+284</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 225</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 226</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_isorhythm'>isorhythm</span><span class='lparen'>(</span><span class='id identifier rubyid_notes'>notes</span><span class='comma'>,</span> <span class='id identifier rubyid_gates'>gates</span><span class='comma'>,</span> <span class='label'>granularity:</span> <span class='const'><span class='object_link'><a href="NoteLength.html" title="NoteLength (class)">NoteLength</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="NoteLength.html#Eighth-constant" title="NoteLength::Eighth (constant)">Eighth</a></span></span><span class='comma'>,</span> <span class='label'>timescale:</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='comment'># Gameplan:
@@ -2378,12 +2378,6 @@ of 127.</p></div>
       <pre class="lines">
 
 
-386
-387
-388
-389
-390
-391
 392
 393
 394
@@ -2401,10 +2395,13 @@ of 127.</p></div>
 406
 407
 408
-409</pre>
+409
+410
+411
+412</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'trackrecorder.rb', line 386</span>
+      <pre class="code"><span class="info file"># File 'trackrecorder.rb', line 392</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_record'>record</span><span class='lparen'>(</span><span class='label'>cc:</span><span class='comma'>,</span> <span class='label'>cc_port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>cc_channel:</span> <span class='kw'>nil</span><span class='comma'>,</span>
                 <span class='label'>port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='kw'>nil</span><span class='comma'>,</span>
@@ -2412,9 +2409,6 @@ of 127.</p></div>
                 <span class='label'>trim_start:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>trim_end:</span> <span class='kw'>false</span><span class='comma'>,</span>
                 <span class='label'>min_gate:</span> <span class='float'>0.1</span><span class='comma'>,</span> <span class='label'>quantize_gates:</span> <span class='kw'>true</span><span class='comma'>,</span>
                 <span class='label'>ignore_vel:</span> <span class='kw'>false</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_cc_port'>cc_port</span><span class='comma'>,</span> <span class='id identifier rubyid_cc_channel'>cc_channel</span> <span class='op'>=</span> <span class='id identifier rubyid___resolve_cc_port_and_channel'>__resolve_cc_port_and_channel</span><span class='lparen'>(</span><span class='id identifier rubyid_cc_port'>cc_port</span><span class='comma'>,</span> <span class='id identifier rubyid_cc_channel'>cc_channel</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='id identifier rubyid_channel'>channel</span> <span class='op'>=</span> <span class='id identifier rubyid___resolve_midi_port_and_channel'>__resolve_midi_port_and_channel</span><span class='lparen'>(</span><span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='id identifier rubyid_channel'>channel</span><span class='rparen'>)</span>
-
   <span class='id identifier rubyid_start_time'>start_time</span> <span class='op'>=</span> <span class='id identifier rubyid_end_time'>end_time</span> <span class='op'>=</span> <span class='id identifier rubyid_timeline'>timeline</span> <span class='op'>=</span> <span class='kw'>nil</span>
   <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_with_real_time'>with_real_time</span> <span class='kw'>do</span>
     <span class='id identifier rubyid_start_time'>start_time</span><span class='comma'>,</span> <span class='id identifier rubyid_end_time'>end_time</span><span class='comma'>,</span> <span class='id identifier rubyid_timeline'>timeline</span> <span class='op'>=</span> <span class='id identifier rubyid_record_timeline'>record_timeline</span><span class='lparen'>(</span><span class='label'>control_cc:</span> <span class='id identifier rubyid_cc'>cc</span><span class='comma'>,</span> <span class='label'>cc_port:</span> <span class='id identifier rubyid_cc_port'>cc_port</span><span class='comma'>,</span> <span class='label'>cc_channel:</span> <span class='id identifier rubyid_cc_channel'>cc_channel</span><span class='comma'>,</span>
@@ -2552,7 +2546,6 @@ operation.</p></div>
       <pre class="lines">
 
 
-491
 492
 493
 494
@@ -2560,15 +2553,16 @@ operation.</p></div>
 496
 497
 498
-499</pre>
+499
+500</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 491</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 492</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_condense'>condense</span><span class='lparen'>(</span><span class='id identifier rubyid_times'>times</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='kw'>self</span>
   <span class='kw'>while</span> <span class='id identifier rubyid_times'>times</span> <span class='op'>&gt;</span> <span class='int'>0</span>
-    <span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_send'>send</span><span class='lparen'>(</span><span class='symbol'>:condense_once</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_condense_once'>condense_once</span>
     <span class='id identifier rubyid_times'>times</span> <span class='op'>-=</span> <span class='int'>1</span>
   <span class='kw'>end</span>
 
@@ -2662,12 +2656,12 @@ argument.</p>
       <pre class="lines">
 
 
-696
 697
-698</pre>
+698
+699</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 696</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 697</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_down'>down</span><span class='lparen'>(</span><span class='id identifier rubyid_octave_shift'>octave_shift</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_shift_octave'>shift_octave</span><span class='lparen'>(</span><span class='op'>-</span><span class='id identifier rubyid_octave_shift'>octave_shift</span><span class='rparen'>)</span>
@@ -2871,7 +2865,6 @@ a step, 0 - 1.</p></div>
       <pre class="lines">
 
 
-1392
 1393
 1394
 1395
@@ -2909,10 +2902,11 @@ a step, 0 - 1.</p></div>
 1427
 1428
 1429
-1430</pre>
+1430
+1431</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 1392</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 1393</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_evolve'>evolve</span><span class='lparen'>(</span><span class='label'>tone_shifts:</span> <span class='lbracket'>[</span><span class='op'>-</span><span class='int'>12</span><span class='comma'>,</span> <span class='int'>12</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>octave_limit:</span> <span class='int'>1</span><span class='op'>..</span><span class='int'>6</span><span class='comma'>,</span> <span class='label'>gate_delta:</span> <span class='float'>0.5</span><span class='comma'>,</span> <span class='label'>gate_limit:</span> <span class='float'>0.1</span><span class='op'>..</span><span class='int'>1</span><span class='comma'>,</span> <span class='label'>velf_delta:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>velf_limit:</span> <span class='float'>0.1</span><span class='op'>..</span><span class='int'>1</span><span class='comma'>,</span> <span class='label'>p:</span> <span class='float'>0.25</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_gate_delta'>gate_delta</span> <span class='op'>=</span> <span class='op'>-</span><span class='id identifier rubyid_gate_delta'>gate_delta</span><span class='op'>..</span><span class='id identifier rubyid_gate_delta'>gate_delta</span> <span class='kw'>unless</span> <span class='id identifier rubyid_gate_delta'>gate_delta</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Range</span><span class='rparen'>)</span>
@@ -2920,7 +2914,7 @@ a step, 0 - 1.</p></div>
   <span class='id identifier rubyid_tone_shifts'>tone_shifts</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id identifier rubyid_tone_shifts'>tone_shifts</span> <span class='op'>==</span> <span class='int'>0</span> <span class='op'>||</span> <span class='id identifier rubyid_tone_shifts'>tone_shifts</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
 
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span>
-    <span class='id identifier rubyid_tone_shift'>tone_shift</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_rand'>rand</span> <span class='op'>&lt;</span> <span class='id identifier rubyid_p'>p</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_choose'>choose</span><span class='lparen'>(</span><span class='id identifier rubyid_tone_shifts'>tone_shifts</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='int'>0</span>
+    <span class='id identifier rubyid_tone_shift'>tone_shift</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_rand'>rand</span> <span class='op'>&lt;</span> <span class='id identifier rubyid_p'>p</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='id identifier rubyid_tone_shifts'>tone_shifts</span><span class='period'>.</span><span class='id identifier rubyid_sample'>sample</span> <span class='op'>:</span> <span class='int'>0</span>
     <span class='id identifier rubyid_gate_shift'>gate_shift</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_rand'>rand</span> <span class='op'>&lt;</span> <span class='id identifier rubyid_p'>p</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_rand'>rand</span><span class='lparen'>(</span><span class='id identifier rubyid_gate_delta'>gate_delta</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='int'>0</span>
     <span class='id identifier rubyid_velf_shift'>velf_shift</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_rand'>rand</span> <span class='op'>&lt;</span> <span class='id identifier rubyid_p'>p</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_rand'>rand</span><span class='lparen'>(</span><span class='id identifier rubyid_velf_delta'>velf_delta</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='int'>0</span>
 
@@ -3067,7 +3061,6 @@ step.</p>
       <pre class="lines">
 
 
-395
 396
 397
 398
@@ -3075,15 +3068,16 @@ step.</p>
 400
 401
 402
-403</pre>
+403
+404</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 395</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 396</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_expand'>expand</span><span class='lparen'>(</span><span class='id identifier rubyid_times'>times</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='kw'>self</span>
   <span class='kw'>while</span> <span class='id identifier rubyid_times'>times</span> <span class='op'>&gt;</span> <span class='int'>0</span>
-    <span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_send'>send</span><span class='lparen'>(</span><span class='symbol'>:expand_once</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_expand_once'>expand_once</span>
     <span class='id identifier rubyid_times'>times</span> <span class='op'>-=</span> <span class='int'>1</span>
   <span class='kw'>end</span>
 
@@ -3162,13 +3156,13 @@ call this method on a track with more than one step in any slot.</p>
       <pre class="lines">
 
 
-305
 306
 307
-308</pre>
+308
+309</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 305</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 306</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_extract_gates'>extract_gates</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>extract_gates can only be used on a mono track</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_mono?'>mono?</span>
@@ -3319,12 +3313,12 @@ velocity of <code>min</code>, and ones thereafter will increase along the curve 
       <pre class="lines">
 
 
-959
 960
-961</pre>
+961
+962</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 959</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 960</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_fade_in_linear'>fade_in_linear</span><span class='lparen'>(</span><span class='id identifier rubyid_min'>min</span> <span class='op'>=</span> <span class='float'>0.0</span><span class='comma'>,</span> <span class='id identifier rubyid_max'>max</span> <span class='op'>=</span> <span class='float'>1.0</span><span class='comma'>,</span> <span class='label'>start:</span> <span class='float'>0.0</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_with_velf_curve'>with_velf_curve</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="Curves.html" title="Curves (module)">Curves</a></span></span><span class='period'>.</span><span class='id identifier rubyid_fade_in_linear'><span class='object_link'><a href="Curves.html#fade_in_linear-class_method" title="Curves.fade_in_linear (method)">fade_in_linear</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_min'>min</span><span class='comma'>,</span> <span class='id identifier rubyid_max'>max</span><span class='comma'>,</span> <span class='id identifier rubyid_start'>start</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -3461,12 +3455,12 @@ velocity of <code>min</code>, and ones thereafter will increase along the curve 
       <pre class="lines">
 
 
-976
 977
-978</pre>
+978
+979</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 976</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 977</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_fade_in_quad'>fade_in_quad</span><span class='lparen'>(</span><span class='id identifier rubyid_min'>min</span> <span class='op'>=</span> <span class='float'>0.0</span><span class='comma'>,</span> <span class='id identifier rubyid_max'>max</span> <span class='op'>=</span> <span class='float'>1.0</span><span class='comma'>,</span> <span class='label'>start:</span> <span class='float'>0.0</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_with_velf_curve'>with_velf_curve</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="Curves.html" title="Curves (module)">Curves</a></span></span><span class='period'>.</span><span class='id identifier rubyid_fade_in_quad'><span class='object_link'><a href="Curves.html#fade_in_quad-class_method" title="Curves.fade_in_quad (method)">fade_in_quad</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_min'>min</span><span class='comma'>,</span> <span class='id identifier rubyid_max'>max</span><span class='comma'>,</span> <span class='id identifier rubyid_start'>start</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -3616,12 +3610,12 @@ velocity of <code>max</code>, and ones thereafter will decrease along the curve 
       <pre class="lines">
 
 
-1006
 1007
-1008</pre>
+1008
+1009</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 1006</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 1007</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_fade_out_linear'>fade_out_linear</span><span class='lparen'>(</span><span class='id identifier rubyid_max'>max</span> <span class='op'>=</span> <span class='float'>1.0</span><span class='comma'>,</span> <span class='id identifier rubyid_min'>min</span> <span class='op'>=</span> <span class='float'>0.0</span><span class='comma'>,</span> <span class='label'>start:</span> <span class='float'>0.0</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_with_velf_curve'>with_velf_curve</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="Curves.html" title="Curves (module)">Curves</a></span></span><span class='period'>.</span><span class='id identifier rubyid_fade_out_linear'><span class='object_link'><a href="Curves.html#fade_out_linear-class_method" title="Curves.fade_out_linear (method)">fade_out_linear</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_max'>max</span><span class='comma'>,</span> <span class='id identifier rubyid_min'>min</span><span class='comma'>,</span> <span class='id identifier rubyid_start'>start</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -3758,12 +3752,12 @@ velocity of <code>max</code>, and ones thereafter will decrease along the curve 
       <pre class="lines">
 
 
-1023
 1024
-1025</pre>
+1025
+1026</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 1023</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 1024</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_fade_out_quad'>fade_out_quad</span><span class='lparen'>(</span><span class='id identifier rubyid_max'>max</span> <span class='op'>=</span> <span class='float'>1.0</span><span class='comma'>,</span> <span class='id identifier rubyid_min'>min</span> <span class='op'>=</span> <span class='float'>0.0</span><span class='comma'>,</span> <span class='label'>start:</span> <span class='float'>0.0</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_with_velf_curve'>with_velf_curve</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="Curves.html" title="Curves (module)">Curves</a></span></span><span class='period'>.</span><span class='id identifier rubyid_fade_out_quad'><span class='object_link'><a href="Curves.html#fade_out_quad-class_method" title="Curves.fade_out_quad (method)">fade_out_quad</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_max'>max</span><span class='comma'>,</span> <span class='id identifier rubyid_min'>min</span><span class='comma'>,</span> <span class='id identifier rubyid_start'>start</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -3873,12 +3867,12 @@ match. See <span class='object_link'><a href="MIDINote.html#match%3F-instance_me
       <pre class="lines">
 
 
-1240
 1241
-1242</pre>
+1242
+1243</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 1240</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 1241</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_partition_notes'>partition_notes</span><span class='lparen'>(</span><span class='id identifier rubyid_note'>note</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_partition'>partition</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span> <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_note'>note</span><span class='period'>.</span><span class='id identifier rubyid_match?'>match?</span><span class='lparen'>(</span><span class='id identifier rubyid_note'>note</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -4003,7 +3997,6 @@ shifted.</p></div>
       <pre class="lines">
 
 
-716
 717
 718
 719
@@ -4020,10 +4013,11 @@ shifted.</p></div>
 730
 731
 732
-733</pre>
+733
+734</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 716</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 717</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_rand_octave'>rand_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_range'>range</span> <span class='op'>=</span> <span class='int'>1</span><span class='comma'>,</span> <span class='label'>p:</span> <span class='float'>0.5</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span>
@@ -4146,17 +4140,17 @@ understood by <span class='object_link'><a href="NoteLength.html#new-class_metho
       <pre class="lines">
 
 
-518
 519
 520
 521
 522
 523
 524
-525</pre>
+525
+526</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 518</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 519</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_regranularize'>regranularize</span><span class='lparen'>(</span><span class='id identifier rubyid_new_granularity'>new_granularity</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_new_granularity'>new_granularity</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="NoteLength.html" title="NoteLength (class)">NoteLength</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="NoteLength.html#new-class_method" title="NoteLength.new (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_new_granularity'>new_granularity</span><span class='rparen'>)</span>
@@ -4260,13 +4254,13 @@ match. See <span class='object_link'><a href="MIDINote.html#match%3F-instance_me
       <pre class="lines">
 
 
-1279
 1280
 1281
-1282</pre>
+1282
+1283</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 1279</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 1280</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_reject_notes'>reject_notes</span><span class='lparen'>(</span><span class='id identifier rubyid_note'>note</span><span class='rparen'>)</span>
   <span class='id identifier rubyid__'>_</span><span class='comma'>,</span> <span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='id identifier rubyid_partition_note'>partition_note</span><span class='lparen'>(</span><span class='id identifier rubyid_note'>note</span><span class='rparen'>)</span>
@@ -4363,12 +4357,12 @@ factor.</p>
       <pre class="lines">
 
 
-574
 575
-576</pre>
+576
+577</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 574</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 575</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_scale_gate'>scale_gate</span><span class='lparen'>(</span><span class='id identifier rubyid_factor'>factor</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span> <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_with_gate'>with_gate</span><span class='lparen'>(</span><span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_gate'>gate</span> <span class='op'>*</span> <span class='id identifier rubyid_factor'>factor</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -4470,12 +4464,12 @@ given factor.</p>
       <pre class="lines">
 
 
-630
 631
-632</pre>
+632
+633</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 630</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 631</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_scale_vel'>scale_vel</span><span class='lparen'>(</span><span class='id identifier rubyid_factor'>factor</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span> <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_with_vel'>with_vel</span><span class='lparen'>(</span><span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_vel'>vel</span> <span class='op'>*</span> <span class='id identifier rubyid_factor'>factor</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -4574,13 +4568,13 @@ match. See <span class='object_link'><a href="MIDINote.html#match%3F-instance_me
       <pre class="lines">
 
 
-1258
 1259
 1260
-1261</pre>
+1261
+1262</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 1258</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 1259</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_select_notes'>select_notes</span><span class='lparen'>(</span><span class='id identifier rubyid_note'>note</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_t'>t</span><span class='comma'>,</span> <span class='op'>=</span> <span class='id identifier rubyid_partition_note'>partition_note</span><span class='lparen'>(</span><span class='id identifier rubyid_note'>note</span><span class='rparen'>)</span>
@@ -4672,12 +4666,12 @@ its argument.</p>
       <pre class="lines">
 
 
-774
 775
-776</pre>
+776
+777</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 774</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 775</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_semi_down'>semi_down</span><span class='lparen'>(</span><span class='id identifier rubyid_tone_shift'>tone_shift</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_transpose'>transpose</span><span class='lparen'>(</span><span class='op'>-</span><span class='id identifier rubyid_tone_shift'>tone_shift</span><span class='rparen'>)</span>
@@ -4767,12 +4761,12 @@ number of semitones. This is equivalent to <span class='object_link'><a href="#t
       <pre class="lines">
 
 
-762
 763
-764</pre>
+764
+765</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 762</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 763</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_semi_up'>semi_up</span><span class='lparen'>(</span><span class='id identifier rubyid_tone_shift'>tone_shift</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_transpose'>transpose</span><span class='lparen'>(</span><span class='id identifier rubyid_tone_shift'>tone_shift</span><span class='rparen'>)</span>
@@ -4872,12 +4866,12 @@ by the given amount.</p>
       <pre class="lines">
 
 
-671
 672
-673</pre>
+673
+674</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 671</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 672</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_shift_octave'>shift_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span> <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_shift_octave'>shift_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -4979,12 +4973,12 @@ by <span class='object_link'><a href="MIDINote.html#new-class_method" title="MID
       <pre class="lines">
 
 
-795
 796
-797</pre>
+797
+798</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 795</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 796</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_snap_to_notes'>snap_to_notes</span><span class='lparen'>(</span><span class='id identifier rubyid_notes'>notes</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span> <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_with_note'>with_note</span><span class='lparen'>(</span><span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_note'>note</span><span class='period'>.</span><span class='id identifier rubyid_snap'>snap</span><span class='lparen'>(</span><span class='id identifier rubyid_notes'>notes</span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -5094,13 +5088,13 @@ values in <span class='object_link'><a href="Scale.html#SCALE_NAMES-constant" ti
       <pre class="lines">
 
 
-814
 815
 816
-817</pre>
+817
+818</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 814</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 815</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_snap_to_scale'>snap_to_scale</span><span class='lparen'>(</span><span class='id identifier rubyid_tonic'>tonic</span><span class='comma'>,</span> <span class='id identifier rubyid_scale_name'>scale_name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_scale'>scale</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Scale.html" title="Scale (class)">Scale</a></span></span><span class='period'>.</span><span class='id identifier rubyid_full_scale'><span class='object_link'><a href="Scale.html#full_scale-class_method" title="Scale.full_scale (method)">full_scale</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_tonic'>tonic</span><span class='comma'>,</span> <span class='id identifier rubyid_scale_name'>scale_name</span><span class='rparen'>)</span>
@@ -5235,7 +5229,6 @@ above.</p></div>
       <pre class="lines">
 
 
-1330
 1331
 1332
 1333
@@ -5255,10 +5248,11 @@ above.</p></div>
 1347
 1348
 1349
-1350</pre>
+1350
+1351</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 1330</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 1331</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_sub_note'>sub_note</span><span class='lparen'>(</span><span class='id identifier rubyid_target'>target</span><span class='comma'>,</span> <span class='id identifier rubyid_repl'>repl</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_orig_has_octave'>orig_has_octave</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_has_octave?'><span class='object_link'><a href="MIDINote.html#has_octave%3F-class_method" title="MIDINote.has_octave? (method)">has_octave?</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_target'>target</span><span class='rparen'>)</span>
@@ -5415,12 +5409,12 @@ continuations of a tie also have their gate adjusted.</p></div>
       <pre class="lines">
 
 
-1176
 1177
-1178</pre>
+1178
+1179</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 1176</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 1177</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_taper_gate'>taper_gate</span><span class='lparen'>(</span><span class='id identifier rubyid_trailing_gate'>trailing_gate</span> <span class='op'>=</span> <span class='float'>0.75</span><span class='comma'>,</span> <span class='label'>taper_final_tie:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>taper_single:</span> <span class='kw'>false</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_taper_steps'>taper_steps</span><span class='lparen'>(</span><span class='label'>taper_final_tie:</span> <span class='id identifier rubyid_taper_final_tie'>taper_final_tie</span><span class='comma'>,</span> <span class='label'>taper_single:</span> <span class='id identifier rubyid_taper_single'>taper_single</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_s'>s</span><span class='op'>|</span> <span class='id identifier rubyid_s'>s</span><span class='period'>.</span><span class='id identifier rubyid_with_gate'>with_gate</span><span class='lparen'>(</span><span class='id identifier rubyid_trailing_gate'>trailing_gate</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -5568,13 +5562,13 @@ continuations of a tie also have their velocity adjusted.</p></div>
       <pre class="lines">
 
 
-1199
 1200
 1201
-1202</pre>
+1202
+1203</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 1199</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 1200</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_taper_vel'>taper_vel</span><span class='lparen'>(</span><span class='id identifier rubyid_trailing_vel'>trailing_vel</span> <span class='op'>=</span> <span class='int'>64</span><span class='comma'>,</span> <span class='label'>taper_final_tie:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>taper_single:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>zero_to_one:</span> <span class='kw'>false</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_trailing_vel'>trailing_vel</span> <span class='op'>*=</span> <span class='int'>127</span> <span class='kw'>if</span> <span class='id identifier rubyid_zero_to_one'>zero_to_one</span>
@@ -5700,12 +5694,12 @@ continuations of a tie also have their velocity adjusted.</p></div>
       <pre class="lines">
 
 
-1215
 1216
-1217</pre>
+1217
+1218</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 1215</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 1216</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_taper_velf'>taper_velf</span><span class='lparen'>(</span><span class='id identifier rubyid_trailing_vel'>trailing_vel</span> <span class='op'>=</span> <span class='float'>0.5</span><span class='comma'>,</span> <span class='label'>taper_final_tie:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>taper_single:</span> <span class='kw'>false</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_taper_vel'>taper_vel</span><span class='lparen'>(</span><span class='id identifier rubyid_trailing_vel'>trailing_vel</span><span class='comma'>,</span> <span class='label'>taper_final_tie:</span> <span class='id identifier rubyid_taper_final_tie'>taper_final_tie</span><span class='comma'>,</span> <span class='label'>taper_single:</span> <span class='id identifier rubyid_taper_single'>taper_single</span><span class='comma'>,</span> <span class='label'>zero_to_one:</span> <span class='kw'>true</span><span class='rparen'>)</span>
@@ -5878,7 +5872,6 @@ the result.</li>
       <pre class="lines">
 
 
-1468
 1469
 1470
 1471
@@ -5908,10 +5901,15 @@ the result.</li>
 1495
 1496
 1497
-1498</pre>
+1498
+1499
+1500
+1501
+1502
+1503</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 1468</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 1469</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_cc'>to_cc</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Block must take 1-3 arguments</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>==</span> <span class='int'>0</span> <span class='op'>||</span> <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>&gt;</span> <span class='int'>3</span>
@@ -5926,14 +5924,18 @@ the result.</li>
       <span class='id identifier rubyid_pct'>pct</span> <span class='op'>=</span> <span class='id identifier rubyid_i'>i</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span> <span class='op'>/</span> <span class='lparen'>(</span><span class='id identifier rubyid_num_slots'>num_slots</span> <span class='op'>-</span> <span class='int'>1</span><span class='rparen'>)</span>
     <span class='kw'>end</span>
 
-    <span class='id identifier rubyid_replacement'>replacement</span> <span class='op'>=</span> <span class='id identifier rubyid___call_varargs'>__call_varargs</span><span class='lparen'>(</span><span class='id identifier rubyid_block'>block</span><span class='comma'>,</span> <span class='id identifier rubyid_slot'>slot</span><span class='comma'>,</span> <span class='id identifier rubyid_i'>i</span><span class='comma'>,</span> <span class='id identifier rubyid_pct'>pct</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_replacement'>replacement</span> <span class='op'>=</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_call_varargs'>call_varargs</span><span class='lparen'>(</span><span class='id identifier rubyid_block'>block</span><span class='comma'>,</span> <span class='id identifier rubyid_slot'>slot</span><span class='comma'>,</span> <span class='id identifier rubyid_i'>i</span><span class='comma'>,</span> <span class='id identifier rubyid_pct'>pct</span><span class='rparen'>)</span>
 
     <span class='comment'># The block may return something convertible to a slot (a CCStep), or a
 </span>    <span class='comment'># 1d array (which we will take as a slot), or an array that contains some
 </span>    <span class='comment'># number of other arrays (which we will take as a set of slots). This
 </span>    <span class='comment'># behavior is in keeping with mutate_slots.
-</span>    <span class='id identifier rubyid_replacement'>replacement</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='id identifier rubyid_replacement'>replacement</span><span class='rbracket'>]</span> <span class='kw'>unless</span> <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_enumerable?'>enumerable?</span><span class='lparen'>(</span><span class='id identifier rubyid_replacement'>replacement</span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_is_gridish'>is_gridish</span> <span class='op'>=</span> <span class='id identifier rubyid_replacement'>replacement</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_enumerable?'>enumerable?</span><span class='lparen'>(</span><span class='id identifier rubyid_e'>e</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
+</span>    <span class='id identifier rubyid_replacement'>replacement</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_enumerable?'>enumerable?</span><span class='lparen'>(</span><span class='id identifier rubyid_replacement'>replacement</span><span class='rparen'>)</span>
+      <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_arrayify'>arrayify</span><span class='lparen'>(</span><span class='id identifier rubyid_replacement'>replacement</span><span class='rparen'>)</span>  <span class='comment'># see note in enumerable?
+</span>    <span class='kw'>else</span>
+      <span class='lbracket'>[</span><span class='id identifier rubyid_replacement'>replacement</span><span class='rbracket'>]</span>
+    <span class='kw'>end</span>
+    <span class='id identifier rubyid_is_gridish'>is_gridish</span> <span class='op'>=</span> <span class='id identifier rubyid_replacement'>replacement</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_enumerable?'>enumerable?</span><span class='lparen'>(</span><span class='id identifier rubyid_e'>e</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
 
     <span class='kw'>if</span> <span class='id identifier rubyid_is_gridish'>is_gridish</span>
       <span class='id identifier rubyid_new_grid'>new_grid</span> <span class='op'>+=</span> <span class='const'><span class='object_link'><a href="CCTrack.html" title="CCTrack (class)">CCTrack</a></span></span><span class='period'>.</span><span class='id identifier rubyid_gridify'>gridify</span><span class='lparen'>(</span><span class='id identifier rubyid_replacement'>replacement</span><span class='rparen'>)</span>
@@ -6114,11 +6116,6 @@ the result.</li>
       <pre class="lines">
 
 
-1537
-1538
-1539
-1540
-1541
 1542
 1543
 1544
@@ -6143,10 +6140,16 @@ the result.</li>
 1563
 1564
 1565
-1566</pre>
+1566
+1567
+1568
+1569
+1570
+1571
+1572</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 1537</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 1542</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_simple_cc'>to_simple_cc</span><span class='lparen'>(</span><span class='id identifier rubyid_cc_number'>cc_number</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Block must take 1-3 arguments</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>==</span> <span class='int'>0</span> <span class='op'>||</span> <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>&gt;</span> <span class='int'>3</span>
@@ -6161,12 +6164,13 @@ the result.</li>
       <span class='id identifier rubyid_pct'>pct</span> <span class='op'>=</span> <span class='id identifier rubyid_i'>i</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span> <span class='op'>/</span> <span class='lparen'>(</span><span class='id identifier rubyid_num_slots'>num_slots</span> <span class='op'>-</span> <span class='int'>1</span><span class='rparen'>)</span>
     <span class='kw'>end</span>
 
-    <span class='id identifier rubyid_replacement'>replacement</span> <span class='op'>=</span> <span class='id identifier rubyid___call_varargs'>__call_varargs</span><span class='lparen'>(</span><span class='id identifier rubyid_block'>block</span><span class='comma'>,</span> <span class='id identifier rubyid_slot'>slot</span><span class='comma'>,</span> <span class='id identifier rubyid_i'>i</span><span class='comma'>,</span> <span class='id identifier rubyid_pct'>pct</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_replacement'>replacement</span> <span class='op'>=</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_call_varargs'>call_varargs</span><span class='lparen'>(</span><span class='id identifier rubyid_block'>block</span><span class='comma'>,</span> <span class='id identifier rubyid_slot'>slot</span><span class='comma'>,</span> <span class='id identifier rubyid_i'>i</span><span class='comma'>,</span> <span class='id identifier rubyid_pct'>pct</span><span class='rparen'>)</span>
 
     <span class='comment'># The block may return a scalar (which we take as a CC value), or an array
 </span>    <span class='comment'># (which we will take as a definition for a set of slots).
-</span>    <span class='kw'>if</span> <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_enumerable?'>enumerable?</span><span class='lparen'>(</span><span class='id identifier rubyid_replacement'>replacement</span><span class='rparen'>)</span>
-      <span class='kw'>if</span> <span class='id identifier rubyid_replacement'>replacement</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
+</span>    <span class='kw'>if</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_enumerable?'>enumerable?</span><span class='lparen'>(</span><span class='id identifier rubyid_replacement'>replacement</span><span class='rparen'>)</span>
+      <span class='id identifier rubyid_replacement'>replacement</span> <span class='op'>=</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_arrayify'>arrayify</span><span class='lparen'>(</span><span class='id identifier rubyid_replacement'>replacement</span><span class='rparen'>)</span>  <span class='comment'># see note in enumerable?
+</span>      <span class='kw'>if</span> <span class='id identifier rubyid_replacement'>replacement</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
         <span class='id identifier rubyid_slots'>slots</span> <span class='op'>&lt;&lt;</span> <span class='symbol'>:r</span>
       <span class='kw'>else</span>
         <span class='id identifier rubyid_slots'>slots</span> <span class='op'>+=</span> <span class='id identifier rubyid_replacement'>replacement</span>
@@ -6273,12 +6277,12 @@ number of semitones.</p>
       <pre class="lines">
 
 
-749
 750
-751</pre>
+751
+752</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 749</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 750</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_transpose'>transpose</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span> <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_transpose'>transpose</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -6370,12 +6374,12 @@ by the given amount. This is equivalent to <span class='object_link'><a href="#s
       <pre class="lines">
 
 
-683
 684
-685</pre>
+685
+686</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 683</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 684</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_up'>up</span><span class='lparen'>(</span><span class='id identifier rubyid_octave_shift'>octave_shift</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_shift_octave'>shift_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_octave_shift'>octave_shift</span><span class='rparen'>)</span>
@@ -6476,12 +6480,12 @@ by the given amount. This is equivalent to <span class='object_link'><a href="#s
       <pre class="lines">
 
 
-556
 557
-558</pre>
+558
+559</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 556</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 557</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_gate'>with_gate</span><span class='lparen'>(</span><span class='id identifier rubyid_new_gate'>new_gate</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span> <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_with_gate'>with_gate</span><span class='lparen'>(</span><span class='id identifier rubyid_new_gate'>new_gate</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -6622,7 +6626,6 @@ range 0 - 1.</p>
       <pre class="lines">
 
 
-848
 849
 850
 851
@@ -6635,10 +6638,11 @@ range 0 - 1.</p>
 858
 859
 860
-861</pre>
+861
+862</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 848</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 849</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_gate_curve'>with_gate_curve</span><span class='lparen'>(</span><span class='id identifier rubyid_curve_func'>curve_func</span><span class='comma'>,</span> <span class='label'>min:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>max:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Curve function must be a callable that takes 1-2 arguments</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='op'>!</span><span class='id identifier rubyid_curve_func'>curve_func</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:call</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_curve_func'>curve_func</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>==</span> <span class='int'>0</span> <span class='op'>||</span> <span class='id identifier rubyid_curve_func'>curve_func</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>&gt;</span> <span class='int'>2</span>
@@ -6650,7 +6654,7 @@ range 0 - 1.</p>
   <span class='kw'>end</span>
 
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='comma'>,</span> <span class='id identifier rubyid_slot_idx'>slot_idx</span><span class='comma'>,</span> <span class='id identifier rubyid_pct'>pct</span><span class='op'>|</span>
-    <span class='id identifier rubyid_gate'>gate</span> <span class='op'>=</span> <span class='id identifier rubyid___call_varargs'>__call_varargs</span><span class='lparen'>(</span><span class='id identifier rubyid_curve_func'>curve_func</span><span class='comma'>,</span> <span class='id identifier rubyid_pct'>pct</span><span class='comma'>,</span> <span class='id identifier rubyid_slot_idx'>slot_idx</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_gate'>gate</span> <span class='op'>=</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_call_varargs'>call_varargs</span><span class='lparen'>(</span><span class='id identifier rubyid_curve_func'>curve_func</span><span class='comma'>,</span> <span class='id identifier rubyid_pct'>pct</span><span class='comma'>,</span> <span class='id identifier rubyid_slot_idx'>slot_idx</span><span class='rparen'>)</span>
     <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_with_gate'>with_gate</span><span class='lparen'>(</span><span class='id identifier rubyid_gate'>gate</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
@@ -6753,12 +6757,12 @@ to the given value.</p>
       <pre class="lines">
 
 
-650
 651
-652</pre>
+652
+653</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 650</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 651</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_octave'>with_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_new_octave'>new_octave</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span> <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_with_octave'>with_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_new_octave'>new_octave</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -6835,12 +6839,12 @@ on this functionality.</p>
       <pre class="lines">
 
 
-537
 538
-539</pre>
+539
+540</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 537</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 538</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_scale'>with_scale</span><span class='lparen'>(</span><span class='id identifier rubyid_scale'>scale</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>scale:</span> <span class='id identifier rubyid_scale'>scale</span><span class='rparen'>)</span>
@@ -6944,12 +6948,12 @@ specified in the MIDI range of 0 - 127.</p>
       <pre class="lines">
 
 
-592
 593
-594</pre>
+594
+595</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 592</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 593</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_vel'>with_vel</span><span class='lparen'>(</span><span class='id identifier rubyid_new_vel'>new_vel</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span> <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_with_vel'>with_vel</span><span class='lparen'>(</span><span class='id identifier rubyid_new_vel'>new_vel</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -7120,7 +7124,6 @@ range (0 - 127 if <code>zero_to_one</code> is false, otherwise 0 - 1).</p>
       <pre class="lines">
 
 
-902
 903
 904
 905
@@ -7135,10 +7138,11 @@ range (0 - 127 if <code>zero_to_one</code> is false, otherwise 0 - 1).</p>
 914
 915
 916
-917</pre>
+917
+918</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 902</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 903</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_vel_curve'>with_vel_curve</span><span class='lparen'>(</span><span class='id identifier rubyid_curve_func'>curve_func</span><span class='comma'>,</span> <span class='label'>zero_to_one:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>min:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>max:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Curve function must be a callable that takes 1-2 arguments</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='op'>!</span><span class='id identifier rubyid_curve_func'>curve_func</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:call</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_curve_func'>curve_func</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>==</span> <span class='int'>0</span> <span class='op'>||</span> <span class='id identifier rubyid_curve_func'>curve_func</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>&gt;</span> <span class='int'>2</span>
@@ -7151,7 +7155,7 @@ range (0 - 127 if <code>zero_to_one</code> is false, otherwise 0 - 1).</p>
   <span class='kw'>end</span>
 
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='comma'>,</span> <span class='id identifier rubyid_slot_idx'>slot_idx</span><span class='comma'>,</span> <span class='id identifier rubyid_pct'>pct</span><span class='op'>|</span>
-    <span class='id identifier rubyid_vel'>vel</span> <span class='op'>=</span> <span class='id identifier rubyid___call_varargs'>__call_varargs</span><span class='lparen'>(</span><span class='id identifier rubyid_curve_func'>curve_func</span><span class='comma'>,</span> <span class='id identifier rubyid_pct'>pct</span><span class='comma'>,</span> <span class='id identifier rubyid_slot_idx'>slot_idx</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_vel'>vel</span> <span class='op'>=</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_call_varargs'>call_varargs</span><span class='lparen'>(</span><span class='id identifier rubyid_curve_func'>curve_func</span><span class='comma'>,</span> <span class='id identifier rubyid_pct'>pct</span><span class='comma'>,</span> <span class='id identifier rubyid_slot_idx'>slot_idx</span><span class='rparen'>)</span>
     <span class='id identifier rubyid_vel'>vel</span> <span class='op'>*=</span> <span class='int'>127</span> <span class='kw'>if</span> <span class='id identifier rubyid_zero_to_one'>zero_to_one</span>  <span class='comment'># with_vel will round &amp; clamp this
 </span>    <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_with_vel'>with_vel</span><span class='lparen'>(</span><span class='id identifier rubyid_vel'>vel</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
@@ -7253,12 +7257,12 @@ specified as a value between 0 and 1 inclusive.</p>
       <pre class="lines">
 
 
-611
 612
-613</pre>
+613
+614</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 611</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 612</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_velf'>with_velf</span><span class='lparen'>(</span><span class='id identifier rubyid_new_velf'>new_velf</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span> <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_with_velf'>with_velf</span><span class='lparen'>(</span><span class='id identifier rubyid_new_velf'>new_velf</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -7382,12 +7386,12 @@ a value between 0 and 1.</p></div>
       <pre class="lines">
 
 
-929
 930
-931</pre>
+931
+932</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 929</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 930</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_velf_curve'>with_velf_curve</span><span class='lparen'>(</span><span class='id identifier rubyid_curve_func'>curve_func</span><span class='comma'>,</span> <span class='label'>min:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>max:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_with_vel_curve'>with_vel_curve</span><span class='lparen'>(</span><span class='id identifier rubyid_curve_func'>curve_func</span><span class='comma'>,</span> <span class='label'>zero_to_one:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>min:</span> <span class='id identifier rubyid_min'>min</span><span class='comma'>,</span> <span class='label'>max:</span> <span class='id identifier rubyid_max'>max</span><span class='rparen'>)</span>
