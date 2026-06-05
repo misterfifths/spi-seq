@@ -101,10 +101,6 @@ end
 # @private
 module ExtApi
   module Stubs
-    def self.puts(s)
-      Kernel.puts(s)
-    end
-
     def self.rand(max_or_range = 1)
       # Sonic Pi's is float-oriented
       max_or_range = 0..max_or_range if max_or_range.is_a?(Numeric)

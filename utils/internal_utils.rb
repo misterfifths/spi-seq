@@ -117,7 +117,12 @@ module SpiSeq
 
   module Log
     def self.log(msg, channel = "spi-seq")
-      ExtApi.puts("[#{channel}] #{msg}")
+      s = "[#{channel}] #{msg}"
+      if ExtApi.in_sonic_pi?
+        ExtApi.puts(s)
+      else
+        puts(s)
+      end
     end
 
     def self.warn(msg, channel = "spi-seq")
