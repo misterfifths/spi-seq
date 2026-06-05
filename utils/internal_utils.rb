@@ -98,8 +98,17 @@ module SpiSeq
   end
 
   module Clipboard
+    private_class_method def self.is_macos?
+      RUBY_PLATFORM.include?("darwin")
+    end
+
     # Copies the given string to the clipboard. Only supported on macOS.
     def self.copy(s)
+      unless is_macos?
+        Log.warn("clipboard functionality is only available on macOS")
+        return
+      end
+
       IO.popen("/usr/bin/pbcopy", "w") do |pipe|
         pipe.print(s)
         pipe.close_write
@@ -109,6 +118,11 @@ module SpiSeq
     # Returns the contents of the clipboard as a string. Only supported on
     # macOS.
     def self.paste
+      unless is_macos?
+        Log.warn("clipboard functionality is only available on macOS")
+        return
+      end
+
       IO.popen("/usr/bin/pbpaste", "r") do |pipe|
         return pipe.read
       end
