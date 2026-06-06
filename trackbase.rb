@@ -1812,7 +1812,7 @@ class TrackBase
   #
   # @private
   def self.stepify(_)
-    raise RuntimeError, "subclasses must implement stepify"
+    raise NotImplementedError, "subclasses must implement stepify"
   end
 
   # Attempts to convert its argument to a grid slot (i.e. an array of steps).
@@ -1826,7 +1826,7 @@ class TrackBase
   #
   # @private
   def self.slotify(_)
-    raise RuntimeError, "subclasses must implement slotify"
+    raise NotImplementedError, "subclasses must implement slotify"
   end
 
   # Attempts to convert its argument to a grid (a 2d array of steps).
@@ -1838,7 +1838,7 @@ class TrackBase
   #
   # @private
   def self.gridify(_)
-    raise RuntimeError, "subclasses must implement gridify"
+    raise NotImplementedError, "subclasses must implement gridify"
   end
 
 

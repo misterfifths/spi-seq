@@ -384,11 +384,11 @@ class StepBase
   end
 
   def default_accum_target
-    raise RuntimeError, "subclasses must implement default_accum_target"
+    raise NotImplementedError, "subclasses must implement default_accum_target"
   end
 
   def valid_accum_targets
-    raise RuntimeError, "subclasses must implement valid_accum_targets"
+    raise NotImplementedError, "subclasses must implement valid_accum_targets"
   end
 
 

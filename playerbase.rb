@@ -229,7 +229,7 @@ class PlayerBase
   # `accum_delta` at this point, since this method is used in the process of
   # calculating those deltas.
   def accum_should_trigger?(_step)
-    raise RuntimeError, "subclasses must implement accum_should_trigger?"
+    raise NotImplementedError, "subclasses must implement accum_should_trigger?"
   end
 
   # Evaluate the `prob` of the given step in the current slot of @track. Called
@@ -238,7 +238,7 @@ class PlayerBase
   # provide about the current state of playback. If necessary, subclasses can
   # peek at the potential accumulation for the step with `accum_delta`.
   def step_should_trigger?(_step)
-    raise RuntimeError, "subclasses must implement step_should_trigger?"
+    raise NotImplementedError, "subclasses must implement step_should_trigger?"
   end
 
   # Play the given steps, which are the triggering ones from the current slot.
@@ -255,7 +255,7 @@ class PlayerBase
   # Note that there may be some elaborate subclass-specific tracking involved to
   # keep track of the world state.
   def play_steps(_steps)
-    raise RuntimeError, "subclasses must implement play_steps"
+    raise NotImplementedError, "subclasses must implement play_steps"
   end
 
   # Returns the current accumulation delta for the given step in the current
