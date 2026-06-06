@@ -19,6 +19,75 @@ module SpiSeq
     def self.set_player(loop_name, player)
       loop_var_set(loop_name, :__player, player)
     end
+
+    # Returns a lambda for use as a live_loop block which handles playback of
+    # a track. A helper for track_live_loop.
+    def self.track_live_loop_block(loop_name:, player:, old_player:,
+                                   send_cycle_cues:, fade_in:, fade_out:,
+                                   user_block:, debug:)
+      was_muted = true
+      unfaded_track = nil
+
+      lambda do |muted, arg|
+        ### Inherit state from an old player
+        # If old_player is not nil, this must be our first iteration after it
+        # finished its final loop. Pick up where it left off.
+        unless old_player.nil?
+          SpiSeq::Log.log("#{loop_name}: inheriting state from old player", "track_live_loop") if debug
+          player.inherit_state(old_player)
+          old_player = nil
+        end
+
+        ### Restore the original track if we just finished a fade
+        # We want to play the original (unless it gets swapped via the block),
+        # and we don't want to tell the user block about the faded version we
+        # made.
+        player.swap_track(unfaded_track) unless unfaded_track.nil?
+        unfaded_track = nil
+
+        ### Call the user's block & possibly swap tracks
+        block_res = nil
+        unless user_block.nil?
+          block_res = SpiSeq::Utils.call_varargs(user_block,
+                                                 cycle: player.cycle, track: player.track,
+                                                 muted: muted, was_muted: was_muted, arg: arg)
+
+          if block_res.is_a?(TrackBase)
+            raise TypeError, "cannot switch track live loop #{loop_name} between track types" unless block_res.instance_of?(player.track.class)
+            SpiSeq::Log.log("#{loop_name}: swapping track on cycle #{player.cycle}", "track_live_loop") if debug
+            player.swap_track(block_res)
+          end
+        end
+
+        ### Swap to a faded track if needed
+        fading_in = !muted && was_muted && fade_in
+        fading_out = muted && !was_muted && fade_out
+
+        if fading_in || fading_out
+          SpiSeq::Log.log("#{loop_name}: fading #{fading_in ? 'in' : 'out'} track", "track_live_loop") if debug
+
+          unfaded_track = player.track  # For restoration in the next iteration
+
+          quad = fading_in ? (fade_in == :quad) : (fade_out == :quad)
+          fade_method = :"fade_#{fading_in ? 'in' : 'out'}#{'_quad' if quad}"
+          faded_track = player.track.send(fade_method)
+          player.swap_track(faded_track)
+        end
+
+        ### Play or sleep
+        if muted && !fading_out
+          player.sleep
+        else
+          ExtApi.cue(:"#{loop_name}_cycle", player.cycle) if send_cycle_cues
+          player.play
+        end
+
+        ### Update locals for the next iteration
+        was_muted = muted
+
+        block_res
+      end
+    end
   end
 end
 
@@ -174,6 +243,7 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
                     cc: nil, fill_cc: nil, cc_port: nil, cc_channel: nil,
                     send_cycle_cues: nil, debug: false,
                     init: nil, **kwargs, &block)
+  ### Validate arguments
   unless block.nil?
     req_pos_args, opt_pos_args, req_keywords, = SpiSeq::Utils.describe_args(block)
     # We could allow optional required arguments, but a block's positional
@@ -185,8 +255,8 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
 
   raise ArgumentError, "If no track is provided, a block must be" if track.nil? && block.nil?
 
+  ### Make the player (and possibly track)
   track ||= Track.rest
-
   raise ArgumentError, "The fade parameters cannot be used with CCTracks" if track.is_a?(CCTrack) && (fade_in || fade_out)
 
   player = case track
@@ -196,23 +266,29 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
     CCPlayer.new(track, port: port, channel: channel, debug: debug)
   end
 
+  ### Fetch & validate against an existing player
   # If this is a restart of the same track_live_loop, we will already have a
-  # Player instance for the old one. We don't want to reuse it per se (other
+  # player instance for the old one. We don't want to reuse it per se (other
   # settings may have changed), but we do want the new player to inherit some of
   # the old one's private state. We shouldn't do that immediately though; we
   # should wait until the old player finishes its final loop so that its
   # internal state is accurate. So we do the inheriting on the first iteration
-  # of the new live loop, below.
+  # of the new live loop (see track_live_loop_block).
   old_player = SpiSeq::LiveLoops.get_player(loop_name)
-
   raise TypeError, "cannot switch track live loop #{loop_name} between track types" unless old_player.nil? || player.is_a?(old_player.class)
-
 
   ### Resolve default arguments
   player_defaults = current_player_defaults
-
   cc_port, cc_channel = SpiSeq::MIDI.resolve_cc_port_and_channel(cc_port, cc_channel)
   fill_cc = player_defaults[:fill_cc] if fill_cc.nil?
+  unless kwargs.member?(:sync)
+    sync = player_defaults[:sync]
+    kwargs[:sync] = sync unless sync.nil?
+  end
+  start_muted = player_defaults[:start_muted] || false if start_muted.nil?
+  send_cycle_cues = player_defaults.fetch(:send_cycle_cues, true) if send_cycle_cues.nil?
+
+  ### Start a fill CC watcher if needed
   if fill_cc
     cc_watcher_live_loop(:"__#{loop_name}_cc_fill_watcher",
                          port: cc_port, channel: cc_channel) do |incoming_cc, cc_val|
@@ -229,94 +305,16 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
     end
   end
 
-  # Use values from use_player_defaults unless we were passed them specifically.
-  unless kwargs.member?(:sync)
-    sync = player_defaults[:sync]
-    kwargs[:sync] = sync unless sync.nil?
-  end
-  start_muted = player_defaults[:start_muted] || false if start_muted.nil?
-  send_cycle_cues = player_defaults.fetch(:send_cycle_cues, true) if send_cycle_cues.nil?
+  ### Kick off the loop
+  ll_block = SpiSeq::LiveLoops.track_live_loop_block(
+    loop_name: loop_name, player: player, old_player: old_player,
+    send_cycle_cues: send_cycle_cues, fade_in: fade_in, fade_out: fade_out,
+    user_block: block, debug: debug)
 
-
-  ### Build the block for the live_loop
-  wrapped_block = lambda do |muted, arg|
-    # We're smuggling some state between loops via our return value, along with
-    # the actual return value of the user's block.
-    was_muted = arg[:was_muted]
-    unfaded_track = arg[:unfaded_track]
-    arg = arg[:block_res]
-
-    unless old_player.nil?
-      # This is the first iteration run by a new player; old_player just
-      # finished its final loop. So we should have the new player inherit some
-      # private state of the old.
-      SpiSeq::Log.log("#{loop_name}: inheriting state from old player", "track_live_loop") if debug
-      player.inherit_state(old_player)
-      old_player = nil
-    end
-
-    # If we just finished a fade, swap back to the normal version so we don't
-    # tell the user's block about it.
-    player.swap_track(unfaded_track) unless unfaded_track.nil?
-    unfaded_track = nil
-
-    res = nil
-    unless block.nil?
-      res = SpiSeq::Utils.call_varargs(block,
-                                       cycle: player.cycle, track: player.track,
-                                       muted: muted, was_muted: was_muted, arg: arg)
-    end
-
-    if res.is_a?(TrackBase)
-      raise TypeError, "cannot switch track live loop #{loop_name} between track types" if (res.is_a?(Track) && player.is_a?(CCPlayer)) || (res.is_a?(CCTrack) && player.is_a?(Player))
-
-      SpiSeq::Log.log("#{loop_name}: swapping track on cycle #{player.cycle}", "track_live_loop") if debug
-      player.swap_track(res)
-    end
-
-    fading_out = false
-
-    # Now that we have the final thing we're going to play, swap it out for the
-    # faded version if we need to.
-    if !muted && was_muted && fade_in
-      SpiSeq::Log.log("#{loop_name}: fading in track", "track_live_loop") if debug
-      unfaded_track = player.track
-      if fade_in == :quad
-        faded_track = player.track.fade_in_quad
-      else
-        faded_track = player.track.fade_in
-      end
-      player.swap_track(faded_track)
-    elsif muted && !was_muted && fade_out
-      fading_out = true
-      SpiSeq::Log.log("#{loop_name}: fading out track", "track_live_loop") if debug
-      unfaded_track = player.track
-      if fade_out == :quad
-        faded_track = player.track.fade_out_quad
-      else
-        faded_track = player.track.fade_out
-      end
-      player.swap_track(faded_track)
-    end
-
-    if muted && !fading_out
-      player.sleep
-    else
-      ExtApi.cue(:"#{loop_name}_cycle", player.cycle) if send_cycle_cues
-      player.play
-    end
-
-    { unfaded_track: unfaded_track, was_muted: muted, block_res: res }
-  end
-
-
-  ### Start the loop
-  init_arg = { was_muted: true, block_res: init }
-
-  if cc.nil?
-    ll = mutable_live_loop(loop_name, start_muted: start_muted, init: init_arg, **kwargs, &wrapped_block)
+  ll = if cc.nil?
+    mutable_live_loop(loop_name, start_muted: start_muted, init: init, **kwargs, &ll_block)
   else
-    ll = cc_mutable_live_loop(loop_name, start_muted: start_muted, init: init_arg, cc: cc, port: cc_port, channel: cc_channel, **kwargs, &wrapped_block)
+    cc_mutable_live_loop(loop_name, start_muted: start_muted, init: init, cc: cc, port: cc_port, channel: cc_channel, **kwargs, &ll_block)
   end
 
   SpiSeq::LiveLoops.set_player(loop_name, player)
