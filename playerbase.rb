@@ -136,14 +136,19 @@ class PlayerBase
   # If you swap to another track, the accumulation state for the current track
   # is cleared (i.e., if you later swap back to the same track, the accumulation
   # of all of its steps will reset). If you call this with the same track as
-  # {#track}, accumulation is not reset.
+  # {#track}, accumulation is not reset. You can override that behavior by
+  # providing a value for `reset_accum`.
   #
   # @param new_track [TrackBase] The track to use on the next call to {#play} or
   #   {#sleep}.
   # @param reset_cycle [Boolean] If true, resets {#cycle} to 0.
+  # @param reset_accum [Boolean, nil] If nil, accumulation data is reset if
+  #   swapping to a track that is not identical to the current one. Otherwise,
+  #   forces a reset or non-reset. This is an advanced option; setting it to
+  #   false may result in unexpected playback.
   # @return [void]
-  def swap_track(new_track, reset_cycle: false)
-    @accum_data&.clear unless @track.equal?(new_track)
+  def swap_track(new_track, reset_cycle: false, reset_accum: nil)
+    @accum_data&.clear if reset_accum || (reset_accum.nil? && !@track.equal?(new_track))
 
     @track = new_track
     @cycle = 0 if reset_cycle
@@ -280,8 +285,14 @@ class PlayerBase
   def accum_hash_key(step)
     # Since they're immutable, Steps could theoretically be shared across
     # multiple slots. So we need to hash based on both the step and the slot
-    # that contains it.
-    [step.object_id, @slot_idx].freeze
+    # that contains it. `unique_slot_key` uniquely identifies a step within its
+    # slot. But note that it is probably not `object_id` (Step, e.g., implements
+    # it by returning its note). If a track is swapped without resetting accum,
+    # we will end up reusing accumulation data for non-identical steps. This is
+    # desirable in the case of `track_live_loop`'s automatic fading: we want
+    # accumulation to persist across non-identical tracks with non-identical
+    # steps.
+    [@slot_idx, step.unique_slot_key].freeze
   end
 
   def accum_data(step)

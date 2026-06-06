@@ -41,8 +41,9 @@ module SpiSeq
         ### Restore the original track if we just finished a fade
         # We want to play the original (unless it gets swapped via the block),
         # and we don't want to tell the user block about the faded version we
-        # made.
-        player.swap_track(unfaded_track) unless unfaded_track.nil?
+        # made. We don't reset accum here so that it persists between the faded
+        # and unfaded version of the track (see PlayerBase.accum_hash_key).
+        player.swap_track(unfaded_track, reset_accum: false) unless unfaded_track.nil?
         unfaded_track = nil
 
         ### Call the user's block & possibly swap tracks
@@ -71,7 +72,10 @@ module SpiSeq
           quad = fading_in ? (fade_in == :quad) : (fade_out == :quad)
           fade_method = :"fade_#{fading_in ? 'in' : 'out'}#{'_quad' if quad}"
           faded_track = player.track.send(fade_method)
-          player.swap_track(faded_track)
+
+          # Note that we're not resetting accum here; we want accumulation to
+          # carry into the faded track. PlayerBase.accum_hash_key has details.
+          player.swap_track(faded_track, reset_accum: false)
         end
 
         ### Play or sleep

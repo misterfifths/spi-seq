@@ -670,4 +670,31 @@ class TrackLiveLoopTest < Test::Unit::TestCase
     end
     # rubocop:enable Lint/UnusedBlockArgument
   end
+
+  def test_accum_fade
+    # Accumulation should persist into and out of a fade
+    t = QT[S(:c4, gate: 0.5).accum(12, max: 48, mode: :freeze), S(:d2, gate: 0.5)]
+    l = tll(:t, t, fade_in: true, fade_out: true)
+    es = events do
+      l.pump
+      l.pump
+      l.pump
+      mute_live_loop(:t)
+      l.pump
+      l.stop
+    end
+    assert_events es, [
+      [:c4, 0, 0.5, 0],  # fade in
+      [:d2, 1, 1.5, 127],
+
+      [:c5, 2, 2.5, 127],  # fade complete, accum should take effect immediately since primed during the fade
+      [:d2, 3, 3.5, 127],
+
+      [:c6, 4, 4.5, 127],
+      [:d2, 5, 5.5, 127],
+
+      [:c7, 6, 6.5, 127],  # fade out
+      [:d2, 7, 7.5, 0]
+    ]
+  end
 end

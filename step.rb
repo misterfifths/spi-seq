@@ -211,6 +211,11 @@ class Step < StepBase
     @gate == 1.0  # rubocop:disable Lint/FloatComparison
   end
 
+  # @private
+  def unique_slot_key
+    @note.to_sym
+  end
+
 
   protected
 

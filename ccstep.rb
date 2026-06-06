@@ -102,6 +102,10 @@ class CCStep < StepBase
 
   alias shift_val shift_value
 
+  # @private
+  def unique_slot_key
+    @cc
+  end
 
   protected
 
