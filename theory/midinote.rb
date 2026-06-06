@@ -285,7 +285,7 @@ class MIDINote < Numeric
 
       begin
         @number <=> MIDINote.new(other).number
-      rescue ArgumentError
+      rescue StandardError
         nil
       end
     end

@@ -124,7 +124,7 @@ class NoteLength
 
       begin
         @float_val <=> NoteLength.new(other).to_f
-      rescue ArgumentError
+      rescue StandardError
         nil
       end
     end

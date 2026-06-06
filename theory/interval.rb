@@ -405,7 +405,7 @@ class Interval < Numeric
 
       begin
         @size <=> Interval.new(other).size
-      rescue ArgumentError
+      rescue StandardError
         nil
       end
     end

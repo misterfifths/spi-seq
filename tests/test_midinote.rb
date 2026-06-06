@@ -135,6 +135,11 @@ class MIDINoteTest < Test::Unit::TestCase
     refute "nope".eql?(N(:c4))
     assert "nope" != N(:c4)
     # rubocop:enable Style/YodaCondition
+
+    # :r and :rest throw a different error if they hit MIDINote.new, so they're
+    # worth testing
+    refute N(:c4) == :r
+    refute N(:c4) == :rest
   end
 
   def test_missing_octave
