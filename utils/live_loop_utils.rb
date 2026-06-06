@@ -48,10 +48,19 @@ module SpiSeq
       get_thread(loop_name)&.thread_variable_get(var_name)
     end
 
-    # Returns the Time State key that can be used to control muting of a mutable
-    # `live_loop` created by that family of functions.
-    def self.mute_key(loop_name)
-      :"__live_loop_#{loop_name}_muted"
+    def self.mute_loop(loop_name, mute = true)
+      # It could potentially make sense to store this state as a thread variable
+      # on the loop, but we want it in place before the thread exists in
+      # mutable_live_loop. And if it only lived on the thread, we'd have to find
+      # a way to inherit it when swapping to new track_live_loops. So it seems
+      # cleaner to just hold the state locally.
+      @loop_mute_states ||= {}
+      @loop_mute_states[loop_name] = mute
+    end
+
+    def self.loop_is_muted?(loop_name)
+      @loop_mute_states ||= {}
+      @loop_mute_states[loop_name] || false
     end
   end
 end
@@ -65,7 +74,7 @@ end
 # @return [void]
 # @see unmute_live_loop
 def mute_live_loop(loop_name, mute=true)
-  ExtApi.set(SpiSeq::LiveLoops.mute_key(loop_name), mute)
+  SpiSeq::LiveLoops.mute_loop(loop_name, mute)
 end
 
 # Unmutes the given mutable `live_loop`. An alias passing false to
@@ -102,14 +111,12 @@ end
 def mutable_live_loop(loop_name, start_muted: false, **kwargs, &block)
   raise ArgumentError, "Block must take 1 or 2 arguments" if block.arity == 0 || block.arity > 2
 
-  key = SpiSeq::LiveLoops.mute_key(loop_name)
-
   # Only apply start_muted if this is a fresh definition of the loop (i.e, not a
   # restart of the same sketch).
-  ExtApi.set(key, start_muted) unless SpiSeq::LiveLoops.is_running?(loop_name)
+  mute_live_loop(loop_name, start_muted) unless SpiSeq::LiveLoops.is_running?(loop_name)
 
   ll = ExtApi.live_loop(loop_name, **kwargs) do |arg|
-    muted = ExtApi.get(key)
+    muted = SpiSeq::LiveLoops.loop_is_muted?(loop_name)
 
     if block.arity == 2
       block.call(muted, arg)

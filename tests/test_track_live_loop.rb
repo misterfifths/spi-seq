@@ -537,6 +537,25 @@ class TrackLiveLoopTest < Test::Unit::TestCase
       [:c4, 2, 2.5],
       [:c4, 3, 3.5]
     ]
+
+    # Muted state should persist
+    t = QT[S(:c4, gate: 0.5)]
+    l1 = tll(:t, t)
+    es = events do
+      l1.pump
+      mute_live_loop :t
+
+      l2 = tll(:t, t)
+      l1.pump
+      l2.pump
+      l2.pump
+
+      l2.stop
+      l1.stop
+    end
+    assert_events es, [
+      [:c4, 0, 0.5]
+    ]
   end
 
   def test_fill

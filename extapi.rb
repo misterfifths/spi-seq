@@ -63,10 +63,9 @@ module ExtApi
       :vt, :sleep,
       :with_real_time,
 
-      # Timestate, threading, synchronization
+      # Threading and synchronization
       :live_loop,
       :in_thread, :at,
-      :get, :set,
       :cue, :sync,
       :get_event  # undocumented; see trackrecorder.rb for some notes
     ].each do |fwd|
