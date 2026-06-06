@@ -249,6 +249,19 @@ class TrackLiveLoopTest < Test::Unit::TestCase
     use_player_defaults(midi: true, start_muted: true)
     assert_std_loop_events []
 
+    # Explicit arguments should override defaults
+    use_player_defaults(midi: false, start_muted: true, send_cycle_cues: true, sync: :test_sync)
+    l = tll(:t, QT[S(:c4, gate: 0.5)], midi: true, start_muted: false, send_cycle_cues: false, sync: nil)
+    es = events do
+      l.pump
+      l.pump
+      l.stop
+    end
+    assert_events es, [
+      [:c4, 0, 0.5],
+      [:c4, 1, 1.5]
+    ]
+
     use_player_defaults(**old_defaults)
   end
 

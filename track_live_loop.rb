@@ -232,6 +232,10 @@ end
 #   will be logged, as well as any debug information from the internal player.
 # @param init [Object] The initial value to pass to the `arg` parameter of the
 #   block.
+# @param sync [Symbol, nil] The name of the initial cue to wait for before
+#   starting the live loop (as with `live_loop`). If `:default_sync`, uses the
+#   global default set with {use_player_defaults}, if any. If `nil`, the loop
+#   does not wait for a cue.
 # @yield See the potential parameters to the block above.
 # @yieldreturn [void, Object, Track, CCTrack] A value to pass to the next
 #   iteration of the block as the `arg` argument, and potentially a track to
@@ -242,7 +246,7 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
                     midi: nil, port: nil, channel: nil,
                     cc: nil, fill_cc: nil, cc_port: nil, cc_channel: nil,
                     send_cycle_cues: nil, debug: false,
-                    init: nil, **kwargs, &block)
+                    init: nil, sync: :default_sync, **kwargs, &block)
   ### Validate arguments
   unless block.nil?
     req_pos_args, opt_pos_args, req_keywords, = SpiSeq::Utils.describe_args(block)
@@ -281,10 +285,7 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
   player_defaults = current_player_defaults
   cc_port, cc_channel = SpiSeq::MIDI.resolve_cc_port_and_channel(cc_port, cc_channel)
   fill_cc = player_defaults[:fill_cc] if fill_cc.nil?
-  unless kwargs.member?(:sync)
-    sync = player_defaults[:sync]
-    kwargs[:sync] = sync unless sync.nil?
-  end
+  sync = player_defaults[:sync] if sync == :default_sync
   start_muted = player_defaults[:start_muted] || false if start_muted.nil?
   send_cycle_cues = player_defaults.fetch(:send_cycle_cues, true) if send_cycle_cues.nil?
 
@@ -312,9 +313,9 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
     user_block: block, debug: debug)
 
   ll = if cc.nil?
-    mutable_live_loop(loop_name, start_muted: start_muted, init: init, **kwargs, &ll_block)
+    mutable_live_loop(loop_name, start_muted: start_muted, init: init, sync: sync, **kwargs, &ll_block)
   else
-    cc_mutable_live_loop(loop_name, start_muted: start_muted, init: init, cc: cc, port: cc_port, channel: cc_channel, **kwargs, &ll_block)
+    cc_mutable_live_loop(loop_name, start_muted: start_muted, init: init, sync: sync, cc: cc, port: cc_port, channel: cc_channel, **kwargs, &ll_block)
   end
 
   SpiSeq::LiveLoops.set_player(loop_name, player)
