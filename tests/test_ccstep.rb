@@ -124,4 +124,48 @@ class CCStepTest < Test::Unit::TestCase
     assert_raises(ArgumentError) { a.accum(1, prob: p).repr }
     assert_nothing_raised { a.accum(1, prob: p).repr(safe: true) }
   end
+
+  def assert_equal_yield
+    a = yield
+    b = yield
+    assert_equal a, b
+    assert_equal a.hash, b.hash
+  end
+
+  def test_equality
+    assert_equal_yield { CC(127, 0) }
+    assert_equal_yield { CC(127, 0, prob: Prob.chance(0.25)) }
+    assert_equal_yield { CC(127, 0, prob: Prob.pre) }
+
+    assert_equal_yield { CC(127, 5, prob: 0.25).accum(1) }
+    assert_equal_yield { CC(127, 5, prob: 0.25).accum(1, min: -5) }
+    assert_equal_yield { CC(127, 5, prob: 0.25).accum(1, min: -5, max: 22) }
+    assert_equal_yield { CC(127, 5, prob: 0.25).accum(1, min: -5, max: 22, mode: :freeze) }
+    assert_equal_yield { CC(127, 5, prob: 0.25).accum(1, min: -5, max: 22, mode: :freeze) }
+    assert_equal_yield { CC(127, 5, prob: 0.25).accum(1, min: -5, max: 22, mode: :freeze) }
+    assert_equal_yield { CC(127, 5, prob: 0.25).accum(1, min: -5, max: 22, mode: :freeze, prob: Prob.every_other) }
+    assert_equal_yield { CC(127, 5, prob: 0.25).accum(1, min: -5, max: 22, mode: :freeze, prob: Prob.every(3)) }
+
+    refute_equal CC(64, 9),
+                 CC(65, 9)
+    refute_equal CC(64, 9),
+                 CC(64, 10)
+    refute_equal CC(64, 9, prob: 0.25),
+                 CC(64, 9, prob: 0.75)
+    refute_equal CC(64, 9, prob: 0.25),
+                 CC(64, 9, prob: Prob.pre)
+
+    refute_equal CC(10, 7).accum(1),
+                 CC(10, 7).accum(2)
+    refute_equal CC(10, 7).accum(1, min: -5),
+                 CC(10, 7).accum(1, min: -6)
+    refute_equal CC(10, 7).accum(1, min: -5, max: 22),
+                 CC(10, 7).accum(1, min: -5, max: 23)
+    refute_equal CC(10, 7).accum(1, min: -5, max: 22, mode: :freeze),
+                 CC(10, 7).accum(1, min: -5, max: 22, mode: :wrap)
+    refute_equal CC(10, 7).accum(1, min: -5, max: 22, mode: :freeze, prob: Prob.every_other),
+                 CC(10, 7).accum(1, min: -5, max: 22, mode: :freeze, prob: Prob.pre)
+    refute_equal CC(10, 7).accum(1, min: -5, max: 22, mode: :freeze, prob: Prob.every(3)),
+                 CC(10, 7).accum(1, min: -5, max: 22, mode: :freeze, prob: Prob.every(2))
+  end
 end

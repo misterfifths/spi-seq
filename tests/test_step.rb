@@ -198,4 +198,55 @@ class StepTest < Test::Unit::TestCase
     assert_raises(ArgumentError) { s.accum(1, prob: p).repr }
     assert_nothing_raised { s.accum(1, prob: p).repr(safe: true) }
   end
+
+  def assert_equal_yield
+    a = yield
+    b = yield
+    assert_equal a, b
+    assert_equal a.hash, b.hash
+  end
+
+  def test_equality
+    assert_equal_yield { S(:c4) }
+    assert_equal_yield { S(:c4, gate: 0.25) }
+    assert_equal_yield { S(:c4, gate: 0.25, vel: 50) }
+    assert_equal_yield { S(:c4, gate: 0.25, vel: 50, prob: 0.25) }
+    assert_equal_yield { S(:c4, gate: 0.25, vel: 50, prob: Prob.chance(0.25)) }
+    assert_equal_yield { S(:c4, gate: 0.25, vel: 50, prob: Prob.pre) }
+
+    assert_equal_yield { S(:c4, gate: 0.25, vel: 50, prob: 0.25).accum(1) }
+    assert_equal_yield { S(:c4, gate: 0.25, vel: 50, prob: 0.25).accum(1, min: -5) }
+    assert_equal_yield { S(:c4, gate: 0.25, vel: 50, prob: 0.25).accum(1, min: -5, max: 22) }
+    assert_equal_yield { S(:c4, gate: 0.25, vel: 50, prob: 0.25).accum(1, min: -5, max: 22, mode: :freeze) }
+    assert_equal_yield { S(:c4, gate: 0.25, vel: 50, prob: 0.25).accum(1, min: -5, max: 22, mode: :freeze, target: :gate) }
+    assert_equal_yield { S(:c4, gate: 0.25, vel: 50, prob: 0.25).accum(1, min: -5, max: 22, mode: :freeze, target: :vel) }
+    assert_equal_yield { S(:c4, gate: 0.25, vel: 50, prob: 0.25).accum(1, min: -5, max: 22, mode: :freeze, target: :vel, prob: Prob.every_other) }
+    assert_equal_yield { S(:c4, gate: 0.25, vel: 50, prob: 0.25).accum(1, min: -5, max: 22, mode: :freeze, target: :vel, prob: Prob.every(3)) }
+
+    refute_equal S(:c4),
+                 S(:d4)
+    refute_equal S(:c4, gate: 0.25),
+                 S(:c4, gate: 0.5)
+    refute_equal S(:c4, gate: 0.25, vel: 50),
+                 S(:c4, gate: 0.25, vel: 127)
+    refute_equal S(:c4, gate: 0.25, vel: 50, prob: 0.25),
+                 S(:c4, gate: 0.25, vel: 50, prob: 0.75)
+    refute_equal S(:c4, gate: 0.25, vel: 50, prob: 0.25),
+                 S(:c4, gate: 0.25, vel: 50, prob: Prob.pre)
+
+    refute_equal S(:c4).accum(1),
+                 S(:c4).accum(2)
+    refute_equal S(:c4).accum(1, min: -5),
+                 S(:c4).accum(1, min: -6)
+    refute_equal S(:c4).accum(1, min: -5, max: 22),
+                 S(:c4).accum(1, min: -5, max: 23)
+    refute_equal S(:c4).accum(1, min: -5, max: 22, mode: :freeze),
+                 S(:c4).accum(1, min: -5, max: 22, mode: :wrap)
+    refute_equal S(:c4).accum(1, min: -5, max: 22, mode: :freeze, target: :gate),
+                 S(:c4).accum(1, min: -5, max: 22, mode: :freeze, target: :vel)
+    refute_equal S(:c4).accum(1, min: -5, max: 22, mode: :freeze, target: :vel, prob: Prob.every_other),
+                 S(:c4).accum(1, min: -5, max: 22, mode: :freeze, target: :vel, prob: Prob.pre)
+    refute_equal S(:c4).accum(1, min: -5, max: 22, mode: :freeze, target: :vel, prob: Prob.every(3)),
+                 S(:c4).accum(1, min: -5, max: 22, mode: :freeze, target: :vel, prob: Prob.every(2))
+  end
 end

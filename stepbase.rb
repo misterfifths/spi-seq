@@ -263,6 +263,8 @@ class StepBase
     accum_args = {}
     unless @accum_delta == 0
       accum_kwargs.each do |kwarg, defval|
+        next if kwarg == :accum_delta  # We account for this separately
+
         raw_val = send(kwarg)
         next if raw_val == defval
         accum_kwarg_name = kwarg.to_s.delete_prefix("accum_").to_sym
@@ -301,6 +303,26 @@ class StepBase
   # @private
   def inspect
     repr(safe: true)
+  end
+
+  # @private
+  def ==(other)
+    return false unless other.instance_of?(self.class)
+
+    ctor_args.chain(ctor_kwargs.keys, accum_kwargs.keys).each do |arg|
+      return false unless send(arg) == other.send(arg)
+    end
+
+    true
+  end
+
+  alias eql? ==
+
+  # @private
+  def hash
+    @hash ||= ctor_args.chain(ctor_kwargs.keys, accum_kwargs.keys)
+                .map { |arg| send(arg) }
+                .hash
   end
 
 
@@ -343,9 +365,6 @@ class StepBase
       mutations[kwarg] = send(kwarg) unless mutations.has_key?(kwarg)
     end
 
-    # This one is not in accum_kwargs.
-    mutations[:accum_delta] = @accum_delta unless mutations.has_key?(:accum_delta)
-
     self.class.new(*args, **mutations)
   end
 
@@ -377,10 +396,12 @@ class StepBase
   # The accumulator-related keyword arguments to the initializer and their
   # default values. It is expected that each key corresponds to a readable
   # instance attribute. It is also expected that deleting the prefix "accum_"
-  # from each key will result in a keyword argument to the `accum` method. Used
-  # to implement `repr` and `mutate`.
+  # from each key will result in a keyword argument to the `accum` method (with
+  # the exception of `accum_delta` which is assumed to be positional). Used to
+  # implement `repr`, `mutate`, equality and hashing.
   def accum_kwargs
     {
+      accum_delta: 0,
       accum_max: 12,
       accum_min: 0,
       accum_mode: :wrap,
