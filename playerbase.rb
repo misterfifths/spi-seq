@@ -78,7 +78,7 @@ class PlayerBase
   def stop
     end_all_steps
     @cycle = 0
-    @accum_data = {}  # Step hash keys (step_accum_hash_key) -> {delta:, direction:}
+    @accum_data = []  # for each slot, a hash: step.unique_slot_key -> {delta:, direction:}
   end
 
   # Plays one cycle of the track. This method plays all slots in the track and
@@ -187,7 +187,8 @@ class PlayerBase
   # 5. Commits the accumulation for triggering steps and calls
   #    `accums_committed`. The default does nothing.
   # 6. Calls `play_steps` (must be implemented) with the steps that will
-  #    trigger, as determined in step 4.
+  #    trigger, as determined in step 4. Subclasses should take into account the
+  #    now-commited accumulation for those steps, retrievable via `accum_delta`.
   # 7. Sleeps until it's time for the next slot.
 
 
@@ -268,7 +269,7 @@ class PlayerBase
     raise ArgumentError, "step is not in the current slot" unless current_steps.include?(step)
     raise RuntimeError, "accumulation deltas are being calculated" if @calculating_pending_accums
 
-    data = @pending_accum_data.nil? ? accum_data(step) : pending_accum_data(step)
+    data = accum_data(step, pending: !@pending_accum_data.nil?)
     data.nil? ? 0 : data[:delta]
   end
 
@@ -280,35 +281,24 @@ class PlayerBase
 
   private
 
-  # Returns a hash key for the given step in the current slot in @track, to be
-  # used when indexing @accum_data or @pending_accum_data.
-  def accum_hash_key(step)
-    # Since they're immutable, Steps could theoretically be shared across
-    # multiple slots. So we need to hash based on both the step and the slot
-    # that contains it. `unique_slot_key` uniquely identifies a step within its
-    # slot. But note that it is probably not `object_id` (Step, e.g., implements
-    # it by returning its note). If a track is swapped without resetting accum,
-    # we will end up reusing accumulation data for non-identical steps. This is
-    # desirable in the case of `track_live_loop`'s automatic fading: we want
-    # accumulation to persist across non-identical tracks with non-identical
-    # steps.
-    [@slot_idx, step.unique_slot_key].freeze
+  # Note that we store accum data by slot index and then `unique_slot_key`.
+  # `unique_slot_key` uniquely identifies a step within its slot, but it is
+  # probably not `object_id` (Step, e.g., implements it by returning its note).
+  # So if a track is swapped without resetting accum, we may reuse accumulation
+  # data for non-identical steps. This is desirable in the case of
+  # `track_live_loop`'s automatic fading: we want accumulation to persist across
+  # non-identical tracks with non-identical steps.
+  def accum_data(step, pending: false)
+    source = pending ? @pending_accum_data : @accum_data
+    h = source[@slot_idx]
+    h.nil? ? nil : h[step.unique_slot_key]
   end
 
-  def accum_data(step)
-    @accum_data[accum_hash_key(step)]
-  end
-
-  def pending_accum_data(step)
-    @pending_accum_data[accum_hash_key(step)]
-  end
-
-  def set_accum_data(step, data)
-    @accum_data[accum_hash_key(step)] = data
-  end
-
-  def set_pending_accum_data(step, data)
-    @pending_accum_data[accum_hash_key(step)] = data
+  def set_accum_data(step, data, pending: false)
+    source = pending ? @pending_accum_data : @accum_data
+    h = source[@slot_idx]
+    h = source[@slot_idx] = {} if h.nil?
+    h[step.unique_slot_key] = data
   end
 
   # Returns the new accumulation data entry for the step (in the current slot of
@@ -390,7 +380,7 @@ class PlayerBase
     @pending_accum_data = {}
     current_steps.each do |step|
       new_data = calculate_accum(step)
-      set_pending_accum_data(step, new_data) unless new_data.nil?
+      set_accum_data(step, new_data, pending: true) unless new_data.nil?
     end
     @calculating_pending_accums = false
   end
@@ -400,7 +390,7 @@ class PlayerBase
     steps.each do |step|
       raise ArgumentError, "step is not in the current slot" unless current_steps.include?(step)
 
-      data = pending_accum_data(step)
+      data = accum_data(step, pending: true)
       set_accum_data(step, data) unless data.nil?
     end
 

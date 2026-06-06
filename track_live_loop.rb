@@ -42,7 +42,7 @@ module SpiSeq
         # We want to play the original (unless it gets swapped via the block),
         # and we don't want to tell the user block about the faded version we
         # made. We don't reset accum here so that it persists between the faded
-        # and unfaded version of the track (see PlayerBase.accum_hash_key).
+        # and unfaded version of the track (see PlayerBase.accum_data).
         player.swap_track(unfaded_track, reset_accum: false) unless unfaded_track.nil?
         unfaded_track = nil
 
@@ -74,7 +74,7 @@ module SpiSeq
           faded_track = player.track.send(fade_method)
 
           # Note that we're not resetting accum here; we want accumulation to
-          # carry into the faded track. PlayerBase.accum_hash_key has details.
+          # carry into the faded track. PlayerBase.accum_data has details.
           player.swap_track(faded_track, reset_accum: false)
         end
 
