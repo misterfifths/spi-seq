@@ -117,12 +117,7 @@ def mutable_live_loop(loop_name, start_muted: false, **kwargs, &block)
 
   ll = ExtApi.live_loop(loop_name, **kwargs) do |arg|
     muted = SpiSeq::LiveLoops.loop_is_muted?(loop_name)
-
-    if block.arity == 2
-      block.call(muted, arg)
-    else
-      block.call(muted)
-    end
+    SpiSeq::Utils.call_varargs(block, muted, arg)
   end
 
   SpiSeq::LiveLoops.register(loop_name, ll)
