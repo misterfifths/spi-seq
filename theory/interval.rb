@@ -181,31 +181,38 @@ class Interval < Numeric
       number = number.to_i
       raise RangeError, "interval number must be > 0" unless number > 0
 
-      # Pick perfect/major if quality was omitted.
-      if quality.nil?
-        _, sub_octave_num = decompose_number(number)
-        quality = case sub_octave_num
-        when 1, 4, 5, 8
-          :perfect
-        else
-          :major
-        end
-      end
-
       instance = @number_cache[[number, quality]]
       return instance unless instance.nil?
 
-      instance = from_number(number, quality)
+      # If the given quality is what we would pick for this number given a nil
+      # quality, cache against nil too.
+      _, simple_num = decompose_number(number)
+      quality_if_nil = case simple_num
+      when 1, 4, 5, 8
+        :perfect
+      else
+        :major
+      end
+      cache_against_nil_quality = quality.nil? || quality == quality_if_nil
+
+      instance = from_number(number, quality || quality_if_nil)
+
+      @number_cache[[number, nil]] = instance if cache_against_nil_quality
     elsif !size.nil?
       size = size.to_i
 
       instance = @size_cache[[size, quality]]
       return instance unless instance.nil?
 
-      instance = super(size: size, quality: quality)
+      # If the given quality is what we would pick for this size given a nil
+      # quality, cache against nil too.
+      intra_octave_semitones = size % 12
+      quality_if_nil, = SIZES_TO_NUMBERS[intra_octave_semitones].first
+      cache_against_nil_quality = quality.nil? || quality == quality_if_nil
 
-      # Cache here specifically for the nil quality case.
-      @size_cache[[size, quality]] = instance if quality.nil?
+      instance = super(size: size, quality: quality || quality_if_nil)
+
+      @size_cache[[size, nil]] = instance if cache_against_nil_quality
     else
       raise ArgumentError, "one of number, size, or a positional argument must be given"
     end
@@ -238,7 +245,7 @@ class Interval < Numeric
     from_number(num, quality)
   end
 
-  private def initialize(size:, quality: nil)
+  private def initialize(size:, quality:)
     super()
 
     @size = size.to_i
@@ -253,15 +260,10 @@ class Interval < Numeric
       num_octaves -= 1 if num_octaves > 0
     end
 
-    if quality.nil?
-      # Take the quality from the first element in the SIZES_TO_NUMBERS hash.
-      @quality, @number = SIZES_TO_NUMBERS[intra_octave_semitones].first
-    else
-      @quality = quality
-      quals_to_numbers = SIZES_TO_NUMBERS[intra_octave_semitones]
-      @number = quals_to_numbers[quality]
-      raise ArgumentError, "an interval of #{size} semitones cannot have quality #{quality} - must be one of #{quals_to_numbers.keys.inspect}" if number.nil?
-    end
+    @quality = quality
+    quals_to_numbers = SIZES_TO_NUMBERS[intra_octave_semitones]
+    @number = quals_to_numbers[quality]
+    raise ArgumentError, "an interval of #{size} semitones cannot have quality #{quality} - must be one of #{quals_to_numbers.keys.inspect}" if number.nil?
 
     @number += 7 * num_octaves
     @sym = :"#{QUALITY_PREFIXES[@quality]}#{number}"
