@@ -32,7 +32,7 @@ end
 # @return [void]
 # @see current_track_defaults
 def use_track_defaults(strict_track_merging:)
-  SpiSeq::Defaults.track_defaults = { strict_track_merging: strict_track_merging }
+  SpiSeq::Defaults.track_defaults = { strict_track_merging: strict_track_merging }.freeze
 end
 
 # Returns the current track defaults as set by {use_track_defaults}, or an

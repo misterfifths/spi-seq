@@ -37,7 +37,7 @@ def use_player_defaults(midi: nil, sync: nil, start_muted: nil, fill_cc: nil, se
   defaults[:start_muted] = start_muted unless start_muted.nil?
   defaults[:fill_cc] = fill_cc unless fill_cc.nil?
   defaults[:send_cycle_cues] = send_cycle_cues unless send_cycle_cues.nil?
-  SpiSeq::Defaults.player_defaults = defaults
+  SpiSeq::Defaults.player_defaults = defaults.freeze
 end
 
 # Returns the current player defaults as set by {use_player_defaults}, or an

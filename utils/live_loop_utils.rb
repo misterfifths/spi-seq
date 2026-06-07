@@ -148,7 +148,7 @@ def use_cc_control_defaults(port: nil, channel: nil)
   defaults = {}
   defaults[:port] = port unless port.nil?
   defaults[:channel] = channel unless channel.nil?
-  SpiSeq::Defaults.cc_control_defaults = defaults
+  SpiSeq::Defaults.cc_control_defaults = defaults.freeze
 end
 
 # Returns the current CC control defaults as set by {use_cc_control_defaults},

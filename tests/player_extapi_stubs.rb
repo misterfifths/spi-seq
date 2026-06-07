@@ -120,9 +120,10 @@ module ExtApi
     # Note that we do not import this from Sonic Pi into ExtApi normally; this
     # stub is only here for the tests.
     def use_midi_defaults(port: nil, channel: nil)
-      @midi_defaults.clear
-      @midi_defaults[:port] = port unless port.nil?
-      @midi_defaults[:channel] = channel unless channel.nil?
+      defaults = {}
+      defaults[:port] = port unless port.nil?
+      defaults[:channel] = channel unless channel.nil?
+      @midi_defaults = defaults.freeze
     end
 
     def current_midi_defaults
