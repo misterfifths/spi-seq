@@ -306,7 +306,7 @@ class Interval < Numeric
       qual_prefix = QUALITY_PREFIXES[other_quality]
       :"#{qual_prefix}#{new_num}"
     end
-
+    @names.freeze
     @names
   end
 
