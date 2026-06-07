@@ -10,6 +10,12 @@
 class NoteLength
   include Comparable
 
+  ALIASES = {
+    thirtysecond: :thirty_second,
+    sixtyfourth: :sixty_fourth
+  }.freeze
+  private_constant :ALIASES
+
   # Create a new NoteLength representing the given length. The argument may be:
   # - Another NoteLength object, which is returned as-is.
   # - A symbol for the name of a length, e.g. `:whole`, `:quarter`, or
@@ -21,8 +27,9 @@ class NoteLength
   def self.new(length)
     return length if length.is_a?(NoteLength)
 
-    @cache ||= {}
+    length = ALIASES.fetch(length, length)
 
+    @cache ||= {}
     instance = @cache[length]
     return instance unless instance.nil?
 
@@ -76,14 +83,14 @@ class NoteLength
       @desc = "sixteenth"
       @next_longer = :eighth
       @next_shorter = :thirty_second
-    when :thirty_second, :thirtysecond
+    when :thirty_second
       @sym = :thirty_second
       @float_val = 1/8.0
       @log2 = -3
       @desc = "thirty-second"
       @next_longer = :sixteenth
       @next_shorter = :sixty_fourth
-    when :sixty_fourth, :sixtyfourth
+    when :sixty_fourth
       @sym = :sixty_fourth
       @float_val = 1/16.0
       @log2 = -4
@@ -198,10 +205,6 @@ class NoteLength
   ThirtySecond = new(:thirty_second)
   # Sixty-fourth-note length: a sixteenth of a beat.
   SixtyFourth = new(:sixty_fourth)
-
-  # Aliases to prime the cache
-  new(:thirtysecond)
-  new(:sixtyfourth)
 
 
   protected
