@@ -370,6 +370,9 @@ class IntervalTest < Test::Unit::TestCase
     assert "P1" == Interval.new(:P1)
     assert "P1".eql?(Interval.new(:P1))
     assert :A1 != Interval.new(:P1)
+
+    assert_nil :nope <=> Interval.new(:P1)
+    assert_nil "nope" <=> Interval.new(:P1)
     # rubocop:enable Style/YodaCondition
   end
 

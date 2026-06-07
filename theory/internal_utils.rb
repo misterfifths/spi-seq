@@ -23,8 +23,13 @@ module SpiSeq
       end
 
       ctx.define_method(:<=>) do |other|
-        next -(other <=> self) if other.instance_of?(cls)
-        super(other)
+        if other.instance_of?(cls)
+          res = other <=> self
+          next res if res.nil?
+          -res
+        else
+          super(other)
+        end
       end
     end
   end
