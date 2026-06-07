@@ -371,4 +371,13 @@ class MIDINoteTest < Test::Unit::TestCase
     assert_equal N(:cb4).repr, ":b3"
     assert_equal N(:bs4).repr, ":c5"
   end
+
+  def test_names
+    0.upto(127) do |i|
+      n = N(i)
+      n.names.each do |name|
+        assert_equal n, N(name)
+      end
+    end
+  end
 end

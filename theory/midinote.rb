@@ -103,24 +103,29 @@ class MIDINote < Numeric
       note.downcase
     when Symbol
       note.to_s.downcase
-    else
-      note
     end
 
-    instance = @note_cache[cache_key]
-    unless instance.nil?
-      # `note` must be a new representation of a value we already know about; we
-      # should update the cache.
-      @note_cache[note] = instance
-      return instance
+    if cache_key != note
+      instance = @note_cache[cache_key]
+      unless instance.nil?
+        # `note` must be a new representation of a value we already know about;
+        # we should update the cache.
+        @note_cache[note] = instance
+        return instance
+      end
     end
 
     # We've got to make a new instance.
     instance = super
     @note_cache[note] = instance
-    @note_cache[cache_key] = instance
+    @note_cache[cache_key] = instance unless cache_key.nil?
     @note_cache[instance.to_i] = instance
     @note_cache[instance.to_s] = instance
+
+    instance.names.each do |name|
+      @note_cache[name] = instance
+      @note_cache[name.to_s] = instance
+    end
 
     instance
   end
@@ -261,6 +266,23 @@ class MIDINote < Numeric
   # @return [MIDINote]
   def snap_to_scale(tonic, scale_name)
     snap(Scale.full_scale(tonic, scale_name))
+  end
+
+  # Returns all possible names for an note with this {#number}.
+  # @return [Array<Symbol>]
+  def names
+    return @names unless @names.nil?
+
+    @names = []
+    NOTE_NAMES[@number % 12].each do |name|
+      octave = @octave
+      octave += 1 if [:cb, :cf].include?(name)
+      octave -= 1 if name == :bs
+      @names << :"#{name}#{octave}"
+      @names << :"#{name}" if octave == 4
+    end
+    @names.freeze
+    @names
   end
 
 
