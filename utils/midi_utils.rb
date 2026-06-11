@@ -107,9 +107,20 @@ end
 # stopped. E.g.:
 #   midi_panic(port: "my_device", channel: 7)  # stops one device
 #   midi_panic({ channel: 2 }, { port: "another", channel: 5 })  # stops 2
+#
+# If no arguments are provided, or a port or channel is unspecified in any
+# circumstance, the default Sonic Pi target from `use_midi_defaults` is used.
+#
+# @param ports_and_channels [Array<Hash>] An number of hashes specifying MIDI
+#   ports and/or channels to silence. Mutually exclusive with the `port` and
+#   `channel` arguments.
+# @param port [String, nil] The MIDI port to silence. Mutually exclusive with
+#   the positional hashes.
+# @param channel [Integer, String, nil] The MIDI channel to silence. Mutually
+#   exclusive with the positional hashes.
 # @return [void]
-def midi_panic(*args, **kwargs)
-  uber_stop = lambda do |port: nil, channel: nil|
+def midi_panic(*ports_and_channels, port: nil, channel: nil)
+  panic = lambda do |port: nil, channel: nil|
     midi_kwargs = {}
     midi_kwargs[:port] = port unless port.nil?
     midi_kwargs[:channel] = channel unless channel.nil?
@@ -122,10 +133,15 @@ def midi_panic(*args, **kwargs)
     end
   end
 
-  if kwargs.empty?
-    args.each { |midi_hash| uber_stop.call(**midi_hash) }
+  if port.nil? && channel.nil?
+    if ports_and_channels.empty?
+      panic.call
+    else
+      ports_and_channels.each { |h| panic.call(**h) }
+    end
   else
-    uber_stop.call(**kwargs)
+    raise ArgumentError, "positional and keyword arguments are mutually exclusive" unless ports_and_channels.empty?
+    panic.call(port: port, channel: channel)
   end
 end
 
@@ -145,9 +161,11 @@ alias midi_uber_stop midi_panic
 # if it has no `live_loops` or they all stop). It is only executed when hitting
 # the stop button or quitting the app.
 #
+# @param (see #midi_panic)
+# @param hook_name [Symbol] The name of the stop hook. See {#on_stop}.
 # @return [void]
-def midi_panic_on_stop(*args, hook_name: :midi_panic, **kwargs)
+def midi_panic_on_stop(*ports_and_channels, hook_name: :midi_panic, port: nil, channel: nil)
   on_stop(hook_name) do
-    midi_panic(*args, **kwargs)
+    midi_panic(*ports_and_channels, port: port, channel: channel)
   end
 end
