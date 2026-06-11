@@ -27,13 +27,12 @@ module ExtApi
       # only one instance of it, so let's hackily try to find it.
 
       begin
-        spi_ctx_cls = Object.const_get("SonicPiLang")
+        instances = ObjectSpace.each_object(SonicPiLang).to_a
       rescue NameError
         # We're not in Sonic Pi.
         return
       end
 
-      instances = ObjectSpace.each_object(spi_ctx_cls).to_a
       raise RuntimeError, "Didn't find exactly one instance of SonicPiLang. This is a spi-seq bug; please report it" unless instances.one?
       @spi = instances[0]
     end
