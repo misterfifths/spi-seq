@@ -165,7 +165,7 @@ class TrackStepTest < Test::Unit::TestCase
 
   def test_rand_octave
     if in_sonic_pi?
-      spi_call(:use_random_seed, 1234)
+      SpiSeq::External::Random.use_random_seed(1234)
       assert_grid T[:c4].roct, [[:c5]]
       assert_grid T[:c4, :d5].roct(p: 1), [[:c5], [:d6]]
       assert_grid T[:c4, [:d5, :e6]].roct(3, p: 1), [[:c6], [:d6, :e4]]
@@ -445,7 +445,7 @@ class TrackStepTest < Test::Unit::TestCase
     t = T[S(:c1, gate: 0.5, vel: 63), :c2, S(:c3, gate: 0.1, vel: 10)]
 
     if in_sonic_pi?
-      spi_call(:use_random_seed, 1234)
+      SpiSeq::External::Random.use_random_seed(1234)
       assert_grid t.evolve(tone_shifts: [-12, 12], octave_limit: 0..4, gate_delta: 0, velf_delta: 0, p: 1),
                   T[S(:c0, vel: 63, gate: 0.5), :c1, S(:c4, vel: 10, gate: 0.1)].grid
       assert_grid t.evolve(tone_shifts: [-7, 7], octave_limit: 0..4, gate_delta: 0, velf_delta: 0, p: 1),

@@ -102,7 +102,7 @@ class ScaleTest < Test::Unit::TestCase
         assert_equal res, Scale.degree(d.to_s.upcase.to_sym, :c4, :major)
 
         next unless in_sonic_pi?
-        spi_degree = spi_call(:degree, d, :c4, :major)
+        spi_degree = SpiSeq::External::Theory.degree(d, :c4, :major)
         assert_equal res, N(spi_degree)
       end
     end
@@ -138,7 +138,7 @@ class ScaleTest < Test::Unit::TestCase
     return nil unless in_sonic_pi?
 
     begin
-      ns = spi_call(:scale, tonic, name, num_octaves: num_octaves)
+      ns = SpiSeq::External::Theory.scale(tonic, name, num_octaves: num_octaves)
       ns.to_a.map { |n| N(n) }
     rescue SonicPi::Scale::InvalidScaleError
       nil

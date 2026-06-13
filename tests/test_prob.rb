@@ -17,7 +17,7 @@ class ProbTest < Test::Unit::TestCase
 
   def test_chance
     if in_sonic_pi?
-      spi_call(:use_random_seed, 1234)
+      SpiSeq::External::Random.use_random_seed(1234)
       assert_playback_events QT[[:a1, S(:b2, prob: Prob.chance(0.5))]], [
         [:a1, 0, nil],
         [:b2, 0, 2]
@@ -43,7 +43,7 @@ class ProbTest < Test::Unit::TestCase
 
   def test_one_in
     if in_sonic_pi?
-      spi_call(:use_random_seed, 1234)
+      SpiSeq::External::Random.use_random_seed(1234)
       assert_playback_events QT[[:a1, S(:b2, prob: Prob.one_in(2))]], [
         [:a1, 0, nil],
         [:b2, 0, 2]

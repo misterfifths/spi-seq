@@ -29,13 +29,13 @@ class TrackInitTest < Test::Unit::TestCase
     return unless in_sonic_pi?
 
     # Make sure things work with Sonic Pi's wrapped enumerables.
-    cmaj = spi_call(:chord, :c4, :major)
+    cmaj = SpiSeq::External::Theory.chord(:c4, :major)
     assert_grid T[cmaj], [[:c4, :e4, :g4]]
     assert_grid T.from_grid(cmaj), [[:c4], [:e4], [:g4]]
 
-    ring_slot = spi_call(:ring, :c4, :c5)
+    ring_slot = SpiSeq::External::Enumerables.ring(:c4, :c5)
     assert_grid T[ring_slot], [[:c4, :c5]]
-    ring_grid = spi_call(:ring, ring_slot, ring_slot)
+    ring_grid = SpiSeq::External::Enumerables.ring(ring_slot, ring_slot)
     assert_grid T.from_grid(ring_grid), [[:c4, :c5], [:c4, :c5]]
   end
 

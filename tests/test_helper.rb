@@ -30,11 +30,8 @@ end
 
 require "test/unit"
 require_relative "../external/sonic_pi"
+require_relative "externals"
 
 def in_sonic_pi?
   SpiSeq::External.in_sonic_pi?
-end
-
-def spi_call(method, *args, **kwargs, &block)
-  SpiSeq::External::SonicPi.spi_call(method, *args, **kwargs, &block)
 end

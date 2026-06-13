@@ -29,7 +29,7 @@ class ChordTest < Test::Unit::TestCase
 
     # Sonic Pi's wrapped enumerables should work
     if in_sonic_pi?
-      int_ring = spi_call(:ring, :P1, :m3, :P5)
+      int_ring = SpiSeq::External::Enumerables.ring(:P1, :m3, :P5)
       assert_equal Chord.new(int_ring).intervals, [:P1, :m3, :P5]
     end
   end
@@ -62,7 +62,7 @@ class ChordTest < Test::Unit::TestCase
 
     # Sonic Pi's enumerables
     if in_sonic_pi?
-      int_ring = spi_call(:ring, :P1, :m3, :P5)
+      int_ring = SpiSeq::External::Enumerables.ring(:P1, :m3, :P5)
       c = Chord.new([:P8]) + int_ring
       assert_equal c.intervals, [:P1, :m3, :P5, :P8]
     end
@@ -142,7 +142,7 @@ class ChordTest < Test::Unit::TestCase
     return nil unless in_sonic_pi?
 
     begin
-      ns = spi_call(:chord, root, name, *args, **kwargs)
+      ns = SpiSeq::External::Theory.chord(root, name, *args, **kwargs)
       ns.to_a.map { |n| N(n) }
     rescue RuntimeError
       nil
@@ -188,7 +188,7 @@ class ChordTest < Test::Unit::TestCase
     end
 
     # We should understand all the names that Sonic Pi does.
-    spi_call(:chord_names).to_a.each do |name|
+    SpiSeq::External::Theory.chord_names.to_a.each do |name|
       assert_nothing_raised("should support chord #{name}") { Chord.new(name) }
     end
   end
