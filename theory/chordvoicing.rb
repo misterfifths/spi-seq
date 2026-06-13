@@ -285,7 +285,7 @@ class Chord
     # Scale#degree accepts degrees like :aii, but we can accept only non-
     # prefixed numbers so that we wind up with root note that is actually on the
     # scale.
-    n, mod = Scale.parse_degree(d)
+    n, mod = SpiSeq::Utils.parse_degree(d)
     raise ArgumentError, "invalid degree #{d}" if mod != 0
     raise RangeError, "degree must be > 0" if n <= 0
 
