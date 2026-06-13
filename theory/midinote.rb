@@ -29,14 +29,24 @@ end
 # devices, so they aren't particularly relevant. That use case should be
 # considered deprecated.
 #
+# For consistency, the string and symbol representation of MIDINote instances
+# (`to_s` and `to_sym`) are normalized to naturals (when possible) or sharps.
+# For example, `N(:bf3).to_sym` is `:as3`. All variations of a note compare
+# equal to one another, however, so `N(:as3) == :bf3` is true.
+#
 # This class derives from Numeric, so you can directly pass instances of it to
 # Sonic Pi methods like `play` and `midi`. You can also perform arithmetic on
 # them, and compare instances directly to numbers, symbols, strings, or other
-# MIDINotes. For example:
-#   MIDINote.new(61) == 61 == :cs4 == "db4"
-#   MIDINote.new(:c4) + 12 == :c5 == 72
-#   MIDINote.new(:c5) > :c4
-#   "bf3" == MIDINote.new(:as3)
+# MIDINotes. For example, these statements are all true:
+#   N(61) == 61
+#   N(61) == :cs4
+#   N(:cs4) == "db4"
+#   N(:c5) == 72
+#   N(:c5) - 1 == :b4
+#   N(:c4) + 12 == N(:c5)
+#   N(:c5) > :c4
+#   :bf3 == N(:as3)
+#   N(:Bs3) == :c4
 class MIDINote < Numeric
   NOTE_REGEX = /^(?<pitch_class>[a-g][sbf]?)(?<octave>-?\d+)?$/i.freeze
   private_constant :NOTE_REGEX
