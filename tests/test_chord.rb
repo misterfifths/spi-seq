@@ -3,7 +3,6 @@
 
 require_relative "test_helper"
 require_relative "../theory/chord"
-require_relative "../extapi"
 
 class ChordTest < Test::Unit::TestCase
   def test_initializer
@@ -29,8 +28,8 @@ class ChordTest < Test::Unit::TestCase
     assert_equal Chord.new(1...5).intervals, [:P1, :M2, :M3, :P4]
 
     # Sonic Pi's wrapped enumerables should work
-    if ExtApi.in_sonic_pi?
-      int_ring = ExtApi.spi_call(:ring, :P1, :m3, :P5)
+    if in_sonic_pi?
+      int_ring = spi_call(:ring, :P1, :m3, :P5)
       assert_equal Chord.new(int_ring).intervals, [:P1, :m3, :P5]
     end
   end
@@ -62,8 +61,8 @@ class ChordTest < Test::Unit::TestCase
     assert_equal c.intervals, [:P1, :M2, :M3, :P4]
 
     # Sonic Pi's enumerables
-    if ExtApi.in_sonic_pi?
-      int_ring = ExtApi.spi_call(:ring, :P1, :m3, :P5)
+    if in_sonic_pi?
+      int_ring = spi_call(:ring, :P1, :m3, :P5)
       c = Chord.new([:P8]) + int_ring
       assert_equal c.intervals, [:P1, :m3, :P5, :P8]
     end
@@ -140,10 +139,10 @@ class ChordTest < Test::Unit::TestCase
   end
 
   def try_spi_chord(root, name, *args, **kwargs)
-    return nil unless ExtApi.in_sonic_pi?
+    return nil unless in_sonic_pi?
 
     begin
-      ns = ExtApi.spi_call(:chord, root, name, *args, **kwargs)
+      ns = spi_call(:chord, root, name, *args, **kwargs)
       ns.to_a.map { |n| N(n) }
     rescue RuntimeError
       nil
@@ -159,7 +158,7 @@ class ChordTest < Test::Unit::TestCase
   end
 
   def test_chords_vs_sonic_pi
-    return unless ExtApi.in_sonic_pi?
+    return unless in_sonic_pi?
 
     Chord::CHORD_NAMES.each do |name|
       spi_chord = try_spi_chord(:c4, name)
@@ -189,7 +188,7 @@ class ChordTest < Test::Unit::TestCase
     end
 
     # We should understand all the names that Sonic Pi does.
-    ExtApi.spi_call(:chord_names).to_a.each do |name|
+    spi_call(:chord_names).to_a.each do |name|
       assert_nothing_raised("should support chord #{name}") { Chord.new(name) }
     end
   end

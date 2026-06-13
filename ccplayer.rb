@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 require_relative "cctrack"
-require_relative "extapi"
 require_relative "playerbase"
 require_relative "utils/internal_utils"
+require_relative "external/midi"
+require_relative "external/sync"
 
 # A CCPlayer plays a {CCTrack} by sending its {CCStep}s' CC messages over MIDI.
 #
@@ -61,7 +62,7 @@ class CCPlayer < PlayerBase
 
     steps.each do |step|
       effective_val = step.value + accum_delta(step)
-      ExtApi.midi_cc(step.cc, effective_val, **@midi_spi_kwargs)
+      SpiSeq::External::MIDI.midi_cc(step.cc, effective_val, **@midi_spi_kwargs)
 
       next unless @debug
       debug_str = step.repr(safe: true)
@@ -70,7 +71,7 @@ class CCPlayer < PlayerBase
     end
 
     if @debug
-      SpiSeq::Log.log("@ t=#{ExtApi.vt} slot=#{slot_idx} cycle=#{@cycle} fill=#{@fill}", "ccplayer")
+      SpiSeq::Log.log("@ t=#{SpiSeq::External::Sync.vt} slot=#{slot_idx} cycle=#{@cycle} fill=#{@fill}", "ccplayer")
       SpiSeq::Log.log("new steps: [#{step_debug_strings.join(', ')}]", "ccplayer")
     end
   end

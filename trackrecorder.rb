@@ -4,9 +4,9 @@ require_relative "track"
 require_relative "step"
 require_relative "theory/notelength"
 require_relative "theory/midinote"
-require_relative "extapi"
 require_relative "utils/midi_utils"
 require_relative "utils/internal_utils"
+require_relative "external/sync"
 
 class Track
   private_class_method def self.float_lt(a, b, threshold = 0.01)
@@ -156,7 +156,7 @@ class Track
                          start_time: nil, end_time: nil,
                          min_gate: 0.1, quantize_gates: true,
                          ignore_vel: false)
-    bpm = ExtApi.current_bpm if bpm.nil?
+    bpm = SpiSeq::External::Sync.current_bpm if bpm.nil?
     granularity = NoteLength.new(granularity)
     beats_per_sec = bpm * (1 / 60.0)
     secs_per_beat = 1.0 / beats_per_sec
@@ -258,16 +258,16 @@ class Track
     event_re = %r{^/midi:(?<port>[^:]+):(?<channel>\d+)/(?<event>.+)$}
     event_glob = "/midi:*/{control_change,note_on,note_off}"
     loop do
-      note_or_cc, vel_or_cc_val = ExtApi.sync(event_glob)
+      note_or_cc, vel_or_cc_val = SpiSeq::External::Sync.sync(event_glob)
 
       # get_event is undocumented, but it gives back a CueEvent object for the
       # most recent thing you sync'd to, given the argument you passed to sync.
       # The path property on that object is the string for the event.
-      cue_event = ExtApi.get_event(event_glob)
+      cue_event = SpiSeq::External::Sync.get_event(event_glob)
       cue_name = cue_event.path
 
       # cue_event.time.to_f is also an option
-      cue_time = ExtApi.vt
+      cue_time = SpiSeq::External::Sync.vt
 
       re_match = event_re.match(cue_name)
       next if re_match.nil?
@@ -396,7 +396,7 @@ class Track
                   min_gate: 0.1, quantize_gates: true,
                   ignore_vel: false)
     start_time = end_time = timeline = nil
-    ExtApi.with_real_time do
+    SpiSeq::External::Sync.with_real_time do
       start_time, end_time, timeline = record_timeline(control_cc: cc, cc_port: cc_port, cc_channel: cc_channel,
                                                        port: port, channel: channel)
     end

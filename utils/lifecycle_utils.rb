@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative "../extapi"
 require_relative "internal_utils"
+require_relative "../external/sync"
 
 # @!group Sonic Pi lifecycle utilities
 
@@ -27,11 +27,11 @@ end
 # @yield
 def on_cold_run(key = :default, &block)
   thread_name = :"__cold_run_#{key}"
-  ExtApi.in_thread(name: thread_name) do
+  SpiSeq::External::Sync.in_thread(name: thread_name) do
     block.call
 
     # spin to keep this thread alive until the script is manually stopped
-    loop { ExtApi.sleep(100) }
+    loop { SpiSeq::External::Sync.sleep(100) }
   end
 end
 
@@ -68,7 +68,7 @@ def on_stop(name = :default, &block)
   SpiSeq::Lifecycle.stop_hooks[name] = block
 
   # Since we give this a name, Sonic Pi will only define it once.
-  ExtApi.in_thread(name: :__stop_hook_watcher) do
+  SpiSeq::External::Sync.in_thread(name: :__stop_hook_watcher) do
     kq = Thread::Queue.new
     Thread.current[:__kill_queue] = kq
     kq.pop

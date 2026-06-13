@@ -3,7 +3,6 @@
 
 require_relative "test_helper"
 require_relative "../theory/scale"
-require_relative "../extapi"
 
 class ScaleTest < Test::Unit::TestCase
   def test_basics
@@ -102,8 +101,8 @@ class ScaleTest < Test::Unit::TestCase
         assert_equal res, Scale.degree(d.to_s.upcase, :c4, :major)
         assert_equal res, Scale.degree(d.to_s.upcase.to_sym, :c4, :major)
 
-        next unless ExtApi.in_sonic_pi?
-        spi_degree = ExtApi.spi_call(:degree, d, :c4, :major)
+        next unless in_sonic_pi?
+        spi_degree = spi_call(:degree, d, :c4, :major)
         assert_equal res, N(spi_degree)
       end
     end
@@ -136,10 +135,10 @@ class ScaleTest < Test::Unit::TestCase
   end
 
   def try_spi_scale(tonic, name, num_octaves: 1)
-    return nil unless ExtApi.in_sonic_pi?
+    return nil unless in_sonic_pi?
 
     begin
-      ns = ExtApi.spi_call(:scale, tonic, name, num_octaves: num_octaves)
+      ns = spi_call(:scale, tonic, name, num_octaves: num_octaves)
       ns.to_a.map { |n| N(n) }
     rescue SonicPi::Scale::InvalidScaleError
       nil
@@ -147,7 +146,7 @@ class ScaleTest < Test::Unit::TestCase
   end
 
   def test_vs_sonic_pi
-    return unless ExtApi.in_sonic_pi?
+    return unless in_sonic_pi?
 
     Scale::SCALE_NAMES.each do |scale_name|
       next if try_spi_scale(:c4, scale_name).nil?  # Skip names Sonic Pi doesn't know

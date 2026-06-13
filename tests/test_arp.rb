@@ -84,8 +84,8 @@ class ArpTest < Test::Unit::TestCase
   def test_random
     ns = %i[a1 c0 d3 a0]
 
-    if ExtApi.in_sonic_pi?
-      ExtApi.spi_call(:use_random_seed, 1234)
+    if in_sonic_pi?
+      spi_call(:use_random_seed, 1234)
       assert_arp ns, :random, %i[a1 a0 d3 c0]
       assert_arp ns, :random, %i[a0 a1 d3 c0]
       assert_arp ns, :random, %i[a0 c0 d3 a1]
@@ -142,16 +142,16 @@ class ArpTest < Test::Unit::TestCase
   def test_enums
     assert_arp 60...65, :order, %i[c4 cs4 d4 ds4 e4]
 
-    return unless ExtApi.in_sonic_pi?
+    return unless in_sonic_pi?
 
     # The thing returned by Sonic Pi's chord method is very strange (doubly-
     # wrapped ring with some breakage of the builtins along the way). Make sure
     # it works.
-    ns = ExtApi.spi_call(:chord, :c4, :major7)
+    ns = spi_call(:chord, :c4, :major7)
     assert_arp ns, :updown, %i[c4 e4 g4 b4 g4 e4]
 
     # Make sure ring works too.
-    ns = ExtApi.spi_call(:ring, *%i[c4 c5 c6])
+    ns = spi_call(:ring, *%i[c4 c5 c6])
     assert_arp ns, :updown, %i[c4 c5 c6 c5]
   end
 end

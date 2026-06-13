@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "../extapi"
+require_relative "../external/sync"
 
 # Dummy implementation of live_loop for testing purposes. As with the other
 # testing stubs, requiring this file in Sonic Pi will break spi-seq playback
@@ -20,7 +20,7 @@ class LiveLoopThread < Thread
       loop do
         break unless @pump_queue.pop
 
-        ExtApi.sync(sync) if first && !sync.nil?
+        SpiSeq::External::Sync.sync(sync) if first && !sync.nil?
         first = false
 
         init = (block.arity == 1) ? block.call(init) : block.call
@@ -58,10 +58,15 @@ class LiveLoopThread < Thread
   end
 end
 
-module ExtApi
-  # The thread this returns is parked and can be signaled to run an iteration
-  # with its `pump` method. It can be stopped and joined with `stop`.
-  def self.live_loop(_name, init: nil, sync: nil, **_kwargs, &block)
-    LiveLoopThread.new(init: init, sync: sync, &block)
+module SpiSeq
+  module External
+    module Sync
+      # The thread this returns is parked and can be signaled to run an
+      # iteration with its `pump` method. It can be stopped and joined with
+      # `stop`.
+      def self.live_loop(_name, init: nil, sync: nil, **_kwargs, &block)
+        LiveLoopThread.new(init: init, sync: sync, &block)
+      end
+    end
   end
 end

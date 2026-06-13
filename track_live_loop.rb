@@ -2,12 +2,13 @@
 
 require_relative "ccplayer"
 require_relative "cctrack"
-require_relative "extapi"
 require_relative "player"
 require_relative "trackbase"
 require_relative "track"
 require_relative "utils/live_loop_utils"
 require_relative "utils/internal_utils"
+require_relative "external/midi"
+require_relative "external/sync"
 
 # @private
 module SpiSeq
@@ -82,7 +83,7 @@ module SpiSeq
         if muted && !fading_out
           player.sleep
         else
-          ExtApi.cue(:"#{loop_name}_cycle", player.cycle) if send_cycle_cues
+          SpiSeq::External::Sync.cue(:"#{loop_name}_cycle", player.cycle) if send_cycle_cues
           player.play
         end
 
@@ -306,7 +307,7 @@ def track_live_loop(loop_name, track = nil, start_muted: nil,
     # Don't send a 0 fill CC for restarts of the same sketch.
     unless SpiSeq::LiveLoops.is_running?(loop_name)
       SpiSeq::Log.log("sending default CC #{fill_cc} value 0 for live loop #{loop_name}", "cc_fill_control")
-      ExtApi.midi_cc(fill_cc, 0, port: cc_port, channel: cc_channel)
+      SpiSeq::External::MIDI.midi_cc(fill_cc, 0, port: cc_port, channel: cc_channel)
     end
   end
 

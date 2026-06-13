@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-require_relative "../extapi"
 require_relative "../utils/internal_utils"
+require_relative "../external/midi"
+require_relative "../external/sync"
 
 # @!group MIDI utilities
 
@@ -26,7 +27,7 @@ module SpiSeq
     # resolve_cc_port_and_channel, except it considers the values set by Sonic
     # Pi's use_midi_defaults instead of use_cc_control_defaults.
     def self.resolve_port_and_channel(port, channel)
-      defaults = ExtApi.current_midi_defaults || {}
+      defaults = SpiSeq::External::MIDI.current_midi_defaults || {}
       port = defaults[:port] || "*" if port.nil?
       channel = defaults[:channel] || "*" if channel.nil?
       [port, channel]
@@ -58,13 +59,13 @@ def midi_clock_live_loop(loop_name = :midi_clock, send_start: false, send_stop: 
   start_stop_kwargs[:port] = start_port unless start_port.nil?
   start_stop_kwargs[:channel] = start_channel unless start_channel.nil?
 
-  ExtApi.live_loop loop_name, init: false do |inited|
-    ExtApi.midi_stop(**start_stop_kwargs) if !inited && send_stop
+  SpiSeq::External::Sync.live_loop loop_name, init: false do |inited|
+    SpiSeq::External::MIDI.midi_stop(**start_stop_kwargs) if !inited && send_stop
 
-    ExtApi.midi_clock_beat(**beat_kwargs)
-    ExtApi.sleep 1
+    SpiSeq::External::MIDI.midi_clock_beat(**beat_kwargs)
+    SpiSeq::External::Sync.sleep 1
 
-    ExtApi.midi_start(**start_stop_kwargs) if !inited && send_start
+    SpiSeq::External::MIDI.midi_start(**start_stop_kwargs) if !inited && send_start
 
     true
   end
@@ -88,9 +89,9 @@ def cc_watcher_live_loop(loop_name, port: nil, channel: nil, &block)
   port, channel = SpiSeq::MIDI.resolve_cc_port_and_channel(port, channel)
   cue_path = "/midi:#{port}:#{channel}/control_change"
 
-  ExtApi.live_loop loop_name do
-    ExtApi.with_real_time do
-      cc, val = ExtApi.sync(cue_path)
+  SpiSeq::External::Sync.live_loop loop_name do
+    SpiSeq::External::Sync.with_real_time do
+      cc, val = SpiSeq::External::Sync.sync(cue_path)
       SpiSeq::Utils.call_varargs(block, cc, val)
     end
   end
@@ -125,11 +126,11 @@ def midi_panic(*ports_and_channels, port: nil, channel: nil)
     midi_kwargs[:port] = port unless port.nil?
     midi_kwargs[:channel] = channel unless channel.nil?
 
-    ExtApi.with_real_time do
-      ExtApi.midi_stop(**midi_kwargs)
-      ExtApi.midi_all_notes_off(**midi_kwargs)
-      ExtApi.midi_sound_off(**midi_kwargs)
-      0.upto(127) { |n| ExtApi.midi_note_off(n, **midi_kwargs) }
+    SpiSeq::External::Sync.with_real_time do
+      SpiSeq::External::MIDI.midi_stop(**midi_kwargs)
+      SpiSeq::External::MIDI.midi_all_notes_off(**midi_kwargs)
+      SpiSeq::External::MIDI.midi_sound_off(**midi_kwargs)
+      0.upto(127) { |n| SpiSeq::External::MIDI.midi_note_off(n, **midi_kwargs) }
     end
   end
 

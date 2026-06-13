@@ -275,8 +275,8 @@ class TrackGridTest < Test::Unit::TestCase
   def test_shuffle
     assert_grid T[:c4].shuffle, [[:c4]]
 
-    if ExtApi.in_sonic_pi?
-      ExtApi.spi_call(:use_random_seed, 1234)
+    if in_sonic_pi?
+      spi_call(:use_random_seed, 1234)
       assert_grid T[:a1, :b2, :c3, :d4].shuffle, [[:a1], [:d4], [:c3], [:b2]]
       assert_grid T[:a1, :b2, :c3, :d4].shuffle, [[:d4], [:a1], [:c3], [:b2]]
     else
@@ -295,8 +295,8 @@ class TrackGridTest < Test::Unit::TestCase
     # rubocop:disable Style/IdenticalConditionalBranches
 
     t = T[:a1, :r, :r, :b2, [:c3, :d4]]
-    if ExtApi.in_sonic_pi?
-      ExtApi.spi_call(:use_random_seed, 1234)
+    if in_sonic_pi?
+      spi_call(:use_random_seed, 1234)
       assert_grid t.shuffle_filled, [[:a1], [], [], [:b2], [:c3, :d4]]
       assert_grid t.shuffle_filled, [[:a1], [], [], [:c3, :d4], [:b2]]
       assert_grid t.shuffle_filled, [[:c3, :d4], [], [], [:b2], [:a1]]
@@ -447,15 +447,15 @@ class TrackGridTest < Test::Unit::TestCase
 
     t = T[:a1, :b2, :r, :c3, :d4]
 
-    if ExtApi.in_sonic_pi?
-      ExtApi.spi_call(:use_random_seed, 1234)
+    if in_sonic_pi?
+      spi_call(:use_random_seed, 1234)
       assert_grid t.sample(5), [[:a1], [:b2], [], [:c3], [:d4]]
       assert_grid t.sample(4), [[:b2], [], [:c3], [:d4]]
       assert_grid t.sample(3), [[], [:c3], [:d4]]
       assert_grid t.sample(2), [[:a1], [:d4]]
       assert_grid t.sample(1), [[]]
 
-      ExtApi.spi_call(:use_random_seed, 789)
+      spi_call(:use_random_seed, 789)
       assert_grid t.sample_filled(5), [[:a1], [:b2], [:c3], [:d4]]
       assert_grid t.sample_filled(4), [[:a1], [:b2], [:c3], [:d4]]
       assert_grid t.sample_filled(3), [[:b2], [:c3], [:d4]]
@@ -720,8 +720,8 @@ class TrackGridTest < Test::Unit::TestCase
     apply_seed = lambda do
       next if rand_seed.nil?
 
-      if ExtApi.in_sonic_pi?
-        ExtApi.spi_call(:use_random_seed, rand_seed)
+      if in_sonic_pi?
+        spi_call(:use_random_seed, rand_seed)
       else
         srand(rand_seed)
       end
@@ -955,7 +955,7 @@ class TrackGridTest < Test::Unit::TestCase
     assert_rand_partition t, 1, [[:a1], [:b2], [:c3], [:d4]], [[], [], [], []]
     assert_rand_partition t, 0, [[], [], [], []], [[:a1], [:b2], [:c3], [:d4]]
 
-    if ExtApi.in_sonic_pi?
+    if in_sonic_pi?
       assert_rand_partition t, 0.5, [[:a1], [:b2], [], []], [[], [], [:c3], [:d4]], rand_seed: 1234
     else
       assert_rand_partition t, 0.5, [[:a1], [], [:c3], []], [[], [:b2], [], [:d4]], rand_seed: 1234

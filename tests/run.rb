@@ -3,13 +3,12 @@
 
 # test_helper should be required first so coverage catches other requires.
 require_relative "test_helper"
-require_relative "../extapi"
 require_relative "../utils/internal_utils"
 
 BASE_DIR = File.expand_path("#{File.dirname(__FILE__)}/..")
 TEST_DIR = File.join(BASE_DIR, "tests")
 
-unless ExtApi.in_sonic_pi?
+unless in_sonic_pi?
   SpiSeq::Log.silence!
   exit Test::Unit::AutoRunner.run(true, TEST_DIR)
 end

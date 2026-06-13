@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require_relative "ccstep"
-require_relative "extapi"
 require_relative "theory/midinote"  # Only for `rest?`
 require_relative "theory/notelength"
 require_relative "trackbase"

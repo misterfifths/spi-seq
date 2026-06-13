@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
-require_relative "extapi"
 require_relative "playerbase"
 require_relative "track"
 require_relative "utils/internal_utils"
+require_relative "external/midi"
+require_relative "external/sync"
+require_relative "external/synth"
 
 # @!group Playback and live loops
 
@@ -334,7 +336,7 @@ class Player < PlayerBase
     new_steps, tied_steps, ended_steps = categorize_steps(steps)
 
     if @debug
-      SpiSeq::Log.log("@ t=#{ExtApi.vt} slot=#{slot_idx} cycle=#{@cycle} fill=#{@fill}", "player")
+      SpiSeq::Log.log("@ t=#{SpiSeq::External::Sync.vt} slot=#{slot_idx} cycle=#{@cycle} fill=#{@fill}", "player")
       SpiSeq::Log.log("new steps: #{steps_debug_string(new_steps)}", "player")
       SpiSeq::Log.log("tied steps: #{steps_debug_string(tied_steps)}", "player")
       SpiSeq::Log.log("ended steps: #{steps_debug_string(ended_steps, from_prev: true)}", "player")
@@ -377,8 +379,8 @@ class Player < PlayerBase
       gate = effective_gate(step)
       next if gate == 1
 
-      ExtApi.at(gate * @track.granularity.to_f) do
-        SpiSeq::Log.log("killing #{step.inspect} @ t=#{ExtApi.vt}", "player") if @debug
+      SpiSeq::External::Sync.at(gate * @track.granularity.to_f) do
+        SpiSeq::Log.log("killing #{step.inspect} @ t=#{SpiSeq::External::Sync.vt}", "player") if @debug
         end_step(step)
       end
     end
@@ -396,19 +398,19 @@ class Player < PlayerBase
       # @active_midi_notes is a Set, and Set.delete acts differently than
       # Array.delete. We want delete? to remove and return nil if nothing was
       # removed.
-      ExtApi.midi_note_off(step_note, **@midi_spi_kwargs) unless @active_midi_notes.delete?(step_note).nil?
+      SpiSeq::External::MIDI.midi_note_off(step_note, **@midi_spi_kwargs) unless @active_midi_notes.delete?(step_note).nil?
     else
       node = @active_synth_nodes.delete(step_note)
-      ExtApi.kill(node) unless node.nil?
+      SpiSeq::External::Synth.kill(node) unless node.nil?
     end
   end
 
   def end_all_steps
     if @midi
-      @active_midi_notes.each { |n| ExtApi.midi_note_off(n, **@midi_spi_kwargs) }
+      @active_midi_notes.each { |n| SpiSeq::External::MIDI.midi_note_off(n, **@midi_spi_kwargs) }
       @active_midi_notes.clear
     else
-      @active_synth_nodes.each_value { |node| ExtApi.kill(node) }
+      @active_synth_nodes.each_value { |node| SpiSeq::External::Synth.kill(node) }
       @active_synth_nodes.clear
     end
 
@@ -425,7 +427,7 @@ class Player < PlayerBase
       # Step has indeterminate duration; it may be continued in the next played
       # slot. Start it and we'll kill it later when it ends in play_steps.
       if @midi
-        ExtApi.midi_note_on(note, velocity: vel, **@midi_spi_kwargs)
+        SpiSeq::External::MIDI.midi_note_on(note, velocity: vel, **@midi_spi_kwargs)
         @active_midi_notes << note
       else
         # TODO: there's no good way to just have a synth note go forever and
@@ -433,7 +435,7 @@ class Player < PlayerBase
         # using this for previewing stuff away from my real synth...
         # For now just having ties go for 100 * the length of the whole track.
         # Obviously that's ridiculous.
-        node = ExtApi.play(note, amp: vel / 127.0, sustain: @track.beat_length * 100)
+        node = SpiSeq::External::Synth.play(note, amp: vel / 127.0, sustain: @track.beat_length * 100)
         @active_synth_nodes[note] = node
       end
     else
@@ -446,9 +448,9 @@ class Player < PlayerBase
       # to hold on to them for that either.
       # rubocop:disable Style/IfInsideElse
       if @midi
-        ExtApi.midi(note, velocity: vel, sustain: gate * @track.granularity.to_f, **@midi_spi_kwargs)
+        SpiSeq::External::MIDI.midi(note, velocity: vel, sustain: gate * @track.granularity.to_f, **@midi_spi_kwargs)
       else
-        ExtApi.play(note, amp: vel / 127.0, sustain: gate * @track.granularity.to_f)
+        SpiSeq::External::Synth.play(note, amp: vel / 127.0, sustain: gate * @track.granularity.to_f)
       end
       # rubocop:enable Style/IfInsideElse
     end

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require_relative "../extapi"
+require_relative "../external/io"
+require_relative "../external/random"
+require_relative "../external/enumerables"
 
 # @private
 module SpiSeq
@@ -59,41 +61,15 @@ module SpiSeq
       [req_pos_args, opt_pos_args, req_keywords, opt_keywords]
     end
 
-    if Object.const_defined?("SonicPi::Core::SPVector")
-      # 'Enumerable' resolves to SonicPi::RuntimeMethods::Enumerable from within
-      # Sonic Pi, which e.g. Array does not have as a superclass. So we need to
-      # use ::Enumerable to get the built-in class.
-      #
-      # SPVector is the parent class of most list-like things from Sonic Pi
-      # (e.g. `ring`s and `ramp`s). It unfortunately does mix in Enumerable, so
-      # we need to check for it specially. Since SPVectors are missing some
-      # Enumerable/Array methods (e.g. `reject`), and have idiosyncratic
-      # implementations of others, you should really call `arrayify` on anything
-      # for which this method returns true!
-      def self.enumerable?(e)
-        e.is_a?(::Enumerable) || e.is_a?(SonicPi::Core::SPVector)
-      end
+    # Detects builtin Enumerables and some of Sonic Pi's; see the Enumerables
+    # module.
+    def self.enumerable?(e)
+      External::Enumerables.enumerable?(e)
+    end
 
-      # A souped up version of `to_a` that tries very hard to unwrap Sonic Pi's
-      # enumerable classes and actually return an Array.
-      def self.arrayify(x)
-        return x if x.is_a?(Array)
-        # For certain values, like the return of `chord`, there is an outer
-        # SPVector whose `to_a` returns an array subclass. That inner class is
-        # broken when it comes to mutating methods, so let's unwrap it too.
-        x = x.to_a
-        return x if x.class == Array  # rubocop:disable Style/ClassEqualityComparison
-        x.to_a
-      end
-    else
-      def self.enumerable?(e)
-        e.is_a?(Enumerable)
-      end
-
-      def self.arrayify(x)
-        return x if x.is_a?(Array)
-        x.to_a
-      end
+    # Souped up `to_a` that tries very hard to unwrap Sonic Pi's enumerables.
+    def self.arrayify(x)
+      External::Enumerables.arrayify(x)
     end
   end
 
@@ -145,11 +121,7 @@ module SpiSeq
       return if @silent
 
       s = "[#{channel}] #{msg}"
-      if ExtApi.in_sonic_pi?
-        ExtApi.puts(s)
-      else
-        puts(s)
-      end
+      External::IO.puts(s)
     end
 
     def self.warn(msg, channel = "spi-seq")
@@ -160,10 +132,7 @@ module SpiSeq
   module Random
     # This is compatible with Sonic Pi's, which always returns a float.
     def self.rand_f(max_or_range = 1)
-      return ExtApi.rand(max_or_range) if ExtApi.in_sonic_pi?
-
-      max_or_range = 0..max_or_range if max_or_range.is_a?(Numeric)
-      max_or_range.min + Kernel.rand * max_or_range.max
+      External::Random.rand_f(max_or_range)
     end
 
     def self.chance(p)

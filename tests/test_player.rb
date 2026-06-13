@@ -261,7 +261,7 @@ class PlayerTest < Test::Unit::TestCase
       p.swap_track(QT[:d4, :e4])
       p.sleep
     end
-    assert_in_delta secs_per_beat(3), vt
+    assert_in_delta bt(3), vt
     assert_events es, [[:c4, 0, 1]]
   end
 

@@ -3,7 +3,8 @@
 require "weakref"
 require_relative "midi_utils"
 require_relative "internal_utils"
-require_relative "../extapi"
+require_relative "../external/midi"
+require_relative "../external/sync"
 
 # @!group Playback and live loops
 
@@ -115,7 +116,7 @@ def mutable_live_loop(loop_name, start_muted: false, **kwargs, &block)
   # restart of the same sketch).
   mute_live_loop(loop_name, start_muted) unless SpiSeq::LiveLoops.is_running?(loop_name)
 
-  ll = ExtApi.live_loop(loop_name, **kwargs) do |arg|
+  ll = SpiSeq::External::Sync.live_loop(loop_name, **kwargs) do |arg|
     muted = SpiSeq::LiveLoops.loop_is_muted?(loop_name)
     SpiSeq::Utils.call_varargs(block, muted, arg)
   end
@@ -194,7 +195,7 @@ def cc_mutable_live_loop(loop_name, cc:, port: nil, channel: nil, start_muted: f
   unless SpiSeq::LiveLoops.is_running?(loop_name)
     default_cc_val = start_muted ? 0 : 127
     SpiSeq::Log.log("sending default CC #{cc} value #{default_cc_val} for live loop #{loop_name}", "cc_mute_control")
-    ExtApi.midi_cc(cc, default_cc_val, port: port, channel: channel)
+    SpiSeq::External::MIDI.midi_cc(cc, default_cc_val, port: port, channel: channel)
   end
 
   mutable_live_loop(loop_name, start_muted: start_muted, **kwargs, &block)

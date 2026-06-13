@@ -5,6 +5,7 @@
 require_relative "test_helper"
 require_relative "../utils/live_loop_utils"
 require_relative "player_test_helpers"
+require_relative "../external/sync"
 
 class MutableLiveLoopTest < Test::Unit::TestCase
   include PlayerTestHelpers
@@ -52,7 +53,7 @@ class MutableLiveLoopTest < Test::Unit::TestCase
 
   def test_sync
     l = mutable_live_loop(:t, sync: :test_sync) do |_|
-      ExtApi.sleep(1)
+      SpiSeq::External::Sync.sleep(1)
     end
     es = events do
       l.pump 4
@@ -68,9 +69,9 @@ class MutableLiveLoopTest < Test::Unit::TestCase
     # Should send a CC at creation with value 127. Recreating the same loop name
     # should not send another CC.
     es = events do
-      l1 = cc_mutable_live_loop(:t, cc: 64) { |_| ExtApi.sleep(1) }
+      l1 = cc_mutable_live_loop(:t, cc: 64) { |_| SpiSeq::External::Sync.sleep(1) }
       l1.pump
-      l2 = cc_mutable_live_loop(:t, cc: 64, start_muted: true) { |_| ExtApi.sleep(1) }
+      l2 = cc_mutable_live_loop(:t, cc: 64, start_muted: true) { |_| SpiSeq::External::Sync.sleep(1) }
       l1.pump
       l2.pump
       l2.stop
@@ -80,7 +81,7 @@ class MutableLiveLoopTest < Test::Unit::TestCase
 
     # start_muted should send a CC with value 0.
     es = events do
-      l = cc_mutable_live_loop(:t, cc: 10, start_muted: true) { |_| ExtApi.sleep(1) }
+      l = cc_mutable_live_loop(:t, cc: 10, start_muted: true) { |_| SpiSeq::External::Sync.sleep(1) }
       l.stop
     end
     assert_events es, [[10, 0, 0]]
@@ -88,19 +89,19 @@ class MutableLiveLoopTest < Test::Unit::TestCase
 
   def assert_init_cc_port_channel(port = nil, channel = nil)
     es = events do
-      l = cc_mutable_live_loop(:t, cc: 10) { |_| ExtApi.sleep(1) }
+      l = cc_mutable_live_loop(:t, cc: 10) { |_| SpiSeq::External::Sync.sleep(1) }
       l.pump
       l.stop
 
-      l = cc_mutable_live_loop(:t, cc: 10, port: "specific port") { |_| ExtApi.sleep(1) }
+      l = cc_mutable_live_loop(:t, cc: 10, port: "specific port") { |_| SpiSeq::External::Sync.sleep(1) }
       l.pump
       l.stop
 
-      l = cc_mutable_live_loop(:t, cc: 10, channel: 5) { |_| ExtApi.sleep(1) }
+      l = cc_mutable_live_loop(:t, cc: 10, channel: 5) { |_| SpiSeq::External::Sync.sleep(1) }
       l.pump
       l.stop
 
-      l = cc_mutable_live_loop(:t, cc: 10, port: "specific port", channel: 3) { |_| ExtApi.sleep(1) }
+      l = cc_mutable_live_loop(:t, cc: 10, port: "specific port", channel: 3) { |_| SpiSeq::External::Sync.sleep(1) }
       l.pump
       l.stop
     end

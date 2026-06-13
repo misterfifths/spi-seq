@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative "extapi"
 require_relative "trackbase"
+require_relative "external/sync"
 
 
 # TODO: playhead direction - mostly just a matter of how we move the slot index
@@ -92,7 +92,7 @@ class PlayerBase
     @slot_idx = 0
     reset_for_new_cycle
 
-    ExtApi.with_bpm_mul(@track.timescale) do
+    SpiSeq::External::Sync.with_bpm_mul(@track.timescale) do
       @track.num_slots.times do |i|
         @slot_idx = i
 
@@ -104,7 +104,7 @@ class PlayerBase
         play_steps(triggering_steps)
 
         # Sleep until it's time for the next slot
-        ExtApi.sleep(@track.granularity.to_f)
+        SpiSeq::External::Sync.sleep(@track.granularity.to_f)
       end
     end
 
@@ -116,8 +116,8 @@ class PlayerBase
   # @return [void]
   def sleep
     end_all_steps
-    ExtApi.with_bpm_mul(@track.timescale) do
-      ExtApi.sleep(@track.beat_length)
+    SpiSeq::External::Sync.with_bpm_mul(@track.timescale) do
+      SpiSeq::External::Sync.sleep(@track.beat_length)
     end
   end
 

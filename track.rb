@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require_relative "cctrack"
-require_relative "extapi"
 require_relative "math/curves"
 require_relative "prob"
 require_relative "step"
