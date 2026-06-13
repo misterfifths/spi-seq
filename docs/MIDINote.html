@@ -402,140 +402,6 @@ MIDINote.new(:c5) &gt; :c4
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#<-instance_method" title="#&lt; (instance method)">#<strong>&lt;</strong>(other)  &#x21d2; Boolean </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Compares this MIDINote to another value, which should be a MIDINote or one of the values understood by <span class='object_link'><a href="#new-class_method" title="MIDINote.new (method)">MIDINote.new</a></span>.</p></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#<=-instance_method" title="#&lt;= (instance method)">#<strong>&lt;=</strong>(other)  &#x21d2; Boolean </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Compares this MIDINote to another value, which should be a MIDINote or one of the values understood by <span class='object_link'><a href="#new-class_method" title="MIDINote.new (method)">MIDINote.new</a></span>.</p></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#<=>-instance_method" title="#&lt;=&gt; (instance method)">#<strong>&lt;=&gt;</strong>(other)  &#x21d2; Boolean </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Compares this MIDINote to another value, which should be a MIDINote or one of the values understood by <span class='object_link'><a href="#new-class_method" title="MIDINote.new (method)">MIDINote.new</a></span>.</p></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#==-instance_method" title="#== (instance method)">#<strong>==</strong>(other)  &#x21d2; Boolean </a>
-    
-
-    
-      (also: #eql?)
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Compares this MIDINote to another value, which should be a MIDINote or one of the values understood by <span class='object_link'><a href="#new-class_method" title="MIDINote.new (method)">MIDINote.new</a></span>.</p></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#>-instance_method" title="#&gt; (instance method)">#<strong>&gt;</strong>(other)  &#x21d2; Boolean </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Compares this MIDINote to another value, which should be a MIDINote or one of the values understood by <span class='object_link'><a href="#new-class_method" title="MIDINote.new (method)">MIDINote.new</a></span>.</p></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#>=-instance_method" title="#&gt;= (instance method)">#<strong>&gt;=</strong>(other)  &#x21d2; Boolean </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Compares this MIDINote to another value, which should be a MIDINote or one of the values understood by <span class='object_link'><a href="#new-class_method" title="MIDINote.new (method)">MIDINote.new</a></span>.</p></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#down-instance_method" title="#down (instance method)">#<strong>down</strong>(octave_shift = 1)  &#x21d2; MIDINote </a>
     
 
@@ -573,6 +439,28 @@ MIDINote.new(:c5) &gt; :c4
 
   
     <span class="summary_desc"><div class='inline'><p>Returns true if <code>other</code> matches this note.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#names-instance_method" title="#names (instance method)">#<strong>names</strong>  &#x21d2; Array&lt;Symbol&gt; </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns all possible names for an note with this <span class='object_link'><a href="#number-instance_method" title="MIDINote#number (method)">#number</a></span>.</p></div></span>
   
 </li>
 
@@ -1097,16 +985,16 @@ number, e.g. <code>:cs4</code>.</p>
       <pre class="lines">
 
 
-400
-401
-402
-403
-404
-405
-406</pre>
+389
+390
+391
+392
+393
+394
+395</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 400</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 389</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_has_octave?'>has_octave?</span><span class='lparen'>(</span><span class='id identifier rubyid_note'>note</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>true</span> <span class='kw'>if</span> <span class='id identifier rubyid_note'>note</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Numeric</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_note'>note</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="" title="MIDINote (class)">MIDINote</a></span></span><span class='rparen'>)</span>
@@ -1235,7 +1123,11 @@ octave 4.</p>
 124
 125
 126
-127</pre>
+127
+128
+129
+130
+131</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 89</span>
@@ -1257,25 +1149,29 @@ octave 4.</p>
     <span class='id identifier rubyid_note'>note</span><span class='period'>.</span><span class='id identifier rubyid_downcase'>downcase</span>
   <span class='kw'>when</span> <span class='const'>Symbol</span>
     <span class='id identifier rubyid_note'>note</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='period'>.</span><span class='id identifier rubyid_downcase'>downcase</span>
-  <span class='kw'>else</span>
-    <span class='id identifier rubyid_note'>note</span>
   <span class='kw'>end</span>
 
-  <span class='id identifier rubyid_instance'>instance</span> <span class='op'>=</span> <span class='ivar'>@note_cache</span><span class='lbracket'>[</span><span class='id identifier rubyid_cache_key'>cache_key</span><span class='rbracket'>]</span>
-  <span class='kw'>unless</span> <span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
-    <span class='comment'># `note` must be a new representation of a value we already know about; we
-</span>    <span class='comment'># should update the cache.
-</span>    <span class='ivar'>@note_cache</span><span class='lbracket'>[</span><span class='id identifier rubyid_note'>note</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_instance'>instance</span>
-    <span class='kw'>return</span> <span class='id identifier rubyid_instance'>instance</span>
+  <span class='kw'>if</span> <span class='id identifier rubyid_cache_key'>cache_key</span> <span class='op'>!=</span> <span class='id identifier rubyid_note'>note</span>
+    <span class='id identifier rubyid_instance'>instance</span> <span class='op'>=</span> <span class='ivar'>@note_cache</span><span class='lbracket'>[</span><span class='id identifier rubyid_cache_key'>cache_key</span><span class='rbracket'>]</span>
+    <span class='kw'>unless</span> <span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+      <span class='comment'># `note` must be a new representation of a value we already know about;
+</span>      <span class='comment'># we should update the cache.
+</span>      <span class='ivar'>@note_cache</span><span class='lbracket'>[</span><span class='id identifier rubyid_note'>note</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_instance'>instance</span>
+      <span class='kw'>return</span> <span class='id identifier rubyid_instance'>instance</span>
+    <span class='kw'>end</span>
   <span class='kw'>end</span>
 
   <span class='comment'># We&#39;ve got to make a new instance.
 </span>  <span class='id identifier rubyid_instance'>instance</span> <span class='op'>=</span> <span class='kw'>super</span>
   <span class='ivar'>@note_cache</span><span class='lbracket'>[</span><span class='id identifier rubyid_note'>note</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_instance'>instance</span>
-  <span class='ivar'>@note_cache</span><span class='lbracket'>[</span><span class='id identifier rubyid_cache_key'>cache_key</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_instance'>instance</span>
+  <span class='ivar'>@note_cache</span><span class='lbracket'>[</span><span class='id identifier rubyid_cache_key'>cache_key</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_instance'>instance</span> <span class='kw'>unless</span> <span class='id identifier rubyid_cache_key'>cache_key</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
   <span class='ivar'>@note_cache</span><span class='lbracket'>[</span><span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_instance'>instance</span>
-  <span class='ivar'>@note_cache</span><span class='lbracket'>[</span><span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_instance'>instance</span>
   <span class='ivar'>@note_cache</span><span class='lbracket'>[</span><span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_instance'>instance</span>
+
+  <span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_names'>names</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_name'>name</span><span class='op'>|</span>
+    <span class='ivar'>@note_cache</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_instance'>instance</span>
+    <span class='ivar'>@note_cache</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_instance'>instance</span>
+  <span class='kw'>end</span>
 
   <span class='id identifier rubyid_instance'>instance</span>
 <span class='kw'>end</span></pre>
@@ -1351,14 +1247,14 @@ are considered rests.</p>
       <pre class="lines">
 
 
-412
-413
-414
-415
-416</pre>
+401
+402
+403
+404
+405</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 412</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 401</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_rest?'>rest?</span><span class='lparen'>(</span><span class='id identifier rubyid_val'>val</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>true</span> <span class='kw'>if</span> <span class='id identifier rubyid_val'>val</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
@@ -1442,12 +1338,12 @@ are considered rests.</p>
       <pre class="lines">
 
 
-355
-356
-357</pre>
+344
+345
+346</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 355</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 344</span>
 
 <span class='kw'>def</span> <span class='op'>*</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-class_method" title="MIDINote.new (method)">new</a></span></span><span class='lparen'>(</span><span class='ivar'>@number</span> <span class='op'>*</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span><span class='rparen'>)</span>
@@ -1523,12 +1419,12 @@ are considered rests.</p>
       <pre class="lines">
 
 
-341
-342
-343</pre>
+330
+331
+332</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 341</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 330</span>
 
 <span class='kw'>def</span> <span class='op'>+</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_transpose'>transpose</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span><span class='rparen'>)</span>
@@ -1604,12 +1500,12 @@ are considered rests.</p>
       <pre class="lines">
 
 
-348
-349
-350</pre>
+337
+338
+339</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 348</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 337</span>
 
 <span class='kw'>def</span> <span class='op'>-</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_transpose'>transpose</span><span class='lparen'>(</span><span class='op'>-</span><span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span><span class='rparen'>)</span>
@@ -1685,545 +1581,15 @@ are considered rests.</p>
       <pre class="lines">
 
 
-362
-363
-364</pre>
+351
+352
+353</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 362</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 351</span>
 
 <span class='kw'>def</span> <span class='op'>/</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-class_method" title="MIDINote.new (method)">new</a></span></span><span class='lparen'>(</span><span class='ivar'>@number</span> <span class='op'>/</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="<-instance_method">
-  
-    #<strong>&lt;</strong>(other)  &#x21d2; <tt>Boolean</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    <p>Compares this MIDINote to another value, which should be a MIDINote or one
-of the values understood by <span class='object_link'><a href="#new-class_method" title="MIDINote.new (method)">new</a></span>.</p>
-
-  </div>
-</div>
-<div class="tags">
-  
-
-
-
-
-
-
-<p class="tag_title">Parameters:</p>
-<ul class="param">
-  
-    <li>
-      
-        <span class='name'>other</span>
-      
-      
-        <span class='type'>(<tt><span class='object_link'><a href="" title="MIDINote (class)">MIDINote</a></span></tt>, <tt><span class='object_link'>String</span></tt>, <tt><span class='object_link'>Symbol</span></tt>, <tt>Integer</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-
-
-
-
-
-
-
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-280
-281
-282
-283</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 280</span>
-
-<span class='kw'>def</span> <span class='op'>&lt;</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
-  <span class='kw'>return</span> <span class='ivar'>@number</span> <span class='op'>&lt;</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span> <span class='kw'>if</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Numeric</span><span class='rparen'>)</span>
-  <span class='ivar'>@number</span> <span class='op'>&lt;</span> <span class='const'><span class='object_link'><a href="" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-class_method" title="MIDINote.new (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_number'><span class='object_link'><a href="#number-instance_method" title="MIDINote#number (method)">number</a></span></span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="<=-instance_method">
-  
-    #<strong>&lt;=</strong>(other)  &#x21d2; <tt>Boolean</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    <p>Compares this MIDINote to another value, which should be a MIDINote or one
-of the values understood by <span class='object_link'><a href="#new-class_method" title="MIDINote.new (method)">new</a></span>.</p>
-
-  </div>
-</div>
-<div class="tags">
-  
-
-
-
-
-
-
-<p class="tag_title">Parameters:</p>
-<ul class="param">
-  
-    <li>
-      
-        <span class='name'>other</span>
-      
-      
-        <span class='type'>(<tt><span class='object_link'><a href="" title="MIDINote (class)">MIDINote</a></span></tt>, <tt><span class='object_link'>String</span></tt>, <tt><span class='object_link'>Symbol</span></tt>, <tt>Integer</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-
-
-
-
-
-
-
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-286
-287
-288
-289</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 286</span>
-
-<span class='kw'>def</span> <span class='op'>&lt;=</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
-  <span class='kw'>return</span> <span class='ivar'>@number</span> <span class='op'>&lt;=</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span> <span class='kw'>if</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Numeric</span><span class='rparen'>)</span>
-  <span class='ivar'>@number</span> <span class='op'>&lt;=</span> <span class='const'><span class='object_link'><a href="" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-class_method" title="MIDINote.new (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_number'><span class='object_link'><a href="#number-instance_method" title="MIDINote#number (method)">number</a></span></span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="<=>-instance_method">
-  
-    #<strong>&lt;=&gt;</strong>(other)  &#x21d2; <tt>Boolean</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    <p>Compares this MIDINote to another value, which should be a MIDINote or one
-of the values understood by <span class='object_link'><a href="#new-class_method" title="MIDINote.new (method)">new</a></span>.</p>
-
-  </div>
-</div>
-<div class="tags">
-  
-
-
-
-
-
-
-<p class="tag_title">Parameters:</p>
-<ul class="param">
-  
-    <li>
-      
-        <span class='name'>other</span>
-      
-      
-        <span class='type'>(<tt><span class='object_link'><a href="" title="MIDINote (class)">MIDINote</a></span></tt>, <tt><span class='object_link'>String</span></tt>, <tt><span class='object_link'>Symbol</span></tt>, <tt>Integer</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-
-
-
-
-
-
-
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-304
-305
-306
-307</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 304</span>
-
-<span class='kw'>def</span> <span class='op'>&lt;=&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
-  <span class='kw'>return</span> <span class='ivar'>@number</span> <span class='op'>&lt;=&gt;</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span> <span class='kw'>if</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Numeric</span><span class='rparen'>)</span>
-  <span class='ivar'>@number</span> <span class='op'>&lt;=&gt;</span> <span class='const'><span class='object_link'><a href="" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-class_method" title="MIDINote.new (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_number'><span class='object_link'><a href="#number-instance_method" title="MIDINote#number (method)">number</a></span></span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="==-instance_method">
-  
-    #<strong>==</strong>(other)  &#x21d2; <tt>Boolean</tt> 
-  
-
-  
-    <span class="aliases">Also known as:
-    <span class="names"><span id='eql?-instance_method'>eql?</span></span>
-    </span>
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    <p>Compares this MIDINote to another value, which should be a MIDINote or one
-of the values understood by <span class='object_link'><a href="#new-class_method" title="MIDINote.new (method)">new</a></span>.</p>
-
-  </div>
-</div>
-<div class="tags">
-  
-
-
-
-
-
-
-<p class="tag_title">Parameters:</p>
-<ul class="param">
-  
-    <li>
-      
-        <span class='name'>other</span>
-      
-      
-        <span class='type'>(<tt><span class='object_link'><a href="" title="MIDINote (class)">MIDINote</a></span></tt>, <tt><span class='object_link'>String</span></tt>, <tt><span class='object_link'>Symbol</span></tt>, <tt>Integer</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-
-
-
-
-
-
-
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-310
-311
-312
-313
-314
-315
-316
-317
-318
-319
-320
-321
-322
-323
-324</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 310</span>
-
-<span class='kw'>def</span> <span class='op'>==</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
-  <span class='kw'>return</span> <span class='kw'>false</span> <span class='kw'>if</span> <span class='const'><span class='object_link'><a href="" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_rest?'><span class='object_link'><a href="#rest%3F-class_method" title="MIDINote.rest? (method)">rest?</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
-  <span class='kw'>return</span> <span class='ivar'>@number</span> <span class='op'>==</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span> <span class='kw'>if</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Numeric</span><span class='rparen'>)</span>
-  <span class='comment'># The symbol and string checks are just fast paths. :c4 and :C4 are still
-</span>  <span class='comment'># equal, e.g., so we have to normalize if they don&#39;t match.
-</span>  <span class='kw'>return</span> <span class='kw'>true</span> <span class='kw'>if</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Symbol</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='ivar'>@sym</span> <span class='op'>==</span> <span class='id identifier rubyid_other'>other</span>
-  <span class='kw'>return</span> <span class='kw'>true</span> <span class='kw'>if</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>String</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='ivar'>@sym</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='op'>==</span> <span class='id identifier rubyid_other'>other</span>
-  <span class='comment'># rubocop:disable Style/RescueStandardError
-</span>  <span class='kw'>begin</span>
-    <span class='ivar'>@sym</span> <span class='op'>==</span> <span class='const'><span class='object_link'><a href="" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-class_method" title="MIDINote.new (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'><span class='object_link'><a href="#to_sym-instance_method" title="MIDINote#to_sym (method)">to_sym</a></span></span>
-  <span class='kw'>rescue</span>
-    <span class='kw'>false</span>
-  <span class='kw'>end</span>
-  <span class='comment'># rubocop:enable Style/RescueStandardError
-</span><span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id=">-instance_method">
-  
-    #<strong>&gt;</strong>(other)  &#x21d2; <tt>Boolean</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    <p>Compares this MIDINote to another value, which should be a MIDINote or one
-of the values understood by <span class='object_link'><a href="#new-class_method" title="MIDINote.new (method)">new</a></span>.</p>
-
-  </div>
-</div>
-<div class="tags">
-  
-
-
-
-
-
-
-<p class="tag_title">Parameters:</p>
-<ul class="param">
-  
-    <li>
-      
-        <span class='name'>other</span>
-      
-      
-        <span class='type'>(<tt><span class='object_link'><a href="" title="MIDINote (class)">MIDINote</a></span></tt>, <tt><span class='object_link'>String</span></tt>, <tt><span class='object_link'>Symbol</span></tt>, <tt>Integer</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-
-
-
-
-
-
-
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-292
-293
-294
-295</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 292</span>
-
-<span class='kw'>def</span> <span class='op'>&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
-  <span class='kw'>return</span> <span class='ivar'>@number</span> <span class='op'>&gt;</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span> <span class='kw'>if</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Numeric</span><span class='rparen'>)</span>
-  <span class='ivar'>@number</span> <span class='op'>&gt;</span> <span class='const'><span class='object_link'><a href="" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-class_method" title="MIDINote.new (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_number'><span class='object_link'><a href="#number-instance_method" title="MIDINote#number (method)">number</a></span></span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id=">=-instance_method">
-  
-    #<strong>&gt;=</strong>(other)  &#x21d2; <tt>Boolean</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    <p>Compares this MIDINote to another value, which should be a MIDINote or one
-of the values understood by <span class='object_link'><a href="#new-class_method" title="MIDINote.new (method)">new</a></span>.</p>
-
-  </div>
-</div>
-<div class="tags">
-  
-
-
-
-
-
-
-<p class="tag_title">Parameters:</p>
-<ul class="param">
-  
-    <li>
-      
-        <span class='name'>other</span>
-      
-      
-        <span class='type'>(<tt><span class='object_link'><a href="" title="MIDINote (class)">MIDINote</a></span></tt>, <tt><span class='object_link'>String</span></tt>, <tt><span class='object_link'>Symbol</span></tt>, <tt>Integer</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-
-
-
-
-
-
-
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-298
-299
-300
-301</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 298</span>
-
-<span class='kw'>def</span> <span class='op'>&gt;=</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
-  <span class='kw'>return</span> <span class='ivar'>@number</span> <span class='op'>&gt;=</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span> <span class='kw'>if</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Numeric</span><span class='rparen'>)</span>
-  <span class='ivar'>@number</span> <span class='op'>&gt;=</span> <span class='const'><span class='object_link'><a href="" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-class_method" title="MIDINote.new (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_number'><span class='object_link'><a href="#number-instance_method" title="MIDINote#number (method)">number</a></span></span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -2299,12 +1665,12 @@ down by the given amount.</p>
       <pre class="lines">
 
 
-187
-188
-189</pre>
+191
+192
+193</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 187</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 191</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_down'>down</span><span class='lparen'>(</span><span class='id identifier rubyid_octave_shift'>octave_shift</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_shift_octave'>shift_octave</span><span class='lparen'>(</span><span class='op'>-</span><span class='id identifier rubyid_octave_shift'>octave_shift</span><span class='rparen'>)</span>
@@ -2388,19 +1754,100 @@ and <code>:db</code>.</li>
       <pre class="lines">
 
 
-226
-227
-228
-229
-230</pre>
+230
+231
+232
+233
+234</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 226</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 230</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_match?'>match?</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>false</span> <span class='kw'>if</span> <span class='const'><span class='object_link'><a href="" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_rest?'><span class='object_link'><a href="#rest%3F-class_method" title="MIDINote.rest? (method)">rest?</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>self</span> <span class='op'>==</span> <span class='id identifier rubyid_other'>other</span> <span class='kw'>if</span> <span class='const'><span class='object_link'><a href="" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_has_octave?'><span class='object_link'><a href="#has_octave%3F-class_method" title="MIDINote.has_octave? (method)">has_octave?</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='ivar'>@pitch_class</span> <span class='op'>==</span> <span class='const'><span class='object_link'><a href="" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-class_method" title="MIDINote.new (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_pitch_class'><span class='object_link'><a href="#pitch_class-instance_method" title="MIDINote#pitch_class (method)">pitch_class</a></span></span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="names-instance_method">
+  
+    #<strong>names</strong>  &#x21d2; <tt>Array&lt;<span class='object_link'>Symbol</span>&gt;</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns all possible names for an note with this <span class='object_link'><a href="#number-instance_method" title="MIDINote#number (method)">#number</a></span>.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Array&lt;<span class='object_link'>Symbol</span>&gt;</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 273</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_names'>names</span>
+  <span class='kw'>return</span> <span class='ivar'>@names</span> <span class='kw'>unless</span> <span class='ivar'>@names</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+
+  <span class='ivar'>@names</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+  <span class='const'>NOTE_NAMES</span><span class='lbracket'>[</span><span class='ivar'>@number</span> <span class='op'>%</span> <span class='int'>12</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_name'>name</span><span class='op'>|</span>
+    <span class='id identifier rubyid_octave'>octave</span> <span class='op'>=</span> <span class='ivar'>@octave</span>
+    <span class='id identifier rubyid_octave'>octave</span> <span class='op'>+=</span> <span class='int'>1</span> <span class='kw'>if</span> <span class='lbracket'>[</span><span class='symbol'>:cb</span><span class='comma'>,</span> <span class='symbol'>:cf</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_octave'>octave</span> <span class='op'>-=</span> <span class='int'>1</span> <span class='kw'>if</span> <span class='id identifier rubyid_name'>name</span> <span class='op'>==</span> <span class='symbol'>:bs</span>
+    <span class='ivar'>@names</span> <span class='op'>&lt;&lt;</span> <span class='symbol'>:&quot;#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_octave'>octave</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+    <span class='ivar'>@names</span> <span class='op'>&lt;&lt;</span> <span class='symbol'>:&quot;#{</span><span class='id identifier rubyid_name'>name</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_octave'>octave</span> <span class='op'>==</span> <span class='int'>4</span>
+  <span class='kw'>end</span>
+  <span class='ivar'>@names</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span>
+  <span class='ivar'>@names</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -2451,12 +1898,12 @@ and <code>:db</code>.</li>
       <pre class="lines">
 
 
-387
-388
-389</pre>
+376
+377
+378</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 387</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 376</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_repr'>repr</span>
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@sym</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
@@ -2533,13 +1980,13 @@ by the given amount.</p>
       <pre class="lines">
 
 
-170
-171
-172
-173</pre>
+174
+175
+176
+177</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 170</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 174</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_shift_octave'>shift_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>self</span> <span class='kw'>if</span> <span class='id identifier rubyid_shift'>shift</span> <span class='op'>==</span> <span class='int'>0</span>
@@ -2629,10 +2076,6 @@ notes to which this note can snap. Must consist of values understood by
       <pre class="lines">
 
 
-239
-240
-241
-242
 243
 244
 245
@@ -2645,10 +2088,14 @@ notes to which this note can snap. Must consist of values understood by
 252
 253
 254
-255</pre>
+255
+256
+257
+258
+259</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 239</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 243</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_snap'>snap</span><span class='lparen'>(</span><span class='id identifier rubyid_notes'>notes</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_notes'>notes</span> <span class='op'>=</span> <span class='id identifier rubyid_notes'>notes</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_n'>n</span><span class='op'>|</span> <span class='const'><span class='object_link'><a href="" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-class_method" title="MIDINote.new (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -2757,12 +2204,12 @@ one of the scales known to the <span class='object_link'><a href="Scale.html" ti
       <pre class="lines">
 
 
-263
-264
-265</pre>
+267
+268
+269</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 263</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 267</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_snap_to_scale'>snap_to_scale</span><span class='lparen'>(</span><span class='id identifier rubyid_tonic'>tonic</span><span class='comma'>,</span> <span class='id identifier rubyid_scale_name'>scale_name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_snap'>snap</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="Scale.html" title="Scale (class)">Scale</a></span></span><span class='period'>.</span><span class='id identifier rubyid_full_scale'><span class='object_link'><a href="Scale.html#full_scale-class_method" title="Scale.full_scale (method)">full_scale</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_tonic'>tonic</span><span class='comma'>,</span> <span class='id identifier rubyid_scale_name'>scale_name</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -2816,12 +2263,12 @@ one of the scales known to the <span class='object_link'><a href="Scale.html" ti
       <pre class="lines">
 
 
-272
-273
-274</pre>
+293
+294
+295</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 272</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 293</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_f'>to_f</span>
   <span class='ivar'>@number</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span>
@@ -2875,12 +2322,12 @@ one of the scales known to the <span class='object_link'><a href="Scale.html" ti
       <pre class="lines">
 
 
-376
-377
-378</pre>
+365
+366
+367</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 376</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 365</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_s'>to_s</span>
   <span class='ivar'>@sym</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
@@ -2936,12 +2383,12 @@ a natural (when possible) or a sharp.</p>
       <pre class="lines">
 
 
-370
-371
-372</pre>
+359
+360
+361</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 370</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 359</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_sym'>to_sym</span>
   <span class='ivar'>@sym</span>
@@ -3021,13 +2468,13 @@ a natural (when possible) or a sharp.</p>
       <pre class="lines">
 
 
-194
-195
-196
-197</pre>
+198
+199
+200
+201</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 194</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 198</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_transpose'>transpose</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>self</span> <span class='kw'>if</span> <span class='id identifier rubyid_shift'>shift</span> <span class='op'>==</span> <span class='int'>0</span>
@@ -3107,12 +2554,12 @@ by the given amount.</p>
       <pre class="lines">
 
 
-179
-180
-181</pre>
+183
+184
+185</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 179</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 183</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_up'>up</span><span class='lparen'>(</span><span class='id identifier rubyid_octave_shift'>octave_shift</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_shift_octave'>shift_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_octave_shift'>octave_shift</span><span class='rparen'>)</span>
@@ -3188,13 +2635,13 @@ by the given amount.</p>
       <pre class="lines">
 
 
-161
-162
-163
-164</pre>
+165
+166
+167
+168</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 161</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 165</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_octave'>with_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_new_octave'>new_octave</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>self</span> <span class='kw'>if</span> <span class='id identifier rubyid_new_octave'>new_octave</span> <span class='op'>==</span> <span class='ivar'>@octave</span>
@@ -3276,12 +2723,12 @@ octave down) or <code>:bs</code> (one octave up). For example,</p>
       <pre class="lines">
 
 
-213
-214
-215</pre>
+217
+218
+219</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 213</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 217</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_pitch_class'>with_pitch_class</span><span class='lparen'>(</span><span class='id identifier rubyid_cls'>cls</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-class_method" title="MIDINote.new (method)">new</a></span></span><span class='lparen'>(</span><span class='symbol'>:&quot;#{</span><span class='id identifier rubyid_cls'>cls</span><span class='embexpr_end'>}</span><span class='embexpr_beg'>#{</span><span class='ivar'>@octave</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>

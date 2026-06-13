@@ -415,140 +415,6 @@ compound.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#<-instance_method" title="#&lt; (instance method)">#<strong>&lt;</strong>(other)  &#x21d2; Boolean </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Compares this Interval to another value, which should be an Interval, an interval abbreviation symbol or string understood by <span class='object_link'><a href="#new-class_method" title="Interval.new (method)">Interval.new</a></span>, or a number, which will be compared with this interval's <span class='object_link'><a href="#size-instance_method" title="Interval#size (method)">#size</a></span>.</p></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#<=-instance_method" title="#&lt;= (instance method)">#<strong>&lt;=</strong>(other)  &#x21d2; Boolean </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Compares this Interval to another value, which should be an Interval, an interval abbreviation symbol or string understood by <span class='object_link'><a href="#new-class_method" title="Interval.new (method)">Interval.new</a></span>, or a number, which will be compared with this interval's <span class='object_link'><a href="#size-instance_method" title="Interval#size (method)">#size</a></span>.</p></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#<=>-instance_method" title="#&lt;=&gt; (instance method)">#<strong>&lt;=&gt;</strong>(other)  &#x21d2; Boolean </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Compares this Interval to another value, which should be an Interval, an interval abbreviation symbol or string understood by <span class='object_link'><a href="#new-class_method" title="Interval.new (method)">Interval.new</a></span>, or a number, which will be compared with this interval's <span class='object_link'><a href="#size-instance_method" title="Interval#size (method)">#size</a></span>.</p></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#==-instance_method" title="#== (instance method)">#<strong>==</strong>(other)  &#x21d2; Boolean </a>
-    
-
-    
-      (also: #eql?)
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Compares this Interval to another value, which should be an Interval, an interval abbreviation symbol or string understood by <span class='object_link'><a href="#new-class_method" title="Interval.new (method)">Interval.new</a></span>, or a number, which will be compared with this interval's <span class='object_link'><a href="#size-instance_method" title="Interval#size (method)">#size</a></span>.</p></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#>-instance_method" title="#&gt; (instance method)">#<strong>&gt;</strong>(other)  &#x21d2; Boolean </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Compares this Interval to another value, which should be an Interval, an interval abbreviation symbol or string understood by <span class='object_link'><a href="#new-class_method" title="Interval.new (method)">Interval.new</a></span>, or a number, which will be compared with this interval's <span class='object_link'><a href="#size-instance_method" title="Interval#size (method)">#size</a></span>.</p></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#>=-instance_method" title="#&gt;= (instance method)">#<strong>&gt;=</strong>(other)  &#x21d2; Boolean </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Compares this Interval to another value, which should be an Interval, an interval abbreviation symbol or string understood by <span class='object_link'><a href="#new-class_method" title="Interval.new (method)">Interval.new</a></span>, or a number, which will be compared with this interval's <span class='object_link'><a href="#size-instance_method" title="Interval#size (method)">#size</a></span>.</p></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#as-instance_method" title="#as (instance method)">#<strong>as</strong>(number)  &#x21d2; Interval<sup>?</sup> </a>
     
 
@@ -1350,7 +1216,14 @@ Optional; you may use some combination of keyword arguments instead.</p></div>
 215
 216
 217
-218</pre>
+218
+219
+220
+221
+222
+223
+224
+225</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'theory/interval.rb', line 164</span>
@@ -1375,31 +1248,38 @@ Optional; you may use some combination of keyword arguments instead.</p></div>
     <span class='id identifier rubyid_number'>number</span> <span class='op'>=</span> <span class='id identifier rubyid_number'>number</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span>
     <span class='id identifier rubyid_raise'>raise</span> <span class='const'>RangeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>interval number must be &gt; 0</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_number'>number</span> <span class='op'>&gt;</span> <span class='int'>0</span>
 
-    <span class='comment'># Pick perfect/major if quality was omitted.
-</span>    <span class='kw'>if</span> <span class='id identifier rubyid_quality'>quality</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
-      <span class='id identifier rubyid__'>_</span><span class='comma'>,</span> <span class='id identifier rubyid_sub_octave_num'>sub_octave_num</span> <span class='op'>=</span> <span class='id identifier rubyid_decompose_number'>decompose_number</span><span class='lparen'>(</span><span class='id identifier rubyid_number'>number</span><span class='rparen'>)</span>
-      <span class='id identifier rubyid_quality'>quality</span> <span class='op'>=</span> <span class='kw'>case</span> <span class='id identifier rubyid_sub_octave_num'>sub_octave_num</span>
-      <span class='kw'>when</span> <span class='int'>1</span><span class='comma'>,</span> <span class='int'>4</span><span class='comma'>,</span> <span class='int'>5</span><span class='comma'>,</span> <span class='int'>8</span>
-        <span class='symbol'>:perfect</span>
-      <span class='kw'>else</span>
-        <span class='symbol'>:major</span>
-      <span class='kw'>end</span>
-    <span class='kw'>end</span>
-
     <span class='id identifier rubyid_instance'>instance</span> <span class='op'>=</span> <span class='ivar'>@number_cache</span><span class='lbracket'>[</span><span class='lbracket'>[</span><span class='id identifier rubyid_number'>number</span><span class='comma'>,</span> <span class='id identifier rubyid_quality'>quality</span><span class='rbracket'>]</span><span class='rbracket'>]</span>
     <span class='kw'>return</span> <span class='id identifier rubyid_instance'>instance</span> <span class='kw'>unless</span> <span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
 
-    <span class='id identifier rubyid_instance'>instance</span> <span class='op'>=</span> <span class='id identifier rubyid_from_number'>from_number</span><span class='lparen'>(</span><span class='id identifier rubyid_number'>number</span><span class='comma'>,</span> <span class='id identifier rubyid_quality'>quality</span><span class='rparen'>)</span>
+    <span class='comment'># If the given quality is what we would pick for this number given a nil
+</span>    <span class='comment'># quality, cache against nil too.
+</span>    <span class='id identifier rubyid__'>_</span><span class='comma'>,</span> <span class='id identifier rubyid_simple_num'>simple_num</span> <span class='op'>=</span> <span class='id identifier rubyid_decompose_number'>decompose_number</span><span class='lparen'>(</span><span class='id identifier rubyid_number'>number</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_quality_if_nil'>quality_if_nil</span> <span class='op'>=</span> <span class='kw'>case</span> <span class='id identifier rubyid_simple_num'>simple_num</span>
+    <span class='kw'>when</span> <span class='int'>1</span><span class='comma'>,</span> <span class='int'>4</span><span class='comma'>,</span> <span class='int'>5</span><span class='comma'>,</span> <span class='int'>8</span>
+      <span class='symbol'>:perfect</span>
+    <span class='kw'>else</span>
+      <span class='symbol'>:major</span>
+    <span class='kw'>end</span>
+    <span class='id identifier rubyid_cache_against_nil_quality'>cache_against_nil_quality</span> <span class='op'>=</span> <span class='id identifier rubyid_quality'>quality</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>||</span> <span class='id identifier rubyid_quality'>quality</span> <span class='op'>==</span> <span class='id identifier rubyid_quality_if_nil'>quality_if_nil</span>
+
+    <span class='id identifier rubyid_instance'>instance</span> <span class='op'>=</span> <span class='id identifier rubyid_from_number'>from_number</span><span class='lparen'>(</span><span class='id identifier rubyid_number'>number</span><span class='comma'>,</span> <span class='id identifier rubyid_quality'>quality</span> <span class='op'>||</span> <span class='id identifier rubyid_quality_if_nil'>quality_if_nil</span><span class='rparen'>)</span>
+
+    <span class='ivar'>@number_cache</span><span class='lbracket'>[</span><span class='lbracket'>[</span><span class='id identifier rubyid_number'>number</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='rbracket'>]</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_instance'>instance</span> <span class='kw'>if</span> <span class='id identifier rubyid_cache_against_nil_quality'>cache_against_nil_quality</span>
   <span class='kw'>elsif</span> <span class='op'>!</span><span class='id identifier rubyid_size'>size</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
     <span class='id identifier rubyid_size'>size</span> <span class='op'>=</span> <span class='id identifier rubyid_size'>size</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span>
 
     <span class='id identifier rubyid_instance'>instance</span> <span class='op'>=</span> <span class='ivar'>@size_cache</span><span class='lbracket'>[</span><span class='lbracket'>[</span><span class='id identifier rubyid_size'>size</span><span class='comma'>,</span> <span class='id identifier rubyid_quality'>quality</span><span class='rbracket'>]</span><span class='rbracket'>]</span>
     <span class='kw'>return</span> <span class='id identifier rubyid_instance'>instance</span> <span class='kw'>unless</span> <span class='id identifier rubyid_instance'>instance</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
 
-    <span class='id identifier rubyid_instance'>instance</span> <span class='op'>=</span> <span class='kw'>super</span><span class='lparen'>(</span><span class='label'>size:</span> <span class='id identifier rubyid_size'>size</span><span class='comma'>,</span> <span class='label'>quality:</span> <span class='id identifier rubyid_quality'>quality</span><span class='rparen'>)</span>
+    <span class='comment'># If the given quality is what we would pick for this size given a nil
+</span>    <span class='comment'># quality, cache against nil too.
+</span>    <span class='id identifier rubyid_intra_octave_semitones'>intra_octave_semitones</span> <span class='op'>=</span> <span class='id identifier rubyid_size'>size</span> <span class='op'>%</span> <span class='int'>12</span>
+    <span class='id identifier rubyid_quality_if_nil'>quality_if_nil</span><span class='comma'>,</span> <span class='op'>=</span> <span class='const'>SIZES_TO_NUMBERS</span><span class='lbracket'>[</span><span class='id identifier rubyid_intra_octave_semitones'>intra_octave_semitones</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span>
+    <span class='id identifier rubyid_cache_against_nil_quality'>cache_against_nil_quality</span> <span class='op'>=</span> <span class='id identifier rubyid_quality'>quality</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>||</span> <span class='id identifier rubyid_quality'>quality</span> <span class='op'>==</span> <span class='id identifier rubyid_quality_if_nil'>quality_if_nil</span>
 
-    <span class='comment'># Cache here specifically for the nil quality case.
-</span>    <span class='ivar'>@size_cache</span><span class='lbracket'>[</span><span class='lbracket'>[</span><span class='id identifier rubyid_size'>size</span><span class='comma'>,</span> <span class='id identifier rubyid_quality'>quality</span><span class='rbracket'>]</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_instance'>instance</span> <span class='kw'>if</span> <span class='id identifier rubyid_quality'>quality</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+    <span class='id identifier rubyid_instance'>instance</span> <span class='op'>=</span> <span class='kw'>super</span><span class='lparen'>(</span><span class='label'>size:</span> <span class='id identifier rubyid_size'>size</span><span class='comma'>,</span> <span class='label'>quality:</span> <span class='id identifier rubyid_quality'>quality</span> <span class='op'>||</span> <span class='id identifier rubyid_quality_if_nil'>quality_if_nil</span><span class='rparen'>)</span>
+
+    <span class='ivar'>@size_cache</span><span class='lbracket'>[</span><span class='lbracket'>[</span><span class='id identifier rubyid_size'>size</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='rbracket'>]</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_instance'>instance</span> <span class='kw'>if</span> <span class='id identifier rubyid_cache_against_nil_quality'>cache_against_nil_quality</span>
   <span class='kw'>else</span>
     <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>one of number, size, or a positional argument must be given</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
@@ -1487,12 +1367,12 @@ Optional; you may use some combination of keyword arguments instead.</p></div>
       <pre class="lines">
 
 
-478
-479
-480</pre>
+447
+448
+449</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 478</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 447</span>
 
 <span class='kw'>def</span> <span class='op'>*</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="" title="Interval (class)">Interval</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-class_method" title="Interval.new (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>size:</span> <span class='ivar'>@size</span> <span class='op'>*</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span><span class='rparen'>)</span>
@@ -1569,12 +1449,12 @@ Optional; you may use some combination of keyword arguments instead.</p></div>
       <pre class="lines">
 
 
-463
-464
-465</pre>
+432
+433
+434</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 463</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 432</span>
 
 <span class='kw'>def</span> <span class='op'>+</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="" title="Interval (class)">Interval</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-class_method" title="Interval.new (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>size:</span> <span class='ivar'>@size</span> <span class='op'>+</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span><span class='rparen'>)</span>
@@ -1651,12 +1531,12 @@ Optional; you may use some combination of keyword arguments instead.</p></div>
       <pre class="lines">
 
 
-471
-472
-473</pre>
+440
+441
+442</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 471</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 440</span>
 
 <span class='kw'>def</span> <span class='op'>-</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="" title="Interval (class)">Interval</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-class_method" title="Interval.new (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>size:</span> <span class='ivar'>@size</span> <span class='op'>-</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span><span class='rparen'>)</span>
@@ -1732,517 +1612,15 @@ Optional; you may use some combination of keyword arguments instead.</p></div>
       <pre class="lines">
 
 
-485
-486
-487</pre>
+454
+455
+456</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 485</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 454</span>
 
 <span class='kw'>def</span> <span class='op'>/</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="" title="Interval (class)">Interval</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-class_method" title="Interval.new (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>size:</span> <span class='ivar'>@size</span> <span class='op'>/</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="<-instance_method">
-  
-    #<strong>&lt;</strong>(other)  &#x21d2; <tt>Boolean</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    <p>Compares this Interval to another value, which should be an Interval, an
-interval abbreviation symbol or string understood by <span class='object_link'><a href="#new-class_method" title="Interval.new (method)">new</a></span>, or a number,
-which will be compared with this interval's <span class='object_link'><a href="#size-instance_method" title="Interval#size (method)">#size</a></span>.</p>
-
-  </div>
-</div>
-<div class="tags">
-  
-
-
-
-
-
-
-<p class="tag_title">Parameters:</p>
-<ul class="param">
-  
-    <li>
-      
-        <span class='name'>other</span>
-      
-      
-        <span class='type'>(<tt><span class='object_link'><a href="" title="Interval (class)">Interval</a></span></tt>, <tt><span class='object_link'>String</span></tt>, <tt><span class='object_link'>Symbol</span></tt>, <tt>Integer</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-
-
-
-
-
-
-
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-418
-419
-420</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 418</span>
-
-<span class='kw'>def</span> <span class='op'>&lt;</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_delegate_comp'>delegate_comp</span><span class='lparen'>(</span><span class='symbol'>:&lt;</span><span class='comma'>,</span> <span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="<=-instance_method">
-  
-    #<strong>&lt;=</strong>(other)  &#x21d2; <tt>Boolean</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    <p>Compares this Interval to another value, which should be an Interval, an
-interval abbreviation symbol or string understood by <span class='object_link'><a href="#new-class_method" title="Interval.new (method)">new</a></span>, or a number,
-which will be compared with this interval's <span class='object_link'><a href="#size-instance_method" title="Interval#size (method)">#size</a></span>.</p>
-
-  </div>
-</div>
-<div class="tags">
-  
-
-
-
-
-
-
-<p class="tag_title">Parameters:</p>
-<ul class="param">
-  
-    <li>
-      
-        <span class='name'>other</span>
-      
-      
-        <span class='type'>(<tt><span class='object_link'><a href="" title="Interval (class)">Interval</a></span></tt>, <tt><span class='object_link'>String</span></tt>, <tt><span class='object_link'>Symbol</span></tt>, <tt>Integer</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-
-
-
-
-
-
-
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-423
-424
-425</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 423</span>
-
-<span class='kw'>def</span> <span class='op'>&lt;=</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_delegate_comp'>delegate_comp</span><span class='lparen'>(</span><span class='symbol'>:&lt;=</span><span class='comma'>,</span> <span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="<=>-instance_method">
-  
-    #<strong>&lt;=&gt;</strong>(other)  &#x21d2; <tt>Boolean</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    <p>Compares this Interval to another value, which should be an Interval, an
-interval abbreviation symbol or string understood by <span class='object_link'><a href="#new-class_method" title="Interval.new (method)">new</a></span>, or a number,
-which will be compared with this interval's <span class='object_link'><a href="#size-instance_method" title="Interval#size (method)">#size</a></span>.</p>
-
-  </div>
-</div>
-<div class="tags">
-  
-
-
-
-
-
-
-<p class="tag_title">Parameters:</p>
-<ul class="param">
-  
-    <li>
-      
-        <span class='name'>other</span>
-      
-      
-        <span class='type'>(<tt><span class='object_link'><a href="" title="Interval (class)">Interval</a></span></tt>, <tt><span class='object_link'>String</span></tt>, <tt><span class='object_link'>Symbol</span></tt>, <tt>Integer</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-
-
-
-
-
-
-
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-438
-439
-440</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 438</span>
-
-<span class='kw'>def</span> <span class='op'>&lt;=&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_delegate_comp'>delegate_comp</span><span class='lparen'>(</span><span class='symbol'>:&lt;=&gt;</span><span class='comma'>,</span> <span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="==-instance_method">
-  
-    #<strong>==</strong>(other)  &#x21d2; <tt>Boolean</tt> 
-  
-
-  
-    <span class="aliases">Also known as:
-    <span class="names"><span id='eql?-instance_method'>eql?</span></span>
-    </span>
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    <p>Compares this Interval to another value, which should be an Interval, an
-interval abbreviation symbol or string understood by <span class='object_link'><a href="#new-class_method" title="Interval.new (method)">new</a></span>, or a number,
-which will be compared with this interval's <span class='object_link'><a href="#size-instance_method" title="Interval#size (method)">#size</a></span>.</p>
-
-  </div>
-</div>
-<div class="tags">
-  
-
-
-
-
-
-
-<p class="tag_title">Parameters:</p>
-<ul class="param">
-  
-    <li>
-      
-        <span class='name'>other</span>
-      
-      
-        <span class='type'>(<tt><span class='object_link'><a href="" title="Interval (class)">Interval</a></span></tt>, <tt><span class='object_link'>String</span></tt>, <tt><span class='object_link'>Symbol</span></tt>, <tt>Integer</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-
-
-
-
-
-
-
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-443
-444
-445</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 443</span>
-
-<span class='kw'>def</span> <span class='op'>==</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_delegate_comp'>delegate_comp</span><span class='lparen'>(</span><span class='symbol'>:==</span><span class='comma'>,</span> <span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id=">-instance_method">
-  
-    #<strong>&gt;</strong>(other)  &#x21d2; <tt>Boolean</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    <p>Compares this Interval to another value, which should be an Interval, an
-interval abbreviation symbol or string understood by <span class='object_link'><a href="#new-class_method" title="Interval.new (method)">new</a></span>, or a number,
-which will be compared with this interval's <span class='object_link'><a href="#size-instance_method" title="Interval#size (method)">#size</a></span>.</p>
-
-  </div>
-</div>
-<div class="tags">
-  
-
-
-
-
-
-
-<p class="tag_title">Parameters:</p>
-<ul class="param">
-  
-    <li>
-      
-        <span class='name'>other</span>
-      
-      
-        <span class='type'>(<tt><span class='object_link'><a href="" title="Interval (class)">Interval</a></span></tt>, <tt><span class='object_link'>String</span></tt>, <tt><span class='object_link'>Symbol</span></tt>, <tt>Integer</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-
-
-
-
-
-
-
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-428
-429
-430</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 428</span>
-
-<span class='kw'>def</span> <span class='op'>&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_delegate_comp'>delegate_comp</span><span class='lparen'>(</span><span class='symbol'>:&gt;</span><span class='comma'>,</span> <span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id=">=-instance_method">
-  
-    #<strong>&gt;=</strong>(other)  &#x21d2; <tt>Boolean</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    <p>Compares this Interval to another value, which should be an Interval, an
-interval abbreviation symbol or string understood by <span class='object_link'><a href="#new-class_method" title="Interval.new (method)">new</a></span>, or a number,
-which will be compared with this interval's <span class='object_link'><a href="#size-instance_method" title="Interval#size (method)">#size</a></span>.</p>
-
-  </div>
-</div>
-<div class="tags">
-  
-
-
-
-
-
-
-<p class="tag_title">Parameters:</p>
-<ul class="param">
-  
-    <li>
-      
-        <span class='name'>other</span>
-      
-      
-        <span class='type'>(<tt><span class='object_link'><a href="" title="Interval (class)">Interval</a></span></tt>, <tt><span class='object_link'>String</span></tt>, <tt><span class='object_link'>Symbol</span></tt>, <tt>Integer</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-
-
-
-
-
-
-
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-433
-434
-435</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 433</span>
-
-<span class='kw'>def</span> <span class='op'>&gt;=</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_delegate_comp'>delegate_comp</span><span class='lparen'>(</span><span class='symbol'>:&gt;=</span><span class='comma'>,</span> <span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -2318,8 +1696,6 @@ Returns nil if this conversion is not possible.</p>
       <pre class="lines">
 
 
-317
-318
 319
 320
 321
@@ -2328,10 +1704,12 @@ Returns nil if this conversion is not possible.</p>
 324
 325
 326
-327</pre>
+327
+328
+329</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 317</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 319</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_as'>as</span><span class='lparen'>(</span><span class='id identifier rubyid_number'>number</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>self</span> <span class='kw'>if</span> <span class='ivar'>@number</span> <span class='op'>==</span> <span class='id identifier rubyid_number'>number</span>
@@ -2397,12 +1775,12 @@ Returns nil if this conversion is not possible.</p>
       <pre class="lines">
 
 
-367
-368
-369</pre>
+369
+370
+371</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 367</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 369</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_augmented?'>augmented?</span>
   <span class='ivar'>@quality</span> <span class='op'>==</span> <span class='symbol'>:aug</span>
@@ -2457,14 +1835,14 @@ than 8 or its <span class='object_link'><a href="#size-instance_method" title="I
       <pre class="lines">
 
 
-341
-342
 343
 344
-345</pre>
+345
+346
+347</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 341</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 343</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_compound?'>compound?</span>
   <span class='comment'># The two cases are really only necessary because d9 and A8 are weird
@@ -2524,12 +1902,12 @@ than 8 or its <span class='object_link'><a href="#size-instance_method" title="I
       <pre class="lines">
 
 
-375
-376
-377</pre>
+377
+378
+379</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 375</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 377</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_diminished?'>diminished?</span>
   <span class='ivar'>@quality</span> <span class='op'>==</span> <span class='symbol'>:dim</span>
@@ -2613,12 +1991,12 @@ A shortcut that checks if <code>as(number)</code> is not nil.</p>
       <pre class="lines">
 
 
-334
-335
-336</pre>
+336
+337
+338</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 334</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 336</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_expressible_as'>expressible_as</span><span class='lparen'>(</span><span class='id identifier rubyid_number'>number</span><span class='rparen'>)</span>
   <span class='op'>!</span><span class='id identifier rubyid_as'>as</span><span class='lparen'>(</span><span class='id identifier rubyid_number'>number</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
@@ -2672,12 +2050,12 @@ A shortcut that checks if <code>as(number)</code> is not nil.</p>
       <pre class="lines">
 
 
-355
-356
-357</pre>
+357
+358
+359</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 355</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 357</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_major?'>major?</span>
   <span class='ivar'>@quality</span> <span class='op'>==</span> <span class='symbol'>:major</span>
@@ -2731,12 +2109,12 @@ A shortcut that checks if <code>as(number)</code> is not nil.</p>
       <pre class="lines">
 
 
-361
-362
-363</pre>
+363
+364
+365</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 361</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 363</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_minor?'>minor?</span>
   <span class='ivar'>@quality</span> <span class='op'>==</span> <span class='symbol'>:minor</span>
@@ -2790,8 +2168,6 @@ A shortcut that checks if <code>as(number)</code> is not nil.</p>
       <pre class="lines">
 
 
-288
-289
 290
 291
 292
@@ -2811,10 +2187,12 @@ A shortcut that checks if <code>as(number)</code> is not nil.</p>
 306
 307
 308
-309</pre>
+309
+310
+311</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 288</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 290</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_names'>names</span>
   <span class='kw'>return</span> <span class='ivar'>@names</span> <span class='kw'>unless</span> <span class='ivar'>@names</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
@@ -2835,7 +2213,7 @@ A shortcut that checks if <code>as(number)</code> is not nil.</p>
     <span class='id identifier rubyid_qual_prefix'>qual_prefix</span> <span class='op'>=</span> <span class='const'>QUALITY_PREFIXES</span><span class='lbracket'>[</span><span class='id identifier rubyid_other_quality'>other_quality</span><span class='rbracket'>]</span>
     <span class='symbol'>:&quot;#{</span><span class='id identifier rubyid_qual_prefix'>qual_prefix</span><span class='embexpr_end'>}</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_new_num'>new_num</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>end</span>
-
+  <span class='ivar'>@names</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span>
   <span class='ivar'>@names</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -2887,12 +2265,12 @@ A shortcut that checks if <code>as(number)</code> is not nil.</p>
       <pre class="lines">
 
 
-349
-350
-351</pre>
+351
+352
+353</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 349</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 351</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_perfect?'>perfect?</span>
   <span class='ivar'>@quality</span> <span class='op'>==</span> <span class='symbol'>:perfect</span>
@@ -2946,12 +2324,12 @@ A shortcut that checks if <code>as(number)</code> is not nil.</p>
       <pre class="lines">
 
 
-392
-393
-394</pre>
+394
+395
+396</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 392</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 394</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_f'>to_f</span>
   <span class='ivar'>@size</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span>
@@ -3005,12 +2383,12 @@ A shortcut that checks if <code>as(number)</code> is not nil.</p>
       <pre class="lines">
 
 
-386
-387
-388</pre>
+388
+389
+390</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 386</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 388</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_i'>to_i</span>
   <span class='ivar'>@size</span>
@@ -3065,12 +2443,12 @@ described by <span class='object_link'><a href="#new-class_method" title="Interv
       <pre class="lines">
 
 
-492
-493
-494</pre>
+461
+462
+463</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 492</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 461</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_s'>to_s</span>
   <span class='ivar'>@sym</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
@@ -3125,12 +2503,12 @@ described by <span class='object_link'><a href="#new-class_method" title="Interv
       <pre class="lines">
 
 
-510
-511
-512</pre>
+479
+480
+481</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 510</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 479</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_sym'>to_sym</span>
   <span class='ivar'>@sym</span>

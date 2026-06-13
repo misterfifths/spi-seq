@@ -333,7 +333,7 @@ fill mode with the <code>fill_cc</code> parameter.</p>
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#swap_track-instance_method" title="#swap_track (instance method)">#<strong>swap_track</strong>(new_track, reset_cycle: false)  </a>
+      <a href="#swap_track-instance_method" title="#swap_track (instance method)">#<strong>swap_track</strong>(new_track, reset_cycle: false, reset_accum: nil)  </a>
     
 
     
@@ -820,7 +820,7 @@ clean slate. Ends all ongoing steps and resets the internal state, like
 <span class='kw'>def</span> <span class='id identifier rubyid_stop'>stop</span>
   <span class='id identifier rubyid_end_all_steps'>end_all_steps</span>
   <span class='ivar'>@cycle</span> <span class='op'>=</span> <span class='int'>0</span>
-  <span class='ivar'>@accum_data</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>  <span class='comment'># Step hash keys (step_accum_hash_key) -&gt; {delta:, direction:}
+  <span class='ivar'>@accum_data</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>  <span class='comment'># for each slot, a hash: step.unique_slot_key -&gt; {delta:, direction:}
 </span><span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -830,7 +830,7 @@ clean slate. Ends all ongoing steps and resets the internal state, like
       <div class="method_details ">
   <h3 class="signature " id="swap_track-instance_method">
   
-    #<strong>swap_track</strong>(new_track, reset_cycle: false)  
+    #<strong>swap_track</strong>(new_track, reset_cycle: false, reset_accum: nil)  
   
 
   
@@ -850,7 +850,8 @@ with a C4, that note will continue without interruption.</p>
 <p>If you swap to another track, the accumulation state for the current track
 is cleared (i.e., if you later swap back to the same track, the accumulation
 of all of its steps will reset). If you call this with the same track as
-<span class='object_link'><a href="#track-instance_method" title="PlayerBase#track (method)">#track</a></span>, accumulation is not reset.</p>
+<span class='object_link'><a href="#track-instance_method" title="PlayerBase#track (method)">#track</a></span>, accumulation is not reset. You can override that behavior by
+providing a value for <code>reset_accum</code>.</p>
 
   </div>
 </div>
@@ -896,6 +897,25 @@ of all of its steps will reset). If you call this with the same track as
       
     </li>
   
+    <li>
+      
+        <span class='name'>reset_accum</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>, <tt>nil</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>If nil, accumulation data is reset if
+swapping to a track that is not identical to the current one. Otherwise,
+forces a reset or non-reset. This is an advanced option; setting it to
+false may result in unexpected playback.</p></div>
+      
+    </li>
+  
 </ul>
 
 
@@ -905,18 +925,18 @@ of all of its steps will reset). If you call this with the same track as
       <pre class="lines">
 
 
-145
-146
-147
-148
-149
-150</pre>
+150
+151
+152
+153
+154
+155</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'playerbase.rb', line 145</span>
+      <pre class="code"><span class="info file"># File 'playerbase.rb', line 150</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_swap_track'>swap_track</span><span class='lparen'>(</span><span class='id identifier rubyid_new_track'>new_track</span><span class='comma'>,</span> <span class='label'>reset_cycle:</span> <span class='kw'>false</span><span class='rparen'>)</span>
-  <span class='ivar'>@accum_data</span><span class='op'>&amp;.</span><span class='id identifier rubyid_clear'>clear</span> <span class='kw'>unless</span> <span class='ivar'>@track</span><span class='period'>.</span><span class='id identifier rubyid_equal?'>equal?</span><span class='lparen'>(</span><span class='id identifier rubyid_new_track'>new_track</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_swap_track'>swap_track</span><span class='lparen'>(</span><span class='id identifier rubyid_new_track'>new_track</span><span class='comma'>,</span> <span class='label'>reset_cycle:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>reset_accum:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@accum_data</span><span class='op'>&amp;.</span><span class='id identifier rubyid_clear'>clear</span> <span class='kw'>if</span> <span class='id identifier rubyid_reset_accum'>reset_accum</span> <span class='op'>||</span> <span class='lparen'>(</span><span class='id identifier rubyid_reset_accum'>reset_accum</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='ivar'>@track</span><span class='period'>.</span><span class='id identifier rubyid_equal?'>equal?</span><span class='lparen'>(</span><span class='id identifier rubyid_new_track'>new_track</span><span class='rparen'>)</span><span class='rparen'>)</span>
 
   <span class='ivar'>@track</span> <span class='op'>=</span> <span class='id identifier rubyid_new_track'>new_track</span>
   <span class='ivar'>@cycle</span> <span class='op'>=</span> <span class='int'>0</span> <span class='kw'>if</span> <span class='id identifier rubyid_reset_cycle'>reset_cycle</span>
