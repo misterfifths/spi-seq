@@ -280,26 +280,13 @@ class Chord
   # @param other
   # @return [Chord]
   def append(other)
-    if other.is_a?(Chord)
-      other = other.intervals
-    elsif SpiSeq::Utils.enumerable?(other)
+    if SpiSeq::Utils.enumerable?(other)
       other = SpiSeq::Utils.arrayify(other)  # see note in enumerable?
     else
       other = [other]
     end
 
-    new_intervals = other.map do |i|
-      case i
-      when Interval
-        i
-      when Numeric
-        Interval.new(number: i)
-      else
-        Interval.new(i)
-      end
-    end
-
-    Chord.new(@intervals + new_intervals)
+    Chord.new(@intervals + other)
   end
 
   alias add append
