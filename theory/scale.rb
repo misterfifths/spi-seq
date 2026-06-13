@@ -186,10 +186,9 @@ class Scale
   # `spanish`, `prometheus`, `diminished`, `todi`, `leading_whole`, `augmented`,
   # `purvi`, `chinese`, `lydian_minor`.
   #
-  # Note that there are also aliases for some of the above names; print this
-  # array to see all possibilities. This class supports all of the integral
-  # scales that Sonic Pi does; it does not handle the Turkish scales with
-  # fractional intervals.
+  # There are also aliases for some of the above names; print this array to see
+  # all possibilities. This class supports all of the integral scales that Sonic
+  # Pi does; it does not handle the Turkish scales with fractional intervals.
   #
   # @return [Array<Symbol>]
   SCALE_NAMES = SCALES.keys.to_a.freeze
@@ -366,9 +365,9 @@ class Scale
   # not the tonic of the scale. A degree of -1 is taken to be one note below the
   # tonic on the scale.
   #
-  # Note that, unlike Sonic Pi's `degree` function, this will only return notes
-  # within the octave range of the scale on which it is called. See the class
-  # method {.degree} for a less bounded version.
+  # Unlike Sonic Pi's `degree` function, this will only return notes within the
+  # octave range of the scale on which it is called. See the class method
+  # {.degree} for a less bounded version.
   #
   # @param d [Integer, Symbol, String]
   # @param relative_tonic [MIDINote, String, Symbol, Integer, nil]
@@ -387,8 +386,8 @@ class Scale
   # Returns a note on a scale that is `d` degrees away from `tonic`. This is
   # equivalent to calling {#degree} on the result of {.full_scale}.
   #
-  # This is analogous to Sonic Pi's `degree`, though note that it won't return
-  # notes outside of the MIDI range.
+  # This is analogous to Sonic Pi's `degree`, though it won't return notes
+  # outside of the MIDI range.
   #
   # @param d [Integer, Symbol, String] The requested degree. See {#degree} for
   #   details.
@@ -425,9 +424,9 @@ class Scale
   # used instead. Raises an ArgumentError if the scale does not contain `note`
   # or `relative_tonic`.
   #
-  # Note that the returned value may be negative if `relative_tonic` is not the
-  # tonic of the scale, and `note` falls before it. The note one below the tonic
-  # has degree -1.
+  # The returned value may be negative if `relative_tonic` is not the tonic of
+  # the scale, and `note` falls before it. The note one below the tonic has
+  # degree -1.
   #
   # @param note [MIDINote, String, Symbol, Integer]
   # @param relative_tonic [MIDINote, String, Symbol, Integer, nil]

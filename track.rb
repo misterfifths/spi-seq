@@ -21,9 +21,9 @@ require_relative "utils/internal_utils"
 #
 # This class is aliased to `T`.
 #
-# Note that **tracks are immutable**. The mutation methods provided here, like
-# {#up}, return new Tracks that have all the same attributes as the receiver
-# (e.g. {#timescale} and {#granularity}), with just the described change. That
+# **Tracks are immutable**. The mutation methods provided here, like {#up},
+# return new Tracks that have all the same attributes as the receiver (e.g.
+# {#timescale} and {#granularity}), with just the described change. That
 # includes the steps in its grid, unless the method explicitly modifies those.
 #
 # This class inherits much of its functionality from {TrackBase}, and adds
@@ -92,10 +92,10 @@ class Track < TrackBase
   # are {Scale#snap quantized to that scale} before they are played. This
   # operation is non-destructive; a Track with a scale can contain {Step}s with
   # notes that are not on the scale, and they will be snapped to the scale just
-  # in time for playback. Also note that the snapping operation may result in
-  # duplicate notes within one slot (e.g. a C# and a D on a C major scale will
-  # both result in a D), which will not be determined until playback. In that
-  # case, the step with the longest {Step#gate gate} is played.
+  # in time for playback. The snapping operation may result in duplicate notes
+  # within one slot (e.g. C# and D on a C major scale will both snap to D),
+  # which will not be determined until playback. In that case, the step with the
+  # longest {Step#gate gate} is played.
   #
   # As an alternative to {#scale}, you can return a new Track with all steps
   # snapped to a scale using the {#snap_to_scale} method.
@@ -190,7 +190,7 @@ class Track < TrackBase
   # define a tied sequence of steps (or single untied steps). For instance, a
   # gates array of [1, 0.5, 0.25, 1] defines 3 runs: the first two steps would
   # be tied together, then a standalone step with gate 0.25, and a final step
-  # with gate 1. (Note that all runs terminate at the end of the array.)
+  # with gate 1. All runs terminate at the end of the array.
   #
   # Each run will be assigned the same note from the `notes` array. The next
   # run will be assigned the next note and so on, wrapping around to the
@@ -459,9 +459,9 @@ class Track < TrackBase
   # slots. Steps and ties have their lengths halved to keep the track sounding
   # roughly the same.
   #
-  # This is the opposite of {#expand}, though note that this operation is
-  # significantly lossier. Steps with short gates and those starting on
-  # off-beats may be completely absent from the result.
+  # This is the opposite of {#expand}, though this operation is significantly
+  # lossier. Steps with short gates and those starting on off-beats may be
+  # completely absent from the result.
   #
   # If a tied pair of steps has a {Step#prob probability}, only the probability
   # of the first step will be present in the condensed step.
@@ -1688,7 +1688,7 @@ class Track < TrackBase
       [slotify(x, def_gate: def_gate, def_vel: def_vel)].freeze
     else
       if SpiSeq::Utils.enumerable?(x)
-        # NOTE: this will convert non-array child elements into individual slots.
+        # This will convert non-array child elements into individual slots.
         # E.g. gridify([:a1, :b1]) will turn into [[:a1], [:b1]]. I think that's
         # desirable - it's a sort of 'smart' conversion, preferring mono-like
         # behavior unless notes are explicitly grouped into their own array.

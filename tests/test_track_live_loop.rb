@@ -464,9 +464,9 @@ class TrackLiveLoopTest < Test::Unit::TestCase
       l1.pump
 
       # Not stopping l1 yet!
-      # Also note that we continue to pump l1 for another cycle here. l2 should
-      # not inherit the state of l1's player immediately; it should wait until
-      # its first iteration of playback.
+      # We continue to pump l1 for another cycle here. l2 should not inherit the
+      # state of l1's player immediately; it should wait until its first
+      # iteration of playback.
       l2 = tll(:t, t)
 
       l1.pump

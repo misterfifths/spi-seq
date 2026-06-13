@@ -206,9 +206,9 @@ class Chord
   # `m7+5-9`, `m7-9`, `9sus4`, `m11`, `7-9`, `7-10`, `7-11`, `7-13`, `7+5-9`,
   # `7sus2`, `7sus4`, `11`, `9+5`, `m9+5`
   #
-  # Note that there are aliases for many of the above names; print this array to
-  # see all possible names. This class understands all of the same chord names
-  # as Sonic Pi's `chord` function and more.
+  # There are aliases for many of the above names; print this array to see all
+  # possible names. This class understands all of the same chord names as Sonic
+  # Pi's `chord` function and more.
   #
   # @return [Array<Symbol>]
   CHORD_NAMES = ABBREVS.keys.to_a.freeze
@@ -228,8 +228,9 @@ class Chord
   # To create and immediately {#voice voice} a chord, you can use {.voiced} or
   # the {C} helper function.
   #
-  # Note that you can also create Chords using the class methods named after
-  # common chords, such as {.major_triad} or {.dom_ninth}.
+  # You can also create Chords using the class methods named after common
+  # chords, such as {.major_triad} or {.dom_ninth}.
+  #
   # @param intervals_or_name [Symbol, String, Array<Interval, Symbol, String,
   #   Integer>]
   # @return [Chord]

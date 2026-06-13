@@ -18,7 +18,7 @@ end
 # Accumulation on a CCStep applies an offset to the {#value} that will be sent
 # for the CC.
 #
-# Note that **CCSteps are immutable**. The mutation methods provided here, like
+# **CCSteps are immutable**. The mutation methods provided here, like
 # {#with_value}, return new CCSteps that have all the same attributes as the
 # receiver, with just the described change.
 class CCStep < StepBase

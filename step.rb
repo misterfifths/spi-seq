@@ -22,12 +22,11 @@ end
 # Accumulation on a Step applies a semitone offset to the {#note} by default,
 # but can also target the {#gate} or {#vel}.
 #
-# Note that **Steps are immutable**. The mutation methods provided here, like
+# **Steps are immutable**. The mutation methods provided here, like
 # {#with_note}, return new Steps that have all the same attributes as the
 # receiver, with just the described change.
 class Step < StepBase
-  # The note that this step will play when triggered during playback (subject
-  # to accumulation).
+  # The note that this step will play when triggered during playback.
   # @return [MIDINote]
   attr_reader :note
 
@@ -64,8 +63,7 @@ class Step < StepBase
   #
   # @param (see StepBase#initialize)
   # @param note [MIDINote, String, Symbol, Integer] The note this step will
-  #   play when triggered (subject to accumulation). May be any value understood
-  #   by {MIDINote.new}.
+  #   play when triggered. May be any value understood by {MIDINote.new}.
   # @param vel [Integer] The velocity to use when triggering a MIDI not event
   #   for the step. Values outside of 0 - 127 (inclusive) will be clamped to
   #   the nearest extreme. See {#vel}.

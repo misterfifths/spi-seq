@@ -14,7 +14,7 @@ require_relative "utils/internal_utils"
 #
 # This class is aliased to `CCT`.
 #
-# Note that **tracks are immutable**. The mutation methods provided here, like
+# **Tracks are immutable**. The mutation methods provided here, like
 # {#add_curve}, return new CCTracks that have all the same attributes as the
 # receiver (e.g. {#timescale} and {#granularity}), with just the described
 # change. That includes the steps in its grid, unless the method explicitly

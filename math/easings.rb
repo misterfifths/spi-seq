@@ -92,7 +92,7 @@ module Easings
 
   # (see InSine)
   #
-  # Note that this curve's output exceeds the range 0 - 1.
+  # This curve's output exceeds the range 0 - 1.
   InBack = CubicBezier.new(0.36, 0, 0.66, -0.56)
   # (see InBack)
   OutBack = CubicBezier.new(0.34, 1.56, 0.64, 1)

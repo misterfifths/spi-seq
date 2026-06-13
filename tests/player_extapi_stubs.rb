@@ -10,10 +10,10 @@
 # There is only one global set of events; having multiple active players - much
 # less threads - is a bad idea.
 #
-# Note that since these are applied to the ExtApi module itself, they will be
-# used even if we're inside Sonic Pi. Because Sonic Pi uses a single Ruby
-# context per launch, loading this module will break playback from spi-seq in
-# Sonic Pi until it is restarted.
+# Since these are applied to the ExtApi module itself, they will be used even if
+# we're inside Sonic Pi. Because Sonic Pi uses a single Ruby context per launch,
+# loading this module will break playback from spi-seq in Sonic Pi until it is
+# restarted.
 
 require_relative "../extapi"
 
@@ -43,8 +43,8 @@ module ExtApi
       es
     end
 
-    # Note that we do not import this from Sonic Pi into ExtApi normally; this
-    # stub is only here for the tests.
+    # We do not import this from Sonic Pi into ExtApi normally; this stub is
+    # only here for the tests.
     def use_bpm(bpm)
       @bpm = bpm
     end
@@ -117,8 +117,8 @@ module ExtApi
       @delayed_blocks = @delayed_blocks.drop(executed_blocks) if executed_blocks > 0
     end
 
-    # Note that we do not import this from Sonic Pi into ExtApi normally; this
-    # stub is only here for the tests.
+    # We do not import this from Sonic Pi into ExtApi normally; this stub is
+    # only here for the tests.
     def use_midi_defaults(port: nil, channel: nil)
       defaults = {}
       defaults[:port] = port unless port.nil?

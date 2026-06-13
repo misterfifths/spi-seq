@@ -4,9 +4,10 @@
 # its duration as a fraction of a beat.
 #
 # You will most often use a note length when constructing tracks, as their
-# {TrackBase#granularity granularity}. Note that when using a track constructor,
-# you can pass any value that {.new} accepts; you don't need to use the
-# constants defined on this class.
+# {TrackBase#granularity granularity}. It is unlikely that you will need to
+# interact with this class directly though. When using a track constructor, you
+# can pass any value that {.new} accepts; you don't need to use the constants
+# defined on this class.
 class NoteLength
   include Comparable
 

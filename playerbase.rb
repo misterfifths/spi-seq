@@ -18,10 +18,9 @@ require_relative "trackbase"
 # {track_live_loop}, which will create and manage an appropriate player for you.
 #
 # If you do want to manually drive a player, the most relevant methods are
-# {#play}, {#stop}, and {#sleep}. Note that playback is strictly cycle-based;
-# the `play` method will play an entire cycle of the track before it returns.
-# You can use {#swap_track} between cycles to seamlessly switch to another
-# track.
+# {#play}, {#stop}, and {#sleep}. Playback is strictly cycle-based; the `play`
+# method will play an entire cycle of the track before it returns. You can use
+# {#swap_track} between cycles to seamlessly switch to another track.
 #
 # The {#cycle} attribute tracks the number of times the track has played. It
 # begins at 0 and is incremented at the end of every {#play} call. A call to
@@ -252,8 +251,8 @@ class PlayerBase
   #    CCTrack are instantaneous, a player for those tracks does not need to
   #    consider such a thing.
   #
-  # Note that there may be some elaborate subclass-specific tracking involved to
-  # keep track of the world state.
+  # Subclasses may need elaborate logic to track the world state if steps linger
+  # (e.g. note-based Steps in Tracks).
   def play_steps(_steps)
     raise NotImplementedError, "subclasses must implement play_steps"
   end
@@ -281,13 +280,13 @@ class PlayerBase
 
   private
 
-  # Note that we store accum data by slot index and then `unique_slot_key`.
-  # `unique_slot_key` uniquely identifies a step within its slot, but it is
-  # probably not `object_id` (Step, e.g., implements it by returning its note).
-  # So if a track is swapped without resetting accum, we may reuse accumulation
-  # data for non-identical steps. This is desirable in the case of
-  # `track_live_loop`'s automatic fading: we want accumulation to persist across
-  # non-identical tracks with non-identical steps.
+  # We store accum data by slot index and then `unique_slot_key`, which uniquely
+  # identifies a step within its slot, but it is probably not `object_id` (Step,
+  # e.g., implements it by returning its note). So if a track is swapped without
+  # resetting accum, we may reuse accumulation data for non-identical steps.
+  # This is desirable in the case of `track_live_loop`'s automatic fading: we
+  # want accumulation to persist across non-identical tracks with non-identical
+  # steps.
   def accum_data(step, pending: false)
     source = pending ? @pending_accum_data : @accum_data
     h = source[@slot_idx]

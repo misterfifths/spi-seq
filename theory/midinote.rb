@@ -20,9 +20,9 @@ end
 # symbols, or strings to MIDINotes automatically. If you do need to make one
 # though, {.new} is aliased to {N}.
 #
-# Note that **MIDINotes are immutable**. The mutation methods provided here,
-# like {#with_pitch_class}, return new MIDINotes that have all the same
-# attributes as the receiver, with just the described change.
+# **MIDINotes are immutable**. The mutation methods provided here, like
+# {#with_pitch_class}, return new MIDINotes that have all the same attributes as
+# the receiver, with just the described change.
 #
 # Despite the name, this class can represent notes outside the MIDI range (C-1
 # to G9, note numbers 0 - 127). However such notes cannot be played on MIDI
@@ -57,8 +57,8 @@ class MIDINote < Numeric
   # @return [Symbol]
   attr_reader :pitch_class
 
-  # The MIDI number for the note (e.g. C4 is 60). Note that this may not be in
-  # the MIDI range of 0 - 127.
+  # The MIDI number for the note (e.g. C4 is 60). This may not be in the MIDI
+  # range of 0 - 127.
   # @return [Integer]
   attr_reader :number
   alias to_i number
@@ -206,8 +206,8 @@ class MIDINote < Numeric
   # Returns a new note in the same octave but with the given pitch class, which
   # should be a string or symbol of the sort accepted by {.new}.
   #
-  # Note that, after normalization of flats and sharps, this will actually
-  # change the octave number if you provide a pitch class of `:cb`/`:cf` (one
+  # After normalization of flats and sharps, this will actually change the
+  # reported octave number if you provide a pitch class of `:cb`/`:cf` (one
   # octave down) or `:bs` (one octave up). For example,
   #
   #   N(:c4).with_pitch_class(:cb)  # would give :cb4, but that's normalized to :b3
@@ -407,8 +407,7 @@ end
 
 
 # Some overrides so comparison works when a string or symbol is on the left.
-# Note that comparison to left-hand side numerics already works because the
-# MIDINote will be coerced automatically.
+# We don't need to do anything about Numeric; that already works via coercion.
 # @private
 module MIDINoteComparisonPatches
   SpiSeq::Utils.define_reverse_comparison_ops(self, MIDINote)

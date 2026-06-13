@@ -71,13 +71,13 @@ end
 # steps in the grid. The subclasses add behavior specific to the steps they
 # contain.
 #
-# Note that **tracks are immutable**. The provided mutation methods make the
-# described changes and return new tracks that are otherwise identical to the
-# track on which they were called. For example, {#with_timescale} returns a new
-# track that only differs from the track on which was called in its
-# {#timescale}; its {#grid}, {#granularity}, and other properties are unchanged.
-# Many methods do change the grid, like {#concat}, but unless otherwise stated
-# they will leave `timescale`, `granularity`, and all other properties alone.
+# **Tracks are immutable**. The provided mutation methods make the described
+# changes and return new tracks that are otherwise identical to the track on
+# which they were called. For example, {#with_timescale} returns a new track
+# that only differs from the track on which was called in its {#timescale}; its
+# {#grid}, {#granularity}, and other properties are unchanged. Many methods do
+# change the grid, like {#concat}, but unless otherwise stated they will leave
+# `timescale`, `granularity`, and all other properties alone.
 #
 # Methods in this class that are documented as returning TrackBase instances
 # will actually return an instance of whatever class they are called on; e.g.
@@ -241,10 +241,10 @@ class TrackBase
   #     :c1, :r, :d1, :a1,
   #     :b1, :r, :c1, :d1]
   #
-  # Note that each group of 4 slots in the result repeats the same pattern of
-  # hits (hit rest hit hit), but the steps chosen from the input cycle across
-  # repetitions, so that every given slot in `gridish` is played and the overall
-  # track is a perfect loop.
+  # Each group of 4 slots in the result repeats the same pattern of hits (hit
+  # rest hit hit), but the steps chosen from the input cycle across repetitions,
+  # so that every given slot in `gridish` is played and the overall track is a
+  # perfect loop.
   #
   # @param gridish [StepBase, Array<StepBase, Array<StepBase>>] (or other
   #   subclass-specific types) Defines the the slots to cycle through according
@@ -621,9 +621,9 @@ class TrackBase
   #   v = t.gzip(u, 3, 1)
   #   # v is equivalent to
   #   T[:a1, :b1, :c1, :e2, :d1, :a1, :b1, :f2]
-  #   # Note that when the slots in t were exhausted (after the :d1), the
-  #   # remaining slots in that group came from wrapping around to the beginning
-  #   # of the track - hence the :a1 and :b1.
+  #   # When the slots in t were exhausted (after the :d1), the remaining slots
+  #   # in that group came from wrapping around to the beginning of the track -
+  #   # hence the :a1 and :b1.
   #
   #   w = t.gzip(u, 3, 1, cycle: false)
   #   # w is equivalent to
@@ -928,9 +928,8 @@ class TrackBase
   #   yielded to the block.
   # - A slot (an array of steps), which will replace the slot yielded to the
   #   block.
-  # - `nil`, `:r`, or `:rest`, which will replace the slot yielded to the block
-  #   with an empty slot (i.e. a rest). Note that this is the same as returning
-  #   an empty array.
+  # - `nil`, `:r`, `:rest`, or `[]` which will replace the slot yielded to the
+  #   block with an empty slot (i.e. a rest).
   # - An array of slots, which will all be added in place of the yielded slot
   #
   # @example
@@ -1663,8 +1662,8 @@ class TrackBase
   # - An empty array or a rest, which will remove the given step from the slot.
   # - Equivalents of any of the above (see `slotify`).
   #
-  # Note that if the slot at the given index is empty, the block will not be
-  # called and no changes will be made.
+  # If the slot at the given index is empty, the block will not be called and no
+  # changes will be made.
   #
   # @example
   #   t = T[[:f8, :f9], :c2, [:c8, :d9]]

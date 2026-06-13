@@ -131,8 +131,8 @@ module Arp
   #   arpeggiate; an array of {MIDINote}s or any value accepted by
   #   {MIDINote.new}.
   # @param direction [Symbol] One of the direction symbols defined on Arp, e.g.
-  #   {.Pinky :pinky} or {.UpDown :updown}. Note that you can pass the symbol
-  #   directly rather than referencing the constant on this module.
+  #   {.Pinky :pinky} or {.UpDown :updown}. You can pass the symbol directly
+  #   rather than referencing the constant on this module.
   # @param spread [Integer] Adds notes an octave above some number of the lowest
   #   notes in the result. See above for details.
   # @param extra_octaves [Array<Integer>] Adds a copy of the incoming notes

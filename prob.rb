@@ -122,8 +122,8 @@ class Prob
   # Returns a Prob that will trigger the step if any step triggered in the
   # previously played slot.
   #
-  # Note that this predicate is only applicable to {Step}s in {Track}s; it will
-  # always evaluate to false for {CCStep}s in {CCTrack}s.
+  # This predicate is only applicable to {Step}s in {Track}s; it will always
+  # evaluate to false for {CCStep}s in {CCTrack}s.
   #
   # @return [Prob]
   def self.pre
@@ -133,8 +133,8 @@ class Prob
   # Returns a Prob that will trigger the step if no step triggered in the
   # previously played slot.
   #
-  # Note that this predicate is only applicable to {Step}s in {Track}s; it will
-  # always evaluate to true for {CCStep}s in {CCTrack}s.
+  # This predicate is only applicable to {Step}s in {Track}s; it will always
+  # evaluate to true for {CCStep}s in {CCTrack}s.
   #
   # @return [Prob]
   def self.not_pre
@@ -144,8 +144,8 @@ class Prob
   # Returns a Prob that will trigger the step if a step triggered in the
   # previously played slot with the same {Step#note note} as this step.
   #
-  # Note that this predicate is only applicable to {Step}s in {Track}s; it will
-  # always evaluate to false for {CCStep}s in {CCTrack}s.
+  # This predicate is only applicable to {Step}s in {Track}s; it will always
+  # evaluate to false for {CCStep}s in {CCTrack}s.
   #
   # Additionally, it is cyclical to use this as an
   # {StepBase#accum_prob accum_prob}, since the note that a Step will play is
@@ -162,8 +162,8 @@ class Prob
   # triggered in the previously played slot had the same {Step#note note} as
   # this step.
   #
-  # Note that this predicate is only applicable to {Step}s in {Track}s; it will
-  # always evaluate to true for {CCStep}s in {CCTrack}s.
+  # This predicate is only applicable to {Step}s in {Track}s; it will always
+  # evaluate to true for {CCStep}s in {CCTrack}s.
   #
   # Additionally, it is cyclical to use this as an
   # {StepBase#accum_prob accum_prob}, since the note that a Step will play is
@@ -218,10 +218,12 @@ class Prob
     "<Prob #{self}>"
   end
 
-  # Returns a representation of the Prob as Ruby code. Note that this is
-  # impossible for Probs made with {.custom}. For such Probs, if `safe` is
-  # false, this method will raise. If `safe` is true, this method will return
+  # Returns a representation of the Prob as Ruby code.
+  #
+  # This is impossible for Probs made with {.custom}. For such Probs, if `safe`
+  # is false, this method will raise. If `safe` is true, this method will return
   # a string that is not valid Ruby.
+  #
   # @param safe [Boolean]
   # @return [String]
   def repr(safe: false)

@@ -260,10 +260,9 @@ class Player < PlayerBase
   # Steps in the first array are deduplicated if accumulation would result in
   # multiple steps with the same note.
   #
-  # Note that the returned array of ended steps does not strictly contain steps
-  # that ended exactly at the beginning of this step. It also contains steps
-  # that ended between this step and the previous one - e.g. Steps with gates
-  # less than 1.
+  # The returned array of ended steps does not strictly contain steps that ended
+  # exactly at the beginning of this step. It also contains steps that ended
+  # between this step and the previous one - e.g. Steps with gates less than 1.
   def categorize_steps(triggering_steps)
     # As noted in PlayerBase, it is important that this method assume nothing
     # about the order in which slots were or will be played. @prev_steps and
@@ -341,8 +340,8 @@ class Player < PlayerBase
       SpiSeq::Log.log("ended steps: #{steps_debug_string(ended_steps, from_prev: true)}", "player")
     end
 
-    # Turn off or kill ended steps. Note that ended_steps is a subset of
-    # @prev_steps; end_step will handle finding the correct note for them from
+    # Turn off or kill ended steps. ended_steps is a subset of @prev_steps;
+    # end_step will handle finding the correct note for them from
     # @attrs_for_prev_steps.
     ended_steps.each { |step| end_step(step) }
 
@@ -363,7 +362,7 @@ class Player < PlayerBase
     end
 
     # Schedule ends for continued steps that end before the next slot.
-    # Note that we don't need to do this for new steps - those are either:
+    # We don't need to do this for new steps - those are either:
     # - of some specific length less than the granularity (i.e., not tied), in
     #   which case we provide the length to the sustain or duration argument
     #   when playing the note; or
@@ -387,16 +386,16 @@ class Player < PlayerBase
 
   # Stop the MIDI note or kill the synth node corresponding to the given Step,
   # which is assumed to be in @prev_steps (and thus may not be part of @track).
-  # Note that we may have already ended the step if it didn't have a full gate,
-  # in which case it will not have an entry in active_midi_notes or
-  # active_synth_nodes. Do nothing in that case.
+  # We may have already ended the step if it didn't have a full gate, in which
+  # case it will not have an entry in active_midi_notes or active_synth_nodes.
+  # Do nothing in that case.
   def end_step(step)
     step_note = prev_note(step)
 
     if @midi
-      # Note that @active_midi_notes is a Set, and Set.delete acts differently
-      # than Array.delete. We want delete? to remove and return nil if nothing
-      # was removed.
+      # @active_midi_notes is a Set, and Set.delete acts differently than
+      # Array.delete. We want delete? to remove and return nil if nothing was
+      # removed.
       ExtApi.midi_note_off(step_note, **@midi_spi_kwargs) unless @active_midi_notes.delete?(step_note).nil?
     else
       node = @active_synth_nodes.delete(step_note)

@@ -73,8 +73,8 @@ module SpiSeq
           fade_method = :"fade_#{fading_in ? 'in' : 'out'}#{'_quad' if quad}"
           faded_track = player.track.send(fade_method)
 
-          # Note that we're not resetting accum here; we want accumulation to
-          # carry into the faded track. PlayerBase.accum_data has details.
+          # We're not resetting accum here; we want accumulation to carry into
+          # the faded track. PlayerBase.accum_data has details.
           player.swap_track(faded_track, reset_accum: false)
         end
 
@@ -129,8 +129,8 @@ end
 # playback. The block may accept any of the following keyword arguments:
 # - `cycle` (Integer): The current {PlayerBase#cycle cycle} of the internal
 #   player.
-# - `track` ({Track} or {CCTrack}): The track the internal player will in this
-#   cycle, unless the block returns a new one (see below).
+# - `track` ({Track} or {CCTrack}): The track the internal player will play in
+#   this cycle, unless the block returns a new one (see below).
 # - `muted` (Boolean): Whether playback from this loop is muted.
 # - `was_muted` (Boolean): Whether playback was muted in this loop in the
 #   previous cycle. This argument is true the first time the block executes.
@@ -138,7 +138,7 @@ end
 #   argument on the first iteration, and the return of the prior execution of
 #   the block afterwards.
 #
-# A block is mandatory is the `track` argument is nil.
+# A block is mandatory if the `track` argument is nil.
 #
 # The internal block that plays the track will sleep, so a user-provided block
 # does not need to call `sleep` or `sync`, unlike normal `live_loop` blocks.
@@ -196,13 +196,13 @@ end
 #   velocity; see {Track#fade_in}) whenever the loop transitions from muted to
 #   unmuted. Pass `:quad` to fade the track in with {Track#fade_in_quad}. It is
 #   an error to pass any value other than false if `track` is a {CCTrack}.
-# @param fade_out [Boolean, :quad] If out, the track fades out linearly (via
+# @param fade_out [Boolean, :quad] If true, the track fades out linearly (via
 #   velocity; see {Track#fade_out}) whenever the loop transitions from unmuted
 #   to muted. Pass `:quad` to fade the track out with {Track#fade_out_quad}. It
 #   is an error to pass any value other than false if `track` is a {CCTrack}.
-#   NOTE: The playback of the faded track happens *after* the loop becomes
-#   muted. That is, tracks that are set to fade out will actually play for one
-#   additional cycle after the loop is muted, during which they will fade out.
+#   The playback of the faded track happens *after* the loop becomes muted. That
+#   is, tracks that are set to fade out will actually play for one additional
+#   cycle after the loop is muted, during which they will fade out.
 # @param midi [Boolean] If true, the track will play over MIDI rather than
 #   Sonic Pi's internal synthesis. This argument is ignored for {CCTrack}s,
 #   since they only function over MIDI. If nil, the global default from
@@ -214,12 +214,12 @@ end
 #   true. If nil, falls back in the same manner as `port`.
 # @param cc [Integer] The CC number to monitor to control muting of the loop.
 #   A value of 0 for this CC will mute the loop; any other value will unmute.
-#   Note that you can also mute loops with {mute_live_loop}.
+#   You can also mute loops with {mute_live_loop}.
 # @param fill_cc [Integer] The CC number to monitor to control {PlayerBase#fill
 #   fill mode} on the internal player. A value of 0 for this CC will turn off
 #   fill; any other value will turn it on. If this argument is nil, falls back
 #   to the global default set with {use_player_defaults}, or no CC fill control
-#   if no default was set. Note that you can also set fill mode for a loop with
+#   if no default was set. You can also set fill mode for a loop with
 #   {fill_live_loop}.
 # @param cc_port [String, nil] The MIDI port to monitor for CC messages, if
 #   either `cc` or `fill_cc` are set. If nil, falls back to the global default

@@ -27,10 +27,10 @@ end
 # Array. The intervals are always sorted ascending and will never contain
 # duplicates, even if a mutation might produce one.
 #
-# Note that this class only represents the intervals; it does not track a root
-# note or inversions. Instances can be concretely expressed (i.e., converted to
-# actual {MIDINote}s) on a particular root note with {#voice}, {.voiced} or the
-# {C} helper function. Inversions also happen at voice-time.
+# This class only represents intervals; it does not track a root note or
+# inversions. Instances can be concretely expressed (i.e., converted to actual
+# {MIDINote}s) on a particular root note with {#voice}, {.voiced} or the {C}
+# helper function. Inversions also happen at voice-time.
 #
 # **Chord objects are immutable.** The various mutation methods it provides
 # (e.g. {#flat}, {#sus4}, {#add}) return new Chord instances with different
@@ -141,8 +141,8 @@ class Chord
   # - `open3`: Applies a closed voicing, then lowers the second-lowest note an
   #   octave.
   #
-  # Note that there are aliases for many of the above styles; print this array
-  # to see all possible names.
+  # There are aliases for many of the above styles; print this array to see all
+  # possible names.
   #
   # @return [Array<Symbol>]
   VOICING_STYLES = VOICINGS.keys.to_a.freeze
@@ -189,9 +189,9 @@ class Chord
   #   the {.VOICING_STYLES} array.
   # @param num_octaves [Integer] How many octaves of the chord to express. This
   #   many copies of the chord's intervals will be added, each an octave higher,
-  #   before inverting and voicing. Note that combining this with inversion is
-  #   likely to result in duplicate intervals, which will not result in
-  #   duplicate notes in the output.
+  #   before inverting and voicing. Combining this with inversion is likely to
+  #   result in duplicate intervals, which will not result in duplicate notes in
+  #   the output.
   # @param invert [Integer] How many times to invert the chord's intervals
   #   before applying the `voicing`.
   # @return [Array<MIDINote>]
@@ -293,9 +293,9 @@ class Chord
     root = scale.degree(d, relative_tonic: tonic)
 
     # Select subsequent 3rds (major or minor), until we hit one that is not on
-    # the scale. Note that outside of diatonic scales this behavior differs
-    # quite a bit from Sonic Pi, which just selects every other note on the
-    # scale. Our behavior seems more sensible.
+    # the scale. Outside of diatonic scales this behavior differs quite a bit
+    # from Sonic Pi, which just selects every other note on the scale. Our
+    # behavior seems more sensible.
     maj3 = Interval.new(:M3)
     min3 = Interval.new(:m3)
     notes = [root]
@@ -317,9 +317,9 @@ class Chord
     # piggyback on chord voicing.
     chord = Chord.new(intervals)
 
-    # Note that since we may have wound up with fewer notes than
-    # `number_of_notes`, `invert` may now be > notes.length. Quite the edge
-    # case; I'm just going to take it down to the minimum.
+    # We may have wound up with fewer notes than `number_of_notes`, so `invert`
+    # may now be > notes.length. Quite the edge case; I'm just going to take it
+    # down to the minimum.
     invert = intervals.length - 1 if invert >= intervals.length
     chord.voice(root, voicing, invert: invert)
   end

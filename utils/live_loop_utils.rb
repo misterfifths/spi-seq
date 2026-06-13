@@ -66,9 +66,9 @@ module SpiSeq
 end
 
 # Mutes or unmutes the given `live_loop`, assuming it was created by
-# {mutable_live_loop}, {cc_mutable_live_loop}, or {track_live_loop}. Note that
-# muting is not instantaneous; see the description of {mutable_live_loop} for
-# details.
+# {mutable_live_loop}, {cc_mutable_live_loop}, or {track_live_loop}. Muting is
+# not instantaneous; it takes effect after a cycle of the live loop's block. See
+# {mutable_live_loop} for details.
 # @param loop_name [Symbol] The name of the target live loop.
 # @param mute [Boolean] Whether to mute or unmute the loop.
 # @return [void]
@@ -92,12 +92,12 @@ end
 # Any additional named arguments (e.g. `sync` or `init`) to this function are
 # passed verbatim to the internal `live_loop`.
 #
-# Note that the arguments passed to the block differe from a normal `live_loop`.
-# Namely, the first argument is a boolean indicating whether the loop is muted.
+# The arguments passed to the block differe from a normal `live_loop`. Namely,
+# the first argument is a boolean indicating whether the loop is muted.
 #
-# Note that muting is not instantaneous. The block is only made aware of the
-# muted status the next time it executes, via its first argument. So, muting
-# will happen only between cycles of a loop, not in the middle of one.
+# Muting is not instantaneous. The block is only made aware of the muted status
+# the next time it executes, via its first argument. So, muting will happen only
+# between cycles of a loop, not in the middle of one.
 #
 # @param loop_name [Symbol] The name of the live loop.
 # @param start_muted [Boolean] The initial state of the muted flag.

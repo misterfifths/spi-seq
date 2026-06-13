@@ -19,19 +19,19 @@ end
 # they represent. That means you can add Intervals directly to {MIDINote}s to
 # obtain the note that is an interval away from another.
 #
-# Note that performing arithmetic on Intervals results in instances with a
-# default quality (major/minor/perfect when possible, but diminished for 6
-# semitones). For instance, adding 1 to a major 2nd results in a minor 3rd,
-# not an augmented 2nd.
+# Performing arithmetic on Intervals results in instances with a default quality
+# (major/minor/perfect when possible, but diminished for 6 semitones). For
+# instance, adding 1 to a major 2nd results in a minor 3rd, not an augmented
+# 2nd.
 #
 # Intervals that span more than one octave (i.e. those with a number > 8, or
 # semitones > 12) are called compound. You can decompose such intervals into
 # a number of octaves ({#octave_span}) and the simple interval they represent on
 # top of that number of octaves ({#simple_interval}). When possible,
 # `simple_interval` will have the same quality as the compound interval it
-# belongs to. Note that intervals that are a multiple of an octave (e.g. P8 or
-# A7) will have a `simple_interval` of P1, even if they are not technically
-# compound.
+# belongs to. As a special case, intervals that are a multiple of an octave
+# (e.g. P8 or A7) will have a `simple_interval` of P1, even if they are not
+# technically compound.
 #
 # Intervals can be compared to:
 # - Other Interval instances
@@ -150,8 +150,9 @@ class Interval < Numeric
   # diminished, minor, major, perfect and augmented, respectively.
   #
   # If given, quality must be one of `:major`, `:minor`, `:perfect`, `:aug`, or
-  # `:dim`. Note that not every combination number/size and quality is valid -
-  # e.g. there is no such thing as a major 5th interval.
+  # `:dim`. Of course, not every combination number/size and quality is valid -
+  # e.g. there is no such thing as a major 5th interval. This method will raise
+  # if given an invalid quality.
   #
   # This method is aliased to {I} for convenience.
   #
@@ -483,8 +484,7 @@ end
 
 
 # Some overrides so comparison works when a string or symbol is on the left.
-# Note that comparison to left-hand side numerics already works because the
-# Interval will be coerced automatically.
+# We don't need to do anything about Numeric; that already works via coercion.
 # @private
 module IntervalComparisonPatches
   SpiSeq::Utils.define_reverse_comparison_ops(self, Interval)

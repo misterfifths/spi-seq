@@ -5,8 +5,8 @@
 # hits over `length` many beats. The array contains booleans, true for hits and
 # false for rests.
 #
-# This is analogous to Sonic Pi's `spread` function, though note that it may
-# not return hits in the exact order that Sonic Pi does.
+# This is analogous to Sonic Pi's `spread` function, although it does not always
+# return hits in the same order.
 #
 # If `pulses` is > 0, the first element of the result will always be true. If
 # `pulses` >= `length`, all values in the result will be true. If `pulses` is
@@ -31,10 +31,9 @@ def euclid(pulses, length, rotate: 0)
 
   res = []
   length.times do |i|
-    # See the "Stateless One-Liners" section here:
-    # https://paulbatchelor.github.io/sndkit/euclid/
-    # Though note that we are using a different definition of rotation - we
-    # rotate so the nth hit is in the first slot, like Sonic Pi.
+    # See the "Stateless One-Liners" section here: https://paulbatchelor.github.io/sndkit/euclid/
+    # But we are using a different definition of rotation - we rotate so the nth
+    # hit is in the first slot, like Sonic Pi.
     res << ((pulses * i) % length < pulses)
   end
 

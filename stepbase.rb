@@ -19,7 +19,7 @@ require_relative "prob"
 # or shifts the {Step#gate gate} or {Step#vel velocity}. For {CCStep}s it
 # applies an offset to the {CCStep#value value} that will be sent for the CC.
 #
-# Note that **steps are immutable**. The mutation methods provided here, like
+# **Steps are immutable**. The mutation methods provided here, like
 # {#with_prob}, return new steps that have all the same attributes as the
 # receiver, with just the described change.
 #
@@ -42,9 +42,10 @@ class StepBase
   # no accumulation occurs.
   #
   # The accumulated value for a step is used in different ways depending on the
-  # subclass. For {Step}s, it applies a semitone offset to the {Step#note note};
-  # for {CCStep}s it applies an offset to the {CCStep#value value} that will be
-  # sent for the CC.
+  # subclass. For {Step}s, it applies a semitone offset to the {Step#note note},
+  # or a shift to the {Step#vel velocity} or {Step#gate gate}; for {CCStep}s it
+  # applies an offset to the {CCStep#value value} that will be sent for the CC.
+  # {#accum_target} determines what parameter accumulation will effect.
   #
   # @return [Number]
   attr_reader :accum_delta
@@ -81,10 +82,10 @@ class StepBase
   attr_reader :accum_mode
 
   # A predicate that determines whether accumulation will trigger when the step
-  # does, or nil if it should always trigger. Note that accumulation will only
-  # potentially trigger when the step itself does. That is, the overall step
-  # {#prob} (if any) is a prerequisite for the evaluation of `accum_prob` and
-  # the application of accumulation at all.
+  # does, or nil if it should always trigger. Accumulation can only trigger when
+  # the step itself does. That is, the overall step {#prob} (if any) is a
+  # prerequisite for the evaluation of `accum_prob` and the application of
+  # accumulation at all.
   # @see #prob
   # @return [Prob, nil]
   attr_reader :accum_prob
@@ -109,10 +110,10 @@ class StepBase
   #
   # With the `accum_*` parameters, a step may be configured so that it varies
   # by some accumulating amount each time it triggers. The actual effect of the
-  # accumulation varies by subclass. For {Step}s, it applies a semitone offset
-  # to the {Step#note note}, or shifts the {Step#gate gate} or
-  # {Step#vel velocity}. For {CCStep}s it applies an offset to the
-  # {CCStep#value value} that will be sent for the CC.
+  # accumulation varies by subclass and is determined by `accum_target`. For
+  # {Step}s, accumulation applies a semitone offset to the {Step#note note}, or
+  # shifts the {Step#gate gate} or {Step#vel velocity}. For {CCStep}s it applies
+  # an offset to the {CCStep#value value} that will be sent for the CC.
   #
   # You may find it more convenient to set the accumulation parameters after
   # constructing a step with the {#accum} method.
@@ -135,8 +136,8 @@ class StepBase
   #   `prob`.
   # @param accum_target [Symbol, nil] The target for accumulation. If nil,
   #   defaults to `:note` for {Step}s and `:value` for {CCStep}s. `:value` is
-  #   the only valid value for CCSteps. You may pass `:note`, `:gate`, or `:vel`
-  #   for Steps, to direct accumulation to the corresponding attribute.
+  #   the only valid option for CCSteps. You may pass `:note`, `:gate`, or
+  #   `:vel` for Steps, to direct accumulation to the corresponding attribute.
   def initialize(prob: nil,
                  accum_delta: 0, accum_max: 12, accum_min: 0,
                  accum_mode: :wrap, accum_prob: nil, accum_target: nil)
@@ -156,8 +157,8 @@ class StepBase
     raise ArgumentError, "invalid accum_target #{@accum_target}" unless valid_accum_targets.include?(@accum_target)
   end
 
-  # Returns a new step with the given accumulation parameters set. Note that
-  # parameters that are not provided will be set to default values.
+  # Returns a new step with the given accumulation parameters set. Parameters
+  # that are not provided will be set to default values.
   # @param delta [Integer] See {StepBase#accum_delta}.
   # @param max [Integer] See {StepBase#accum_max}.
   # @param min [Integer] See {StepBase#accum_min}.

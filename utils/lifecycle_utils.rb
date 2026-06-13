@@ -51,8 +51,8 @@ def one_time_init(key = :default)
 end
 
 # Registers a block to execute when Sonic Pi's execution is stopped or when
-# quitting the application. Note that the work you do in the block should be
-# very quick or you will delay the stop operation or shutdown.
+# quitting the application. The work you do in the block should be very quick or
+# you will delay the stop operation or shutdown.
 #
 # If you need more than one stop hook, you must give them each different
 # `name`s; calling this function a second time with the same name will remove

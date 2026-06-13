@@ -53,9 +53,9 @@ class CCPlayer < PlayerBase
   end
 
   def play_steps(steps)
-    # Note that, unlike in Player, there's no need to do a deduplication pass on
-    # these steps because that will already have happened via CCTrack's
-    # `gridify`, and accumulation effects the CC value, not the number.
+    # Unlike in Player, there's no need to do a deduplication pass on these
+    # steps because that will already have happened via CCTrack's `gridify`, and
+    # accumulation effects the CC value, not the number.
 
     step_debug_strings = []
 

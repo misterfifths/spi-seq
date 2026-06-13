@@ -21,16 +21,16 @@ end
 # require "~/spi-seq/tests/run"
 # run_tests("~/spi-seq-tests.log")
 #
-# Note that you should *not* require `core.rb` in this case, or coverage will
-# miss quite a few files.
+# You should *not* require `core.rb` in this case, or coverage will miss quite a
+# few files.
 #
-# Note that since Sonic Pi maintains a single persistent Ruby context per
-# launch, if you edit a test or any Ruby file you will have to quit and reopen
-# Sonic Pi for the the changes to take effect.
+# Since Sonic Pi maintains a single persistent Ruby context per launch, if you
+# edit a test or any Ruby file you must quit and reopen Sonic Pi for the the
+# changes to take effect.
 #
-# Also note that some tests may overwrite the implementations of Sonic Pi
-# methods and thus break playback from spi-seq. You will need to restart Sonic
-# Pi after running the tests to return to a usable environment.
+# Also, some tests may overwrite the implementations of Sonic Pi methods and
+# thus break playback from spi-seq. You will need to restart Sonic Pi after
+# running the tests to return to a usable environment.
 
 def run_tests(output_path)
   require "test/unit/collector/dir"

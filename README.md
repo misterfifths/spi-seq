@@ -226,7 +226,7 @@ t = T[
 
 That will play a C4, then a C3 and a C2, then, since that's the minimum accumulation of -24 and the mode is `:reverse`, the delta is effectively negated and the following cycle will play a C3. Then a C4 again, a C5, and a C6. The C6 is the max accumulation, so the delta is negated again and the following cycle will play a C5, and so on.
 
-Note that accumulation can have its own probability, independent of the step to which it belongs. For instance, take this track:
+Accumulation can have its own probability, independent of the step to which it belongs. For instance, take this track:
 
 ```ruby
 t = T[
@@ -374,7 +374,7 @@ Here we did not need the `cycle` parameter, so we just omitted it from the block
 
 Just as you might use live-coding to add or stop `live_loops`, you can do the same with `track_live_loop`s. However, `track_live_loop`s can also be muted or unmuted after a cycle by other means. In these examples, we'll look at MIDI CC control, but you can also manually handle muting with the `mute_live_loop` function.
 
-You can add the `cc` keyword parameter to a `track_live_loop` to specify that a CC should control whether it is muted. Sending a value of 0 for that CC will mute the track, and any other value will unmute it. Note that muting only takes effect *after a cycle of the track*; it will not abruptly make the track inaudible. Unmuting is the same; it will only happen in intervals of the track's duration, even though the track is not audible.
+You can add the `cc` keyword parameter to a `track_live_loop` to specify that a CC should control whether it is muted. Sending a value of 0 for that CC will mute the track, and any other value will unmute it. Muting only takes effect *after a cycle of the track*; it will not abruptly make the track inaudible. Unmuting is the same; it will only happen in intervals of the track's duration, even though the track is not audible.
 
 By default, a `track_live_loop` with a `cc` parameter will listen for the CC you specify from any MIDI port and any MIDI channel. To specify a specific device, use the `cc_port` and `cc_channel` arguments or set a default with the `use_cc_control_defaults` method.
 
@@ -409,7 +409,7 @@ track_live_loop :bassline, bassline, fade_in: true, fade_out: :quad, cc: 110, st
 
 Necessarily, fadeouts happen on the cycle *after* the track is muted. That is, when a track is set to fade out, it will play for one extra cycle after it's muted, during which it will fade out.
 
-Note that fades take effect by setting the velocity of steps in each slot to particular values along a curve. That means that if your track has a long granularity (e.g. whole notes) and relatively few slots, the fade will not be gradual at all. In that case you may want to look into the `expand` method to attempt to change the granularity of your track while keeping it sounding the same.
+Fades are implemented by setting the velocity of steps in each slot to particular values along a curve. That means that if your track has a long granularity (e.g. whole notes) and relatively few slots, the fade will not be gradual at all. In that case you may want to look into the `expand` method to attempt to change the granularity of your track while keeping it sounding the same.
 
 ### Fill mode
 
