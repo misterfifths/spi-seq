@@ -419,16 +419,20 @@ end
 # Some overrides so comparison works when a string or symbol is on the left.
 # We don't need to do anything about Numeric; that already works via coercion.
 # @private
-module MIDINoteComparisonPatches
-  SpiSeq::Utils.define_reverse_comparison_ops(self, MIDINote)
+module SpiSeq
+  module MonkeyPatches
+    module MIDINoteComparison
+      SpiSeq::Utils.define_reverse_comparison_ops(self, MIDINote)
+    end
+  end
 end
 
 # @private
 class Symbol
-  prepend MIDINoteComparisonPatches
+  prepend SpiSeq::MonkeyPatches::MIDINoteComparison
 end
 
 # @private
 class String
-  prepend MIDINoteComparisonPatches
+  prepend SpiSeq::MonkeyPatches::MIDINoteComparison
 end

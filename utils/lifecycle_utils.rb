@@ -89,21 +89,25 @@ end
 # internals and hopping between the special user threads it uses. This way we
 # can at least easily execute the hooks in a sensible thread context.
 # @private
-module ThreadKillPatch
-  def kill
-    # If there's a magic Thread::Queue thread-local variable, signal it and
-    # join; we hope the thread exits quickly after we push to the queue.
-    kill_queue = self[:__kill_queue]
-    if kill_queue.nil?
-      super
-    else
-      kill_queue << true
-      join
+module SpiSeq
+  module MonkeyPatches
+    module ThreadKill
+      def kill
+        # If there's a magic Thread::Queue thread-local variable, signal it and
+        # join; we hope the thread exits quickly after we push to the queue.
+        kill_queue = self[:__kill_queue]
+        if kill_queue.nil?
+          super
+        else
+          kill_queue << true
+          join
+        end
+      end
     end
   end
 end
 
 # @private
 class Thread
-  prepend ThreadKillPatch
+  prepend SpiSeq::MonkeyPatches::ThreadKill
 end

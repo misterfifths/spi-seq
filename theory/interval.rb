@@ -486,16 +486,20 @@ end
 # Some overrides so comparison works when a string or symbol is on the left.
 # We don't need to do anything about Numeric; that already works via coercion.
 # @private
-module IntervalComparisonPatches
-  SpiSeq::Utils.define_reverse_comparison_ops(self, Interval)
+module SpiSeq
+  module MonkeyPatches
+    module IntervalComparison
+      SpiSeq::Utils.define_reverse_comparison_ops(self, Interval)
+    end
+  end
 end
 
 # @private
 class Symbol
-  prepend IntervalComparisonPatches
+  prepend SpiSeq::MonkeyPatches::IntervalComparison
 end
 
 # @private
 class String
-  prepend IntervalComparisonPatches
+  prepend SpiSeq::MonkeyPatches::IntervalComparison
 end
