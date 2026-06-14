@@ -440,18 +440,25 @@ class Scale
     MIDINote.new(note).snap(self)
   end
 
+  private def full_scale?
+    @tonic.octave == -2 && @num_octaves == 12 && @clamp_to_midi
+  end
+
   # A string representation of this Scale.
   # @return [String]
   def to_s
+    return "<Scale full #{tonic.pitch_class} #{@name}>" if full_scale?
+
     clamp_str = @clamp_to_midi ? ", clamped" : ""
     "<Scale #{@tonic} #{@name}, #{@num_octaves} octaves#{clamp_str}>"
   end
   alias to_str to_s
+  alias inspect to_s
 
   # A string of the Ruby code representation of this scale.
   # @return [String]
   def repr
-    return "Scale.full_scale(:#{@tonic.pitch_class}, :#{@name})" if @tonic.octave == -2 && @num_octaves == 12 && @clamp_to_midi
+    return "Scale.full_scale(:#{@tonic.pitch_class}, :#{@name})" if full_scale?
 
     ctor_args = {}
     ctor_args[:num_octaves] = @num_octaves.to_s unless @num_octaves == 1

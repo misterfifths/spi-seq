@@ -163,15 +163,15 @@ class StepTest < Test::Unit::TestCase
   def assert_repr(s)
     roundtrip = eval(s.repr)  # rubocop:disable Security/Eval
 
-    # A completely default step should just have a note symbol as its repr.
-    if s.vel == 127 && s.gate == 1 && s.prob.nil? && s.accum_delta == 0
-      assert_equal roundtrip, s.note.to_sym
-      return
-    end
-
     assert_attrs roundtrip, s.note, s.vel, s.gate, s.prob
     assert_accum roundtrip, s.accum_delta, min: s.accum_min, max: s.accum_max,
                             mode: s.accum_mode, prob: s.accum_prob, target: s.accum_target
+
+    # A completely default step should just have a note symbol as its short repr
+    if s.vel == 127 && s.gate == 1 && s.prob.nil? && s.accum_delta == 0
+      roundtrip = eval(s.repr(short: true))  # rubocop:disable Security/Eval
+      assert_equal roundtrip, s.note.to_sym
+    end
   end
 
   def test_repr

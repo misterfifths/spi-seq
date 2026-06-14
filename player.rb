@@ -314,7 +314,7 @@ class Player < PlayerBase
     s = "["
     steps.each_with_index do |step, i|
       s += ", " if i > 0
-      s += step.repr(safe: true)
+      s += step.repr(short: true, safe: true)
 
       note, gate, vel = from_prev ? prev_attrs(step) : effective_attrs(step)
       next if step.note == note && step.gate == gate && step.vel == vel

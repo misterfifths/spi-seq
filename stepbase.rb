@@ -224,14 +224,20 @@ class StepBase
   #   cannot be entirely back to Ruby code. This can happen if, for example,
   #   a step has a {Prob.custom custom} {#prob probability}. In that case,
   #   the result of this function will not be entirely valid Ruby code.
+  # @param short [Boolean] If true, a highly abbreviated version of the step
+  #   will be returned if possible. For instance, for {Step}s with the default
+  #   properties, returns just a representation of the note. In this case, the
+  #   returned string will not evaluate to an instance of the step class.
   # @param float_digits [Integer] The number of digits to show after the decimal
   #   point for floating point numbers.
   # @return [String]
-  def repr(safe: false, float_digits: 2)
+  def repr(safe: false, short: false, float_digits: 2)
     stringify = lambda do |val|
       if val.respond_to?(:repr)
         if val.is_a?(Prob)
           val.repr(safe: safe)
+        elsif val.is_a?(MIDINote)
+          val.repr(short: true)
         else
           val.repr
         end
@@ -249,8 +255,7 @@ class StepBase
     end
 
     args = ctor_args.map do |arg_name|
-      raw_val = send(arg_name)
-      raw_val.respond_to?(:repr) ? raw_val.repr : raw_val.to_s
+      stringify.call(send(arg_name))
     end
 
     kwargs = {}
@@ -275,7 +280,7 @@ class StepBase
     # Assume that if the initializer accepts only one positional argument, and
     # that is enough to define the instance, that it is an acceptable shortcut
     # for the step. E.g. `Step.new(:c4)` is representable by just `:c4`.
-    return args[0] if args.length == 1 && kwargs.empty? && @accum_delta == 0
+    return args[0] if short && args.length == 1 && kwargs.empty? && @accum_delta == 0
 
     res = "#{repr_ctor_method}("
 
@@ -304,6 +309,8 @@ class StepBase
   def inspect
     repr(safe: true)
   end
+  alias to_s inspect
+  alias to_str inspect
 
   # @private
   def ==(other)

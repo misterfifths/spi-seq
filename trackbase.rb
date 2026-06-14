@@ -388,9 +388,9 @@ class TrackBase
       if slot.empty?
         ":r"
       elsif slot.length == 1
-        slot[0].repr(safe: safe)
+        slot[0].repr(short: true, safe: safe)
       else
-        "[" + slot.map { |step| step.repr(safe: safe) }.join(", ") + "]"  # rubocop:disable Style/StringConcatenation
+        "[" + slot.map { |step| step.repr(short: true, safe: safe) }.join(", ") + "]"  # rubocop:disable Style/StringConcatenation
       end
     end
 
@@ -429,6 +429,8 @@ class TrackBase
   def inspect
     repr(safe: true)
   end
+  alias to_s inspect
+  alias to_str inspect
 
   # Returns a detailed string describing the track and its steps.
   # @return [String]

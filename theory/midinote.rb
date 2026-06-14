@@ -384,9 +384,13 @@ class MIDINote < Numeric
   end
 
   # Returns a Ruby representation of this note.
+  # @param short [Boolean] If true, the returned string will just be the symbol
+  #   for the note name and will not include a call to {N}. In this case, the
+  #   returned string will not evaluate to an instance of MIDINote.
   # @return [String]
-  def repr
-    ":#{@sym}"
+  def repr(short: false)
+    return ":#{@sym}" if short
+    "N(:#{@sym})"
   end
 
 

@@ -751,6 +751,7 @@ class Chord
     "<Chord #{int_names}>"
   end
   alias to_str to_s
+  alias inspect to_s
 end
 
 

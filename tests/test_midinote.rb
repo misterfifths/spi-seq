@@ -371,21 +371,29 @@ class MIDINoteTest < Test::Unit::TestCase
     assert_equal N(:bs4).snap_to_scale(:c, :major), :c5
   end
 
+  def assert_repr(val)
+    n = N(val)
+
+    assert_equal n, eval(n.repr)  # rubocop:disable Security/Eval
+
+    # Short repr should be the same as to_sym
+    assert_equal n.to_sym, eval(n.repr(short: true))  # rubocop:disable Security/Eval
+  end
+
   def test_repr
     # repr should be the same as to_sym.
 
     [:cs4, :Cs4, :CS4, :db4, :Db4, :DB4,
      "cs4", "Cs4", "CS4", "db4", "Db4", "DB4",
      61].each do |val|
-      n = N(val)
-      assert_equal n.repr, ":#{n.to_sym}"
+      assert_repr val
     end
 
     # Octave wrap-around
-    assert_equal N(:cb4).repr, ":b3"
-    assert_equal N(:bs4).repr, ":c5"
-    assert_equal N(:cbb4).repr, ":as3"
-    assert_equal N(:bss4).repr, ":cs5"
+    assert_repr :cb4
+    assert_repr :bs4
+    assert_repr :cbb4
+    assert_repr :bss4
   end
 
   def test_names
