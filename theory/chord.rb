@@ -21,7 +21,8 @@ class Chord
   # aren't in Enumerable.
   def_delegators :@intervals,
                  :each, :[], :slice, :length, :size, :last, :to_a, :to_ary,
-                 :values_at, :empty?, :each_index, :fetch, :index, :rindex
+                 :values_at, :empty?, :each_index, :fetch, :index, :rindex,
+                 :==, :eql?, :hash
 
 
   ABBREV_DEFS = {
