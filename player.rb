@@ -17,7 +17,7 @@ module SpiSeq
 end
 
 
-# @!group Playback and live loops
+# @!group Default settings
 
 # Set global default {Player} and {track_live_loop} behaviors. Removes any
 # previous defaults.

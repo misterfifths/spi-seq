@@ -71,6 +71,36 @@ module SpiSeq
 end
 
 
+# @!group Default settings
+
+# Set global default MIDI parameters to use when watching for incoming CC
+# messages. Such events are used to control various features, such as muting
+# live loops (e.g. those made from {cc_mutable_live_loop} and
+# {track_live_loop}), toggling fill mode in {track_live_loop}, and controlling
+# recording in {Track.record}.
+# @param channel [Integer, String, nil] The default MIDI channel to watch for
+#   CC events. If nil, defaults to all channels (i.e. "*").
+# @param port [String, nil] The MIDI device to watch for CC events. If nil, also
+#   falls back to "*".
+# @return [void]
+# @see current_cc_control_defaults
+def use_cc_control_defaults(port: nil, channel: nil)
+  defaults = {}
+  defaults[:port] = port unless port.nil?
+  defaults[:channel] = channel unless channel.nil?
+  SpiSeq::Defaults.cc_control_defaults = defaults.freeze
+end
+
+# Returns the current CC control defaults as set by {use_cc_control_defaults},
+# or an empty hash if no defaults have been set.
+# @return [Hash{Symbol => Object}]
+def current_cc_control_defaults
+  SpiSeq::Defaults.cc_control_defaults || {}
+end
+
+# @!endgroup
+
+
 # @!group Playback and live loops
 
 # Mutes or unmutes the given `live_loop`, assuming it was created by
@@ -130,31 +160,6 @@ def mutable_live_loop(loop_name, start_muted: false, **kwargs, &block)
 
   SpiSeq::LiveLoops.register(loop_name, ll)
   ll
-end
-
-# Set global default MIDI parameters to use when watching for incoming CC
-# messages. Such events are used to control various features, such as muting
-# live loops (e.g. those made from {cc_mutable_live_loop} and
-# {track_live_loop}), toggling fill mode in {track_live_loop}, and controlling
-# recording in {Track.record}.
-# @param channel [Integer, String, nil] The default MIDI channel to watch for
-#   CC events. If nil, defaults to all channels (i.e. "*").
-# @param port [String, nil] The MIDI device to watch for CC events. If nil, also
-#   falls back to "*".
-# @return [void]
-# @see current_cc_control_defaults
-def use_cc_control_defaults(port: nil, channel: nil)
-  defaults = {}
-  defaults[:port] = port unless port.nil?
-  defaults[:channel] = channel unless channel.nil?
-  SpiSeq::Defaults.cc_control_defaults = defaults.freeze
-end
-
-# Returns the current CC control defaults as set by {use_cc_control_defaults},
-# or an empty hash if no defaults have been set.
-# @return [Hash{Symbol => Object}]
-def current_cc_control_defaults
-  SpiSeq::Defaults.cc_control_defaults || {}
 end
 
 # Starts a new `live_loop` that can be muted by a MIDI CC message. A value of 0

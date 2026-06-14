@@ -17,7 +17,7 @@ module SpiSeq
 end
 
 
-# @!group Steps and tracks
+# @!group Default settings
 
 # Set global track-related behaviors.
 # @param strict_track_merging [Boolean] If true, tracks with mismatched
