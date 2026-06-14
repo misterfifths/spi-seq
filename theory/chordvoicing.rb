@@ -6,15 +6,6 @@ require_relative "interval"
 require_relative "midinote"
 require_relative "scale"
 
-# @!group Music theory
-
-# (see Chord.voiced)
-def C(root, name, voicing = :closed, num_octaves: 1, invert: 0)
-  Chord.voiced(root, name, voicing, num_octaves: num_octaves, invert: invert)
-end
-
-# @!endgroup
-
 # This documentation should live in chord.rb, but I couldn't convince yard to
 # parse that file first.
 
@@ -421,3 +412,14 @@ class Chord
     notes
   end
 end
+
+
+# @!group Music theory
+
+# (see Chord.voiced)
+# An alias for {Chord.voiced}.
+def C(root, name, voicing = :closed, num_octaves: 1, invert: 0)
+  Chord.voiced(root, name, voicing, num_octaves: num_octaves, invert: invert)
+end
+
+# @!endgroup

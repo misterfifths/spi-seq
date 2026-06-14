@@ -3,15 +3,6 @@
 require_relative "stepbase"
 require_relative "theory/midinote"
 
-# @!group Steps and tracks
-# An alias for {Step#initialize Step.new}.
-# @return [Step]
-def S(*args, **kwargs)
-  Step.new(*args, **kwargs)
-end
-# @!endgroup
-
-
 # TODO: legato?
 
 
@@ -239,3 +230,14 @@ class Step < StepBase
     "S"
   end
 end
+
+
+# @!group Steps and tracks
+
+# An alias for {Step#initialize Step.new}.
+# @return [Step]
+def S(*args, **kwargs)
+  Step.new(*args, **kwargs)
+end
+
+# @!endgroup

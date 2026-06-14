@@ -2,14 +2,6 @@
 
 require_relative "midinote"
 
-# @!group Music theory
-# An alias for {Arp.arpeggiate}.
-# @return [Array<MIDINote>]
-def arp(*args, **kwargs)
-  Arp.arpeggiate(*args, **kwargs)
-end
-# @!endgroup
-
 # A simple arpeggiator. See {.arpeggiate} for details.
 module Arp
   # An arpeggiation direction that returns notes in increasing order. For
@@ -318,3 +310,14 @@ module Arp
 
   private_class_method :peak_indexes
 end
+
+
+# @!group Music theory
+
+# An alias for {Arp.arpeggiate}.
+# @return [Array<MIDINote>]
+def arp(*args, **kwargs)
+  Arp.arpeggiate(*args, **kwargs)
+end
+
+# @!endgroup

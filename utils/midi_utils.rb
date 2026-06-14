@@ -4,8 +4,6 @@ require_relative "../utils/internal_utils"
 require_relative "../external/midi"
 require_relative "../external/sync"
 
-# @!group MIDI utilities
-
 # @private
 module SpiSeq
   module MIDI
@@ -34,6 +32,9 @@ module SpiSeq
     end
   end
 end
+
+
+# @!group MIDI utilities
 
 # Starts a `live_loop` named `loop_name` that sends MIDI clock beats for the
 # global BPM.

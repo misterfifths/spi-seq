@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # @!group Music theory
+
 # Returns an array representing a Euclidean rhythm that evenly spreads `pulses`
 # hits over `length` many beats. The array contains booleans, true for hits and
 # false for rests.
@@ -46,4 +47,3 @@ def euclid(pulses, length, rotate: 0)
 
   res
 end
-# @!endgroup

@@ -2,16 +2,6 @@
 
 require_relative "internal_utils"
 
-# @!group Music theory
-# An alias for {Interval.new}.
-# @param (see Interval.new)
-# @return [Interval]
-def I(name = nil, number: nil, size: nil, quality: nil)
-  Interval.new(name, number: number, size: size, quality: quality)
-end
-# @!endgroup
-
-
 # An interval between two notes, represented both by its traditional {#number}
 # and {#quality}, and its {#size} (i.e. the number of semitones).
 #
@@ -497,3 +487,14 @@ end
 class String
   prepend SpiSeq::MonkeyPatches::IntervalComparison
 end
+
+
+# @!group Music theory
+
+# (see Interval.new)
+# An alias for {Interval.new}.
+def I(name = nil, number: nil, size: nil, quality: nil)
+  Interval.new(name, number: number, size: size, quality: quality)
+end
+
+# @!endgroup

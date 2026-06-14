@@ -4,16 +4,6 @@ require "forwardable"
 require_relative "interval"
 require_relative "midinote"
 
-
-# @!group Music theory
-# An alias for {Scale#initialize Scale.new}.
-# @return [Scale]
-def SC(*args, **kwargs)
-  Scale.new(*args, **kwargs)
-end
-# @!endgroup
-
-
 # @private
 module SpiSeq
   module Utils
@@ -485,5 +475,16 @@ end
 # An alias for the {Scale} class since Sonic Pi already has a class with that
 # name. See also {SC}, an alias for the initializer.
 Sc = Scale
+
+# @!endgroup
+
+
+# @!group Music theory
+
+# An alias for {Scale#initialize Scale.new}.
+# @return [Scale]
+def SC(*args, **kwargs)
+  Scale.new(*args, **kwargs)
+end
 
 # @!endgroup

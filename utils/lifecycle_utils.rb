@@ -3,8 +3,6 @@
 require_relative "internal_utils"
 require_relative "../external/sync"
 
-# @!group Sonic Pi lifecycle utilities
-
 # @private
 module SpiSeq
   module Lifecycle
@@ -15,7 +13,34 @@ module SpiSeq
     self.one_time_init_keys = Set.new
     self.stop_hooks = {}
   end
+
+  # This is a bit of a sin but the alternative is some overriding of Sonic Pi
+  # internals and hopping between the special user threads it uses. This way we
+  # can at least easily execute the hooks in a sensible thread context.
+  module MonkeyPatches
+    module ThreadKill
+      def kill
+        # If there's a magic Thread::Queue thread-local variable, signal it and
+        # join; we hope the thread exits quickly after we push to the queue.
+        kill_queue = self[:__kill_queue]
+        if kill_queue.nil?
+          super
+        else
+          kill_queue << true
+          join
+        end
+      end
+    end
+  end
 end
+
+# @private
+class Thread
+  prepend SpiSeq::MonkeyPatches::ThreadKill
+end
+
+
+# @!group Sonic Pi lifecycle utilities
 
 # Executes its block the first time this sketch runs, and whenever it is
 # restarted after having been stopped. The block will not run if the sketch is
@@ -69,6 +94,7 @@ def on_stop(name = :default, &block)
 
   # Since we give this a name, Sonic Pi will only define it once.
   SpiSeq::External::Sync.in_thread(name: :__stop_hook_watcher) do
+    # See the monkey-patch above for details on this magic.
     kq = Thread::Queue.new
     Thread.current[:__kill_queue] = kq
     kq.pop
@@ -81,33 +107,4 @@ def on_stop(name = :default, &block)
       SpiSeq::Log.log("Stop hooks complete", "stop-hooks")
     end
   end
-end
-
-# @!endgroup
-
-# This is a bit of a sin but the alternative is some overriding of Sonic Pi
-# internals and hopping between the special user threads it uses. This way we
-# can at least easily execute the hooks in a sensible thread context.
-# @private
-module SpiSeq
-  module MonkeyPatches
-    module ThreadKill
-      def kill
-        # If there's a magic Thread::Queue thread-local variable, signal it and
-        # join; we hope the thread exits quickly after we push to the queue.
-        kill_queue = self[:__kill_queue]
-        if kill_queue.nil?
-          super
-        else
-          kill_queue << true
-          join
-        end
-      end
-    end
-  end
-end
-
-# @private
-class Thread
-  prepend SpiSeq::MonkeyPatches::ThreadKill
 end

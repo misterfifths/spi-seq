@@ -2,15 +2,6 @@
 
 require_relative "stepbase"
 
-# @!group Steps and tracks
-# An alias for {CCStep#initialize CCStep.new}.
-# @return [CCStep]
-def CC(*args, **kwargs)
-  CCStep.new(*args, **kwargs)
-end
-# @!endgroup
-
-
 # A CCStep represents a sequenceable MIDI CC event which can appear in slots in
 # the grid of a {CCTrack}. See the {StepBase} documentation for details about
 # steps in general, and their probability and accumulation mechanics.
@@ -122,3 +113,14 @@ class CCStep < StepBase
     "CC"
   end
 end
+
+
+# @!group Steps and tracks
+
+# An alias for {CCStep#initialize CCStep.new}.
+# @return [CCStep]
+def CC(*args, **kwargs)
+  CCStep.new(*args, **kwargs)
+end
+
+# @!endgroup

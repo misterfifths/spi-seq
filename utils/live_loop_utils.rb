@@ -6,11 +6,9 @@ require_relative "internal_utils"
 require_relative "../external/midi"
 require_relative "../external/sync"
 
-# @!group Playback and live loops
-
-# Helpers to track running live_loops and associate values with them.
 # @private
 module SpiSeq
+  # Helpers to track running live_loops and associate values with them.
   module LiveLoops
     # Record the live loop with the given name as being associated with `thread`
     # (which is the return value of `live_loop`). You must call this after
@@ -64,7 +62,16 @@ module SpiSeq
       @loop_mute_states[loop_name] || false
     end
   end
+
+  module Defaults
+    class << self
+      attr_accessor :cc_control_defaults
+    end
+  end
 end
+
+
+# @!group Playback and live loops
 
 # Mutes or unmutes the given `live_loop`, assuming it was created by
 # {mutable_live_loop}, {cc_mutable_live_loop}, or {track_live_loop}. Muting is
@@ -123,15 +130,6 @@ def mutable_live_loop(loop_name, start_muted: false, **kwargs, &block)
 
   SpiSeq::LiveLoops.register(loop_name, ll)
   ll
-end
-
-# @private
-module SpiSeq
-  module Defaults
-    class << self
-      attr_accessor :cc_control_defaults
-    end
-  end
 end
 
 # Set global default MIDI parameters to use when watching for incoming CC

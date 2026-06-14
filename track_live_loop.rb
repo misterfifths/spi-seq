@@ -96,6 +96,7 @@ module SpiSeq
   end
 end
 
+
 # @!group Playback and live loops
 
 # Creates a `live_loop` that plays a track.

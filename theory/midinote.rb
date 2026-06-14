@@ -3,16 +3,6 @@
 require_relative "scale"
 require_relative "internal_utils"
 
-# @!group Music theory
-# An alias for {MIDINote.new}.
-# @param note [MIDINote, String, Symbol, Integer]
-# @return [MIDINote]
-def N(note)
-  MIDINote.new(note)
-end
-# @!endgroup
-
-
 # Represents a note, particularly the sort understood by MIDI devices.
 #
 # You should not need to manually make instances of MIDINote very often. Classes
@@ -88,9 +78,10 @@ class MIDINote < Numeric
   # Acceptable strings and symbols are of the form "(pitch class)(octave)". The
   # pitch class is "a" - "g", with an optional suffix of "b" or "f" for flats
   # or "s" for sharps. The octave is an integer. Case is ignored, but will be
-  # standardized to lower for {#pitch_class}, {#to_s}, and {#to_sym}.
-  # Accidentals are normalized to a natural (when possible) or a sharp. For
-  # example, `"Cs3"`, `:df4`, `:g9`, and `"c-1"` are all valid arguments.
+  # standardized to lower for {MIDINote#pitch_class}, {MIDINote#to_s}, and
+  # {MIDINote#to_sym}. Accidentals are normalized to a natural (when possible)
+  # or a sharp. For example, `"Cs3"`, `:df4`, `:g9`, and `"c-1"` are all valid
+  # arguments.
   #
   # The octave number may be omitted on strings and symbols; the default is
   # octave 4.
@@ -436,3 +427,14 @@ end
 class String
   prepend SpiSeq::MonkeyPatches::MIDINoteComparison
 end
+
+
+# @!group Music theory
+
+# (see MIDINote.new)
+# An alias for {MIDINote.new}.
+def N(note)
+  MIDINote.new(note)
+end
+
+# @!endgroup

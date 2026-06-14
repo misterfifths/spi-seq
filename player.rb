@@ -7,8 +7,6 @@ require_relative "external/midi"
 require_relative "external/sync"
 require_relative "external/synth"
 
-# @!group Playback and live loops
-
 # @private
 module SpiSeq
   module Defaults
@@ -17,6 +15,9 @@ module SpiSeq
     end
   end
 end
+
+
+# @!group Playback and live loops
 
 # Set global default {Player} and {track_live_loop} behaviors. Removes any
 # previous defaults.

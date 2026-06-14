@@ -7,8 +7,6 @@ require_relative "theory/notelength"
 require_relative "trackbase_partitions"
 require_relative "utils/internal_utils"
 
-# @!group Steps and tracks
-
 # @private
 module SpiSeq
   module Defaults
@@ -17,6 +15,9 @@ module SpiSeq
     end
   end
 end
+
+
+# @!group Steps and tracks
 
 # Set global track-related behaviors.
 # @param strict_track_merging [Boolean] If true, tracks with mismatched
@@ -902,7 +903,7 @@ class TrackBase
   alias shr right
 
 
-  # @!group Mutating slots
+  ## @!group Mutating slots
 
   # Return a new track, replacing each slot in this track with the result of the
   # given block.

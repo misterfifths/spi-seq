@@ -806,7 +806,7 @@ class Track < TrackBase
   end
 
 
-  # @!group Moving Step attributes along a curve
+  ## @!group Moving Step attributes along a curve
 
   # Returns a new Track where each step's {Step#gate gate} is replaced with the
   # result of `curve_func`.
