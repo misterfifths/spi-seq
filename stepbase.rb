@@ -172,7 +172,6 @@ class StepBase
     mutate(accum_delta: delta, accum_min: min, accum_max: max,
            accum_mode: mode, accum_prob: prob, accum_target: target)
   end
-
   alias with_accum accum
 
   # Returns a new step with all accumulation parameters removed.
@@ -180,7 +179,6 @@ class StepBase
   def without_accum
     accum(0)
   end
-
   alias clear_accum without_accum
 
   # Returns a new step with the given {#prob probability}. Non-{Prob} values
@@ -198,7 +196,6 @@ class StepBase
   def without_prob
     @prob.nil? ? self : with_prob(nil)
   end
-
   alias clear_prob without_prob
 
   # Returns whether this step should play in the given cycle of playback, with
@@ -318,7 +315,6 @@ class StepBase
 
     true
   end
-
   alias eql? ==
 
   # @private

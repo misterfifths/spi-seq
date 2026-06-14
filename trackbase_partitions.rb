@@ -165,7 +165,6 @@ class TrackBase
       t
     end
   end
-
   alias filter_slots select_slots
 
   # Returns a new track excluding certain slots from this one.
@@ -228,7 +227,6 @@ class TrackBase
       t
     end
   end
-
   alias drop_slots reject_slots
 
   # Returns a new track clearing select slots from this one.
@@ -300,7 +298,6 @@ class TrackBase
       t
     end
   end
-
   alias clear_slot clear_slots
   alias clear clear_slots
 
@@ -361,7 +358,6 @@ class TrackBase
       t
     end
   end
-
   alias clear_except clear_slots_except
   alias clear_slots_unless clear_slots_except
   alias clear_unless clear_slots_except
@@ -516,7 +512,6 @@ class TrackBase
     t, = partition_every(*gaps, skip_empty: skip_empty)
     t
   end
-
   alias filter_every select_every
 
   # Returns a new track excluding steps that are certain distances apart.
@@ -553,7 +548,6 @@ class TrackBase
     _, t = partition_every(*gaps, skip_empty: skip_empty)
     t
   end
-
   alias drop_every reject_every
 
   # Returns a new track clearing slots that are certain distances apart.
@@ -592,7 +586,6 @@ class TrackBase
     _, t = partition_every(*gaps, drop: false, skip_empty: skip_empty)
     t
   end
-
   alias dropout clear_every
 
   # Returns a new track clearing slots except those are certain distances apart.
@@ -707,7 +700,6 @@ class TrackBase
       extract_this
     end
   end
-
   alias grouped_partition partition_x_of_y
   alias gpartition partition_x_of_y
 
@@ -746,7 +738,6 @@ class TrackBase
     t, = partition_x_of_y(x, y, skip_empty: skip_empty)
     t
   end
-
   alias grouped_select select_x_of_y
   alias gselect select_x_of_y
   alias filter_x_of_y select_x_of_y
@@ -786,7 +777,6 @@ class TrackBase
     _, t = partition_x_of_y(x, y, skip_empty: skip_empty)
     t
   end
-
   alias grouped_reject reject_x_of_y
   alias greject reject_x_of_y
   alias drop_x_of_y reject_x_of_y
@@ -829,7 +819,6 @@ class TrackBase
     _, t = partition_x_of_y(x, y, drop: false, skip_empty: skip_empty)
     t
   end
-
   alias grouped_clear clear_x_of_y
   alias gclear clear_x_of_y
   alias grouped_droput reject_x_of_y
@@ -912,7 +901,6 @@ class TrackBase
   def partition_rand(p = 0.5, drop: true)
     partition_slots(drop: drop) { SpiSeq::Random.chance(p) }
   end
-
   alias rand_partition partition_rand
 
   # Returns a new track containing slots from this one with probability `p`.
@@ -950,7 +938,6 @@ class TrackBase
     t, = rand_partition(p)
     t
   end
-
   alias rand_select select_rand
   alias rselect select_rand
   alias rand_filter select_rand
@@ -989,7 +976,6 @@ class TrackBase
     _, t = rand_partition(p)
     t
   end
-
   alias rand_reject reject_rand
   alias rreject reject_rand
   alias rand_drop reject_rand
@@ -1030,7 +1016,6 @@ class TrackBase
     _, t = rand_partition(p, drop: false)
     t
   end
-
   alias rand_clear clear_rand
   alias rclear clear_rand
   alias rand_dropout clear_rand
@@ -1067,7 +1052,6 @@ class TrackBase
     t, = rand_partition(p, drop: false)
     t
   end
-
   alias clear_rand_except clear_except_rand
   alias rand_clear_except clear_except_rand
 end

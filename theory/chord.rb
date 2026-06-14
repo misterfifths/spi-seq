@@ -288,7 +288,6 @@ class Chord
 
     Chord.new(@intervals + other)
   end
-
   alias add append
   alias add_intervals append
   alias concat append
@@ -314,7 +313,6 @@ class Chord
     new_intervals.delete_at(i)
     Chord.new(new_intervals)
   end
-
   alias without remove
 
 
@@ -344,7 +342,6 @@ class Chord
   def sus4
     suspend(:P4)
   end
-
   alias sus sus4
 
   # Returns a new chord with the (major or minor) third replaced with a major
@@ -411,7 +408,6 @@ class Chord
   def flat_three
     flat(3)
   end
-
   alias flat3 flat_three
 
   # Returns a new Chord with the perfect fifth flattened to a diminished fifth.
@@ -420,7 +416,6 @@ class Chord
   def flat_five
     flat(5)
   end
-
   alias flat5 flat_five
 
   # Returns a new Chord with the major ninth flattened to a minor. Raises an
@@ -429,7 +424,6 @@ class Chord
   def flat_nine
     flat(9)
   end
-
   alias flat9 flat_nine
 
   # Returns a new Chord with the major third sharpened to an augmented third.
@@ -438,7 +432,6 @@ class Chord
   def sharp_three
     sharp(3)
   end
-
   alias sharp3 sharp_three
 
   # Returns a new Chord with the perfect fifth sharpened to an augmented fifth.
@@ -447,7 +440,6 @@ class Chord
   def sharp_five
     sharp(5)
   end
-
   alias sharp5 sharp_five
 
   # Returns a new Chord with the major ninth sharpened to an augmented ninth.
@@ -456,7 +448,6 @@ class Chord
   def sharp_nine
     sharp(9)
   end
-
   alias sharp9 sharp_nine
 
 

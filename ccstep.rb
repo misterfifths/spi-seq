@@ -77,7 +77,6 @@ class CCStep < StepBase
   def with_cc(new_cc)
     mutate(cc: new_cc)
   end
-
   alias with_cc_number with_cc
   alias with_number with_cc
   alias with_num with_cc
@@ -89,7 +88,6 @@ class CCStep < StepBase
   def with_value(new_value)
     mutate(value: new_value)
   end
-
   alias with_val with_value
 
   # Returns a new CCStep with a value equal to {#value} plus `shift`. If the
@@ -99,7 +97,6 @@ class CCStep < StepBase
   def shift_value(shift)
     mutate(value: @value + shift)
   end
-
   alias shift_val shift_value
 
   # @private

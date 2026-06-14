@@ -192,7 +192,6 @@ class Step < StepBase
   def transpose(shift)
     with_note(@note.transpose(shift))
   end
-
   alias shift_tone transpose
   alias t transpose
 

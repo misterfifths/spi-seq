@@ -210,7 +210,6 @@ class MIDINote < Numeric
     return self if shift == 0
     MIDINote.new(@number + shift)
   end
-
   alias shift_tone transpose
   alias t transpose
 
@@ -322,7 +321,6 @@ class MIDINote < Numeric
       end
     end
   end
-
   alias eql? ==
 
   # @private

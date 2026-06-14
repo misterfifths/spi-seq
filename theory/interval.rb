@@ -372,7 +372,6 @@ class Interval < Numeric
   def augmented?
     @quality == :aug
   end
-
   alias aug? augmented?
 
   # Returns true if this interval has diminished {#quality}.
@@ -380,7 +379,6 @@ class Interval < Numeric
   def diminished?
     @quality == :dim
   end
-
   alias dim? diminished?
 
 
@@ -409,7 +407,6 @@ class Interval < Numeric
       end
     end
   end
-
   alias eql? ==
 
   # @private

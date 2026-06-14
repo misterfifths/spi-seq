@@ -315,7 +315,6 @@ class TrackBase
   def num_slots
     @grid.length
   end
-
   alias length num_slots
 
   # The duration of the track in beats. That is, the length of the {#grid}
@@ -332,7 +331,6 @@ class TrackBase
   def empty?
     @grid.all? { |slot| slot.empty? }
   end
-
   alias all_rests? empty?
   alias rest? empty?
 
@@ -366,7 +364,6 @@ class TrackBase
   def nth_filled_slot(n)
     @grid[indexes_of_filled_slots[n]]
   end
-
   alias filled_slot nth_filled_slot
 
 
@@ -478,7 +475,6 @@ class TrackBase
   def with_timescale(scale)
     mutate(timescale: scale)
   end
-
   alias with_rate with_timescale
   alias rate with_rate
 
@@ -508,7 +504,6 @@ class TrackBase
     assert_compatible_track(other_track)
     mutate(grid: @grid + other_track.grid)
   end
-
   alias concat append
   alias add append
   alias + append
@@ -547,7 +542,6 @@ class TrackBase
 
     mutate(grid: new_grid)
   end
-
   alias | merge
 
   # Creates a new track that interleaves the slots of `other_track` with those
@@ -682,7 +676,6 @@ class TrackBase
 
     mutate(grid: new_grid)
   end
-
   alias gzip grouped_zip
 
 
@@ -748,7 +741,6 @@ class TrackBase
   def left_pad(num_rests = 1)
     mutate(grid: [[]] * num_rests + @grid)
   end
-
   alias lpad left_pad
 
   # Returns a new track by adding `num_rests` many empty slots (rests) to the
@@ -762,7 +754,6 @@ class TrackBase
   def right_pad(num_rests = 1)
     mutate(grid: @grid + [[]] * num_rests)
   end
-
   alias rpad right_pad
 
   # Returns a new track by adding `num_rests` many empty slots (rests) after
@@ -820,7 +811,6 @@ class TrackBase
   def reverse
     mutate(grid: @grid.reverse)
   end
-
   alias rev reverse
   alias bw reverse
 
@@ -853,7 +843,6 @@ class TrackBase
   def reflect
     mutate(grid: @grid + @grid.reverse.drop(1))
   end
-
   alias bnf reflect
 
   # Returns a new track with the slots of this track in a random order.
@@ -879,7 +868,6 @@ class TrackBase
       ret
     end
   end
-
   alias shuffle_filled shuffle_filled_slots
 
   # Returns a new track with the slots in this track rotated to the left by the
@@ -897,7 +885,6 @@ class TrackBase
   def rotate(leftward_shift = 1)
     mutate(grid: @grid.rotate(leftward_shift))
   end
-
   alias left rotate
   alias lshift rotate
   alias shl rotate
@@ -911,7 +898,6 @@ class TrackBase
   def right(rightward_shift = 1)
     rotate(-rightward_shift)
   end
-
   alias rshift right
   alias shr right
 
@@ -991,7 +977,6 @@ class TrackBase
     end
     mutate(grid: new_grid)
   end
-
   alias mutate_slots mutate_each_slot
   alias map_slots mutate_each_slot
 
@@ -1021,7 +1006,6 @@ class TrackBase
     new_grid[idx] = new_steps  # This will get slotified by the initializer.
     mutate(grid: new_grid)
   end
-
   alias set_slot replace_slot
 
   # Return a new track, replacing the steps in the `n`th non-empty slot with the
@@ -1042,7 +1026,6 @@ class TrackBase
     idx = indexes_of_filled_slots[n]
     set_slot(idx, new_steps)
   end
-
   alias set_filled_slot replace_filled_slot
 
   # `idx_or_range` and `length` are the sorts of arguments accepted by Array#[].
@@ -1075,7 +1058,6 @@ class TrackBase
     count = [@grid.length, count].min
     clear_slots(-count..)
   end
-
   alias clear_last_slot clear_last_slots
 
   # Returns a new track with steps in one or more filled slots cleared (i.e.
@@ -1110,7 +1092,6 @@ class TrackBase
     end
     mutate(grid: new_grid)
   end
-
   alias clear_filled_slots clear_filled_slot
 
   # Returns a new track by removing all steps in the final `count` filled slots.
@@ -1128,7 +1109,6 @@ class TrackBase
     count = [indexes_of_filled_slots.length, count].min
     clear_filled_slots(-count..)
   end
-
   alias clear_last_filled_slot clear_last_filled_slots
 
   # Returns a new track with the given steps appended to the slot at the given
@@ -1176,7 +1156,6 @@ class TrackBase
   def repeat(n)
     mutate(grid: @grid * n)
   end
-
   alias * repeat
 
   # Returns a new track that repeats the slots of this track for `n` slots. Note
@@ -1222,7 +1201,6 @@ class TrackBase
     @grid.each { |slot| new_grid += [slot] * n }
     mutate(grid: new_grid)
   end
-
   alias double_slots repeat_slots
   alias double repeat_slots
 
@@ -1319,7 +1297,6 @@ class TrackBase
     s = [s] if s.empty? || !s[0].is_a?(Array)
     mutate(grid: s)
   end
-
   alias [] slice
 
   private def sample_enum(e, n)
@@ -1356,7 +1333,6 @@ class TrackBase
     idxs = sample_enum(indexes_of_filled_slots, n).sort
     mutate(grid: @grid.values_at(*idxs))
   end
-
   alias sample_filled sample_filled_slots
 
 
@@ -1378,7 +1354,6 @@ class TrackBase
     new_grid = @grid.each_slice(n).map { |slots| slots.flatten }
     mutate(grid: new_grid)
   end
-
   alias gmerge grouped_merge
   alias group grouped_merge
 
@@ -1426,7 +1401,6 @@ class TrackBase
   def permutation(n = nil)
     mutate(grid: @grid.permutation(n).to_a.flatten(1))
   end
-
   alias permutations permutation
 
   # Returns a new track that contains every combination of `n` slots. The order
@@ -1437,7 +1411,6 @@ class TrackBase
   def combination(n)
     mutate(grid: @grid.combination(n).to_a.flatten(1))
   end
-
   alias combinations combination
 
 
@@ -1508,7 +1481,6 @@ class TrackBase
 
     [mutate(grid: grid1), mutate(grid: grid2)]
   end
-
   alias partition partition_steps
 
   # Returns a new track containing only steps for which a block returns true.
@@ -1543,7 +1515,6 @@ class TrackBase
     t, = partition_steps(&block)
     t
   end
-
   alias select select_steps
   alias filter_steps select_steps
   alias filter select_steps
@@ -1580,7 +1551,6 @@ class TrackBase
     _, t = partition_steps(&block)
     t
   end
-
   alias reject reject_steps
   alias drop_steps reject_steps
 
@@ -1646,7 +1616,6 @@ class TrackBase
 
     mutate(grid: new_grid)
   end
-
   alias mutate_steps mutate_each_step
   alias map_steps mutate_each_step
 
@@ -1686,7 +1655,6 @@ class TrackBase
     new_slot = @grid[idx].map { |step| block.call(step) }.flatten
     set_slot(idx, new_slot)
   end
-
   alias mutate_slot_steps mutate_steps_in_slot
   alias mutate_slot mutate_steps_in_slot
   alias map_steps_in_slot mutate_steps_in_slot
@@ -1707,7 +1675,6 @@ class TrackBase
     idx = indexes_of_filled_slots[n]
     mutate_steps_in_slot(idx, &block)
   end
-
   alias map_filled_slot mutate_filled_slot
 
 
@@ -1734,7 +1701,6 @@ class TrackBase
       end
     end
   end
-
   alias prob with_prob
 
   # Returns a new track with the {StepBase#prob probability} removed from each
@@ -1746,7 +1712,6 @@ class TrackBase
   def without_prob
     mutate_each_step { |step| step.without_prob }
   end
-
   alias clear_prob without_prob
 
   # Returns a new track where every step has the {Prob.fill fill probability}.
@@ -1783,7 +1748,6 @@ class TrackBase
                  prob: prob, target: target)
     end
   end
-
   alias accum with_accum
 
   # Returns a new track with the accumulation parameters cleared from every
@@ -1794,7 +1758,6 @@ class TrackBase
   def without_accum
     mutate_each_step { |step| step.without_accum }
   end
-
   alias clear_accum without_accum
 
   # @!endgroup

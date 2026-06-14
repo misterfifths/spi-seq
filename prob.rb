@@ -250,7 +250,6 @@ class Prob
     # This isn't exactly ideal but only the tests really need this anyway.
     @repr == other.repr
   end
-
   alias eql? ==
 
   # @private

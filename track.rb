@@ -306,7 +306,6 @@ class Track < TrackBase
     raise ArgumentError, "extract_gates can only be used on a mono track" unless mono?
     @grid.map { |slot| slot.empty? ? 0 : slot[0].gate }
   end
-
   alias gates extract_gates
   alias extract_rhythm extract_gates
   alias rhythm extract_gates
@@ -523,7 +522,6 @@ class Track < TrackBase
     steps = @granularity.steps_to(new_granularity)
     (new_granularity < @granularity) ? expand(steps) : condense(steps)
   end
-
   alias regrain regranularize
   alias grain regranularize
 
@@ -556,7 +554,6 @@ class Track < TrackBase
   def with_gate(new_gate)
     mutate_each_step { |step| step.with_gate(new_gate) }
   end
-
   alias gate with_gate
 
   # Return a new Track where each step's {Step#gate gate} is scaled by the given
@@ -592,7 +589,6 @@ class Track < TrackBase
   def with_vel(new_vel)
     mutate_each_step { |step| step.with_vel(new_vel) }
   end
-
   alias vel with_vel
 
   # Return a new Track where each step has the given {Step#vel velocity},
@@ -611,7 +607,6 @@ class Track < TrackBase
   def with_velf(new_velf)
     mutate_each_step { |step| step.with_velf(new_velf) }
   end
-
   alias velf with_velf
 
   # Return a new Track where each step's {Step#vel velocity} is scaled by the
@@ -630,7 +625,6 @@ class Track < TrackBase
   def scale_vel(factor)
     mutate_each_step { |step| step.with_vel(step.vel * factor) }
   end
-
   alias scale_velf scale_vel
 
   # Returns a new Track where the octave of each step's {Step#note note} is set
@@ -650,7 +644,6 @@ class Track < TrackBase
   def with_octave(new_octave)
     mutate_each_step { |step| step.with_octave(new_octave) }
   end
-
   alias octave with_octave
   alias oct octave
 
@@ -731,7 +724,6 @@ class Track < TrackBase
       step.shift_octave(shift)
     end
   end
-
   alias roct rand_octave
 
   # Returns a new Track where each step's {Step#note} is shifted by the given
@@ -749,7 +741,6 @@ class Track < TrackBase
   def transpose(shift)
     mutate_each_step { |step| step.transpose(shift) }
   end
-
   alias tone transpose
   alias shift_tone transpose
   alias t transpose
@@ -762,7 +753,6 @@ class Track < TrackBase
   def semi_up(tone_shift = 1)
     transpose(tone_shift)
   end
-
   alias sup semi_up
 
   # Returns a new Track where each step's {Step#note} is decreased by the given
@@ -774,7 +764,6 @@ class Track < TrackBase
   def semi_down(tone_shift = 1)
     transpose(-tone_shift)
   end
-
   alias sdown semi_down
 
   # Return a new Track in which each step has its {Step#note note}
@@ -859,7 +848,6 @@ class Track < TrackBase
       step.with_gate(gate)
     end
   end
-
   alias gate_curve with_gate_curve
 
   # Returns a new Track where each step's {Step#vel velocity} is replaced with
@@ -915,7 +903,6 @@ class Track < TrackBase
       step.with_vel(vel)
     end
   end
-
   alias vel_curve with_vel_curve
 
   # An alias for {#with_vel_curve} with `zero_to_one` set to true. See that
@@ -929,7 +916,6 @@ class Track < TrackBase
   def with_velf_curve(curve_func, min: nil, max: nil)
     with_vel_curve(curve_func, zero_to_one: true, min: min, max: max)
   end
-
   alias velf_curve with_velf_curve
 
   # Returns a new Track that fades in linearly, via {Step#vel velocity}.
@@ -959,7 +945,6 @@ class Track < TrackBase
   def fade_in_linear(min = 0.0, max = 1.0, start: 0.0)
     with_velf_curve(Curves.fade_in_linear(min, max, start))
   end
-
   alias fade_in_lin fade_in_linear
   alias fade_in fade_in_linear
   alias in_lin fade_in_linear
@@ -976,7 +961,6 @@ class Track < TrackBase
   def fade_in_quad(min = 0.0, max = 1.0, start: 0.0)
     with_velf_curve(Curves.fade_in_quad(min, max, start))
   end
-
   alias in_quad fade_in_quad
 
   # Returns a new Track that fades out linearly, via {Step#vel velocity}.
@@ -1006,7 +990,6 @@ class Track < TrackBase
   def fade_out_linear(max = 1.0, min = 0.0, start: 0.0)
     with_velf_curve(Curves.fade_out_linear(max, min, start))
   end
-
   alias fade_out_lin fade_out_linear
   alias fade_out fade_out_linear
   alias out_lin fade_out_linear
@@ -1023,7 +1006,6 @@ class Track < TrackBase
   def fade_out_quad(max = 1.0, min = 0.0, start: 0.0)
     with_velf_curve(Curves.fade_out_quad(max, min, start))
   end
-
   alias out_quad fade_out_quad
 
   # Finds runs of tied Steps with the same notes and yields to its block two
@@ -1240,7 +1222,6 @@ class Track < TrackBase
   def partition_notes(note)
     partition { |step| step.note.match?(note) }
   end
-
   alias partition_note partition_notes
 
   # Returns a new track containing only steps that match the given note. The new
@@ -1259,7 +1240,6 @@ class Track < TrackBase
     t, = partition_note(note)
     t
   end
-
   alias select_note select_notes
   alias filter_notes select_notes
   alias filter_note select_notes
@@ -1280,7 +1260,6 @@ class Track < TrackBase
     _, t = partition_note(note)
     t
   end
-
   alias reject_note reject_notes
   alias drop_notes reject_notes
   alias drop_note reject_notes
@@ -1348,7 +1327,6 @@ class Track < TrackBase
       end
     end
   end
-
   alias sub sub_note
   alias replace_note sub_note
   alias replace sub_note
@@ -1500,7 +1478,6 @@ class Track < TrackBase
 
     CCTrack.new(*new_grid, granularity: @granularity, timescale: @timescale)
   end
-
   alias cc to_cc
 
   # Return a new {CCTrack}, whose steps all share a CC {CCStep#number number},
@@ -1569,7 +1546,6 @@ class Track < TrackBase
 
     CCTrack.simple(cc_number, slots, granularity: @granularity, timescale: @timescale)
   end
-
   alias simple_cc to_simple_cc
 
   # @!endgroup

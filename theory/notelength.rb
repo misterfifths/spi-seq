@@ -137,7 +137,6 @@ class NoteLength
       end
     end
   end
-
   alias eql? ==
 
   # @private
@@ -161,7 +160,6 @@ class NoteLength
   def to_f
     @float_val
   end
-
   alias length to_f
 
   # Returns a symbol representing the note length, e.g. `:whole` or `:quarter`.

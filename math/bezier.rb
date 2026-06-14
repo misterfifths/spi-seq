@@ -28,7 +28,6 @@ class CubicBezier
       sample_curve_y(solve_curve_x(x, epsilon))
     end
   end
-
   alias call solve
   alias [] solve
 
