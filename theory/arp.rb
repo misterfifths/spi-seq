@@ -4,61 +4,67 @@ require_relative "midinote"
 
 # A simple arpeggiator. See {.arpeggiate} for details.
 module Arp
-  # An arpeggiation direction that returns notes in increasing order. For
-  # example:
+  # An arpeggiation direction that returns notes in increasing order.
+  #
   #   arp([:c4, :e4, :d4], :up)
   #   # returns [:c4, :d4, :e4]
   Up = :up
 
-  # An arpeggiation direction that returns notes in decreasing order. For
-  # example:
+  # An arpeggiation direction that returns notes in decreasing order.
+  #
   #   arp([:c4, :e4, :d4], :down)
   #   # returns [:e4, :d4, :c4]
   Down = :down
 
   # An arpeggiation direction that returns notes in increasing order, then in
-  # reverse. The middle note is not repeated, nor is the final note. For
-  # example:
+  # reverse. The middle note is not repeated, nor is the final note.
+  #
   #   arp([:c4, :e4, :d4], :updown)
   #   # returns [:c4, :d4, :e4, :d4]
   UpDown = :updown
 
   # An arpeggiation direction that returns notes in the same order as {.UpDown},
   # but with each note doubled. The middle note is not repeated, nor is the
-  # final note. For example:
+  # final note.
+  #
   #   arp([:c4, :e4, :d4], :twouptwodown)
   #   # returns [:c4, :c4, :d4, :d4, :e4, :e4, :d4, :d4]
   TwoUpTwoDown = :twouptwodown
 
   # An arpeggiation direction that returns notes in alternating order, working
-  # inward from opposite edges of the input. For example:
+  # inward from opposite edges of the input.
+  #
   #   arp([:a1, :b2, :c3, :d4, :e5], :alternin)
   #   # returns [:a1, :e5, :b2, :d4, :c3]
   AlternIn = :alternin
 
   # An arpeggiation direction that returns notes in alternating order, working
-  # outward from the middle of the input. For example:
+  # outward from the middle of the input.
+  #
   #   arp([:a1, :b2, :c3, :d4, :e5], :alternout)
   #   # returns [:c3, :b2, :d4, :a1, :e5]
   AlternOut = :alternout
 
   # An arpeggiation direction that returns notes in alternating order, first
   # inward like {.AlternIn}, then outward like {.AlternOut}, but not repeating
-  # the middle note. For example:
+  # the middle note.
+  #
   #   arp([:a1, :b2, :c3, :d4, :e5], :alterninout)
   #   # returns [:a1, :e5, :b2, :d4, :c3, :b2, :d4, :a1, :e5]
   AlternInOut = :alterninout
 
   # An arpeggiation direction that returns notes in ascending order, but with
   # the highest note in every other position. The high note is not doubled at
-  # the end. For example:
+  # the end.
+  #
   #   arp([:c4, :e4, :d4, :c5], :pinky)
   #   # returns [:c4, :c5, :d4, :c5, :e4, :c5]
   Pinky = :pinky
 
   # An arpeggiation direction that returns notes in ascending order, but with
   # the lowest note in every other position. The low note is not doubled at the
-  # beginning. For example:
+  # beginning.
+  #
   #   arp([:c4, :e4, :d4, :c5], :thumb)
   #   # returns [:d4, :c4, :e4, :c4, :c5, :c4]
   Thumb = :thumb
@@ -66,7 +72,8 @@ module Arp
   # An arpeggiation direction that returns notes in an order that climbs to the
   # highest note and then descends. The notes are sorted ascending, then every
   # other note is chosen to walk toward the highest note, then the remaining
-  # notes appear in descending order. For example:
+  # notes appear in descending order.
+  #
   #   arp([:c1, :c3, :c2, :c4, :c5], :peak)
   #   # returns [:c1, :c3, :c5, :c4, :c2]
   Peak = :peak
@@ -74,7 +81,8 @@ module Arp
   # An arpeggiation direction that returns notes in an order that descends from
   # the highest note and then ascends. The highest note appears first, then
   # every other note descending to the lowest, then the remaining notes in
-  # ascending order. For example:
+  # ascending order.
+  #
   #   arp([:c1, :c3, :c2, :c4, :c5], :valley)
   #   # returns [:c5, :c3, :c1, :c2, :c4]
   Valley = :valley
