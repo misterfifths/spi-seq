@@ -97,15 +97,16 @@ module Arp
   # If `spread` is > 0, the result will have a note added an octave above each
   # of the the `spread` lowest notes. If this operation creates duplicate notes
   # (e.g. `spread`=1 with `[:e3, :e4]`, which would result in two E4s), the
-  # duplicates will not be added to the result. In the {.Order :order}
+  # duplicates will not be added to the result. In the {Arp::Order :order}
   # direction, the notes from the `spread` will appear at the end, in order from
   # lowest to highest.
   #
   # If `extra_octaves` is specified, the result will contain copies of the notes
   # in the `notes` array shifted by each offset in `extra_octaves`. This
-  # addition applies before any `spread`. If the direction is {.Order :order},
-  # notes added this way will appear at the end of the result, before notes from
-  # the `spread`. Like `spread`, `extra_octaves` will not add duplicate notes.
+  # addition applies before any `spread`. If the direction is
+  # {Arp::Order :order}, notes added this way will appear at the end of the
+  # result, before notes from the `spread`. Like `spread`, `extra_octaves` will
+  # not add duplicate notes.
   #
   # @example
   #   arp([:a1, :b1], :down, extra_octaves: [-1, 2])
@@ -123,8 +124,8 @@ module Arp
   #   arpeggiate; an array of {MIDINote}s or any value accepted by
   #   {MIDINote.new}.
   # @param direction [Symbol] One of the direction symbols defined on Arp, e.g.
-  #   {.Pinky :pinky} or {.UpDown :updown}. You can pass the symbol directly
-  #   rather than referencing the constant on this module.
+  #   {Arp::Pinky :pinky} or {Arp::UpDown :updown}. You can pass the symbol
+  #   directly rather than referencing the constant on the Arp module.
   # @param spread [Integer] Adds notes an octave above some number of the lowest
   #   notes in the result. See above for details.
   # @param extra_octaves [Array<Integer>] Adds a copy of the incoming notes
@@ -314,10 +315,10 @@ end
 
 # @!group Music theory
 
+# (see Arp.arpeggiate)
 # An alias for {Arp.arpeggiate}.
-# @return [Array<MIDINote>]
-def arp(*args, **kwargs)
-  Arp.arpeggiate(*args, **kwargs)
+def arp(notes, direction, spread: 0, extra_octaves: [])
+  Arp.arpeggiate(notes, direction, spread: spread, extra_octaves: extra_octaves)
 end
 
 # @!endgroup

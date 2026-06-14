@@ -272,9 +272,12 @@ class Scale
   SCALE_NAMES = SCALES.keys.to_a.freeze
 
 
-  # Creates a new Scale.
+  # Creates a new Scale consisting of some number of octaves starting on a root
+  # note.
   #
   # `Scale.new` is aliased to {SC} for convenience.
+  #
+  # For a scale that covers the entire MIDI range, see {Scale.full_scale}.
   #
   # @param tonic [MIDINote, String, Symbol, Integer] The root note of the scale.
   #   A {MIDINote} or one of the values understood by {MIDINote.new}.
@@ -285,6 +288,7 @@ class Scale
   #   belonging to this many octaves of the scale.
   # @param clamp_to_midi [Boolean] If true, only notes in the MIDI range of 0 -
   #   127 will be included.
+  # @see Scale.full_scale
   def initialize(tonic, name, num_octaves: 1, clamp_to_midi: false)
     @tonic = MIDINote.new(tonic)
     @name = name.to_sym
@@ -481,10 +485,11 @@ Sc = Scale
 
 # @!group Music theory
 
+# (see Scale#initialize)
 # An alias for {Scale#initialize Scale.new}.
 # @return [Scale]
-def SC(*args, **kwargs)
-  Scale.new(*args, **kwargs)
+def SC(tonic, name, num_octaves: 1, clamp_to_midi: false)
+  Scale.new(tonic, name, num_octaves: num_octaves, clamp_to_midi: clamp_to_midi)
 end
 
 # @!endgroup
