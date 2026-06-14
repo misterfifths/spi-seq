@@ -212,6 +212,7 @@ class Prob
   def to_s
     @desc
   end
+  alias to_str to_s
 
   # (see #to_s)
   def inspect

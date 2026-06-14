@@ -459,6 +459,7 @@ class Scale
     clamp_str = @clamp_to_midi ? ", clamped" : ""
     "<Scale #{@tonic} #{@name}, #{@num_octaves} octaves#{clamp_str}>"
   end
+  alias to_str to_s
 
   # A string of the Ruby code representation of this scale.
   # @return [String]

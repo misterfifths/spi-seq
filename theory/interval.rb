@@ -50,6 +50,8 @@ class Interval < Numeric
   # @return [Integer]
   attr_reader :size
   alias semitones size
+  alias to_i size
+  alias to_int size
 
   # The number of octaves this interval spans. Intervals that span more than one
   # octave are compound.
@@ -384,12 +386,6 @@ class Interval < Numeric
 
   ### Ruby magic methods and Numeric implementation
 
-  # Returns the interval's {#size}.
-  # @return [Integer]
-  def to_i
-    @size
-  end
-
   # Returns the interval's {#size} as a floating point number.
   # @return [Float]
   def to_f
@@ -462,6 +458,7 @@ class Interval < Numeric
   def to_s
     @sym.to_s
   end
+  alias to_str to_s
 
   # @private
   def inspect

@@ -72,6 +72,7 @@ class MIDINote < Numeric
   # @return [Integer]
   attr_reader :number
   alias to_i number
+  alias to_int number
 
   # The octave number for the note (e.g. 2 for C2). This may be negative, and
   # may not be in the MIDI range.
@@ -375,6 +376,7 @@ class MIDINote < Numeric
   def to_s
     @sym.to_s
   end
+  alias to_str to_s
 
   # @private
   def inspect

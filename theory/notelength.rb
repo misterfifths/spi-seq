@@ -175,6 +175,7 @@ class NoteLength
   def to_s
     "#{@desc}/#{@float_val}"
   end
+  alias to_str to_s
 
   # (see #to_s)
   def inspect

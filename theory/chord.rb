@@ -758,6 +758,7 @@ class Chord
     int_names = @intervals.join(" ")
     "<Chord #{int_names}>"
   end
+  alias to_str to_s
 end
 
 
