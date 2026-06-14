@@ -298,7 +298,7 @@ end
 # @!group Class aliases
 
 # An alias for the {CCTrack} class. You can easily make a new instance using the
-# {CCTrack.initialize []} method, like `CCT[:c4, :d4]`.
+# {CCTrack.initialize []} method, like `CCT[CC(127, 64), CC(127, 0)]`.
 CCT = CCTrack
 
 # @!endgroup
