@@ -126,10 +126,13 @@ class IntervalTest < Test::Unit::TestCase
   def assert_compound(size, quality, number, sym, octave_span = 1, simple_interval = nil)
     assert_new size, quality, number, sym, octave_span, simple_interval
     assert Interval.new(sym).compound?
+    refute Interval.new(sym).simple?
     assert Interval.new(number: number, quality: quality).compound?
+    refute Interval.new(number: number, quality: quality).simple?
     if size > 12
       # d9 is a weird case that is compound even though its size is 12.
       assert Interval.new(size: size).compound?
+      refute Interval.new(size: size).simple?
     end
   end
 
@@ -383,6 +386,7 @@ class IntervalTest < Test::Unit::TestCase
     refute Interval.new(:P5).augmented?
     refute Interval.new(:P5).diminished?
     refute Interval.new(:P5).compound?
+    assert Interval.new(:P5).simple?
 
     refute Interval.new(:M7).perfect?
     refute Interval.new(:M7).minor?
@@ -390,6 +394,7 @@ class IntervalTest < Test::Unit::TestCase
     refute Interval.new(:M7).augmented?
     refute Interval.new(:M7).diminished?
     refute Interval.new(:M7).compound?
+    assert Interval.new(:M7).simple?
 
     refute Interval.new(:m7).perfect?
     assert Interval.new(:m7).minor?
@@ -397,6 +402,7 @@ class IntervalTest < Test::Unit::TestCase
     refute Interval.new(:m7).augmented?
     refute Interval.new(:m7).diminished?
     refute Interval.new(:m7).compound?
+    assert Interval.new(:m7).simple?
 
     refute Interval.new(:d7).perfect?
     refute Interval.new(:d7).minor?
@@ -404,6 +410,7 @@ class IntervalTest < Test::Unit::TestCase
     refute Interval.new(:d7).augmented?
     assert Interval.new(:d7).diminished?
     refute Interval.new(:d7).compound?
+    assert Interval.new(:d7).simple?
 
     refute Interval.new(:A7).perfect?
     refute Interval.new(:A7).minor?
@@ -411,10 +418,14 @@ class IntervalTest < Test::Unit::TestCase
     assert Interval.new(:A7).augmented?
     refute Interval.new(:A7).diminished?
     refute Interval.new(:A7).compound?
+    assert Interval.new(:A7).simple?
 
     assert Interval.new(:A8).compound?
+    refute Interval.new(:A8).simple?
     assert Interval.new(:d9).compound?
+    refute Interval.new(:d9).simple?
     assert Interval.new(:M13).compound?
+    refute Interval.new(:M13).simple?
   end
 
   def assert_as(qual1, num1, qual2, num2)

@@ -46,6 +46,7 @@ class Interval < Numeric
   # The number of octaves this interval spans. Intervals that span more than one
   # octave are compound.
   # @return [Integer]
+  # @see #simple_interval
   attr_reader :octave_span
 
   # If this interval spans more than one octave, this is the interval that
@@ -54,6 +55,9 @@ class Interval < Numeric
   # octave. If this interval is not compound this is just `self`, except for
   # P8 and A7 for which this is P1.
   # @return [Interval]
+  # @see #octave_span
+  # @see #simple?
+  # @see #compound?
   attr_reader :simple_interval
 
   # semitones -> { quality -> number }
@@ -333,10 +337,21 @@ class Interval < Numeric
   # Returns true if this interval is compound, i.e. its {#number} is greater
   # than 8 or its {#size} is greater than 12.
   # @return [Boolean]
+  # @see #simple?
+  # @see #simple_interval
   def compound?
     # The two cases are really only necessary because d9 and A8 are weird
     # outliers; otherwise either would do.
     @number > 8 || @size > 12
+  end
+
+  # Returns true if this interval is simple, i.e. its {#number} is <= 8 and its
+  # {#size} is <= 12.
+  # @return [Boolean]
+  # @see #compound?
+  # @see #simple_interval
+  def simple?
+    !compound?
   end
 
   # Returns true if this interval has perfect {#quality}.
