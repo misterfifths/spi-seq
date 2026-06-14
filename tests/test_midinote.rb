@@ -61,6 +61,8 @@ class MIDINoteTest < Test::Unit::TestCase
     assert_attrs N(:cb3), 47, :b2, :b
     assert_attrs N(:cf3), 47, :b2, :b
     assert_attrs N(:bs3), 60, :c4, :c
+    assert_attrs N(:cbb4), 58, :as3, :as
+    assert_attrs N(:bss4), 73, :cs5, :cs
   end
 
   def test_eql
@@ -117,6 +119,10 @@ class MIDINoteTest < Test::Unit::TestCase
     assert_equal :cf3, N(:b2)
     assert_equal N(:bs3), :c4
     assert_equal :c4, N(:bs3)
+    assert_equal N(:cbb4), :as3
+    assert_equal :cbb4, N(:as3)
+    assert_equal N(:bss4), :cs5
+    assert_equal :cs5, N(:bss4)
 
     # Comparisons with an invalid non-MIDINote
     # right-hand side
@@ -151,6 +157,8 @@ class MIDINoteTest < Test::Unit::TestCase
     # Octave wrap-around (e.g. cb -> cb4 -> b3)
     assert_equal N(:cb), :b3
     assert_equal N(:bs), :c5
+    assert_equal N(:cbb), :as3
+    assert_equal N(:bss), :cs5
   end
 
   def test_octave_mutators
@@ -190,6 +198,8 @@ class MIDINoteTest < Test::Unit::TestCase
     # Octave wrap-around
     assert_equal N(:c4).with_pitch_class(:cb), :b3
     assert_equal N(:c4).with_pitch_class(:bs), :c5
+    assert_equal N(:c4).with_pitch_class(:cbb), :as3
+    assert_equal N(:c4).with_pitch_class(:bss), :cs5
   end
 
   def test_match
@@ -203,6 +213,7 @@ class MIDINoteTest < Test::Unit::TestCase
     assert N(:cs4).match?(:db)
     assert N(:cs4).match?(:df)
     assert N(:cs4).match?(61)
+    assert N(:cs4).match?(:bss)
 
     refute N(:cs4).match?(:r)
     refute N(:cs4).match?(:rest)
@@ -373,6 +384,8 @@ class MIDINoteTest < Test::Unit::TestCase
     # Octave wrap-around
     assert_equal N(:cb4).repr, ":b3"
     assert_equal N(:bs4).repr, ":c5"
+    assert_equal N(:cbb4).repr, ":as3"
+    assert_equal N(:bss4).repr, ":cs5"
   end
 
   def test_names

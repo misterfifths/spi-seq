@@ -38,7 +38,7 @@ require_relative "internal_utils"
 #   :bf3 == N(:as3)
 #   N(:Bs3) == :c4
 class MIDINote < Numeric
-  NOTE_REGEX = /^(?<pitch_class>[a-g][sbf]?)(?<octave>-?\d+)?$/i.freeze
+  NOTE_REGEX = /^(?<pitch_class>[a-g](?:s|b|f|ss|bb|ff)?)(?<octave>-?\d+)?$/i.freeze
   private_constant :NOTE_REGEX
 
   # Order is significant, both in the subarrays and the array as a whole. The
@@ -46,10 +46,20 @@ class MIDINote < Numeric
   # pitch class array, the first element is the canonical representation of that
   # class (e.g. :db will be normalized to :cs because :cs is the first element
   # of the corresponding array).
-  NOTE_NAMES = [[:c, :bs], [:cs, :db, :df], [:d], [:ds, :eb, :ef], [:e, :fb, :ff], [:f, :es],
-                [:fs, :gb, :gf], [:g], [:gs, :ab, :af], [:a], [:as, :bb, :bf], [:b, :cb, :cf]].freeze
-  NOTE_NAMES.each { |names| names.freeze }
-  private_constant :NOTE_NAMES
+  PITCH_CLASSES = [[:c, :bs, :dbb, :dff],
+                   [:cs, :db, :df, :bss],
+                   [:d, :css, :ebb, :eff],
+                   [:ds, :eb, :ef, :fbb, :fff],
+                   [:e, :fb, :ff, :dss],
+                   [:f, :es, :gbb, :gff],
+                   [:fs, :gb, :gf, :ess],
+                   [:g, :fss, :abb, :aff],
+                   [:gs, :ab, :af],
+                   [:a, :gss, :bbb, :bff],
+                   [:as, :bb, :bf, :cbb, :cff],
+                   [:b, :cb, :cf, :ass]].freeze
+  PITCH_CLASSES.each { |classes| classes.freeze }
+  private_constant :PITCH_CLASSES
 
   # The symbol for the pitch class of the note (e.g. `:c` for C notes in any
   # octave). This will always be lower-case, and accidentals are normalized to
@@ -77,11 +87,11 @@ class MIDINote < Numeric
   #
   # Acceptable strings and symbols are of the form "(pitch class)(octave)". The
   # pitch class is "a" - "g", with an optional suffix of "b" or "f" for flats
-  # or "s" for sharps. The octave is an integer. Case is ignored, but will be
-  # standardized to lower for {MIDINote#pitch_class}, {MIDINote#to_s}, and
-  # {MIDINote#to_sym}. Accidentals are normalized to a natural (when possible)
-  # or a sharp. For example, `"Cs3"`, `:df4`, `:g9`, and `"c-1"` are all valid
-  # arguments.
+  # or "s" for sharps. Double flats and sharps are permitted. The octave is an
+  # integer. Case is ignored, but will be standardized to lower for
+  # {MIDINote#pitch_class}, {MIDINote#to_s}, and {MIDINote#to_sym}. Accidentals
+  # are normalized to a natural (when possible) or a single sharp. For example,
+  # `"Cs3"`, `:df4`, `:bss2`, `:g9`, and `"c-1"` are all valid arguments.
   #
   # The octave number may be omitted on strings and symbols; the default is
   # octave 4.
@@ -139,7 +149,7 @@ class MIDINote < Numeric
     when Numeric
       @number = note.to_i
       @octave = (@number / 12) - 1
-      @pitch_class = NOTE_NAMES[@number % 12][0]
+      @pitch_class = PITCH_CLASSES[@number % 12][0]
       @sym = :"#{@pitch_class}#{@octave}"
     when Symbol, String
       match = NOTE_REGEX.match(note.to_s.downcase)
@@ -148,13 +158,14 @@ class MIDINote < Numeric
       @octave = match[:octave].nil? ? 4 : match[:octave].to_i
       @pitch_class = match[:pitch_class].to_sym
 
-      # Check for octave boundary crossings: cb (down an octave) and bs (up)
-      @octave -= 1 if [:cb, :cf].include?(@pitch_class)
-      @octave += 1 if @pitch_class == :bs
+      # Check for octave boundary crossings: c flats will normalize to a note an
+      # octave down (e.g. cb4 -> b3) and b sharps will go up (e.g. bss2 -> cs3).
+      @octave -= 1 if [:cb, :cf, :cbb, :cff].include?(@pitch_class)
+      @octave += 1 if [:bs, :bss].include?(@pitch_class)
 
-      name_idx = NOTE_NAMES.find_index { |names| names.include?(@pitch_class) }
-      @pitch_class = NOTE_NAMES[name_idx][0]  # normalize
-      @number = 12 + @octave * 12 + name_idx  # 12 is c0
+      cls_idx = PITCH_CLASSES.find_index { |classes| classes.include?(@pitch_class) }
+      @pitch_class = PITCH_CLASSES[cls_idx][0]  # normalize
+      @number = 12 + @octave * 12 + cls_idx  # 12 is c0
       @sym = :"#{@pitch_class}#{@octave}"
     else
       raise TypeError, "Invalid note value #{note}"
@@ -275,12 +286,12 @@ class MIDINote < Numeric
     return @names unless @names.nil?
 
     @names = []
-    NOTE_NAMES[@number % 12].each do |name|
+    PITCH_CLASSES[@number % 12].each do |cls|
       octave = @octave
-      octave += 1 if [:cb, :cf].include?(name)
-      octave -= 1 if name == :bs
-      @names << :"#{name}#{octave}"
-      @names << :"#{name}" if octave == 4
+      octave += 1 if [:cb, :cf, :cbb, :cff].include?(cls)
+      octave -= 1 if [:bs, :bss].include?(cls)
+      @names << :"#{cls}#{octave}"
+      @names << :"#{cls}" if octave == 4
     end
     @names.freeze
     @names
