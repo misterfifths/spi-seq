@@ -121,9 +121,14 @@ class ChordVoicingTest < Test::Unit::TestCase
       assert_equal Chord.degree(roman.to_s.upcase.to_sym, :c4, :major, 7), c
     end
 
-    # The prefixed sorts of Roman numerals accepted by Scale.degree are invalid.
+    # Prefixed Roman numeral degress of the sort accepted by Scale.degree might
+    # take us off the scale, which should raise.
     assert_raises(ArgumentError) { Chord.degree(:ai, :c4, :major) }
-    assert_raises(ArgumentError) { Chord.degree(:div, :c4, :major) }
+    assert_raises(ArgumentError) { Chord.degree(:ddiv, :c4, :major) }
+    assert_raises(ArgumentError) { Chord.degree(:aaiii, :c4, :major) }
+
+    # This one is fine; 4th degree is f4, so div is e4, which is on the scale.
+    assert_nothing_raised { Chord.degree(:div, :c4, :major) }
   end
 
   def test_closed

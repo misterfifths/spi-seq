@@ -253,7 +253,8 @@ class Chord
   #   Chord.degree(2, :c4, :major_pentatonic, 5)  # [:d4]; see above
   #
   # @param d [Integer, String, Symbol] The chord degree. May be an integer or
-  #   a Roman numeral string or symbol (e.g. `:ii` or "ix"). Must be > 0.
+  #   a Roman numeral string or symbol (e.g. `:ii` or "ix"). See {Scale#degree}
+  #   for details.
   # @param tonic [MIDINote, String, Symbol, Integer] The root note of the scale.
   #   May be a {MIDINote} or any value understood by {MIDINote.new}.
   # @param scale_name [Symbol, String] The name of the scale to use, one of the
@@ -273,15 +274,12 @@ class Chord
   def self.degree(d, tonic, scale_name, number_of_notes = 4, voicing = :closed, invert: 0)
     raise RangeError, "chord only has #{number_of_notes - 1} inversions" if invert >= number_of_notes
 
-    # Scale#degree accepts degrees like :aii, but we can accept only non-
-    # prefixed numbers so that we wind up with root note that is actually on the
-    # scale.
-    n, mod = SpiSeq::Utils.parse_degree(d)
-    raise ArgumentError, "invalid degree #{d}" if mod != 0
-    raise RangeError, "degree must be > 0" if n <= 0
-
     scale = Scale.full_scale(tonic, scale_name)
     root = scale.degree(d, relative_tonic: tonic)
+
+    # Scale#degree accepts degrees like :aii, which can result in root notes
+    # that are not actually on the scale.
+    raise ArgumentError, "the note at degree #{d} is not on the scale" unless scale.include?(root)
 
     # Select subsequent 3rds (major or minor), until we hit one that is not on
     # the scale. Outside of diatonic scales this behavior differs quite a bit

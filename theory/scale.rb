@@ -4,94 +4,6 @@ require "forwardable"
 require_relative "interval"
 require_relative "midinote"
 
-# @private
-module SpiSeq
-  module Utils
-    ROMAN_NUMS = {
-      "i" => 1,
-      "v" => 5,
-      "x" => 10,
-      "l" => 50,
-      "c" => 100,
-      "d" => 500,
-      "m" => 1000
-    }.freeze
-    private_constant :ROMAN_NUMS
-
-    def self.roman_to_int(s)
-      raise ArgumentError, "string must not be empty" if s.empty?
-
-      # This is very lenient, but isn't worth thinking about too much.
-
-      digits = s.downcase.chars.map do |c|
-        val = ROMAN_NUMS[c]
-        raise ArgumentError, "invalid Roman numeral string #{s}" if val.nil?
-        val
-      end
-
-      res = 0
-      i = 0
-      loop do
-        break if i >= digits.length
-
-        val = digits[i]
-        if i < s.length - 1
-          # Check if we're less than the next number (like "IX") and if so, add
-          # the difference and skip past that character.
-          next_val = digits[i + 1]
-          if val < next_val
-            res += next_val - val
-            i += 2
-            next
-          end
-        end
-
-        res += val
-        i += 1
-      end
-
-      res
-    end
-
-    # Parses a degree number, string, or symbol into its integer value and a
-    # semitone shift. Returns [number, semitones].
-    # @private
-    def self.parse_degree(d)
-      return [d.to_i, 0] if d.is_a?(Numeric)
-      raise TypeError, "degree must be a number, symbol, or string" unless d.is_a?(String) || d.is_a?(Symbol)
-
-      d = d.to_s.downcase
-      mod = 0
-      if d.start_with?("aa")
-        mod = 2
-        d = d[2..]
-      elsif d.start_with?("dd")
-        mod = -2
-        d = d[2..]
-      elsif d.start_with?("a")
-        mod = 1
-        d = d[1..]
-      elsif d.start_with?("d")
-        mod = -1
-        d = d[1..]
-      elsif d.start_with?("p")
-        d = d[1..]
-      end
-
-      raise ArgumentError, "no number component to degree" if d.empty?
-
-      begin
-        num = Integer(d)
-      rescue ArgumentError
-        num = roman_to_int(d)
-      end
-
-      [num, mod]
-    end
-  end
-end
-
-
 # A grouping of notes that represents some {#num_octaves number of octaves} of a
 # {#name scale}, starting on a particular {#tonic root note}. Enumerable over
 # its {#notes}, and has most of the read-only methods of Array.
@@ -350,6 +262,87 @@ class Scale
     @notes[i]
   end
 
+  ROMAN_NUMS = {
+    "i" => 1,
+    "v" => 5,
+    "x" => 10,
+    "l" => 50,
+    "c" => 100,
+    "d" => 500,
+    "m" => 1000
+  }.freeze
+  private_constant :ROMAN_NUMS
+
+  private def roman_to_int(s)
+    raise ArgumentError, "string must not be empty" if s.empty?
+
+    # This is very lenient, but isn't worth thinking about too much.
+
+    digits = s.downcase.chars.map do |c|
+      val = ROMAN_NUMS[c]
+      raise ArgumentError, "invalid Roman numeral string #{s}" if val.nil?
+      val
+    end
+
+    res = 0
+    i = 0
+    loop do
+      break if i >= digits.length
+
+      val = digits[i]
+      if i < s.length - 1
+        # Check if we're less than the next number (like "IX") and if so, add
+        # the difference and skip past that character.
+        next_val = digits[i + 1]
+        if val < next_val
+          res += next_val - val
+          i += 2
+          next
+        end
+      end
+
+      res += val
+      i += 1
+    end
+
+    res
+  end
+
+  # Parses a degree number, string, or symbol into its integer value and a
+  # semitone shift. Returns [number, semitones].
+  private def parse_degree(d)
+    return [d.to_i, 0] if d.is_a?(Numeric)
+    raise TypeError, "degree must be a number, symbol, or string" unless d.is_a?(String) || d.is_a?(Symbol)
+
+    d = d.to_s.downcase
+    mod = 0
+    if d.start_with?("aa")
+      mod = 2
+      d = d[2..]
+    elsif d.start_with?("dd")
+      mod = -2
+      d = d[2..]
+    elsif d.start_with?("a")
+      mod = 1
+      d = d[1..]
+    elsif d.start_with?("d")
+      mod = -1
+      d = d[1..]
+    elsif d.start_with?("p")
+      d = d[1..]
+    end
+
+    raise ArgumentError, "no number component to degree" if d.empty?
+
+    begin
+      num = Integer(d)
+    rescue ArgumentError
+      num = roman_to_int(d)
+    end
+
+    [num, mod]
+  end
+
   # Returns the note in the scale that is `d` degrees from `relative_tonic`. If
   # `relative_tonic` is nil (the default), the tonic of the scale will be used
   # instead. Raises an ArgumentError if the scale does not contain
@@ -374,7 +367,7 @@ class Scale
   # @return [MIDINote]
   # @see .degree
   def degree(d, relative_tonic: nil)
-    n, mod = SpiSeq::Utils.parse_degree(d)
+    n, mod = parse_degree(d)
 
     raise RangeError, "degree 0 is undefined" if n == 0
 
