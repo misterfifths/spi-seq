@@ -591,11 +591,11 @@ class TrackLiveLoopTest < Test::Unit::TestCase
     # Should send a CC at creation with value 0. Recreating the same loop name
     # should not send another CC.
     es = events do
-      l1 = track_live_loop(:t, fill_cc: 64) { SpiSeq::External::Sync.sleep(1) }
+      l1 = track_live_loop(:t, fill_cc: 64) { sleep(1) }
       l1.pump
       fill_live_loop :t
       l1.pump
-      l2 = track_live_loop(:t, fill_cc: 64) { SpiSeq::External::Sync.sleep(1) }
+      l2 = track_live_loop(:t, fill_cc: 64) { sleep(1) }
       l1.pump
       l2.pump
       l2.stop
@@ -657,11 +657,11 @@ class TrackLiveLoopTest < Test::Unit::TestCase
     # Should send a CC at creation with a value matching start_muted. Recreating
     # the same loop name should not send another CC.
     es = events do
-      l1 = track_live_loop(:t, cc: 64) { SpiSeq::External::Sync.sleep(1) }
+      l1 = track_live_loop(:t, cc: 64) { sleep(1) }
       l1.pump
       fill_live_loop :t
       l1.pump
-      l2 = track_live_loop(:t, cc: 64, start_muted: true) { SpiSeq::External::Sync.sleep(1) }
+      l2 = track_live_loop(:t, cc: 64, start_muted: true) { sleep(1) }
       l1.pump
       l2.pump
       l2.stop
@@ -670,7 +670,7 @@ class TrackLiveLoopTest < Test::Unit::TestCase
     assert_events es, [[64, 127, 0]]
 
     es = events do
-      l = track_live_loop(:t, cc: 64, start_muted: true) { SpiSeq::External::Sync.sleep(1) }
+      l = track_live_loop(:t, cc: 64, start_muted: true) { sleep(1) }
       l.pump
       l.stop
     end

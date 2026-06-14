@@ -11,7 +11,7 @@ module PlayerTestHelpers
   extend Forwardable
 
   def_delegators "TestMocks", :drain_events, :reset_vt
-  def_delegators "SpiSeq::External::Sync", :vt, :use_bpm, :current_bpm, :bt
+  def_delegators "SpiSeq::External::Sync", :vt, :use_bpm, :current_bpm, :bt, :sleep
   def_delegators "SpiSeq::External::MIDI", :use_midi_defaults
 
   QT = ->(*gridish, **kwargs) { Track.new(*gridish, granularity: :quarter, **kwargs) }
