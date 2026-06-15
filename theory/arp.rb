@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "midinote"
+require_relative "../utils/internal_utils"
 
 # A simple arpeggiator. See {.arpeggiate} for details.
 module Arp

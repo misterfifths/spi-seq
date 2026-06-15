@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "forwardable"
-require_relative "interval"
 require_relative "midinote"
 
 # A grouping of notes that represents some {#num_octaves number of octaves} of a
