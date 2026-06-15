@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative "scale"
 require_relative "internal_utils"
+require_relative "scale"
 
 # Represents a note, particularly the sort understood by MIDI devices.
 #

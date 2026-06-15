@@ -4,8 +4,8 @@
 require_relative "test_helper"
 require_relative "player_extapi_stubs"
 require_relative "player_test_helpers"
-require_relative "../player"
 require_relative "../ccplayer"
+require_relative "../player"
 
 # Tests for accumulation during playback
 class AccumTest < Test::Unit::TestCase

@@ -2,8 +2,8 @@
 # frozen_string_literal: true
 
 require_relative "test_helper"
-require_relative "../track"
 require_relative "track_test_helpers"
+require_relative "../track"
 
 # Test Track's methods for regranularizing.
 class TrackRegrainTest < Test::Unit::TestCase

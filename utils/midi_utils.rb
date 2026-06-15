@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "../utils/internal_utils"
+require_relative "internal_utils"
 require_relative "../external/midi"
 require_relative "../external/sync"
 

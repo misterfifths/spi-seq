@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative "../theory/scale"
 require_relative "../utils/internal_utils"
+require_relative "../theory/scale"
 
 module TrackTestHelpers
   def equal_steps?(step, stepish, tol = 0.01)

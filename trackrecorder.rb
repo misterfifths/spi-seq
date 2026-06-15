@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require_relative "track"
 require_relative "step"
-require_relative "theory/notelength"
-require_relative "theory/midinote"
-require_relative "utils/midi_utils"
-require_relative "utils/internal_utils"
+require_relative "track"
 require_relative "external/sync"
+require_relative "theory/midinote"
+require_relative "theory/notelength"
+require_relative "utils/internal_utils"
+require_relative "utils/midi_utils"
 
 class Track
   private_class_method def self.float_lt(a, b, threshold = 0.01)

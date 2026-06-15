@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require_relative "ccstep"
+require_relative "trackbase"
 require_relative "theory/midinote"  # Only for `rest?`
 require_relative "theory/notelength"
-require_relative "trackbase"
 require_relative "utils/internal_utils"
 
 # A CCTrack deals with a grid whose slots contain {CCStep}s. CCStep instances

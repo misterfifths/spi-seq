@@ -2,9 +2,9 @@
 
 require_relative "prob"
 require_relative "step"
+require_relative "trackbase_partitions"
 require_relative "theory/euclid"
 require_relative "theory/notelength"
-require_relative "trackbase_partitions"
 require_relative "utils/internal_utils"
 
 # @private

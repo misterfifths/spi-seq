@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 require_relative "cctrack"
-require_relative "math/curves"
 require_relative "prob"
 require_relative "step"
+require_relative "trackbase"
+require_relative "math/curves"
 require_relative "theory/arp"
 require_relative "theory/midinote"
 require_relative "theory/notelength"
 require_relative "theory/scale"
-require_relative "trackbase"
 require_relative "utils/internal_utils"
 
 # A Track deals with a grid whose slots contain {Step}s. Step instances

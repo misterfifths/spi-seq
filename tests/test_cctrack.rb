@@ -2,10 +2,10 @@
 # frozen_string_literal: true
 
 require_relative "test_helper"
-require_relative "../track"
-require_relative "../cctrack"
-require_relative "../math/curves"
 require_relative "track_test_helpers"
+require_relative "../cctrack"
+require_relative "../track"
+require_relative "../math/curves"
 
 class CCTrackTest < Test::Unit::TestCase
   include TrackTestHelpers

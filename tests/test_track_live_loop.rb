@@ -3,8 +3,8 @@
 # frozen_string_literal: true
 
 require_relative "test_helper"
-require_relative "../track_live_loop"
 require_relative "player_test_helpers"
+require_relative "../track_live_loop"
 
 # NOTE: It is very important that you remember to `stop` the mocked live loop
 # threads! SpiSeq::LiveLoops stores player state by loop name, and that's only

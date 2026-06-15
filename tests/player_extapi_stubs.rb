@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require_relative "../external/sync"
+require_relative "../external/midi"
+
 # Dummy implementations of enough external methods to simulate the workings of
 # Player when using MIDI output. These track outgoing MIDI events in hashes that
 # we can check. Sonic Pi's internal synthesis (e.g. `play` and `kill`) is not
@@ -14,9 +17,6 @@
 # even if we're inside Sonic Pi. Because Sonic Pi uses a single Ruby context per
 # launch, loading this module will break playback from spi-seq in Sonic Pi until
 # it is restarted.
-
-require_relative "../external/sync"
-require_relative "../external/midi"
 
 module TestMocks
   @events = []

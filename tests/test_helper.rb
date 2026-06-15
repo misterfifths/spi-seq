@@ -29,7 +29,6 @@ rescue LoadError
 end
 
 require "test/unit"
-require_relative "../external/sonic_pi"
 require_relative "externals"
 
 def in_sonic_pi?

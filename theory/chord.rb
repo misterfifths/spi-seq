@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require "forwardable"
-require_relative "interval"
 require_relative "chordvoicing"
+require_relative "interval"
 require_relative "../utils/internal_utils"
 
 # Class documentation lives in chordvoicing.rb; I couldn't convince yard to

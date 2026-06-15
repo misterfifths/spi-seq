@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
+require_relative "../external/enumerables"
 require_relative "../external/io"
 require_relative "../external/random"
-require_relative "../external/enumerables"
 
 # @private
 module SpiSeq

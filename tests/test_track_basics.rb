@@ -2,9 +2,9 @@
 # frozen_string_literal: true
 
 require_relative "test_helper"
+require_relative "track_test_helpers"
 require_relative "../track"
 require_relative "../theory/scale"
-require_relative "track_test_helpers"
 
 # Test basic Track methods - simple methods, direct attr mutators, etc.
 class TrackBasicTest < Test::Unit::TestCase

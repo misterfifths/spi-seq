@@ -2,9 +2,9 @@
 
 require_relative "cctrack"
 require_relative "playerbase"
-require_relative "utils/internal_utils"
 require_relative "external/midi"
 require_relative "external/sync"
+require_relative "utils/internal_utils"
 
 # A CCPlayer plays a {CCTrack} by sending its {CCStep}s' CC messages over MIDI.
 #

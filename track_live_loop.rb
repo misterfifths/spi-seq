@@ -3,12 +3,11 @@
 require_relative "ccplayer"
 require_relative "cctrack"
 require_relative "player"
-require_relative "trackbase"
 require_relative "track"
-require_relative "utils/live_loop_utils"
-require_relative "utils/internal_utils"
 require_relative "external/midi"
 require_relative "external/sync"
+require_relative "utils/internal_utils"
+require_relative "utils/live_loop_utils"
 
 # @private
 module SpiSeq

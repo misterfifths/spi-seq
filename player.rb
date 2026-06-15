@@ -2,10 +2,10 @@
 
 require_relative "playerbase"
 require_relative "track"
-require_relative "utils/internal_utils"
 require_relative "external/midi"
 require_relative "external/sync"
 require_relative "external/synth"
+require_relative "utils/internal_utils"
 
 # @private
 module SpiSeq

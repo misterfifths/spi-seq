@@ -2,10 +2,10 @@
 
 require "forwardable"
 require_relative "test_helper"
-require_relative "player_extapi_stubs"
 require_relative "live_loop_extapi_stubs"
-require_relative "../player"
+require_relative "player_extapi_stubs"
 require_relative "../ccplayer"
+require_relative "../player"
 
 module PlayerTestHelpers
   extend Forwardable
