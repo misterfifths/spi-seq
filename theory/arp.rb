@@ -218,7 +218,7 @@ module Arp
   end
 
 
-  def self.altern_indexes(length, direction)
+  private_class_method def self.altern_indexes(length, direction)
     # in: work in toward the center from the edges, alternating low and high
     # notes, starting each alternation with the low note.
     # 0 1 2 3 4 5 -> 0 5 1 4 2 3
@@ -275,9 +275,7 @@ module Arp
     end
   end
 
-  private_class_method :altern_indexes
-
-  def self.peak_indexes(length, direction)
+  private_class_method def self.peak_indexes(length, direction)
     return [] if length == 0
     return [0] if length == 1
 

@@ -1581,7 +1581,7 @@ class Track < TrackBase
   # Given a slot (an array of Steps), returns a new slot with at most one Step
   # with each note. If multiple Steps in the input have the same note, one with
   # the longest gate is chosen.
-  def self.dedupe_slot(slot)
+  private_class_method def self.dedupe_slot(slot)
     steps_by_note = {}
     yelled = false
     slot.each do |step|
@@ -1599,8 +1599,6 @@ class Track < TrackBase
 
     steps_by_note.values
   end
-
-  private_class_method :dedupe_slot
 
   # Attempts to convert its argument to a grid slot (i.e. an array of Steps).
   # The returned array will be frozen. Conversion rules:

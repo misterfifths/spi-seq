@@ -221,7 +221,7 @@ class CCTrack < TrackBase
   # Given a slot (an array of CCSteps), returns a new slot with at most one
   # CCStep for each CC number. If multiple CCSteps in the input have the same
   # CC number, one with the highest `value` is chosen.
-  def self.dedupe_slot(slot)
+  private_class_method def self.dedupe_slot(slot)
     steps_by_cc = {}
     yelled = false
     slot.each do |step|
@@ -239,8 +239,6 @@ class CCTrack < TrackBase
 
     steps_by_cc.values
   end
-
-  private_class_method :dedupe_slot
 
   # Attempts to convert its argument to a grid slot (i.e. an array of CCSteps).
   # The returned array will be frozen. Conversion rules:
