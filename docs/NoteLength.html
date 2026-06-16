@@ -112,9 +112,10 @@
     <p>Represents a traditional note length (e.g. quarter, eighth, whole, etc.) and
 its duration as a fraction of a beat.</p>
 <p>You will most often use a note length when constructing tracks, as their
-<span class='object_link'><a href="TrackBase.html#granularity-instance_method" title="TrackBase#granularity (method)">granularity</a></span>. Note that when using a track constructor,
-you can pass any value that <span class='object_link'><a href="#new-class_method" title="NoteLength.new (method)">NoteLength.new</a></span> accepts; you don't need to use the
-constants defined on this class.</p>
+<span class='object_link'><a href="TrackBase.html#granularity-instance_method" title="TrackBase#granularity (method)">granularity</a></span>. It is unlikely that you will need to
+interact with this class directly though. When using a track constructor, you
+can pass any value that <span class='object_link'><a href="#new-class_method" title="NoteLength.new (method)">NoteLength.new</a></span> accepts; you don't need to use the constants
+defined on this class.</p>
 
   </div>
 </div>
@@ -418,6 +419,8 @@ constants defined on this class.</p>
     
 
     
+      (also: #to_str)
+    
   </span>
   
   
@@ -539,7 +542,6 @@ constants defined on this class.</p>
       <pre class="lines">
 
 
-27
 28
 29
 30
@@ -562,10 +564,11 @@ constants defined on this class.</p>
 47
 48
 49
-50</pre>
+50
+51</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 27</span>
+      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 28</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_length'>length</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='id identifier rubyid_length'>length</span> <span class='kw'>if</span> <span class='id identifier rubyid_length'>length</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="" title="NoteLength (class)">NoteLength</a></span></span><span class='rparen'>)</span>
@@ -648,13 +651,13 @@ whole note length.</p>
       <pre class="lines">
 
 
-118
 119
 120
-121</pre>
+121
+122</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 118</span>
+      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 119</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_double'>double</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>No supported note length longer than </span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='ivar'>@next_longer</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
@@ -711,13 +714,13 @@ a sixty-fourth note length.</p>
       <pre class="lines">
 
 
-109
 110
 111
-112</pre>
+112
+113</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 109</span>
+      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 110</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_halve'>halve</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>No supported note length shorter than </span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='ivar'>@next_shorter</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
@@ -1001,6 +1004,10 @@ to get between the two.</p>
   
 
   
+    <span class="aliases">Also known as:
+    <span class="names"><span id='to_str-instance_method'>to_str</span></span>
+    </span>
+  
 
   
 </h3><div class="docstring">
@@ -1038,12 +1045,12 @@ to get between the two.</p>
       <pre class="lines">
 
 
+173
 174
-175
-176</pre>
+175</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 174</span>
+      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 173</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_s'>to_s</span>
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='ivar'>@desc</span><span class='embexpr_end'>}</span><span class='tstring_content'>/</span><span class='embexpr_beg'>#{</span><span class='ivar'>@float_val</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
@@ -1097,12 +1104,12 @@ to get between the two.</p>
       <pre class="lines">
 
 
+167
 168
-169
-170</pre>
+169</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 168</span>
+      <pre class="code"><span class="info file"># File 'theory/notelength.rb', line 167</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_sym'>to_sym</span>
   <span class='ivar'>@sym</span>

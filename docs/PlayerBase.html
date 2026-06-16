@@ -119,10 +119,9 @@ Instead use one of its subclasses: <span class='object_link'><a href="Player.htm
 unlikely you will make explicitly make a player. Instead use
 <span class='object_link'><a href="top-level-namespace.html#track_live_loop-instance_method" title="#track_live_loop (method)">#track_live_loop</a></span>, which will create and manage an appropriate player for you.</p>
 <p>If you do want to manually drive a player, the most relevant methods are
-<span class='object_link'><a href="#play-instance_method" title="PlayerBase#play (method)">#play</a></span>, <span class='object_link'><a href="#stop-instance_method" title="PlayerBase#stop (method)">#stop</a></span>, and <span class='object_link'><a href="#sleep-instance_method" title="PlayerBase#sleep (method)">#sleep</a></span>. Note that playback is strictly cycle-based;
-the <code>play</code> method will play an entire cycle of the track before it returns.
-You can use <span class='object_link'><a href="#swap_track-instance_method" title="PlayerBase#swap_track (method)">#swap_track</a></span> between cycles to seamlessly switch to another
-track.</p>
+<span class='object_link'><a href="#play-instance_method" title="PlayerBase#play (method)">#play</a></span>, <span class='object_link'><a href="#stop-instance_method" title="PlayerBase#stop (method)">#stop</a></span>, and <span class='object_link'><a href="#sleep-instance_method" title="PlayerBase#sleep (method)">#sleep</a></span>. Playback is strictly cycle-based; the <code>play</code>
+method will play an entire cycle of the track before it returns. You can use
+<span class='object_link'><a href="#swap_track-instance_method" title="PlayerBase#swap_track (method)">#swap_track</a></span> between cycles to seamlessly switch to another track.</p>
 <p>The <span class='object_link'><a href="#cycle-instance_method" title="PlayerBase#cycle (method)">#cycle</a></span> attribute tracks the number of times the track has played. It
 begins at 0 and is incremented at the end of every <span class='object_link'><a href="#play-instance_method" title="PlayerBase#play (method)">#play</a></span> call. A call to
 <span class='object_link'><a href="#sleep-instance_method" title="PlayerBase#sleep (method)">#sleep</a></span> does not increment <code>cycle</code>.</p>
@@ -425,17 +424,17 @@ about its state during playback.</p></div>
       <pre class="lines">
 
 
+63
 64
 65
 66
 67
 68
 69
-70
-71</pre>
+70</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'playerbase.rb', line 64</span>
+      <pre class="code"><span class="info file"># File 'playerbase.rb', line 63</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_track'>track</span><span class='comma'>,</span> <span class='label'>debug:</span> <span class='kw'>false</span><span class='rparen'>)</span>
   <span class='ivar'>@track</span> <span class='op'>=</span> <span class='id identifier rubyid_track'>track</span>
@@ -503,12 +502,12 @@ A call to <span class='object_link'><a href="#sleep-instance_method" title="Play
       <pre class="lines">
 
 
+50
 51
-52
-53</pre>
+52</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'playerbase.rb', line 51</span>
+      <pre class="code"><span class="info file"># File 'playerbase.rb', line 50</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_cycle'>cycle</span>
   <span class='ivar'>@cycle</span>
@@ -567,12 +566,12 @@ playback and will take effect when the next slot is played.</p>
       <pre class="lines">
 
 
+57
 58
-59
-60</pre>
+59</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'playerbase.rb', line 58</span>
+      <pre class="code"><span class="info file"># File 'playerbase.rb', line 57</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_fill'>fill</span>
   <span class='ivar'>@fill</span>
@@ -629,12 +628,12 @@ swap to a new track between cycles of playback with <span class='object_link'><a
       <pre class="lines">
 
 
+44
 45
-46
-47</pre>
+46</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'playerbase.rb', line 45</span>
+      <pre class="code"><span class="info file"># File 'playerbase.rb', line 44</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_track'>track</span>
   <span class='ivar'>@track</span>
@@ -680,6 +679,7 @@ internally applying a BPM multiplier.</p>
       <pre class="lines">
 
 
+91
 92
 93
 94
@@ -700,17 +700,16 @@ internally applying a BPM multiplier.</p>
 109
 110
 111
-112
-113</pre>
+112</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'playerbase.rb', line 92</span>
+      <pre class="code"><span class="info file"># File 'playerbase.rb', line 91</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_play'>play</span>
   <span class='ivar'>@slot_idx</span> <span class='op'>=</span> <span class='int'>0</span>
   <span class='id identifier rubyid_reset_for_new_cycle'>reset_for_new_cycle</span>
 
-  <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_with_bpm_mul'>with_bpm_mul</span><span class='lparen'>(</span><span class='ivar'>@track</span><span class='period'>.</span><span class='id identifier rubyid_timescale'>timescale</span><span class='rparen'>)</span> <span class='kw'>do</span>
+  <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_with_bpm_mul'>with_bpm_mul</span><span class='lparen'>(</span><span class='ivar'>@track</span><span class='period'>.</span><span class='id identifier rubyid_timescale'>timescale</span><span class='rparen'>)</span> <span class='kw'>do</span>
     <span class='ivar'>@track</span><span class='period'>.</span><span class='id identifier rubyid_num_slots'>num_slots</span><span class='period'>.</span><span class='id identifier rubyid_times'>times</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_i'>i</span><span class='op'>|</span>
       <span class='ivar'>@slot_idx</span> <span class='op'>=</span> <span class='id identifier rubyid_i'>i</span>
 
@@ -722,7 +721,7 @@ internally applying a BPM multiplier.</p>
       <span class='id identifier rubyid_play_steps'>play_steps</span><span class='lparen'>(</span><span class='id identifier rubyid_triggering_steps'>triggering_steps</span><span class='rparen'>)</span>
 
       <span class='comment'># Sleep until it&#39;s time for the next slot
-</span>      <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_sleep'>sleep</span><span class='lparen'>(</span><span class='ivar'>@track</span><span class='period'>.</span><span class='id identifier rubyid_granularity'>granularity</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span><span class='rparen'>)</span>
+</span>      <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_sleep'>sleep</span><span class='lparen'>(</span><span class='ivar'>@track</span><span class='period'>.</span><span class='id identifier rubyid_granularity'>granularity</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span><span class='rparen'>)</span>
     <span class='kw'>end</span>
   <span class='kw'>end</span>
 
@@ -759,20 +758,20 @@ steps are stopped. The <span class='object_link'><a href="#cycle-instance_method
       <pre class="lines">
 
 
+117
 118
 119
 120
 121
-122
-123</pre>
+122</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'playerbase.rb', line 118</span>
+      <pre class="code"><span class="info file"># File 'playerbase.rb', line 117</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_sleep'>sleep</span>
   <span class='id identifier rubyid_end_all_steps'>end_all_steps</span>
-  <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_with_bpm_mul'>with_bpm_mul</span><span class='lparen'>(</span><span class='ivar'>@track</span><span class='period'>.</span><span class='id identifier rubyid_timescale'>timescale</span><span class='rparen'>)</span> <span class='kw'>do</span>
-    <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_sleep'>sleep</span><span class='lparen'>(</span><span class='ivar'>@track</span><span class='period'>.</span><span class='id identifier rubyid_beat_length'>beat_length</span><span class='rparen'>)</span>
+  <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_with_bpm_mul'>with_bpm_mul</span><span class='lparen'>(</span><span class='ivar'>@track</span><span class='period'>.</span><span class='id identifier rubyid_timescale'>timescale</span><span class='rparen'>)</span> <span class='kw'>do</span>
+    <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_sleep'>sleep</span><span class='lparen'>(</span><span class='ivar'>@track</span><span class='period'>.</span><span class='id identifier rubyid_beat_length'>beat_length</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -808,14 +807,14 @@ clean slate. Ends all ongoing steps and resets the internal state, like
       <pre class="lines">
 
 
+77
 78
 79
 80
-81
-82</pre>
+81</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'playerbase.rb', line 78</span>
+      <pre class="code"><span class="info file"># File 'playerbase.rb', line 77</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_stop'>stop</span>
   <span class='id identifier rubyid_end_all_steps'>end_all_steps</span>
@@ -925,15 +924,15 @@ false may result in unexpected playback.</p></div>
       <pre class="lines">
 
 
+149
 150
 151
 152
 153
-154
-155</pre>
+154</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'playerbase.rb', line 150</span>
+      <pre class="code"><span class="info file"># File 'playerbase.rb', line 149</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_swap_track'>swap_track</span><span class='lparen'>(</span><span class='id identifier rubyid_new_track'>new_track</span><span class='comma'>,</span> <span class='label'>reset_cycle:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>reset_accum:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='ivar'>@accum_data</span><span class='op'>&amp;.</span><span class='id identifier rubyid_clear'>clear</span> <span class='kw'>if</span> <span class='id identifier rubyid_reset_accum'>reset_accum</span> <span class='op'>||</span> <span class='lparen'>(</span><span class='id identifier rubyid_reset_accum'>reset_accum</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='ivar'>@track</span><span class='period'>.</span><span class='id identifier rubyid_equal?'>equal?</span><span class='lparen'>(</span><span class='id identifier rubyid_new_track'>new_track</span><span class='rparen'>)</span><span class='rparen'>)</span>

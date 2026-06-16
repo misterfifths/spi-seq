@@ -107,8 +107,7 @@
         <dt id="Up-constant" class="">Up =
           <div class="docstring">
   <div class="discussion">
-    <p>An arpeggiation direction that returns notes in increasing order. For
-example:</p>
+    <p>An arpeggiation direction that returns notes in increasing order.</p>
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_arp'><span class='object_link'><a href="top-level-namespace.html#arp-instance_method" title="#arp (method)">arp</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:e4</span><span class='comma'>,</span> <span class='symbol'>:d4</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='symbol'>:up</span><span class='rparen'>)</span>
 <span class='comment'># returns [:c4, :d4, :e4]</span></code></pre>
 
@@ -124,8 +123,7 @@ example:</p>
         <dt id="Down-constant" class="">Down =
           <div class="docstring">
   <div class="discussion">
-    <p>An arpeggiation direction that returns notes in decreasing order. For
-example:</p>
+    <p>An arpeggiation direction that returns notes in decreasing order.</p>
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_arp'><span class='object_link'><a href="top-level-namespace.html#arp-instance_method" title="#arp (method)">arp</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:e4</span><span class='comma'>,</span> <span class='symbol'>:d4</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='symbol'>:down</span><span class='rparen'>)</span>
 <span class='comment'># returns [:e4, :d4, :c4]</span></code></pre>
 
@@ -142,8 +140,7 @@ example:</p>
           <div class="docstring">
   <div class="discussion">
     <p>An arpeggiation direction that returns notes in increasing order, then in
-reverse. The middle note is not repeated, nor is the final note. For
-example:</p>
+reverse. The middle note is not repeated, nor is the final note.</p>
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_arp'><span class='object_link'><a href="top-level-namespace.html#arp-instance_method" title="#arp (method)">arp</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:e4</span><span class='comma'>,</span> <span class='symbol'>:d4</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='symbol'>:updown</span><span class='rparen'>)</span>
 <span class='comment'># returns [:c4, :d4, :e4, :d4]</span></code></pre>
 
@@ -161,7 +158,7 @@ example:</p>
   <div class="discussion">
     <p>An arpeggiation direction that returns notes in the same order as <span class='object_link'><a href="#UpDown-constant" title="Arp::UpDown (constant)">UpDown</a></span>,
 but with each note doubled. The middle note is not repeated, nor is the
-final note. For example:</p>
+final note.</p>
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_arp'><span class='object_link'><a href="top-level-namespace.html#arp-instance_method" title="#arp (method)">arp</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:e4</span><span class='comma'>,</span> <span class='symbol'>:d4</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='symbol'>:twouptwodown</span><span class='rparen'>)</span>
 <span class='comment'># returns [:c4, :c4, :d4, :d4, :e4, :e4, :d4, :d4]</span></code></pre>
 
@@ -178,7 +175,7 @@ final note. For example:</p>
           <div class="docstring">
   <div class="discussion">
     <p>An arpeggiation direction that returns notes in alternating order, working
-inward from opposite edges of the input. For example:</p>
+inward from opposite edges of the input.</p>
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_arp'><span class='object_link'><a href="top-level-namespace.html#arp-instance_method" title="#arp (method)">arp</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:a1</span><span class='comma'>,</span> <span class='symbol'>:b2</span><span class='comma'>,</span> <span class='symbol'>:c3</span><span class='comma'>,</span> <span class='symbol'>:d4</span><span class='comma'>,</span> <span class='symbol'>:e5</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='symbol'>:alternin</span><span class='rparen'>)</span>
 <span class='comment'># returns [:a1, :e5, :b2, :d4, :c3]</span></code></pre>
 
@@ -195,7 +192,7 @@ inward from opposite edges of the input. For example:</p>
           <div class="docstring">
   <div class="discussion">
     <p>An arpeggiation direction that returns notes in alternating order, working
-outward from the middle of the input. For example:</p>
+outward from the middle of the input.</p>
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_arp'><span class='object_link'><a href="top-level-namespace.html#arp-instance_method" title="#arp (method)">arp</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:a1</span><span class='comma'>,</span> <span class='symbol'>:b2</span><span class='comma'>,</span> <span class='symbol'>:c3</span><span class='comma'>,</span> <span class='symbol'>:d4</span><span class='comma'>,</span> <span class='symbol'>:e5</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='symbol'>:alternout</span><span class='rparen'>)</span>
 <span class='comment'># returns [:c3, :b2, :d4, :a1, :e5]</span></code></pre>
 
@@ -213,7 +210,7 @@ outward from the middle of the input. For example:</p>
   <div class="discussion">
     <p>An arpeggiation direction that returns notes in alternating order, first
 inward like <span class='object_link'><a href="#AlternIn-constant" title="Arp::AlternIn (constant)">AlternIn</a></span>, then outward like <span class='object_link'><a href="#AlternOut-constant" title="Arp::AlternOut (constant)">AlternOut</a></span>, but not repeating
-the middle note. For example:</p>
+the middle note.</p>
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_arp'><span class='object_link'><a href="top-level-namespace.html#arp-instance_method" title="#arp (method)">arp</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:a1</span><span class='comma'>,</span> <span class='symbol'>:b2</span><span class='comma'>,</span> <span class='symbol'>:c3</span><span class='comma'>,</span> <span class='symbol'>:d4</span><span class='comma'>,</span> <span class='symbol'>:e5</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='symbol'>:alterninout</span><span class='rparen'>)</span>
 <span class='comment'># returns [:a1, :e5, :b2, :d4, :c3, :b2, :d4, :a1, :e5]</span></code></pre>
 
@@ -231,7 +228,7 @@ the middle note. For example:</p>
   <div class="discussion">
     <p>An arpeggiation direction that returns notes in ascending order, but with
 the highest note in every other position. The high note is not doubled at
-the end. For example:</p>
+the end.</p>
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_arp'><span class='object_link'><a href="top-level-namespace.html#arp-instance_method" title="#arp (method)">arp</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:e4</span><span class='comma'>,</span> <span class='symbol'>:d4</span><span class='comma'>,</span> <span class='symbol'>:c5</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='symbol'>:pinky</span><span class='rparen'>)</span>
 <span class='comment'># returns [:c4, :c5, :d4, :c5, :e4, :c5]</span></code></pre>
 
@@ -249,7 +246,7 @@ the end. For example:</p>
   <div class="discussion">
     <p>An arpeggiation direction that returns notes in ascending order, but with
 the lowest note in every other position. The low note is not doubled at the
-beginning. For example:</p>
+beginning.</p>
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_arp'><span class='object_link'><a href="top-level-namespace.html#arp-instance_method" title="#arp (method)">arp</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:e4</span><span class='comma'>,</span> <span class='symbol'>:d4</span><span class='comma'>,</span> <span class='symbol'>:c5</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='symbol'>:thumb</span><span class='rparen'>)</span>
 <span class='comment'># returns [:d4, :c4, :e4, :c4, :c5, :c4]</span></code></pre>
 
@@ -268,7 +265,7 @@ beginning. For example:</p>
     <p>An arpeggiation direction that returns notes in an order that climbs to the
 highest note and then descends. The notes are sorted ascending, then every
 other note is chosen to walk toward the highest note, then the remaining
-notes appear in descending order. For example:</p>
+notes appear in descending order.</p>
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_arp'><span class='object_link'><a href="top-level-namespace.html#arp-instance_method" title="#arp (method)">arp</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:c1</span><span class='comma'>,</span> <span class='symbol'>:c3</span><span class='comma'>,</span> <span class='symbol'>:c2</span><span class='comma'>,</span> <span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:c5</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='symbol'>:peak</span><span class='rparen'>)</span>
 <span class='comment'># returns [:c1, :c3, :c5, :c4, :c2]</span></code></pre>
 
@@ -287,7 +284,7 @@ notes appear in descending order. For example:</p>
     <p>An arpeggiation direction that returns notes in an order that descends from
 the highest note and then ascends. The highest note appears first, then
 every other note descending to the lowest, then the remaining notes in
-ascending order. For example:</p>
+ascending order.</p>
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_arp'><span class='object_link'><a href="top-level-namespace.html#arp-instance_method" title="#arp (method)">arp</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:c1</span><span class='comma'>,</span> <span class='symbol'>:c3</span><span class='comma'>,</span> <span class='symbol'>:c2</span><span class='comma'>,</span> <span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:c5</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='symbol'>:valley</span><span class='rparen'>)</span>
 <span class='comment'># returns [:c5, :c3, :c1, :c2, :c4]</span></code></pre>
 
@@ -403,9 +400,10 @@ direction, the notes from the <code>spread</code> will appear at the end, in ord
 lowest to highest.</p>
 <p>If <code>extra_octaves</code> is specified, the result will contain copies of the notes
 in the <code>notes</code> array shifted by each offset in <code>extra_octaves</code>. This
-addition applies before any <code>spread</code>. If the direction is <span class='object_link'><a href="#Order-constant" title="Arp::Order (constant)">:order</a></span>,
-notes added this way will appear at the end of the result, before notes from
-the <code>spread</code>. Like <code>spread</code>, <code>extra_octaves</code> will not add duplicate notes.</p>
+addition applies before any <code>spread</code>. If the direction is
+<span class='object_link'><a href="#Order-constant" title="Arp::Order (constant)">:order</a></span>, notes added this way will appear at the end of the
+result, before notes from the <code>spread</code>. Like <code>spread</code>, <code>extra_octaves</code> will
+not add duplicate notes.</p>
 
   </div>
 </div>
@@ -464,8 +462,8 @@ arpeggiate; an array of <span class='object_link'><a href="MIDINote.html" title=
       
         &mdash;
         <div class='inline'><p>One of the direction symbols defined on Arp, e.g.
-<span class='object_link'><a href="#Pinky-constant" title="Arp::Pinky (constant)">:pinky</a></span> or <span class='object_link'><a href="#UpDown-constant" title="Arp::UpDown (constant)">:updown</a></span>. Note that you can pass the symbol
-directly rather than referencing the constant on this module.</p></div>
+<span class='object_link'><a href="#Pinky-constant" title="Arp::Pinky (constant)">:pinky</a></span> or <span class='object_link'><a href="#UpDown-constant" title="Arp::UpDown (constant)">:updown</a></span>. You can pass the symbol
+directly rather than referencing the constant on the Arp module.</p></div>
       
     </li>
   
@@ -543,8 +541,6 @@ details.</p></div>
       <pre class="lines">
 
 
-143
-144
 145
 146
 147
@@ -616,10 +612,12 @@ details.</p></div>
 213
 214
 215
-216</pre>
+216
+217
+218</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/arp.rb', line 143</span>
+      <pre class="code"><span class="info file"># File 'theory/arp.rb', line 145</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_arpeggiate'>arpeggiate</span><span class='lparen'>(</span><span class='id identifier rubyid_notes'>notes</span><span class='comma'>,</span> <span class='id identifier rubyid_direction'>direction</span><span class='comma'>,</span> <span class='label'>spread:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>extra_octaves:</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span>
   <span class='comment'># See the note in SpiSeq::Utils.enumerable? about arrayify.

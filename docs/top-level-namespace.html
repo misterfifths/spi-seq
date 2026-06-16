@@ -120,7 +120,7 @@
           <div class="docstring">
   <div class="discussion">
     <p>An alias for the <span class='object_link'><a href="CCTrack.html" title="CCTrack (class)">CCTrack</a></span> class. You can easily make a new instance using the
-<span class='object_link'><a href="CCTrack.html#initialize-instance_method" title="CCTrack#initialize (method)">[]</a></span> method, like <code>CCT[:c4, :d4]</code>.</p>
+<span class='object_link'><a href="CCTrack.html#initialize-instance_method" title="CCTrack#initialize (method)">[]</a></span> method, like <code>CCT[CC(127, 64), CC(127, 0)]</code>.</p>
 
   </div>
 </div>
@@ -225,28 +225,6 @@ name. See also <span class='object_link'><a href="#SC-instance_method" title="#S
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="top-level-namespace.html#current_track_defaults-instance_method" title="#current_track_defaults (instance method)">#<strong>current_track_defaults</strong>  &#x21d2; Hash{Symbol =&gt; Object} </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Returns the current track defaults as set by <span class='object_link'><a href="top-level-namespace.html#use_track_defaults-instance_method" title="#use_track_defaults (method)">#use_track_defaults</a></span>, or an empty hash if no defaults have been set.</p></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="top-level-namespace.html#S-instance_method" title="#S (instance method)">#<strong>S</strong>(*args, **kwargs)  &#x21d2; Step </a>
     
 
@@ -288,10 +266,20 @@ name. See also <span class='object_link'><a href="#SC-instance_method" title="#S
 </li>
 
       
+    </ul>
+    
+  
+    <h2>
+      Default settings
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="top-level-namespace.html#use_track_defaults-instance_method" title="#use_track_defaults (instance method)">#<strong>use_track_defaults</strong>(strict_track_merging:)  </a>
+      <a href="top-level-namespace.html#current_cc_control_defaults-instance_method" title="#current_cc_control_defaults (instance method)">#<strong>current_cc_control_defaults</strong>  &#x21d2; Hash{Symbol =&gt; Object} </a>
     
 
     
@@ -305,7 +293,73 @@ name. See also <span class='object_link'><a href="#SC-instance_method" title="#S
   
 
   
-    <span class="summary_desc"><div class='inline'><p>Set global track-related behaviors.</p></div></span>
+    <span class="summary_desc"><div class='inline'><p>Returns the current CC control defaults as set by <span class='object_link'><a href="top-level-namespace.html#use_cc_control_defaults-instance_method" title="#use_cc_control_defaults (method)">#use_cc_control_defaults</a></span>, or an empty hash if no defaults have been set.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="top-level-namespace.html#current_player_defaults-instance_method" title="#current_player_defaults (instance method)">#<strong>current_player_defaults</strong>  &#x21d2; Hash{Symbol =&gt; Object} </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns the current player defaults as set by <span class='object_link'><a href="top-level-namespace.html#use_player_defaults-instance_method" title="#use_player_defaults (method)">#use_player_defaults</a></span>, or an empty hash if no defaults have been set.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="top-level-namespace.html#use_cc_control_defaults-instance_method" title="#use_cc_control_defaults (instance method)">#<strong>use_cc_control_defaults</strong>(port: nil, channel: nil)  </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Set global default MIDI parameters to use when watching for incoming CC messages.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="top-level-namespace.html#use_player_defaults-instance_method" title="#use_player_defaults (instance method)">#<strong>use_player_defaults</strong>(midi: nil, sync: nil, start_muted: nil, fill_cc: nil, send_cycle_cues: nil)  </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Set global default <span class='object_link'><a href="Player.html" title="Player (class)">Player</a></span> and <span class='object_link'><a href="top-level-namespace.html#track_live_loop-instance_method" title="#track_live_loop (method)">#track_live_loop</a></span> behaviors.</p></div></span>
   
 </li>
 
@@ -362,50 +416,6 @@ name. See also <span class='object_link'><a href="#SC-instance_method" title="#S
 
   
     <span class="summary_desc"><div class='inline'><p>This method is identical to <span class='object_link'><a href="top-level-namespace.html#track_live_loop-instance_method" title="#track_live_loop (method)">#track_live_loop</a></span> except that it plays a dummy <span class='object_link'><a href="CCTrack.html" title="CCTrack (class)">CCTrack</a></span> (rather than a <span class='object_link'><a href="Track.html" title="Track (class)">Track</a></span>) when the <code>track</code> parameter is nil.</p></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="top-level-namespace.html#current_cc_control_defaults-instance_method" title="#current_cc_control_defaults (instance method)">#<strong>current_cc_control_defaults</strong>  &#x21d2; Hash{Symbol =&gt; Object} </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Returns the current CC control defaults as set by <span class='object_link'><a href="top-level-namespace.html#use_cc_control_defaults-instance_method" title="#use_cc_control_defaults (method)">#use_cc_control_defaults</a></span>, or an empty hash if no defaults have been set.</p></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="top-level-namespace.html#current_player_defaults-instance_method" title="#current_player_defaults (instance method)">#<strong>current_player_defaults</strong>  &#x21d2; Hash{Symbol =&gt; Object} </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Returns the current player defaults as set by <span class='object_link'><a href="top-level-namespace.html#use_player_defaults-instance_method" title="#use_player_defaults (method)">#use_player_defaults</a></span>, or an empty hash if no defaults have been set.</p></div></span>
   
 </li>
 
@@ -548,50 +558,6 @@ name. See also <span class='object_link'><a href="#SC-instance_method" title="#S
 </li>
 
       
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="top-level-namespace.html#use_cc_control_defaults-instance_method" title="#use_cc_control_defaults (instance method)">#<strong>use_cc_control_defaults</strong>(port: nil, channel: nil)  </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Set global default MIDI parameters to use when watching for incoming CC messages.</p></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="top-level-namespace.html#use_player_defaults-instance_method" title="#use_player_defaults (instance method)">#<strong>use_player_defaults</strong>(midi: nil, sync: nil, start_muted: nil, fill_cc: nil, send_cycle_cues: nil)  </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Set global default <span class='object_link'><a href="Player.html" title="Player (class)">Player</a></span> and <span class='object_link'><a href="top-level-namespace.html#track_live_loop-instance_method" title="#track_live_loop (method)">#track_live_loop</a></span> behaviors.</p></div></span>
-  
-</li>
-
-      
     </ul>
     
   
@@ -605,7 +571,7 @@ name. See also <span class='object_link'><a href="#SC-instance_method" title="#S
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="top-level-namespace.html#arp-instance_method" title="#arp (instance method)">#<strong>arp</strong>(*args, **kwargs)  &#x21d2; Array&lt;MIDINote&gt; </a>
+      <a href="top-level-namespace.html#arp-instance_method" title="#arp (instance method)">#<strong>arp</strong>(notes, direction, spread: 0, extra_octaves: [])  &#x21d2; Array&lt;MIDINote&gt; </a>
     
 
     
@@ -619,7 +585,7 @@ name. See also <span class='object_link'><a href="#SC-instance_method" title="#S
   
 
   
-    <span class="summary_desc"><div class='inline'><p>An alias for <span class='object_link'><a href="Arp.html#arpeggiate-class_method" title="Arp.arpeggiate (method)">Arp.arpeggiate</a></span>.</p></div></span>
+    <span class="summary_desc"><div class='inline'><p>Returns an array of <span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span>s by arpeggiating the given array of notes.</p></div></span>
   
 </li>
 
@@ -685,7 +651,7 @@ name. See also <span class='object_link'><a href="#SC-instance_method" title="#S
   
 
   
-    <span class="summary_desc"><div class='inline'><p>An alias for <span class='object_link'><a href="Interval.html#new-class_method" title="Interval.new (method)">Interval.new</a></span>.</p></div></span>
+    <span class="summary_desc"><div class='inline'><p>Creates a new Interval.</p></div></span>
   
 </li>
 
@@ -707,7 +673,7 @@ name. See also <span class='object_link'><a href="#SC-instance_method" title="#S
   
 
   
-    <span class="summary_desc"><div class='inline'><p>An alias for <span class='object_link'><a href="MIDINote.html#new-class_method" title="MIDINote.new (method)">MIDINote.new</a></span>.</p></div></span>
+    <span class="summary_desc"><div class='inline'><p>Creates a new MIDINote instance from the given value, which must be either a MIDI note number, a string, a symbol, or a MIDINote instance (in which case the argument is returned as-is).</p></div></span>
   
 </li>
 
@@ -715,7 +681,7 @@ name. See also <span class='object_link'><a href="#SC-instance_method" title="#S
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="top-level-namespace.html#SC-instance_method" title="#SC (instance method)">#<strong>SC</strong>(*args, **kwargs)  &#x21d2; Scale </a>
+      <a href="top-level-namespace.html#SC-instance_method" title="#SC (instance method)">#<strong>SC</strong>(tonic, name, num_octaves: 1, clamp_to_midi: false)  &#x21d2; Scale </a>
     
 
     
@@ -729,7 +695,7 @@ name. See also <span class='object_link'><a href="#SC-instance_method" title="#S
   
 
   
-    <span class="summary_desc"><div class='inline'><p>An alias for <span class='object_link'><a href="Scale.html#initialize-instance_method" title="Scale#initialize (method)">Scale.new</a></span>.</p></div></span>
+    <span class="summary_desc"><div class='inline'><p>Creates a new Scale consisting of some number of octaves starting on a root note.</p></div></span>
   
 </li>
 
@@ -923,7 +889,7 @@ name. See also <span class='object_link'><a href="#SC-instance_method" title="#S
       <div class="method_details first">
   <h3 class="signature first" id="arp-instance_method">
   
-    #<strong>arp</strong>(*args, **kwargs)  &#x21d2; <tt>Array&lt;<span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span>&gt;</tt> 
+    #<strong>arp</strong>(notes, direction, spread: 0, extra_octaves: [])  &#x21d2; <tt>Array&lt;<span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span>&gt;</tt> 
   
 
   
@@ -931,12 +897,123 @@ name. See also <span class='object_link'><a href="#SC-instance_method" title="#S
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p>An alias for <span class='object_link'><a href="Arp.html#arpeggiate-class_method" title="Arp.arpeggiate (method)">Arp.arpeggiate</a></span>.</p>
+    <p>Returns an array of <span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span>s by arpeggiating the given array of notes.
+See the documentation on the constants in this class for details on the
+possible <code>direction</code>s.</p>
+<p>This method is aliased to <span class='object_link'><a href="#arp-instance_method" title="#arp (method)">#arp</a></span> for convenience.</p>
+<p>If <code>spread</code> is &gt; 0, the result will have a note added an octave above each
+of the the <code>spread</code> lowest notes. If this operation creates duplicate notes
+(e.g. <code>spread</code>=1 with <code>[:e3, :e4]</code>, which would result in two E4s), the
+duplicates will not be added to the result. In the <span class='object_link'><a href="Arp.html#Order-constant" title="Arp::Order (constant)">:order</a></span>
+direction, the notes from the <code>spread</code> will appear at the end, in order from
+lowest to highest.</p>
+<p>If <code>extra_octaves</code> is specified, the result will contain copies of the notes
+in the <code>notes</code> array shifted by each offset in <code>extra_octaves</code>. This
+addition applies before any <code>spread</code>. If the direction is
+<span class='object_link'><a href="Arp.html#Order-constant" title="Arp::Order (constant)">:order</a></span>, notes added this way will appear at the end of the
+result, before notes from the <code>spread</code>. Like <code>spread</code>, <code>extra_octaves</code> will
+not add duplicate notes.</p>
+<p>An alias for <span class='object_link'><a href="Arp.html#arpeggiate-class_method" title="Arp.arpeggiate (method)">Arp.arpeggiate</a></span>.</p>
 
   </div>
 </div>
 <div class="tags">
   
+  <div class="examples">
+    <h4 class="tag_title">Examples:</h4>
+    
+      
+      <pre class="example code"><code><span class='id identifier rubyid_arp'>arp</span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:a1</span><span class='comma'>,</span> <span class='symbol'>:b1</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='symbol'>:down</span><span class='comma'>,</span> <span class='label'>extra_octaves:</span> <span class='lbracket'>[</span><span class='op'>-</span><span class='int'>1</span><span class='comma'>,</span> <span class='int'>2</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+<span class='comment'># The notes from [:a1, :b1], shifted down an octave and up 2 octaves,
+</span><span class='comment'># are added before applying the direction Arp::Down
+</span><span class='comment'># returns [:b3, :a3, :b1, :a1, :b0, :a0]</span></code></pre>
+    
+      
+      <pre class="example code"><code><span class='id identifier rubyid_arp'>arp</span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:b1</span><span class='comma'>,</span> <span class='symbol'>:a1</span><span class='comma'>,</span> <span class='symbol'>:c1</span><span class='comma'>,</span> <span class='symbol'>:d1</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='symbol'>:up</span><span class='comma'>,</span> <span class='label'>spread:</span> <span class='int'>3</span><span class='rparen'>)</span>
+<span class='comment'># Before applying the direction Arp::Up, the three lowest notes
+</span><span class='comment'># (:c1, :d1, :a1) are added to the pool, shifted up an octave.
+</span><span class='comment'># returns [:c1, :d1, :a1, :b1, :c2, :d2, :a2]</span></code></pre>
+    
+  </div>
+
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>notes</span>
+      
+      
+        <span class='type'>(<tt>Array&lt;<span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span>, <span class='object_link'>Symbol</span>, <span class='object_link'>String</span>, Integer&gt;</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The notes to
+arpeggiate; an array of <span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span>s or any value accepted by
+<span class='object_link'><a href="MIDINote.html#new-class_method" title="MIDINote.new (method)">MIDINote.new</a></span>.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>direction</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'>Symbol</span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>One of the direction symbols defined on Arp, e.g.
+<span class='object_link'><a href="Arp.html#Pinky-constant" title="Arp::Pinky (constant)">:pinky</a></span> or <span class='object_link'><a href="Arp.html#UpDown-constant" title="Arp::UpDown (constant)">:updown</a></span>. You can pass the symbol
+directly rather than referencing the constant on the Arp module.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>spread</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>0</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Adds notes an octave above some number of the lowest
+notes in the result. See above for details.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>extra_octaves</span>
+      
+      
+        <span class='type'>(<tt>Array&lt;Integer&gt;</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>[]</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Adds a copy of the incoming notes
+shifted by some number of octaves before arpeggiating. See above for
+details.</p></div>
+      
+    </li>
+  
+</ul>
+
 
 
 
@@ -954,9 +1031,19 @@ name. See also <span class='object_link'><a href="#SC-instance_method" title="#S
       
       
       
+        &mdash;
+        <div class='inline'><p>The arpeggiated notes.</p></div>
+      
     </li>
   
 </ul>
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><span class='object_link'><a href="Track.html#arp-class_method" title="Track.arp (method)">Track.arp</a></span></li>
+    
+  </ul>
 
 </div><table class="source_code">
   <tr>
@@ -964,15 +1051,15 @@ name. See also <span class='object_link'><a href="#SC-instance_method" title="#S
       <pre class="lines">
 
 
-8
-9
-10</pre>
+327
+328
+329</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/arp.rb', line 8</span>
+      <pre class="code"><span class="info file"># File 'theory/arp.rb', line 327</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_arp'>arp</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span>
-  <span class='const'><span class='object_link'><a href="Arp.html" title="Arp (module)">Arp</a></span></span><span class='period'>.</span><span class='id identifier rubyid_arpeggiate'><span class='object_link'><a href="Arp.html#arpeggiate-class_method" title="Arp.arpeggiate (method)">arpeggiate</a></span></span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_arp'>arp</span><span class='lparen'>(</span><span class='id identifier rubyid_notes'>notes</span><span class='comma'>,</span> <span class='id identifier rubyid_direction'>direction</span><span class='comma'>,</span> <span class='label'>spread:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>extra_octaves:</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="Arp.html" title="Arp (module)">Arp</a></span></span><span class='period'>.</span><span class='id identifier rubyid_arpeggiate'><span class='object_link'><a href="Arp.html#arpeggiate-class_method" title="Arp.arpeggiate (method)">arpeggiate</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_notes'>notes</span><span class='comma'>,</span> <span class='id identifier rubyid_direction'>direction</span><span class='comma'>,</span> <span class='label'>spread:</span> <span class='id identifier rubyid_spread'>spread</span><span class='comma'>,</span> <span class='label'>extra_octaves:</span> <span class='id identifier rubyid_extra_octaves'>extra_octaves</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -992,7 +1079,8 @@ name. See also <span class='object_link'><a href="#SC-instance_method" title="#S
   <div class="discussion">
     <p>Returns an array of <span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span>s that express a named chord on the given
 root note, using a particular voicing style and inversion. A shortcut for
-creating a <span class='object_link'><a href="Chord.html" title="Chord (class)">Chord</a></span> and immediately <span class='object_link'><a href="Chord.html#voice-instance_method" title="Chord#voice (method)">voicing</a></span> it.</p>
+creating a <span class='object_link'><a href="Chord.html" title="Chord (class)">Chord</a></span> and immediately <span class='object_link'><a href="Chord.html#voice-instance_method" title="Chord#voice (method)">voicing</a></span> it.
+An alias for <span class='object_link'><a href="Chord.html#voiced-class_method" title="Chord.voiced (method)">Chord.voiced</a></span>.</p>
 
   </div>
 </div>
@@ -1127,12 +1215,12 @@ before voicing it.</p></div>
       <pre class="lines">
 
 
-12
-13
-14</pre>
+419
+420
+421</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/chordvoicing.rb', line 12</span>
+      <pre class="code"><span class="info file"># File 'theory/chordvoicing.rb', line 419</span>
 
 <span class='kw'>def</span> <span class='const'>C</span><span class='lparen'>(</span><span class='id identifier rubyid_root'><span class='object_link'><a href="" title="Top Level Namespace (root)">root</a></span></span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_voicing'>voicing</span> <span class='op'>=</span> <span class='symbol'>:closed</span><span class='comma'>,</span> <span class='label'>num_octaves:</span> <span class='int'>1</span><span class='comma'>,</span> <span class='label'>invert:</span> <span class='int'>0</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="Chord.html" title="Chord (class)">Chord</a></span></span><span class='period'>.</span><span class='id identifier rubyid_voiced'><span class='object_link'><a href="Chord.html#voiced-class_method" title="Chord.voiced (method)">voiced</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_root'><span class='object_link'><a href="" title="Top Level Namespace (root)">root</a></span></span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_voicing'>voicing</span><span class='comma'>,</span> <span class='label'>num_octaves:</span> <span class='id identifier rubyid_num_octaves'>num_octaves</span><span class='comma'>,</span> <span class='label'>invert:</span> <span class='id identifier rubyid_invert'>invert</span><span class='rparen'>)</span>
@@ -1186,12 +1274,12 @@ before voicing it.</p></div>
       <pre class="lines">
 
 
-8
-9
-10</pre>
+122
+123
+124</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'ccstep.rb', line 8</span>
+      <pre class="code"><span class="info file"># File 'ccstep.rb', line 122</span>
 
 <span class='kw'>def</span> <span class='const'>CC</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="CCStep.html" title="CCStep (class)">CCStep</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="CCStep.html#initialize-instance_method" title="CCStep#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span>
@@ -1372,10 +1460,6 @@ prior execution of the block afterwards.</p></div>
       <pre class="lines">
 
 
-181
-182
-183
-184
 185
 186
 187
@@ -1392,10 +1476,14 @@ prior execution of the block afterwards.</p></div>
 198
 199
 200
-201</pre>
+201
+202
+203
+204
+205</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'utils/live_loop_utils.rb', line 181</span>
+      <pre class="code"><span class="info file"># File 'utils/live_loop_utils.rb', line 185</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_cc_mutable_live_loop'>cc_mutable_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='label'>cc:</span><span class='comma'>,</span> <span class='label'>port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>start_muted:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='id identifier rubyid_channel'>channel</span> <span class='op'>=</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>MIDI</span><span class='period'>.</span><span class='id identifier rubyid_resolve_cc_port_and_channel'>resolve_cc_port_and_channel</span><span class='lparen'>(</span><span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='id identifier rubyid_channel'>channel</span><span class='rparen'>)</span>
@@ -1413,7 +1501,7 @@ prior execution of the block afterwards.</p></div>
 </span>  <span class='kw'>unless</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>LiveLoops</span><span class='period'>.</span><span class='id identifier rubyid_is_running?'>is_running?</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rparen'>)</span>
     <span class='id identifier rubyid_default_cc_val'>default_cc_val</span> <span class='op'>=</span> <span class='id identifier rubyid_start_muted'>start_muted</span> <span class='op'>?</span> <span class='int'>0</span> <span class='op'>:</span> <span class='int'>127</span>
     <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Log</span><span class='period'>.</span><span class='id identifier rubyid_log'>log</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>sending default CC </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_cc'>cc</span><span class='embexpr_end'>}</span><span class='tstring_content'> value </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_default_cc_val'>default_cc_val</span><span class='embexpr_end'>}</span><span class='tstring_content'> for live loop </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>cc_mute_control</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-    <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_midi_cc'>midi_cc</span><span class='lparen'>(</span><span class='id identifier rubyid_cc'>cc</span><span class='comma'>,</span> <span class='id identifier rubyid_default_cc_val'>default_cc_val</span><span class='comma'>,</span> <span class='label'>port:</span> <span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='id identifier rubyid_channel'>channel</span><span class='rparen'>)</span>
+    <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>External</span><span class='op'>::</span><span class='const'>MIDI</span><span class='period'>.</span><span class='id identifier rubyid_midi_cc'>midi_cc</span><span class='lparen'>(</span><span class='id identifier rubyid_cc'>cc</span><span class='comma'>,</span> <span class='id identifier rubyid_default_cc_val'>default_cc_val</span><span class='comma'>,</span> <span class='label'>port:</span> <span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='id identifier rubyid_channel'>channel</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
 
   <span class='id identifier rubyid_mutable_live_loop'><span class='object_link'><a href="#mutable_live_loop-instance_method" title="#mutable_live_loop (method)">mutable_live_loop</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='label'>start_muted:</span> <span class='id identifier rubyid_start_muted'>start_muted</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
@@ -1596,8 +1684,6 @@ the same manner as <code>channel</code>.</p></div>
       <pre class="lines">
 
 
-85
-86
 87
 88
 89
@@ -1608,10 +1694,12 @@ the same manner as <code>channel</code>.</p></div>
 94
 95
 96
-97</pre>
+97
+98
+99</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'utils/midi_utils.rb', line 85</span>
+      <pre class="code"><span class="info file"># File 'utils/midi_utils.rb', line 87</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_cc_watcher_live_loop'>cc_watcher_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='label'>port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>block must take 1 - 2 arguments</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>==</span> <span class='int'>0</span> <span class='op'>||</span> <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>&gt;</span> <span class='int'>2</span>
@@ -1619,9 +1707,9 @@ the same manner as <code>channel</code>.</p></div>
   <span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='id identifier rubyid_channel'>channel</span> <span class='op'>=</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>MIDI</span><span class='period'>.</span><span class='id identifier rubyid_resolve_cc_port_and_channel'>resolve_cc_port_and_channel</span><span class='lparen'>(</span><span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='id identifier rubyid_channel'>channel</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_cue_path'>cue_path</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/midi:</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_port'>port</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_channel'>channel</span><span class='embexpr_end'>}</span><span class='tstring_content'>/control_change</span><span class='tstring_end'>&quot;</span></span>
 
-  <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_live_loop'>live_loop</span> <span class='id identifier rubyid_loop_name'>loop_name</span> <span class='kw'>do</span>
-    <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_with_real_time'>with_real_time</span> <span class='kw'>do</span>
-      <span class='id identifier rubyid_cc'>cc</span><span class='comma'>,</span> <span class='id identifier rubyid_val'>val</span> <span class='op'>=</span> <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_sync'>sync</span><span class='lparen'>(</span><span class='id identifier rubyid_cue_path'>cue_path</span><span class='rparen'>)</span>
+  <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_live_loop'>live_loop</span> <span class='id identifier rubyid_loop_name'>loop_name</span> <span class='kw'>do</span>
+    <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_with_real_time'>with_real_time</span> <span class='kw'>do</span>
+      <span class='id identifier rubyid_cc'>cc</span><span class='comma'>,</span> <span class='id identifier rubyid_val'>val</span> <span class='op'>=</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_sync'>sync</span><span class='lparen'>(</span><span class='id identifier rubyid_cue_path'>cue_path</span><span class='rparen'>)</span>
       <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_call_varargs'>call_varargs</span><span class='lparen'>(</span><span class='id identifier rubyid_block'>block</span><span class='comma'>,</span> <span class='id identifier rubyid_cc'>cc</span><span class='comma'>,</span> <span class='id identifier rubyid_val'>val</span><span class='rparen'>)</span>
     <span class='kw'>end</span>
   <span class='kw'>end</span>
@@ -1682,12 +1770,12 @@ the same manner as <code>channel</code>.</p></div>
       <pre class="lines">
 
 
-313
-314
-315</pre>
+310
+311
+312</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'cctrack.rb', line 313</span>
+      <pre class="code"><span class="info file"># File 'cctrack.rb', line 310</span>
 
 <span class='kw'>def</span> <span class='const'>CCTg</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="CCTrack.html" title="CCTrack (class)">CCTrack</a></span></span><span class='period'>.</span><span class='id identifier rubyid_from_grid'><span class='object_link'><a href="TrackBase.html#from_grid-class_method" title="TrackBase.from_grid (method)">from_grid</a></span></span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span>
@@ -1742,12 +1830,12 @@ or an empty hash if no defaults have been set.</p>
       <pre class="lines">
 
 
-157
-158
-159</pre>
+97
+98
+99</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'utils/live_loop_utils.rb', line 157</span>
+      <pre class="code"><span class="info file"># File 'utils/live_loop_utils.rb', line 97</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_current_cc_control_defaults'>current_cc_control_defaults</span>
   <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Defaults</span><span class='period'>.</span><span class='id identifier rubyid_cc_control_defaults'>cc_control_defaults</span> <span class='op'>||</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
@@ -1802,75 +1890,15 @@ empty hash if no defaults have been set.</p>
       <pre class="lines">
 
 
-46
-47
-48</pre>
+49
+50
+51</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'player.rb', line 46</span>
+      <pre class="code"><span class="info file"># File 'player.rb', line 49</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_current_player_defaults'>current_player_defaults</span>
   <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Defaults</span><span class='period'>.</span><span class='id identifier rubyid_player_defaults'>player_defaults</span> <span class='op'>||</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="current_track_defaults-instance_method">
-  
-    #<strong>current_track_defaults</strong>  &#x21d2; <tt>Hash{<span class='object_link'>Symbol</span> =&gt; Object}</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    <p>Returns the current track defaults as set by <span class='object_link'><a href="#use_track_defaults-instance_method" title="#use_track_defaults (method)">#use_track_defaults</a></span>, or an
-empty hash if no defaults have been set.</p>
-
-  </div>
-</div>
-<div class="tags">
-  
-
-
-
-
-
-
-
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Hash{<span class='object_link'>Symbol</span> =&gt; Object}</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-41
-42
-43</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 41</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_current_track_defaults'>current_track_defaults</span>
-  <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Defaults</span><span class='period'>.</span><span class='id identifier rubyid_track_defaults'>track_defaults</span> <span class='op'>||</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1891,8 +1919,8 @@ empty hash if no defaults have been set.</p>
     <p>Returns an array representing a Euclidean rhythm that evenly spreads <code>pulses</code>
 hits over <code>length</code> many beats. The array contains booleans, true for hits and
 false for rests.</p>
-<p>This is analogous to Sonic Pi's <code>spread</code> function, though note that it may
-not return hits in the exact order that Sonic Pi does.</p>
+<p>This is analogous to Sonic Pi's <code>spread</code> function, although it does not always
+return hits in the same order.</p>
 <p>If <code>pulses</code> is &gt; 0, the first element of the result will always be true. If
 <code>pulses</code> &gt;= <code>length</code>, all values in the result will be true. If <code>pulses</code> is
 0, all values will be false. It is an error to pass negative numbers or
@@ -1993,7 +2021,6 @@ element is a hit, this many times.</p></div>
       <pre class="lines">
 
 
-23
 24
 25
 26
@@ -2022,7 +2049,7 @@ element is a hit, this many times.</p></div>
 49</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/euclid.rb', line 23</span>
+      <pre class="code"><span class="info file"># File 'theory/euclid.rb', line 24</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_euclid'>euclid</span><span class='lparen'>(</span><span class='id identifier rubyid_pulses'>pulses</span><span class='comma'>,</span> <span class='id identifier rubyid_length'>length</span><span class='comma'>,</span> <span class='label'>rotate:</span> <span class='int'>0</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>all arguments must be integers</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_pulses'>pulses</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Integer</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_length'>length</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Integer</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_rotate'>rotate</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Integer</span><span class='rparen'>)</span>
@@ -2035,10 +2062,9 @@ element is a hit, this many times.</p></div>
 
   <span class='id identifier rubyid_res'>res</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
   <span class='id identifier rubyid_length'>length</span><span class='period'>.</span><span class='id identifier rubyid_times'>times</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_i'>i</span><span class='op'>|</span>
-    <span class='comment'># See the &quot;Stateless One-Liners&quot; section here:
-</span>    <span class='comment'># https://paulbatchelor.github.io/sndkit/euclid/
-</span>    <span class='comment'># Though note that we are using a different definition of rotation - we
-</span>    <span class='comment'># rotate so the nth hit is in the first slot, like Sonic Pi.
+    <span class='comment'># See the &quot;Stateless One-Liners&quot; section here: https://paulbatchelor.github.io/sndkit/euclid/
+</span>    <span class='comment'># But we are using a different definition of rotation - we rotate so the nth
+</span>    <span class='comment'># hit is in the first slot, like Sonic Pi.
 </span>    <span class='id identifier rubyid_res'>res</span> <span class='op'>&lt;&lt;</span> <span class='lparen'>(</span><span class='lparen'>(</span><span class='id identifier rubyid_pulses'>pulses</span> <span class='op'>*</span> <span class='id identifier rubyid_i'>i</span><span class='rparen'>)</span> <span class='op'>%</span> <span class='id identifier rubyid_length'>length</span> <span class='op'>&lt;</span> <span class='id identifier rubyid_pulses'>pulses</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
 
@@ -2067,7 +2093,28 @@ element is a hit, this many times.</p></div>
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p>An alias for <span class='object_link'><a href="Interval.html#new-class_method" title="Interval.new (method)">Interval.new</a></span>.</p>
+    <p>Creates a new Interval. The arguments must be one of the following:</p>
+<ul>
+<li>A symbol or string, which is taken as the abbreviated name of an interval.</li>
+<li>The <code>number</code> keyword argument, optionally with <code>quality</code>. This returns
+an Interval with the given number and quality, or the default quality
+(major or perfect) for that interval number if quality is omitted.</li>
+<li>The <code>size</code> keyword argument, optionally with <code>quality</code>. <code>size</code> is the
+number of semitones for the interval, and <code>quality</code> specifies how that
+size should be interpreted (thus determining the interval number). If
+<code>quality</code> is omitted, a default is chosen (major/minor/perfect when
+possible, or diminished for a size of 6).</li>
+</ul>
+<p>It is an error to provide a keyword argument with a symbol/string, or to
+provide both the <code>number</code> and <code>size</code> keyword arguments simultaneously.</p>
+<p>Interval abbreviations are a number preceded by d, m, M, P, or A for
+diminished, minor, major, perfect and augmented, respectively.</p>
+<p>If given, quality must be one of <code>:major</code>, <code>:minor</code>, <code>:perfect</code>, <code>:aug</code>, or
+<code>:dim</code>. Of course, not every combination number/size and quality is valid -
+e.g. there is no such thing as a major 5th interval. This method will raise
+if given an invalid quality.</p>
+<p>This method is aliased to <span class='object_link'><a href="#I-instance_method" title="#I (method)">#I</a></span> for convenience.</p>
+<p>An alias for <span class='object_link'><a href="Interval.html#new-class_method" title="Interval.new (method)">Interval.new</a></span>.</p>
 
   </div>
 </div>
@@ -2167,12 +2214,12 @@ Optional; you may use some combination of keyword arguments instead.</p></div>
       <pre class="lines">
 
 
-9
-10
-11</pre>
+511
+512
+513</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 9</span>
+      <pre class="code"><span class="info file"># File 'theory/interval.rb', line 511</span>
 
 <span class='kw'>def</span> <span class='const'>I</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>number:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>size:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>quality:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="Interval.html" title="Interval (class)">Interval</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Interval.html#new-class_method" title="Interval.new (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='label'>number:</span> <span class='id identifier rubyid_number'>number</span><span class='comma'>,</span> <span class='label'>size:</span> <span class='id identifier rubyid_size'>size</span><span class='comma'>,</span> <span class='label'>quality:</span> <span class='id identifier rubyid_quality'>quality</span><span class='rparen'>)</span>
@@ -2323,8 +2370,6 @@ back in the same manner as <code>port</code>.</p></div>
       <pre class="lines">
 
 
-54
-55
 56
 57
 58
@@ -2340,10 +2385,12 @@ back in the same manner as <code>port</code>.</p></div>
 68
 69
 70
-71</pre>
+71
+72
+73</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'utils/midi_utils.rb', line 54</span>
+      <pre class="code"><span class="info file"># File 'utils/midi_utils.rb', line 56</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_midi_clock_live_loop'>midi_clock_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span> <span class='op'>=</span> <span class='symbol'>:midi_clock</span><span class='comma'>,</span> <span class='label'>send_start:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>send_stop:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>start_port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>start_channel:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_beat_kwargs'>beat_kwargs</span> <span class='op'>=</span> <span class='id identifier rubyid_port'>port</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>?</span> <span class='lbrace'>{</span><span class='rbrace'>}</span> <span class='op'>:</span> <span class='lbrace'>{</span> <span class='label'>port:</span> <span class='id identifier rubyid_port'>port</span> <span class='rbrace'>}</span>
@@ -2352,13 +2399,13 @@ back in the same manner as <code>port</code>.</p></div>
   <span class='id identifier rubyid_start_stop_kwargs'>start_stop_kwargs</span><span class='lbracket'>[</span><span class='symbol'>:port</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_start_port'>start_port</span> <span class='kw'>unless</span> <span class='id identifier rubyid_start_port'>start_port</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
   <span class='id identifier rubyid_start_stop_kwargs'>start_stop_kwargs</span><span class='lbracket'>[</span><span class='symbol'>:channel</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_start_channel'>start_channel</span> <span class='kw'>unless</span> <span class='id identifier rubyid_start_channel'>start_channel</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
 
-  <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_live_loop'>live_loop</span> <span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='label'>init:</span> <span class='kw'>false</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_inited'>inited</span><span class='op'>|</span>
-    <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_midi_stop'>midi_stop</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_start_stop_kwargs'>start_stop_kwargs</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='op'>!</span><span class='id identifier rubyid_inited'>inited</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_send_stop'>send_stop</span>
+  <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_live_loop'>live_loop</span> <span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='label'>init:</span> <span class='kw'>false</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_inited'>inited</span><span class='op'>|</span>
+    <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>External</span><span class='op'>::</span><span class='const'>MIDI</span><span class='period'>.</span><span class='id identifier rubyid_midi_stop'>midi_stop</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_start_stop_kwargs'>start_stop_kwargs</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='op'>!</span><span class='id identifier rubyid_inited'>inited</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_send_stop'>send_stop</span>
 
-    <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_midi_clock_beat'>midi_clock_beat</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_beat_kwargs'>beat_kwargs</span><span class='rparen'>)</span>
-    <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_sleep'>sleep</span> <span class='int'>1</span>
+    <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>External</span><span class='op'>::</span><span class='const'>MIDI</span><span class='period'>.</span><span class='id identifier rubyid_midi_clock_beat'>midi_clock_beat</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_beat_kwargs'>beat_kwargs</span><span class='rparen'>)</span>
+    <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_sleep'>sleep</span> <span class='int'>1</span>
 
-    <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_midi_start'>midi_start</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_start_stop_kwargs'>start_stop_kwargs</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='op'>!</span><span class='id identifier rubyid_inited'>inited</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_send_start'>send_start</span>
+    <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>External</span><span class='op'>::</span><span class='const'>MIDI</span><span class='period'>.</span><span class='id identifier rubyid_midi_start'>midi_start</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_start_stop_kwargs'>start_stop_kwargs</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='op'>!</span><span class='id identifier rubyid_inited'>inited</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_send_start'>send_start</span>
 
     <span class='kw'>true</span>
   <span class='kw'>end</span>
@@ -2469,8 +2516,6 @@ exclusive with the positional hashes.</p></div>
       <pre class="lines">
 
 
-122
-123
 124
 125
 126
@@ -2493,10 +2538,12 @@ exclusive with the positional hashes.</p></div>
 143
 144
 145
-146</pre>
+146
+147
+148</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'utils/midi_utils.rb', line 122</span>
+      <pre class="code"><span class="info file"># File 'utils/midi_utils.rb', line 124</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_midi_panic'>midi_panic</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_ports_and_channels'>ports_and_channels</span><span class='comma'>,</span> <span class='label'>port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_panic'>panic</span> <span class='op'>=</span> <span class='id identifier rubyid_lambda'>lambda</span> <span class='kw'>do</span> <span class='op'>|</span><span class='label'>port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='kw'>nil</span><span class='op'>|</span>
@@ -2504,11 +2551,11 @@ exclusive with the positional hashes.</p></div>
     <span class='id identifier rubyid_midi_kwargs'>midi_kwargs</span><span class='lbracket'>[</span><span class='symbol'>:port</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_port'>port</span> <span class='kw'>unless</span> <span class='id identifier rubyid_port'>port</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
     <span class='id identifier rubyid_midi_kwargs'>midi_kwargs</span><span class='lbracket'>[</span><span class='symbol'>:channel</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_channel'>channel</span> <span class='kw'>unless</span> <span class='id identifier rubyid_channel'>channel</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
 
-    <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_with_real_time'>with_real_time</span> <span class='kw'>do</span>
-      <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_midi_stop'>midi_stop</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_midi_kwargs'>midi_kwargs</span><span class='rparen'>)</span>
-      <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_midi_all_notes_off'>midi_all_notes_off</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_midi_kwargs'>midi_kwargs</span><span class='rparen'>)</span>
-      <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_midi_sound_off'>midi_sound_off</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_midi_kwargs'>midi_kwargs</span><span class='rparen'>)</span>
-      <span class='int'>0</span><span class='period'>.</span><span class='id identifier rubyid_upto'>upto</span><span class='lparen'>(</span><span class='int'>127</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_n'>n</span><span class='op'>|</span> <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_midi_note_off'>midi_note_off</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_midi_kwargs'>midi_kwargs</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
+    <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_with_real_time'>with_real_time</span> <span class='kw'>do</span>
+      <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>External</span><span class='op'>::</span><span class='const'>MIDI</span><span class='period'>.</span><span class='id identifier rubyid_midi_stop'>midi_stop</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_midi_kwargs'>midi_kwargs</span><span class='rparen'>)</span>
+      <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>External</span><span class='op'>::</span><span class='const'>MIDI</span><span class='period'>.</span><span class='id identifier rubyid_midi_all_notes_off'>midi_all_notes_off</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_midi_kwargs'>midi_kwargs</span><span class='rparen'>)</span>
+      <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>External</span><span class='op'>::</span><span class='const'>MIDI</span><span class='period'>.</span><span class='id identifier rubyid_midi_sound_off'>midi_sound_off</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_midi_kwargs'>midi_kwargs</span><span class='rparen'>)</span>
+      <span class='int'>0</span><span class='period'>.</span><span class='id identifier rubyid_upto'>upto</span><span class='lparen'>(</span><span class='int'>127</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_n'>n</span><span class='op'>|</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>External</span><span class='op'>::</span><span class='const'>MIDI</span><span class='period'>.</span><span class='id identifier rubyid_midi_note_off'>midi_note_off</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_midi_kwargs'>midi_kwargs</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
     <span class='kw'>end</span>
   <span class='kw'>end</span>
 
@@ -2639,14 +2686,14 @@ exclusive with the positional hashes.</p></div>
       <pre class="lines">
 
 
-167
-168
 169
 170
-171</pre>
+171
+172
+173</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'utils/midi_utils.rb', line 167</span>
+      <pre class="code"><span class="info file"># File 'utils/midi_utils.rb', line 169</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_midi_panic_on_stop'>midi_panic_on_stop</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_ports_and_channels'>ports_and_channels</span><span class='comma'>,</span> <span class='label'>hook_name:</span> <span class='symbol'>:midi_panic</span><span class='comma'>,</span> <span class='label'>port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_on_stop'><span class='object_link'><a href="#on_stop-instance_method" title="#on_stop (method)">on_stop</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_hook_name'>hook_name</span><span class='rparen'>)</span> <span class='kw'>do</span>
@@ -2675,11 +2722,11 @@ means must be implemented by the given block; this function merely manages the
 muted state and informs the block of it.</p>
 <p>Any additional named arguments (e.g. <code>sync</code> or <code>init</code>) to this function are
 passed verbatim to the internal <code>live_loop</code>.</p>
-<p>Note that the arguments passed to the block differe from a normal <code>live_loop</code>.
-Namely, the first argument is a boolean indicating whether the loop is muted.</p>
-<p>Note that muting is not instantaneous. The block is only made aware of the
-muted status the next time it executes, via its first argument. So, muting
-will happen only between cycles of a loop, not in the middle of one.</p>
+<p>The arguments passed to the block differe from a normal <code>live_loop</code>. Namely,
+the first argument is a boolean indicating whether the loop is muted.</p>
+<p>Muting is not instantaneous. The block is only made aware of the muted status
+the next time it executes, via its first argument. So, muting will happen only
+between cycles of a loop, not in the middle of one.</p>
 
   </div>
 </div>
@@ -2783,24 +2830,24 @@ prior execution of the block afterwards.</p></div>
       <pre class="lines">
 
 
-111
-112
-113
-114
-115
-116
-117
-118
-119
-120
-121
-122
-123
-124
-125</pre>
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'utils/live_loop_utils.rb', line 111</span>
+      <pre class="code"><span class="info file"># File 'utils/live_loop_utils.rb', line 149</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_mutable_live_loop'>mutable_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='label'>start_muted:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Block must take 1 or 2 arguments</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>==</span> <span class='int'>0</span> <span class='op'>||</span> <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>&gt;</span> <span class='int'>2</span>
@@ -2809,7 +2856,7 @@ prior execution of the block afterwards.</p></div>
 </span>  <span class='comment'># restart of the same sketch).
 </span>  <span class='id identifier rubyid_mute_live_loop'><span class='object_link'><a href="#mute_live_loop-instance_method" title="#mute_live_loop (method)">mute_live_loop</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_start_muted'>start_muted</span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>LiveLoops</span><span class='period'>.</span><span class='id identifier rubyid_is_running?'>is_running?</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rparen'>)</span>
 
-  <span class='id identifier rubyid_ll'>ll</span> <span class='op'>=</span> <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_live_loop'>live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_arg'>arg</span><span class='op'>|</span>
+  <span class='id identifier rubyid_ll'>ll</span> <span class='op'>=</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_live_loop'>live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_arg'>arg</span><span class='op'>|</span>
     <span class='id identifier rubyid_muted'>muted</span> <span class='op'>=</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>LiveLoops</span><span class='period'>.</span><span class='id identifier rubyid_loop_is_muted?'>loop_is_muted?</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rparen'>)</span>
     <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_call_varargs'>call_varargs</span><span class='lparen'>(</span><span class='id identifier rubyid_block'>block</span><span class='comma'>,</span> <span class='id identifier rubyid_muted'>muted</span><span class='comma'>,</span> <span class='id identifier rubyid_arg'>arg</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
@@ -2835,9 +2882,9 @@ prior execution of the block afterwards.</p></div>
   <div class="discussion">
     
 <p>Mutes or unmutes the given <code>live_loop</code>, assuming it was created by
-<span class='object_link'><a href="#mutable_live_loop-instance_method" title="#mutable_live_loop (method)">#mutable_live_loop</a></span>, <span class='object_link'><a href="#cc_mutable_live_loop-instance_method" title="#cc_mutable_live_loop (method)">#cc_mutable_live_loop</a></span>, or <span class='object_link'><a href="#track_live_loop-instance_method" title="#track_live_loop (method)">#track_live_loop</a></span>. Note that
-muting is not instantaneous; see the description of <span class='object_link'><a href="#mutable_live_loop-instance_method" title="#mutable_live_loop (method)">#mutable_live_loop</a></span> for
-details.</p>
+<span class='object_link'><a href="#mutable_live_loop-instance_method" title="#mutable_live_loop (method)">#mutable_live_loop</a></span>, <span class='object_link'><a href="#cc_mutable_live_loop-instance_method" title="#cc_mutable_live_loop (method)">#cc_mutable_live_loop</a></span>, or <span class='object_link'><a href="#track_live_loop-instance_method" title="#track_live_loop (method)">#track_live_loop</a></span>. Muting is
+not instantaneous; it takes effect after a cycle of the live loop's block. See
+<span class='object_link'><a href="#mutable_live_loop-instance_method" title="#mutable_live_loop (method)">#mutable_live_loop</a></span> for details.</p>
 
   </div>
 </div>
@@ -2898,12 +2945,12 @@ details.</p>
       <pre class="lines">
 
 
-76
-77
-78</pre>
+114
+115
+116</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'utils/live_loop_utils.rb', line 76</span>
+      <pre class="code"><span class="info file"># File 'utils/live_loop_utils.rb', line 114</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_mute_live_loop'>mute_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_mute'>mute</span><span class='op'>=</span><span class='kw'>true</span><span class='rparen'>)</span>
   <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>LiveLoops</span><span class='period'>.</span><span class='id identifier rubyid_mute_loop'>mute_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_mute'>mute</span><span class='rparen'>)</span>
@@ -2924,7 +2971,20 @@ details.</p>
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p>An alias for <span class='object_link'><a href="MIDINote.html#new-class_method" title="MIDINote.new (method)">MIDINote.new</a></span>.</p>
+    <p>Creates a new MIDINote instance from the given value, which must be either a
+MIDI note number, a string, a symbol, or a MIDINote instance (in which case
+the argument is returned as-is). Floating point arguments are truncated.</p>
+<p>This method is aliased to <span class='object_link'><a href="#N-instance_method" title="#N (method)">#N</a></span> for convenience.</p>
+<p>Acceptable strings and symbols are of the form &quot;(pitch class)(octave)&quot;. The
+pitch class is &quot;a&quot; - &quot;g&quot;, with an optional suffix of &quot;b&quot; or &quot;f&quot; for flats
+or &quot;s&quot; for sharps. Double flats and sharps are permitted. The octave is an
+integer. Case is ignored, but will be standardized to lower for
+<span class='object_link'><a href="MIDINote.html#pitch_class-instance_method" title="MIDINote#pitch_class (method)">MIDINote#pitch_class</a></span>, <span class='object_link'><a href="MIDINote.html#to_s-instance_method" title="MIDINote#to_s (method)">MIDINote#to_s</a></span>, and <span class='object_link'><a href="MIDINote.html#to_sym-instance_method" title="MIDINote#to_sym (method)">MIDINote#to_sym</a></span>. Accidentals
+are normalized to a natural (when possible) or a single sharp. For example,
+<code>&quot;Cs3&quot;</code>, <code>:df4</code>, <code>:bss2</code>, <code>:g9</code>, and <code>&quot;c-1&quot;</code> are all valid arguments.</p>
+<p>The octave number may be omitted on strings and symbols; the default is
+octave 4.</p>
+<p>An alias for <span class='object_link'><a href="MIDINote.html#new-class_method" title="MIDINote.new (method)">MIDINote.new</a></span>.</p>
 
   </div>
 </div>
@@ -2979,12 +3039,12 @@ details.</p>
       <pre class="lines">
 
 
-10
-11
-12</pre>
+455
+456
+457</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 10</span>
+      <pre class="code"><span class="info file"># File 'theory/midinote.rb', line 455</span>
 
 <span class='kw'>def</span> <span class='const'>N</span><span class='lparen'>(</span><span class='id identifier rubyid_note'>note</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="MIDINote.html#new-class_method" title="MIDINote.new (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_note'>note</span><span class='rparen'>)</span>
@@ -3050,26 +3110,26 @@ provide different keys for each call to this function.</p>
       <pre class="lines">
 
 
-28
-29
-30
-31
-32
-33
-34
-35
-36</pre>
+53
+54
+55
+56
+57
+58
+59
+60
+61</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'utils/lifecycle_utils.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'utils/lifecycle_utils.rb', line 53</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_on_cold_run'>on_cold_run</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span> <span class='op'>=</span> <span class='symbol'>:default</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_thread_name'>thread_name</span> <span class='op'>=</span> <span class='symbol'>:&quot;__cold_run_</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_key'>key</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
-  <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_in_thread'>in_thread</span><span class='lparen'>(</span><span class='label'>name:</span> <span class='id identifier rubyid_thread_name'>thread_name</span><span class='rparen'>)</span> <span class='kw'>do</span>
+  <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_in_thread'>in_thread</span><span class='lparen'>(</span><span class='label'>name:</span> <span class='id identifier rubyid_thread_name'>thread_name</span><span class='rparen'>)</span> <span class='kw'>do</span>
     <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span>
 
     <span class='comment'># spin to keep this thread alive until the script is manually stopped
-</span>    <span class='id identifier rubyid_loop'>loop</span> <span class='lbrace'>{</span> <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_sleep'>sleep</span><span class='lparen'>(</span><span class='int'>100</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
+</span>    <span class='id identifier rubyid_loop'>loop</span> <span class='lbrace'>{</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_sleep'>sleep</span><span class='lparen'>(</span><span class='int'>100</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -3090,8 +3150,8 @@ provide different keys for each call to this function.</p>
   <div class="discussion">
     
 <p>Registers a block to execute when Sonic Pi's execution is stopped or when
-quitting the application. Note that the work you do in the block should be
-very quick or you will delay the stop operation or shutdown.</p>
+quitting the application. The work you do in the block should be very quick or
+you will delay the stop operation or shutdown.</p>
 <p>If you need more than one stop hook, you must give them each different
 <code>name</code>s; calling this function a second time with the same name will remove
 the previous hook with that name.</p>
@@ -3110,34 +3170,36 @@ if there are no other <code>live_loop</code>s or <code>in_thread</code> calls ke
       <pre class="lines">
 
 
-67
-68
-69
-70
-71
-72
-73
-74
-75
-76
-77
-78
-79
-80
-81
-82
-83
-84</pre>
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'utils/lifecycle_utils.rb', line 67</span>
+      <pre class="code"><span class="info file"># File 'utils/lifecycle_utils.rb', line 92</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_on_stop'>on_stop</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span> <span class='op'>=</span> <span class='symbol'>:default</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Lifecycle</span><span class='period'>.</span><span class='id identifier rubyid_stop_hooks'>stop_hooks</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_block'>block</span>
 
   <span class='comment'># Since we give this a name, Sonic Pi will only define it once.
-</span>  <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_in_thread'>in_thread</span><span class='lparen'>(</span><span class='label'>name:</span> <span class='symbol'>:__stop_hook_watcher</span><span class='rparen'>)</span> <span class='kw'>do</span>
-    <span class='id identifier rubyid_kq'>kq</span> <span class='op'>=</span> <span class='const'>Thread</span><span class='op'>::</span><span class='const'>Queue</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
+</span>  <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_in_thread'>in_thread</span><span class='lparen'>(</span><span class='label'>name:</span> <span class='symbol'>:__stop_hook_watcher</span><span class='rparen'>)</span> <span class='kw'>do</span>
+    <span class='comment'># See the monkey-patch above for details on this magic.
+</span>    <span class='id identifier rubyid_kq'>kq</span> <span class='op'>=</span> <span class='const'>Thread</span><span class='op'>::</span><span class='const'>Queue</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
     <span class='const'>Thread</span><span class='period'>.</span><span class='id identifier rubyid_current'>current</span><span class='lbracket'>[</span><span class='symbol'>:__kill_queue</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_kq'>kq</span>
     <span class='id identifier rubyid_kq'>kq</span><span class='period'>.</span><span class='id identifier rubyid_pop'>pop</span>
 
@@ -3210,16 +3272,16 @@ function.</p>
       <pre class="lines">
 
 
-45
-46
-47
-48
-49
-50
-51</pre>
+70
+71
+72
+73
+74
+75
+76</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'utils/lifecycle_utils.rb', line 45</span>
+      <pre class="code"><span class="info file"># File 'utils/lifecycle_utils.rb', line 70</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_one_time_init'>one_time_init</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span> <span class='op'>=</span> <span class='symbol'>:default</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_keys'>keys</span> <span class='op'>=</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Lifecycle</span><span class='period'>.</span><span class='id identifier rubyid_one_time_init_keys'>one_time_init_keys</span>
@@ -3277,12 +3339,12 @@ function.</p>
       <pre class="lines">
 
 
-9
-10
-11</pre>
+239
+240
+241</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'step.rb', line 9</span>
+      <pre class="code"><span class="info file"># File 'step.rb', line 239</span>
 
 <span class='kw'>def</span> <span class='const'>S</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="Step.html" title="Step (class)">Step</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Step.html#initialize-instance_method" title="Step#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span>
@@ -3295,7 +3357,7 @@ function.</p>
       <div class="method_details ">
   <h3 class="signature " id="SC-instance_method">
   
-    #<strong>SC</strong>(*args, **kwargs)  &#x21d2; <tt><span class='object_link'><a href="Scale.html" title="Scale (class)">Scale</a></span></tt> 
+    #<strong>SC</strong>(tonic, name, num_octaves: 1, clamp_to_midi: false)  &#x21d2; <tt><span class='object_link'><a href="Scale.html" title="Scale (class)">Scale</a></span></tt> 
   
 
   
@@ -3303,12 +3365,92 @@ function.</p>
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p>An alias for <span class='object_link'><a href="Scale.html#initialize-instance_method" title="Scale#initialize (method)">Scale.new</a></span>.</p>
+    <p>Creates a new Scale consisting of some number of octaves starting on a root
+note.</p>
+<p><code>Scale.new</code> is aliased to <span class='object_link'><a href="#SC-instance_method" title="#SC (method)">#SC</a></span> for convenience.</p>
+<p>For a scale that covers the entire MIDI range, see <span class='object_link'><a href="Scale.html#full_scale-class_method" title="Scale.full_scale (method)">Scale.full_scale</a></span>.</p>
+<p>An alias for <span class='object_link'><a href="Scale.html#initialize-instance_method" title="Scale#initialize (method)">Scale.new</a></span>.</p>
 
   </div>
 </div>
 <div class="tags">
   
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>tonic</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span></tt>, <tt><span class='object_link'>String</span></tt>, <tt><span class='object_link'>Symbol</span></tt>, <tt>Integer</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The root note of the scale.
+A <span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span> or one of the values understood by <span class='object_link'><a href="MIDINote.html#new-class_method" title="MIDINote.new (method)">MIDINote.new</a></span>.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>name</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'>Symbol</span></tt>, <tt><span class='object_link'>String</span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The name of the scale to use, one of the values
+in SCALE_NAMES. This class understands most of the same scale names
+as Sonic Pi's <code>scale</code> function and some it doesn't.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>num_octaves</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>1</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The resulting instance will have notes
+belonging to this many octaves of the scale.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>clamp_to_midi</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>If true, only notes in the MIDI range of 0 -
+127 will be included.</p></div>
+      
+    </li>
+  
+</ul>
+
 
 
 
@@ -3330,21 +3472,28 @@ function.</p>
   
 </ul>
 
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><span class='object_link'><a href="Scale.html#full_scale-class_method" title="Scale.full_scale (method)">Scale.full_scale</a></span></li>
+    
+  </ul>
+
 </div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
 
 
-11
-12
-13</pre>
+490
+491
+492</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/scale.rb', line 11</span>
+      <pre class="code"><span class="info file"># File 'theory/scale.rb', line 490</span>
 
-<span class='kw'>def</span> <span class='const'>SC</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span>
-  <span class='const'><span class='object_link'><a href="Scale.html" title="Scale (class)">Scale</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Scale.html#initialize-instance_method" title="Scale#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='const'>SC</span><span class='lparen'>(</span><span class='id identifier rubyid_tonic'>tonic</span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='label'>num_octaves:</span> <span class='int'>1</span><span class='comma'>,</span> <span class='label'>clamp_to_midi:</span> <span class='kw'>false</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="Scale.html" title="Scale (class)">Scale</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Scale.html#initialize-instance_method" title="Scale#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_tonic'>tonic</span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='label'>num_octaves:</span> <span class='id identifier rubyid_num_octaves'>num_octaves</span><span class='comma'>,</span> <span class='label'>clamp_to_midi:</span> <span class='id identifier rubyid_clamp_to_midi'>clamp_to_midi</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -3434,12 +3583,12 @@ fill mode takes effect immediately.</p>
       <pre class="lines">
 
 
+356
 357
-358
-359</pre>
+358</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track_live_loop.rb', line 357</span>
+      <pre class="code"><span class="info file"># File 'track_live_loop.rb', line 356</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_set_live_loop_fill'>set_live_loop_fill</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_fill'>fill</span> <span class='op'>=</span> <span class='kw'>true</span><span class='rparen'>)</span>
   <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>LiveLoops</span><span class='period'>.</span><span class='id identifier rubyid_get_player'>get_player</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rparen'>)</span><span class='op'>&amp;.</span><span class='id identifier rubyid_fill'>fill</span> <span class='op'>=</span> <span class='id identifier rubyid_fill'>fill</span>
@@ -3500,12 +3649,12 @@ fill mode takes effect immediately.</p>
       <pre class="lines">
 
 
-1732
-1733
-1734</pre>
+1705
+1706
+1707</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track.rb', line 1732</span>
+      <pre class="code"><span class="info file"># File 'track.rb', line 1705</span>
 
 <span class='kw'>def</span> <span class='const'>Tg</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="Track.html" title="Track (class)">Track</a></span></span><span class='period'>.</span><span class='id identifier rubyid_from_grid'><span class='object_link'><a href="TrackBase.html#from_grid-class_method" title="TrackBase.from_grid (method)">from_grid</a></span></span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span>
@@ -3557,8 +3706,8 @@ playback. The block may accept any of the following keyword arguments:</p>
 <ul>
 <li><code>cycle</code> (Integer): The current <span class='object_link'><a href="PlayerBase.html#cycle-instance_method" title="PlayerBase#cycle (method)">cycle</a></span> of the internal
 player.</li>
-<li><code>track</code> (<span class='object_link'><a href="Track.html" title="Track (class)">Track</a></span> or <span class='object_link'><a href="CCTrack.html" title="CCTrack (class)">CCTrack</a></span>): The track the internal player will in this
-cycle, unless the block returns a new one (see below).</li>
+<li><code>track</code> (<span class='object_link'><a href="Track.html" title="Track (class)">Track</a></span> or <span class='object_link'><a href="CCTrack.html" title="CCTrack (class)">CCTrack</a></span>): The track the internal player will play in
+this cycle, unless the block returns a new one (see below).</li>
 <li><code>muted</code> (Boolean): Whether playback from this loop is muted.</li>
 <li><code>was_muted</code> (Boolean): Whether playback was muted in this loop in the
 previous cycle. This argument is true the first time the block executes.</li>
@@ -3566,7 +3715,7 @@ previous cycle. This argument is true the first time the block executes.</li>
 argument on the first iteration, and the return of the prior execution of
 the block afterwards.</li>
 </ul>
-<p>A block is mandatory is the <code>track</code> argument is nil.</p>
+<p>A block is mandatory if the <code>track</code> argument is nil.</p>
 <p>The internal block that plays the track will sleep, so a user-provided block
 does not need to call <code>sleep</code> or <code>sync</code>, unlike normal <code>live_loop</code> blocks.
 If it does sync or sleep, it may cause delays between cycles of the track.</p>
@@ -3714,13 +3863,13 @@ an error to pass any value other than false if <code>track</code> is a <span cla
       
       
         &mdash;
-        <div class='inline'><p>If out, the track fades out linearly (via
+        <div class='inline'><p>If true, the track fades out linearly (via
 velocity; see <span class='object_link'><a href="Track.html#fade_out-instance_method" title="Track#fade_out (method)">Track#fade_out</a></span>) whenever the loop transitions from unmuted
 to muted. Pass <code>:quad</code> to fade the track out with <span class='object_link'><a href="Track.html#fade_out_quad-instance_method" title="Track#fade_out_quad (method)">Track#fade_out_quad</a></span>. It
 is an error to pass any value other than false if <code>track</code> is a <span class='object_link'><a href="CCTrack.html" title="CCTrack (class)">CCTrack</a></span>.
-NOTE: The playback of the faded track happens <em>after</em> the loop becomes
-muted. That is, tracks that are set to fade out will actually play for one
-additional cycle after the loop is muted, during which they will fade out.</p></div>
+The playback of the faded track happens <em>after</em> the loop becomes muted. That
+is, tracks that are set to fade out will actually play for one additional
+cycle after the loop is muted, during which they will fade out.</p></div>
       
     </li>
   
@@ -3756,8 +3905,8 @@ since they only function over MIDI. If nil, the global default from
       
         &mdash;
         <div class='inline'><p>The MIDI device to use when <code>midi</code> is true. If
-nil, If nil, falls back to the global default set by Sonic Pi's
-<code>use_midi_defaults</code>, or to all ports (i.e. &quot;*&quot;) if that was not set.</p></div>
+nil, falls back to the global default set by Sonic Pi's <code>use_midi_defaults</code>,
+or to all ports (i.e. &quot;*&quot;) if that was not set.</p></div>
       
     </li>
   
@@ -3792,7 +3941,7 @@ true. If nil, falls back in the same manner as <code>port</code>.</p></div>
         &mdash;
         <div class='inline'><p>The CC number to monitor to control muting of the loop.
 A value of 0 for this CC will mute the loop; any other value will unmute.
-Note that you can also mute loops with <span class='object_link'><a href="#mute_live_loop-instance_method" title="#mute_live_loop (method)">#mute_live_loop</a></span>.</p></div>
+You can also mute loops with <span class='object_link'><a href="#mute_live_loop-instance_method" title="#mute_live_loop (method)">#mute_live_loop</a></span>.</p></div>
       
     </li>
   
@@ -3811,7 +3960,7 @@ Note that you can also mute loops with <span class='object_link'><a href="#mute_
         <div class='inline'><p>The CC number to monitor to control <span class='object_link'><a href="PlayerBase.html#fill-instance_method" title="PlayerBase#fill (method)">fill mode</a></span> on the internal player. A value of 0 for this CC will turn off
 fill; any other value will turn it on. If this argument is nil, falls back
 to the global default set with <span class='object_link'><a href="#use_player_defaults-instance_method" title="#use_player_defaults (method)">#use_player_defaults</a></span>, or no CC fill control
-if no default was set. Note that you can also set fill mode for a loop with
+if no default was set. You can also set fill mode for a loop with
 <span class='object_link'><a href="#fill_live_loop-instance_method" title="#fill_live_loop (method)">#fill_live_loop</a></span>.</p></div>
       
     </li>
@@ -3982,7 +4131,6 @@ switch to. See above.</p></div>
       <pre class="lines">
 
 
-248
 249
 250
 251
@@ -4062,10 +4210,11 @@ switch to. See above.</p></div>
 325
 326
 327
-328</pre>
+328
+329</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track_live_loop.rb', line 248</span>
+      <pre class="code"><span class="info file"># File 'track_live_loop.rb', line 249</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_track_live_loop'>track_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_track'>track</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>start_muted:</span> <span class='kw'>nil</span><span class='comma'>,</span>
                     <span class='label'>fade_in:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>fade_out:</span> <span class='kw'>false</span><span class='comma'>,</span>
@@ -4128,7 +4277,7 @@ switch to. See above.</p></div>
     <span class='comment'># Don&#39;t send a 0 fill CC for restarts of the same sketch.
 </span>    <span class='kw'>unless</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>LiveLoops</span><span class='period'>.</span><span class='id identifier rubyid_is_running?'>is_running?</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rparen'>)</span>
       <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Log</span><span class='period'>.</span><span class='id identifier rubyid_log'>log</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>sending default CC </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_fill_cc'>fill_cc</span><span class='embexpr_end'>}</span><span class='tstring_content'> value 0 for live loop </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>cc_fill_control</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
-      <span class='const'>ExtApi</span><span class='period'>.</span><span class='id identifier rubyid_midi_cc'>midi_cc</span><span class='lparen'>(</span><span class='id identifier rubyid_fill_cc'>fill_cc</span><span class='comma'>,</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>port:</span> <span class='id identifier rubyid_cc_port'>cc_port</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='id identifier rubyid_cc_channel'>cc_channel</span><span class='rparen'>)</span>
+      <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>External</span><span class='op'>::</span><span class='const'>MIDI</span><span class='period'>.</span><span class='id identifier rubyid_midi_cc'>midi_cc</span><span class='lparen'>(</span><span class='id identifier rubyid_fill_cc'>fill_cc</span><span class='comma'>,</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>port:</span> <span class='id identifier rubyid_cc_port'>cc_port</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='id identifier rubyid_cc_channel'>cc_channel</span><span class='rparen'>)</span>
     <span class='kw'>end</span>
   <span class='kw'>end</span>
 
@@ -4204,12 +4353,12 @@ switch to. See above.</p></div>
       <pre class="lines">
 
 
-84
-85
-86</pre>
+122
+123
+124</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'utils/live_loop_utils.rb', line 84</span>
+      <pre class="code"><span class="info file"># File 'utils/live_loop_utils.rb', line 122</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_unmute_live_loop'>unmute_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mute_live_loop'><span class='object_link'><a href="#mute_live_loop-instance_method" title="#mute_live_loop (method)">mute_live_loop</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='kw'>false</span><span class='rparen'>)</span>
@@ -4285,12 +4434,12 @@ switch to. See above.</p></div>
       <pre class="lines">
 
 
+368
 369
-370
-371</pre>
+370</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'track_live_loop.rb', line 369</span>
+      <pre class="code"><span class="info file"># File 'track_live_loop.rb', line 368</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_unset_live_loop_fill'>unset_live_loop_fill</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_set_live_loop_fill'><span class='object_link'><a href="#set_live_loop_fill-instance_method" title="#set_live_loop_fill (method)">set_live_loop_fill</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='kw'>false</span><span class='rparen'>)</span>
@@ -4381,15 +4530,15 @@ falls back to &quot;*&quot;.</p></div>
       <pre class="lines">
 
 
-147
-148
-149
-150
-151
-152</pre>
+87
+88
+89
+90
+91
+92</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'utils/live_loop_utils.rb', line 147</span>
+      <pre class="code"><span class="info file"># File 'utils/live_loop_utils.rb', line 87</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_use_cc_control_defaults'>use_cc_control_defaults</span><span class='lparen'>(</span><span class='label'>port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_defaults'>defaults</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
@@ -4531,18 +4680,18 @@ of <code>track_live_loop</code>. Default: nil (no fill CC).</p></div>
       <pre class="lines">
 
 
-33
-34
-35
 36
 37
 38
 39
 40
-41</pre>
+41
+42
+43
+44</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'player.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'player.rb', line 36</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_use_player_defaults'>use_player_defaults</span><span class='lparen'>(</span><span class='label'>midi:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>sync:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>start_muted:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>fill_cc:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>send_cycle_cues:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_defaults'>defaults</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
@@ -4552,85 +4701,6 @@ of <code>track_live_loop</code>. Default: nil (no fill CC).</p></div>
   <span class='id identifier rubyid_defaults'>defaults</span><span class='lbracket'>[</span><span class='symbol'>:fill_cc</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_fill_cc'>fill_cc</span> <span class='kw'>unless</span> <span class='id identifier rubyid_fill_cc'>fill_cc</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
   <span class='id identifier rubyid_defaults'>defaults</span><span class='lbracket'>[</span><span class='symbol'>:send_cycle_cues</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_send_cycle_cues'>send_cycle_cues</span> <span class='kw'>unless</span> <span class='id identifier rubyid_send_cycle_cues'>send_cycle_cues</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
   <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Defaults</span><span class='period'>.</span><span class='id identifier rubyid_player_defaults'>player_defaults</span> <span class='op'>=</span> <span class='id identifier rubyid_defaults'>defaults</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="use_track_defaults-instance_method">
-  
-    #<strong>use_track_defaults</strong>(strict_track_merging:)  
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-<p>Set global track-related behaviors.</p>
-
-  </div>
-</div>
-<div class="tags">
-  
-
-
-
-
-
-
-<p class="tag_title">Parameters:</p>
-<ul class="param">
-  
-    <li>
-      
-        <span class='name'>strict_track_merging</span>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'><p>If true, tracks with mismatched
-<span class='object_link'><a href="TrackBase.html#granularity-instance_method" title="TrackBase#granularity (method)">granularities</a></span>, <span class='object_link'><a href="TrackBase.html#timescale-instance_method" title="TrackBase#timescale (method)">timescales</a></span>,
-or (for <span class='object_link'><a href="Track.html" title="Track (class)">Track</a></span>s) <span class='object_link'><a href="Track.html#scale-instance_method" title="Track#scale (method)">scales</a></span> cannot interact with one another.
-That is, an exception will be raised if you attempt to <span class='object_link'><a href="TrackBase.html#merge-instance_method" title="TrackBase#merge (method)">merge</a></span>, <span class='object_link'><a href="TrackBase.html#append-instance_method" title="TrackBase#append (method)">join</a></span>, <span class='object_link'><a href="TrackBase.html#zip-instance_method" title="TrackBase#zip (method)">zip</a></span>, or otherwise commingle
-such tracks. If false, generally speaking, the track on which a method is
-called is the one that will determine the attributes of the result. E.g., in
-<code>t1.zip(t2)</code>, the result will have the granularity, timescale, and (if these
-are Tracks) scale of <code>t1</code>. Strict track merging is off by default.</p></div>
-      
-    </li>
-  
-</ul>
-
-
-  <p class="tag_title">See Also:</p>
-  <ul class="see">
-    
-      <li><span class='object_link'><a href="#current_track_defaults-instance_method" title="#current_track_defaults (method)">#current_track_defaults</a></span></li>
-    
-  </ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-34
-35
-36</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'trackbase.rb', line 34</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_use_track_defaults'>use_track_defaults</span><span class='lparen'>(</span><span class='label'>strict_track_merging:</span><span class='rparen'>)</span>
-  <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Defaults</span><span class='period'>.</span><span class='id identifier rubyid_track_defaults'>track_defaults</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>strict_track_merging:</span> <span class='id identifier rubyid_strict_track_merging'>strict_track_merging</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>

@@ -111,7 +111,7 @@ the grid of a <span class='object_link'><a href="CCTrack.html" title="CCTrack (c
 steps in general, and their probability and accumulation mechanics.</p>
 <p>Accumulation on a CCStep applies an offset to the <span class='object_link'><a href="#value-instance_method" title="CCStep#value (method)">#value</a></span> that will be sent
 for the CC.</p>
-<p>Note that <strong>CCSteps are immutable</strong>. The mutation methods provided here, like
+<p><strong>CCSteps are immutable</strong>. The mutation methods provided here, like
 <span class='object_link'><a href="#with_value-instance_method" title="CCStep#with_value (method)">#with_value</a></span>, return new CCSteps that have all the same attributes as the
 receiver, with just the described change.</p>
 
@@ -500,8 +500,8 @@ trigger. Non-<span class='object_link'><a href="Prob.html" title="Prob (class)">
         &mdash;
         <div class='inline'><p>The target for accumulation. If nil,
 defaults to <code>:note</code> for <span class='object_link'><a href="Step.html" title="Step (class)">Step</a></span>s and <code>:value</code> for <span class='object_link'><a href="" title="CCStep (class)">CCStep</a></span>s. <code>:value</code> is
-the only valid value for CCSteps. You may pass <code>:note</code>, <code>:gate</code>, or <code>:vel</code>
-for Steps, to direct accumulation to the corresponding attribute.</p></div>
+the only valid option for CCSteps. You may pass <code>:note</code>, <code>:gate</code>, or
+<code>:vel</code> for Steps, to direct accumulation to the corresponding attribute.</p></div>
       
     </li>
   
@@ -514,6 +514,15 @@ for Steps, to direct accumulation to the corresponding attribute.</p></div>
       <pre class="lines">
 
 
+46
+47
+48
+49
+50
+51
+52
+53
+54
 55
 56
 57
@@ -521,19 +530,10 @@ for Steps, to direct accumulation to the corresponding attribute.</p></div>
 59
 60
 61
-62
-63
-64
-65
-66
-67
-68
-69
-70
-71</pre>
+62</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'ccstep.rb', line 55</span>
+      <pre class="code"><span class="info file"># File 'ccstep.rb', line 46</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_cc'>cc</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='comma'>,</span> <span class='label'>prob:</span> <span class='kw'>nil</span><span class='comma'>,</span>
                <span class='label'>accum_delta:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>accum_max:</span> <span class='int'>12</span><span class='comma'>,</span> <span class='label'>accum_min:</span> <span class='int'>0</span><span class='comma'>,</span>
@@ -612,12 +612,12 @@ for Steps, to direct accumulation to the corresponding attribute.</p></div>
       <pre class="lines">
 
 
-27
-28
-29</pre>
+18
+19
+20</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'ccstep.rb', line 27</span>
+      <pre class="code"><span class="info file"># File 'ccstep.rb', line 18</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_cc'>cc</span>
   <span class='ivar'>@cc</span>
@@ -678,12 +678,12 @@ accumulation. The value is in 0 - 127, inclusive.</p>
       <pre class="lines">
 
 
-35
-36
-37</pre>
+26
+27
+28</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'ccstep.rb', line 35</span>
+      <pre class="code"><span class="info file"># File 'ccstep.rb', line 26</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_value'>value</span>
   <span class='ivar'>@value</span>
@@ -771,12 +771,12 @@ resulting value is outside of 0 - 127, it will be clamped.</p>
       <pre class="lines">
 
 
-99
-100
-101</pre>
+88
+89
+90</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'ccstep.rb', line 99</span>
+      <pre class="code"><span class="info file"># File 'ccstep.rb', line 88</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_shift_value'>shift_value</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>value:</span> <span class='ivar'>@value</span> <span class='op'>+</span> <span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span>
@@ -857,12 +857,12 @@ a value outside of 0 - 127 inclusive.</p>
       <pre class="lines">
 
 
-77
-78
-79</pre>
+68
+69
+70</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'ccstep.rb', line 77</span>
+      <pre class="code"><span class="info file"># File 'ccstep.rb', line 68</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_cc'>with_cc</span><span class='lparen'>(</span><span class='id identifier rubyid_new_cc'>new_cc</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>cc:</span> <span class='id identifier rubyid_new_cc'>new_cc</span><span class='rparen'>)</span>
@@ -943,12 +943,12 @@ will be clamped.</p>
       <pre class="lines">
 
 
-89
-90
-91</pre>
+79
+80
+81</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'ccstep.rb', line 89</span>
+      <pre class="code"><span class="info file"># File 'ccstep.rb', line 79</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_with_value'>with_value</span><span class='lparen'>(</span><span class='id identifier rubyid_new_value'>new_value</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>value:</span> <span class='id identifier rubyid_new_value'>new_value</span><span class='rparen'>)</span>
