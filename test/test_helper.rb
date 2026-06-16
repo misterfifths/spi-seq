@@ -14,7 +14,7 @@ begin
     add_group "theory", "theory/"
     add_group "utils", "utils/"
     add_group "math", "math/"
-    add_group "tests", "tests/"
+    add_group "tests", "test/"
     add_group "external", "external/"
 
     add_filter "core.rb"

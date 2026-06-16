@@ -57,9 +57,9 @@ Lint/AmbiguousOperatorPrecedence:
 
 Lint/BinaryOperatorWithIdenticalOperands:
   Exclude:
-    - 'tests/test_midinote.rb'
-    - 'tests/test_interval.rb'
-    - 'tests/test_notelength.rb'
+    - 'test/test_midinote.rb'
+    - 'test/test_interval.rb'
+    - 'test/test_notelength.rb'
 
 Layout:
   Enabled: false
