@@ -400,7 +400,9 @@ class MIDINoteTest < Test::Unit::TestCase
     0.upto(127) do |i|
       n = N(i)
       n.names.each do |name|
-        assert_equal n, N(name)
+        other_n = N(name)
+        assert_equal n, other_n
+        assert_equal n.names, other_n.names
       end
     end
   end
