@@ -209,8 +209,8 @@ end
 #   since they only function over MIDI. If nil, the global default from
 #   {use_player_defaults} is used, or false if that was not set.
 # @param port [String, nil] The MIDI device to use when `midi` is true. If
-#   nil, If nil, falls back to the global default set by Sonic Pi's
-#   `use_midi_defaults`, or to all ports (i.e. "*") if that was not set.
+#   nil, falls back to the global default set by Sonic Pi's `use_midi_defaults`,
+#   or to all ports (i.e. "*") if that was not set.
 # @param channel [Integer, String, nil] The MIDI channel to use when `midi` is
 #   true. If nil, falls back in the same manner as `port`.
 # @param cc [Integer] The CC number to monitor to control muting of the loop.
