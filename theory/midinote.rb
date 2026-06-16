@@ -61,6 +61,10 @@ class MIDINote < Numeric
   PITCH_CLASSES.each { |classes| classes.freeze }
   private_constant :PITCH_CLASSES
 
+  # The default octave for note symbols/strings without one.
+  DEFAULT_OCTAVE = 4
+  private_constant :DEFAULT_OCTAVE
+
   # The symbol for the pitch class of the note (e.g. `:c` for C notes in any
   # octave). This will always be lower-case, and accidentals are normalized to
   # a natural (when possible) or a sharp.
@@ -155,7 +159,7 @@ class MIDINote < Numeric
       match = NOTE_REGEX.match(note.to_s.downcase)
       raise ArgumentError, "Invalid note name #{note}" if match.nil?
 
-      @octave = match[:octave].nil? ? 4 : match[:octave].to_i
+      @octave = match[:octave].nil? ? DEFAULT_OCTAVE : match[:octave].to_i
       @pitch_class = match[:pitch_class].to_sym
 
       # Check for octave boundary crossings: c flats will normalize to a note an
@@ -291,7 +295,7 @@ class MIDINote < Numeric
       octave += 1 if [:cb, :cf, :cbb, :cff].include?(cls)
       octave -= 1 if [:bs, :bss].include?(cls)
       @names << :"#{cls}#{octave}"
-      @names << :"#{cls}" if octave == 4
+      @names << :"#{cls}" if octave == DEFAULT_OCTAVE
     end
     @names.freeze
     @names
