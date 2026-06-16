@@ -54,7 +54,7 @@ class TrackGridTest < Test::Unit::TestCase
   end
 
   def test_append
-    assert_merge_strictness :+
+    assert_merge_gt :+
 
     assert_grid T[:c4] + T[:d4], [[:c4], [:d4]]
     assert_grid T[:c4] + :d4, [[:c4], [:d4]]
@@ -66,7 +66,7 @@ class TrackGridTest < Test::Unit::TestCase
   end
 
   def test_merge
-    assert_merge_strictness :|
+    assert_merge_gt :|
 
     assert_grid T[:c4] | T[:d4], [[:c4, :d4]]
     assert_grid T[:c4] | :d4, [[:c4, :d4]]
@@ -103,7 +103,7 @@ class TrackGridTest < Test::Unit::TestCase
   end
 
   def test_zip
-    assert_merge_strictness :zip
+    assert_merge_gt :zip
 
     t = T[:a1, :b2, :c3, :d4]
 
@@ -121,7 +121,7 @@ class TrackGridTest < Test::Unit::TestCase
   end
 
   def test_grouped_zip
-    assert_merge_strictness :gzip, 1, 1
+    assert_merge_gt :gzip, 1, 1
 
     t = T[:a1, :b2, :c3, :d4]
 

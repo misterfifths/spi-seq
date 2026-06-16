@@ -7,44 +7,6 @@ require_relative "theory/euclid"
 require_relative "theory/notelength"
 require_relative "utils/internal_utils"
 
-# @private
-module SpiSeq
-  module Defaults
-    class << self
-      attr_accessor :track_defaults
-    end
-  end
-end
-
-
-# @!group Default settings
-
-# Set global track-related behaviors.
-# @param strict_track_merging [Boolean] If true, tracks with mismatched
-#   {TrackBase#granularity granularities}, {TrackBase#timescale timescales},
-#   or (for {Track}s) {Track#scale scales} cannot interact with one another.
-#   That is, an exception will be raised if you attempt to {TrackBase#merge
-#   merge}, {TrackBase#append join}, {TrackBase#zip zip}, or otherwise commingle
-#   such tracks. If false, generally speaking, the track on which a method is
-#   called is the one that will determine the attributes of the result. E.g., in
-#   `t1.zip(t2)`, the result will have the granularity, timescale, and (if these
-#   are Tracks) scale of `t1`. Strict track merging is off by default.
-# @return [void]
-# @see current_track_defaults
-def use_track_defaults(strict_track_merging:)
-  SpiSeq::Defaults.track_defaults = { strict_track_merging: strict_track_merging }.freeze
-end
-
-# Returns the current track defaults as set by {use_track_defaults}, or an
-# empty hash if no defaults have been set.
-# @return [Hash{Symbol => Object}]
-def current_track_defaults
-  SpiSeq::Defaults.track_defaults || {}
-end
-
-# @!endgroup
-
-
 # TrackBase represents an abstract "grid" of steps. Do not make instances of
 # TrackBase directly; instead use one of its subclasses that specialize for the
 # type of step, like {Track} or {CCTrack}.
@@ -487,6 +449,9 @@ class TrackBase
   # Returns a new track with `other_track` appended to this one. If
   # `other_track` is not a track, it is converted to one using the initializer.
   #
+  # The result will have the attributes of the first track (e.g. the
+  # {#granularity} and {#timescale}).
+  #
   # @example
   #   T[:a1, :b2] + T[:c3, :r]
   #   # is equivalent to
@@ -504,7 +469,6 @@ class TrackBase
   # @see #append_slot
   def append(other_track)
     other_track = compatibly_trackify(other_track)
-    assert_compatible_track(other_track)
     mutate(grid: @grid + other_track.grid)
   end
   alias concat append
@@ -515,6 +479,9 @@ class TrackBase
   # track and `other_track`. The length of the resulting track is the maximum
   # length of the two tracks. If `other_track` is not a track, it is converted
   # to a compatible one using the initializer.
+  #
+  # The result will have the attributes of the first track (e.g. the
+  # {#granularity} and {#timescale}).
   #
   # @example
   #   t = T[:c1, :r, :c3]
@@ -530,7 +497,6 @@ class TrackBase
   # @see #append
   def merge(other_track)
     other_track = compatibly_trackify(other_track)
-    assert_compatible_track(other_track)
 
     if num_slots > other_track.num_slots
       longer_track = self
@@ -550,6 +516,9 @@ class TrackBase
   # Creates a new track that interleaves the slots of `other_track` with those
   # of this track. If `other_track` is not a track, it is converted to a
   # compatible one using the initializer.
+  #
+  # The result will have the attributes of the first track (e.g. the
+  # {#granularity} and {#timescale}).
   #
   # `cycle` and `pad_with_rests` control the behavior if `other_track` is
   # shorter than this track. If `cycle` is true (the default), the slots of
@@ -594,6 +563,9 @@ class TrackBase
   # Creates a new track that inserts the slots of `other_track` after some
   # number of slots from this track. If `other_track` is not a track, it is
   # converted to a compatible one using the initializer.
+  #
+  # The result will have the attributes of the first track (e.g. the
+  # {#granularity} and {#timescale}).
   #
   # Unlike {#zip}, this function does not alternate between 1 slot of each
   # track. Instead, `group_size` many slots of this track appear consecutively,
@@ -647,7 +619,6 @@ class TrackBase
   # @see #space
   def grouped_zip(other_track, group_size, other_group_size, cycle: true, pad_with_rests: true)
     other_track = compatibly_trackify(other_track)
-    assert_compatible_track(other_track)
 
     new_grid = []
 
@@ -1816,9 +1787,9 @@ class TrackBase
 
   # Returns a hash of the keyword arguments to the initializer and their default
   # values. The keys of the hash are assumed to also be readable attributes of
-  # the class. This hash is used to implement `mutate`, `repr`, and
-  # `assert_compatible_track`. Subclasses should override this method to add any
-  # additional arguments their initializer accepts.
+  # the class. This hash is used to implement `mutate` and `repr`. Subclasses
+  # should override this method to add any additional arguments their
+  # initializer accepts.
   def ctor_kwargs
     {
       granularity: NoteLength::Eighth,
@@ -1845,20 +1816,6 @@ class TrackBase
     end
 
     self.class.new(*grid, **mutations)
-  end
-
-  def strict_track_merging?
-    current_track_defaults[:strict_track_merging] || false
-  end
-
-  def assert_compatible_track(other_track)
-    return unless strict_track_merging?
-
-    ctor_kwargs.each_key do |kwarg|
-      us = send(kwarg)
-      them = other_track.send(kwarg)
-      raise ArgumentError, "incompatible tracks: #{kwarg} #{us} != #{them}" unless us == them
-    end
   end
 
   # Attempts to convert its argument into a track. If it is already a track,
