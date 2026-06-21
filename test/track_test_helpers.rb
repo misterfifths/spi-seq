@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-require_relative "../utils/internal_utils"
-require_relative "../theory/scale"
+require_relative "../lib/spiseq/internal/utils"
+require_relative "../lib/spiseq/theory/notelength"
+require_relative "../lib/spiseq/theory/scale"
 
 module TrackTestHelpers
   def equal_steps?(step, stepish, tol = 0.01)
@@ -53,7 +54,7 @@ module TrackTestHelpers
   def each_step(track, &block)
     track.grid.each do |slot|
       slot.each do |step|
-        SpiSeq::Utils.call_varargs(block, step, slot)
+        SpiSeq::Internal::Utils.call_varargs(block, step, slot)
       end
     end
   end
@@ -76,19 +77,19 @@ module TrackTestHelpers
   # checks for a correct granularity and timescale.
   def assert_merge_gt(method, *args, **kwargs)
     t8_1 = T[:c1]
-    c_maj = Scale.full_scale(:c, :major)
+    c_maj = SpiSeq::Theory::Scale.full_scale(:c, :major)
     t8_1_cmajor = T[:c1, scale: c_maj]
     t8_2 = T[:c2, timescale: 2]
     t16_1 = T[:c3, granularity: :sixteenth]
     t32_2 = T[:c4, granularity: :thirty_second, timescale: 2]
 
-    assert_gt t8_1.send(method, t8_1_cmajor, *args, **kwargs), NoteLength::Eighth, 1
-    assert_gt t8_1_cmajor.send(method, t8_1, *args, **kwargs), NoteLength::Eighth, 1, scale: c_maj
-    assert_gt t8_1.send(method, t8_2, *args, **kwargs), NoteLength::Eighth, 1
-    assert_gt t8_1.send(method, t16_1, *args, **kwargs), NoteLength::Eighth, 1
-    assert_gt t16_1.send(method, t8_1, *args, **kwargs), NoteLength::Sixteenth, 1
-    assert_gt t8_2.send(method, t16_1, *args, **kwargs), NoteLength::Eighth, 2
-    assert_gt t16_1.send(method, t32_2, *args, **kwargs), NoteLength::Sixteenth, 1
+    assert_gt t8_1.send(method, t8_1_cmajor, *args, **kwargs), SpiSeq::Theory::NoteLength::Eighth, 1
+    assert_gt t8_1_cmajor.send(method, t8_1, *args, **kwargs), SpiSeq::Theory::NoteLength::Eighth, 1, scale: c_maj
+    assert_gt t8_1.send(method, t8_2, *args, **kwargs), SpiSeq::Theory::NoteLength::Eighth, 1
+    assert_gt t8_1.send(method, t16_1, *args, **kwargs), SpiSeq::Theory::NoteLength::Eighth, 1
+    assert_gt t16_1.send(method, t8_1, *args, **kwargs), SpiSeq::Theory::NoteLength::Sixteenth, 1
+    assert_gt t8_2.send(method, t16_1, *args, **kwargs), SpiSeq::Theory::NoteLength::Eighth, 2
+    assert_gt t16_1.send(method, t32_2, *args, **kwargs), SpiSeq::Theory::NoteLength::Sixteenth, 1
   end
 
   # Asserts that the given track round-trips to an equivalent one if its repr

@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-require_relative "../external/sync"
-require_relative "../external/midi"
+require_relative "../lib/spiseq/external/sync"
+require_relative "../lib/spiseq/external/midi"
+require_relative "../lib/spiseq/theory/midinote"
 
 # Dummy implementations of enough external methods to simulate the workings of
 # Player when using MIDI output. These track outgoing MIDI events in hashes that
@@ -191,13 +192,13 @@ module SpiSeq
 
         def midi_note_on(note, velocity: 127, port: nil, channel: nil)
           port, channel = resolve_midi_dest(port, channel)
-          note = MIDINote.new(note)
+          note = SpiSeq::Theory::MIDINote.new(note)
           TestMocks.add_event(type: :midi_note_on, t: Sync.vt, note: note, vel: velocity, port: port, channel: channel)
         end
 
         def midi_note_off(note, port: nil, channel: nil)
           port, channel = resolve_midi_dest(port, channel)
-          note = MIDINote.new(note)
+          note = SpiSeq::Theory::MIDINote.new(note)
           TestMocks.add_event(type: :midi_note_off, t: Sync.vt, note: note, port: port, channel: channel)
         end
 

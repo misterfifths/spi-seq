@@ -2,8 +2,10 @@
 # frozen_string_literal: true
 
 require_relative "test_helper"
-require_relative "../math/easings"
-require_relative "../math/curves"
+require_relative "../lib/spiseq/math/easings"
+require_relative "../lib/spiseq/math/curves"
+
+include SpiSeq::Math
 
 # The methods on Curves (scale and the fades) are already tested by the Track
 # methods that move gate/velocity along a curve, so we'll skip them here. These

@@ -2,7 +2,9 @@
 # frozen_string_literal: true
 
 require_relative "test_helper"
-require_relative "../theory/chord"
+require_relative "../lib/spiseq/theory/chordvoicing"
+
+include SpiSeq::Theory
 
 class ChordVoicingTest < Test::Unit::TestCase
   MAJOR_CHORD_DEGREES = [

@@ -2,7 +2,9 @@
 # frozen_string_literal: true
 
 require_relative "test_helper"
-require_relative "../theory/scale"
+require_relative "../lib/spiseq/theory/scale"
+
+include SpiSeq::Theory
 
 class ScaleTest < Test::Unit::TestCase
   def test_basics

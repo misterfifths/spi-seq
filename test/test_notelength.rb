@@ -2,7 +2,9 @@
 # frozen_string_literal: true
 
 require_relative "test_helper"
-require_relative "../theory/notelength"
+require_relative "../lib/spiseq/theory/notelength"
+
+include SpiSeq::Theory
 
 class NoteLengthTest < Test::Unit::TestCase
   LENGTHS_IN_ORDER = [

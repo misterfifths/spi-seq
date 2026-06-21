@@ -2,7 +2,9 @@
 # frozen_string_literal: true
 
 require_relative "test_helper"
-require_relative "../theory/chord"
+require_relative "../lib/spiseq/theory/chord"
+
+include SpiSeq::Theory
 
 class ChordTest < Test::Unit::TestCase
   def test_initializer

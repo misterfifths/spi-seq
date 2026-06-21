@@ -4,28 +4,37 @@ begin
   require "simplecov"
 
   root_dir = File.expand_path("#{File.dirname(__FILE__)}/..")
+  core_dir = "#{root_dir}/lib/spiseq"
 
   SimpleCov.start do
     root(root_dir)
 
-    track_files "{math/,theory/,utils/,external/,}*.rb"
+    track_files "lib/**/*.rb"
 
-    add_group("core") { |f| File.dirname(f.filename) == root_dir }
-    add_group "theory", "theory/"
-    add_group "utils", "utils/"
-    add_group "math", "math/"
+    add_group "tracks", "lib/spiseq/tracks"
+    add_group "playback", "lib/spiseq/playback"
+    add_group "theory", "lib/spiseq/theory/"
+    add_group "utils", "lib/spiseq/utils/"
+    add_group "math", "lib/spiseq/math/"
     add_group "tests", "test/"
-    add_group "external", "external/"
+    add_group "external", "lib/spiseq/external/"
+    add_group "internal", "lib/spiseq/internal/"
 
-    add_filter "core.rb"
+    # These are basically Sonic Pi-only.
+    add_filter "lib/spiseq/utils/midi.rb"
+    add_filter "lib/spiseq/utils/lifecycle.rb"
 
-    # ExtApi is purely Sonic Pi stuff, as is a lot of utils/.
-    add_filter "utils/midi_utils.rb"
-    add_filter "utils/lifecycle_utils.rb"
+    # We don't use the module import files in the tests.
+    add_filter "lib/spiseq.rb"
+    add_filter "lib/spiseq/math.rb"
+    add_filter "lib/spiseq/playback.rb"
+    add_filter "lib/spiseq/theory.rb"
+    add_filter "lib/spiseq/tracks.rb"
+    add_filter "lib/spiseq/utils.rb"
   end
 rescue LoadError
-  require_relative "../utils/internal_utils"
-  SpiSeq::Log.warn("coverage is unavailable")
+  require_relative "../internal/log"
+  SpiSeq::Internal::Log.warn("coverage is unavailable")
 end
 
 require "test/unit"

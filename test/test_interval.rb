@@ -2,7 +2,9 @@
 # frozen_string_literal: true
 
 require_relative "test_helper"
-require_relative "../theory/interval"
+require_relative "../lib/spiseq/theory/interval"
+
+include SpiSeq::Theory
 
 class IntervalTest < Test::Unit::TestCase
   def assert_attrs(i, size, quality, number, sym, octave_span = 1, simple_interval = nil)

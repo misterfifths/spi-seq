@@ -2,7 +2,9 @@
 # frozen_string_literal: true
 
 require_relative "test_helper"
-require_relative "../theory/euclid"
+require_relative "../lib/spiseq/theory/euclid"
+
+include SpiSeq::Theory
 
 class EuclidTest < Test::Unit::TestCase
   def test_args

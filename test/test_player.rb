@@ -4,8 +4,12 @@
 require_relative "test_helper"
 require_relative "player_extapi_stubs"
 require_relative "player_test_helpers"
-require_relative "../player"
-require_relative "../theory/scale"
+require_relative "../lib/spiseq/playback/player"
+require_relative "../lib/spiseq/theory/scale"
+
+include SpiSeq::Playback
+include SpiSeq::Theory
+include SpiSeq::Tracks
 
 class PlayerTest < Test::Unit::TestCase
   include PlayerTestHelpers

@@ -2,7 +2,9 @@
 # frozen_string_literal: true
 
 require_relative "test_helper"
-require_relative "../theory/arp"
+require_relative "../lib/spiseq/theory/arp"
+
+include SpiSeq::Theory
 
 class ArpTest < Test::Unit::TestCase
   def assert_arp(notes, order, result, **kwargs)

@@ -1,1 +1,1 @@
---template-path yard/template -o docs --title 'spi-seq Documentation' -m markdown --hide-void-return --no-private *.rb math/*.rb theory/*.rb utils/*.rb - README.md LICENSE
+--load yard/patches.rb --template-path yard/template -o docs --title 'spi-seq Documentation' -m markdown --hide-void-return --no-private core.rb lib/**/*.rb yard/doc_fixups.rb - README.md LICENSE

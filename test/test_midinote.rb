@@ -2,7 +2,9 @@
 # frozen_string_literal: true
 
 require_relative "test_helper"
-require_relative "../theory/midinote"
+require_relative "../lib/spiseq/theory/midinote"
+
+include SpiSeq::Theory
 
 class MIDINoteTest < Test::Unit::TestCase
   def test_initialization

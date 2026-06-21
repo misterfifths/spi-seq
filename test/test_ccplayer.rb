@@ -4,7 +4,10 @@
 require_relative "test_helper"
 require_relative "player_extapi_stubs"
 require_relative "player_test_helpers"
-require_relative "../ccplayer"
+require_relative "../lib/spiseq/playback/ccplayer"
+
+include SpiSeq::Playback
+include SpiSeq::Tracks
 
 # Most of CCPlayer's behavior is inherited from PlayerBase, so there's no real
 # need to retest e.g. sleep, stop, and MIDI device targeting.

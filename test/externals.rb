@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "../external/sonic_pi"
+require_relative "../lib/spiseq/external/sonic_pi"
 
 # Sonic Pi imports only for tests.
 

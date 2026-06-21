@@ -4,8 +4,11 @@
 require_relative "test_helper"
 require_relative "player_extapi_stubs"
 require_relative "player_test_helpers"
-require_relative "../player"
-require_relative "../prob"
+require_relative "../lib/spiseq/playback/player"
+require_relative "../lib/spiseq/tracks/prob"
+
+include SpiSeq::Playback
+include SpiSeq::Tracks
 
 # Tests for step probabilities during playback
 class ProbTest < Test::Unit::TestCase

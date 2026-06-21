@@ -2,7 +2,9 @@
 # frozen_string_literal: true
 
 require_relative "test_helper"
-require_relative "../ccstep"
+require_relative "../lib/spiseq/tracks/ccstep"
+
+include SpiSeq::Tracks
 
 class CCStepTest < Test::Unit::TestCase
   def assert_attrs(step, cc, val, prob = nil)

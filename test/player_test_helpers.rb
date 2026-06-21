@@ -4,8 +4,11 @@ require "forwardable"
 require_relative "test_helper"
 require_relative "live_loop_extapi_stubs"
 require_relative "player_extapi_stubs"
-require_relative "../ccplayer"
-require_relative "../player"
+require_relative "../lib/spiseq/playback/ccplayer"
+require_relative "../lib/spiseq/playback/player"
+require_relative "../lib/spiseq/utils/live_loops"
+
+include SpiSeq::Playback
 
 module PlayerTestHelpers
   extend Forwardable
@@ -13,6 +16,8 @@ module PlayerTestHelpers
   def_delegators "TestMocks", :drain_events, :reset_vt
   def_delegators "SpiSeq::External::Sync", :vt, :use_bpm, :current_bpm, :bt, :sleep
   def_delegators "SpiSeq::External::MIDI", :use_midi_defaults
+  def_delegators "SpiSeq::Utils::LiveLoops", :mute_live_loop, :unmute_live_loop
+  def_delegators "SpiSeq::Utils::MIDI", :use_cc_control_defaults, :current_cc_control_defaults
 
   QT = ->(*gridish, **kwargs) { Track.new(*gridish, granularity: :quarter, **kwargs) }
 

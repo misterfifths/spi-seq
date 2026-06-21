@@ -2,7 +2,10 @@
 # frozen_string_literal: true
 
 require_relative "test_helper"
-require_relative "../step"
+require_relative "../lib/spiseq/tracks/step"
+
+include SpiSeq::Theory
+include SpiSeq::Tracks
 
 class StepTest < Test::Unit::TestCase
   def assert_attrs(step, note, vel, gate, prob = nil)

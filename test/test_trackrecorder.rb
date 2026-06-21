@@ -2,8 +2,10 @@
 # frozen_string_literal: true
 
 require_relative "test_helper"
-require_relative "../trackrecorder"
 require_relative "track_test_helpers"
+require_relative "../lib/spiseq/tracks/trackrecorder"
+
+include SpiSeq::Tracks
 
 # The record method is very Sonic Pi-specific, obviously, so we can only really
 # test from_timeline (which is the most important part anyway).

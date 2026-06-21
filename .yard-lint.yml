@@ -1,8 +1,10 @@
 AllValidators:
   Exclude:
     - 'scratch/*'
-    - 'tests/*'
+    - 'test/*'
     - 'examples/*'
+    - 'lib/spiseq/internal/*'
+    - 'lib/spiseq/external/*'
 
   YardOptions: []
 

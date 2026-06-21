@@ -3,7 +3,11 @@
 
 require_relative "test_helper"
 require_relative "track_test_helpers"
-require_relative "../track"
+require_relative "../lib/spiseq/theory/notelength"
+require_relative "../lib/spiseq/tracks/track"
+
+include SpiSeq::Theory
+include SpiSeq::Tracks
 
 # Test Track's methods for regranularizing.
 class TrackRegrainTest < Test::Unit::TestCase

@@ -3,6 +3,25 @@ AllCops:
   Exclude:
     - 'scratch/*.rb'
     - 'examples/*.rb'
+    - 'yard/*.rb'
+
+# Allow global `include`
+Style/MixinUsage:
+  Exclude:
+    - 'test/*.rb'
+    - 'core.rb'
+
+# Allow `module X; module Y; ...`. Look, I just refuse to start with like 8
+# spaces of indentation by default.
+Style/TrailingBodyOnModule:
+  Enabled: false
+
+# Allow `extend self` on modules that are all delegations.
+Style/ModuleFunction:
+  Exclude:
+    - 'lib/spiseq/external/midi.rb'
+    - 'lib/spiseq/external/sync.rb'
+    - 'lib/spiseq/external/synth.rb'
 
 Style/RedundantException:
   Enabled: false

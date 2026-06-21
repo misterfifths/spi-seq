@@ -3,13 +3,13 @@
 
 # test_helper should be required first so coverage catches other requires.
 require_relative "test_helper"
-require_relative "../utils/internal_utils"
+require_relative "../lib/spiseq/internal/log"
 
 BASE_DIR = File.expand_path("#{File.dirname(__FILE__)}/..")
-TEST_DIR = File.join(BASE_DIR, "tests")
+TEST_DIR = File.join(BASE_DIR, "test")
 
 unless in_sonic_pi?
-  SpiSeq::Log.silence!
+  SpiSeq::Internal::Log.silence!
   exit Test::Unit::AutoRunner.run(true, TEST_DIR)
 end
 
@@ -41,7 +41,7 @@ def run_tests(output_path)
 
   collector = Test::Unit::Collector::Dir.new
   suite = collector.collect(TEST_DIR)
-  SpiSeq::Log.log("Found #{suite.tests.count} test case classes")
+  SpiSeq::Internal::Log.log("Found #{suite.tests.count} test case classes")
 
   buggy_test_classes = [TrackLiveLoopTest, MutableLiveLoopTest]
   subsuites_to_remove = []
@@ -49,12 +49,12 @@ def run_tests(output_path)
     first_case = subsuite.tests.first
     if buggy_test_classes.include?(first_case.class)
       subsuites_to_remove << subsuite
-      SpiSeq::Log.log("Skipping #{first_case.class}: known to be buggy in Sonic Pi")
+      SpiSeq::Internal::Log.log("Skipping #{first_case.class}: known to be buggy in Sonic Pi")
     end
   end
   subsuites_to_remove.each { |subsuite| suite.delete(subsuite) }
 
-  SpiSeq::Log.with_silence do
+  SpiSeq::Internal::Log.with_silence do
     Test::Unit::UI::Console::TestRunner.run(suite, {
       use_color: false,
       progress_style: :mark,
@@ -63,8 +63,8 @@ def run_tests(output_path)
   end
 
   if suite.passed?
-    SpiSeq::Log.log("Tests passed!")
+    SpiSeq::Internal::Log.log("Tests passed!")
   else
-    SpiSeq::Log.log("There were test failures; see the log")
+    SpiSeq::Internal::Log.log("There were test failures; see the log")
   end
 end

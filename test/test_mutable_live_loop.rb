@@ -4,8 +4,10 @@
 
 require_relative "test_helper"
 require_relative "player_test_helpers"
-require_relative "../external/sync"
-require_relative "../utils/live_loop_utils"
+require_relative "../lib/spiseq/external/sync"
+require_relative "../lib/spiseq/utils/live_loops"
+
+include SpiSeq::Utils::LiveLoops
 
 class MutableLiveLoopTest < Test::Unit::TestCase
   include PlayerTestHelpers

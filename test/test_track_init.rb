@@ -3,7 +3,12 @@
 
 require_relative "test_helper"
 require_relative "track_test_helpers"
-require_relative "../track"
+require_relative "../lib/spiseq/theory/arp"
+require_relative "../lib/spiseq/theory/notelength"
+require_relative "../lib/spiseq/tracks/track"
+
+include SpiSeq::Theory
+include SpiSeq::Tracks
 
 # Test simple Track initialization, Track.new and Track.rest.
 class TrackInitTest < Test::Unit::TestCase

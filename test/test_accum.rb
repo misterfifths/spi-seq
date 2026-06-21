@@ -4,8 +4,13 @@
 require_relative "test_helper"
 require_relative "player_extapi_stubs"
 require_relative "player_test_helpers"
-require_relative "../ccplayer"
-require_relative "../player"
+require_relative "../lib/spiseq/playback/ccplayer"
+require_relative "../lib/spiseq/playback/player"
+require_relative "../lib/spiseq/theory/midinote"
+
+include SpiSeq::Playback
+include SpiSeq::Theory
+include SpiSeq::Tracks
 
 # Tests for accumulation during playback
 class AccumTest < Test::Unit::TestCase
