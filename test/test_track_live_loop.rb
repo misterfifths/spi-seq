@@ -2,8 +2,8 @@
 
 # frozen_string_literal: true
 
-require_relative "test_helper"
-require_relative "player_test_helpers"
+require_relative "lib/init"
+require_relative "lib/player_helpers"
 require_relative "../lib/spiseq/playback/track_live_loop"
 
 include SpiSeq::Playback
@@ -15,7 +15,7 @@ include SpiSeq::Tracks
 # linger and may break distant tests that use the same loop name.
 
 class TrackLiveLoopTest < Test::Unit::TestCase
-  include PlayerTestHelpers
+  include PlayerHelpers
 
   def setup
     # We only stub MIDI sends, not internal synths, and we don't want to test

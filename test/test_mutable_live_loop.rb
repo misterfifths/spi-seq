@@ -2,15 +2,15 @@
 
 # frozen_string_literal: true
 
-require_relative "test_helper"
-require_relative "player_test_helpers"
+require_relative "lib/init"
+require_relative "lib/player_helpers"
 require_relative "../lib/spiseq/external/sync"
 require_relative "../lib/spiseq/utils/live_loops"
 
 include SpiSeq::Utils::LiveLoops
 
 class MutableLiveLoopTest < Test::Unit::TestCase
-  include PlayerTestHelpers
+  include PlayerHelpers
 
   def test_start_muted
     l = mutable_live_loop(:t) do |muted|

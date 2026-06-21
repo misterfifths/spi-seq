@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require_relative "test_helper"
-require_relative "track_test_helpers"
+require_relative "lib/init"
+require_relative "lib/track_helpers"
 require_relative "../lib/spiseq/theory/notelength"
 require_relative "../lib/spiseq/tracks/track"
 
@@ -11,7 +11,7 @@ include SpiSeq::Tracks
 
 # Test Track's methods for regranularizing.
 class TrackRegrainTest < Test::Unit::TestCase
-  include TrackTestHelpers
+  include TrackHelpers
 
   def test_expand
     x = T[S(:a1, gate: 0.25), S(:b1, gate: 0.5), S(:c1, gate: 0.75), :d1]

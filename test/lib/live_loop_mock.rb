@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "../lib/spiseq/external/sync"
+require_relative "../../lib/spiseq/external/sync"
 
 # Dummy implementation of live_loop for testing purposes. As with the other
 # testing stubs, requiring this file in Sonic Pi will break spi-seq playback

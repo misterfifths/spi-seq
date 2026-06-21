@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require_relative "test_helper"
-require_relative "track_test_helpers"
+require_relative "lib/init"
+require_relative "lib/track_helpers"
 require_relative "../lib/spiseq/theory/scale"
 require_relative "../lib/spiseq/tracks/track"
 
@@ -11,7 +11,7 @@ include SpiSeq::Theory
 
 # Test basic Track methods - simple methods, direct attr mutators, etc.
 class TrackBasicTest < Test::Unit::TestCase
-  include TrackTestHelpers
+  include TrackHelpers
 
   def test_basic_methods
     assert_equal T[:c4].num_slots, 1

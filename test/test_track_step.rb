@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require_relative "test_helper"
-require_relative "track_test_helpers"
+require_relative "lib/init"
+require_relative "lib/track_helpers"
 require_relative "../lib/spiseq/internal/random"
 require_relative "../lib/spiseq/internal/utils"
 require_relative "../lib/spiseq/math/curves"
@@ -15,7 +15,7 @@ include SpiSeq::Tracks
 # This is mostly things that deal with individual steps in the Track, rather
 # than the track or slots as a whole.
 class TrackStepTest < Test::Unit::TestCase
-  include TrackTestHelpers
+  include TrackHelpers
 
   def assert_mutate_steps(track, grid, &block)
     t = track.mutate_steps(&block)

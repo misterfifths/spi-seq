@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative "../lib/spiseq/internal/utils"
-require_relative "../lib/spiseq/theory/notelength"
-require_relative "../lib/spiseq/theory/scale"
+require_relative "../../lib/spiseq/internal/utils"
+require_relative "../../lib/spiseq/theory/notelength"
+require_relative "../../lib/spiseq/theory/scale"
 
-module TrackTestHelpers
+module TrackHelpers
   def equal_steps?(step, stepish, tol = 0.01)
     if stepish.is_a?(Step)
       return step.note == stepish.note &&

@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 # test_helper should be required first so coverage catches other requires.
-require_relative "test_helper"
+require_relative "lib/init"
 require_relative "../lib/spiseq/internal/log"
 
 BASE_DIR = File.expand_path("#{File.dirname(__FILE__)}/..")

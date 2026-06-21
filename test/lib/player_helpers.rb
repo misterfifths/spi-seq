@@ -1,31 +1,28 @@
 # frozen_string_literal: true
 
 require "forwardable"
-require_relative "test_helper"
-require_relative "live_loop_extapi_stubs"
-require_relative "player_extapi_stubs"
-require_relative "../lib/spiseq/playback/ccplayer"
-require_relative "../lib/spiseq/playback/player"
-require_relative "../lib/spiseq/utils/live_loops"
+require_relative "live_loop_mock"
+require_relative "player_mocks"
+require_relative "../../lib/spiseq/playback/ccplayer"
+require_relative "../../lib/spiseq/playback/player"
+require_relative "../../lib/spiseq/utils/live_loops"
 
-include SpiSeq::Playback
-
-module PlayerTestHelpers
+module PlayerHelpers
   extend Forwardable
 
-  def_delegators "TestMocks", :drain_events, :reset_vt
+  def_delegators "MockState", :drain_events, :reset_vt
   def_delegators "SpiSeq::External::Sync", :vt, :use_bpm, :current_bpm, :bt, :sleep
   def_delegators "SpiSeq::External::MIDI", :use_midi_defaults
   def_delegators "SpiSeq::Utils::LiveLoops", :mute_live_loop, :unmute_live_loop
   def_delegators "SpiSeq::Utils::MIDI", :use_cc_control_defaults, :current_cc_control_defaults
 
-  QT = ->(*gridish, **kwargs) { Track.new(*gridish, granularity: :quarter, **kwargs) }
+  QT = ->(*gridish, **kwargs) { SpiSeq::Tracks::Track.new(*gridish, granularity: :quarter, **kwargs) }
 
   def player(track, port: nil, channel: nil, debug: false)
     if track.is_a?(Track)
-      Player.new(track, midi: true, port: port, channel: channel, debug: debug)
+      SpiSeq::Playback::Player.new(track, midi: true, port: port, channel: channel, debug: debug)
     else
-      CCPlayer.new(track, port: port, channel: channel, debug: debug)
+      SpiSeq::Playback::CCPlayer.new(track, port: port, channel: channel, debug: debug)
     end
   end
 

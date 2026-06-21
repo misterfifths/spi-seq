@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require_relative "../lib/spiseq/external/sync"
-require_relative "../lib/spiseq/external/midi"
-require_relative "../lib/spiseq/theory/midinote"
+require_relative "../../lib/spiseq/external/sync"
+require_relative "../../lib/spiseq/external/midi"
+require_relative "../../lib/spiseq/theory/midinote"
 
 # Dummy implementations of enough external methods to simulate the workings of
 # Player when using MIDI output. These track outgoing MIDI events in hashes that
@@ -19,7 +19,7 @@ require_relative "../lib/spiseq/theory/midinote"
 # launch, loading this module will break playback from spi-seq in Sonic Pi until
 # it is restarted.
 
-module TestMocks
+module MockState
   @events = []
   @delayed_blocks = []  # [[time, block]]
   @bpm = 60
@@ -105,19 +105,19 @@ module SpiSeq
     module Sync
       class << self
         def vt
-          TestMocks.vt
+          MockState.vt
         end
 
         def current_bpm
-          TestMocks.bpm * TestMocks.bpm_mul
+          MockState.bpm * MockState.bpm_mul
         end
 
         def with_bpm_mul(mul)
-          old_mul = TestMocks.bpm_mul
+          old_mul = MockState.bpm_mul
           # Nested calls to this stack, so multiply the current multiple.
-          TestMocks.bpm_mul *= mul
+          MockState.bpm_mul *= mul
           yield
-          TestMocks.bpm_mul = old_mul
+          MockState.bpm_mul = old_mul
         end
 
         def at(beats, &block)
@@ -130,26 +130,26 @@ module SpiSeq
           elsif beats < 0
             raise RangeError, "the stub does not support delays into the past"
           else
-            TestMocks.add_delayed_block(bt(beats), block)
+            MockState.add_delayed_block(bt(beats), block)
           end
         end
 
         def sleep(beats)
-          TestMocks.set_vt(TestMocks.vt + bt(beats), run_blocks: true)
+          MockState.set_vt(MockState.vt + bt(beats), run_blocks: true)
         end
 
         def cue(name, *args, **kwargs)
-          TestMocks.add_event(type: :cue, t: vt, name: name, args: args, kwargs: kwargs)
+          MockState.add_event(type: :cue, t: vt, name: name, args: args, kwargs: kwargs)
         end
 
         def sync(name)
-          TestMocks.add_event(type: :sync, t: vt, name: name)
+          MockState.add_event(type: :sync, t: vt, name: name)
         end
 
 
         # We do not normally import these; these are only here for the tests.
         def use_bpm(bpm)
-          TestMocks.bpm = bpm
+          MockState.bpm = bpm
         end
 
         def bt(beats = 1)
@@ -193,18 +193,18 @@ module SpiSeq
         def midi_note_on(note, velocity: 127, port: nil, channel: nil)
           port, channel = resolve_midi_dest(port, channel)
           note = SpiSeq::Theory::MIDINote.new(note)
-          TestMocks.add_event(type: :midi_note_on, t: Sync.vt, note: note, vel: velocity, port: port, channel: channel)
+          MockState.add_event(type: :midi_note_on, t: Sync.vt, note: note, vel: velocity, port: port, channel: channel)
         end
 
         def midi_note_off(note, port: nil, channel: nil)
           port, channel = resolve_midi_dest(port, channel)
           note = SpiSeq::Theory::MIDINote.new(note)
-          TestMocks.add_event(type: :midi_note_off, t: Sync.vt, note: note, port: port, channel: channel)
+          MockState.add_event(type: :midi_note_off, t: Sync.vt, note: note, port: port, channel: channel)
         end
 
         def midi_cc(number, val, port: nil, channel: nil)
           port, channel = resolve_midi_dest(port, channel)
-          TestMocks.add_event(type: :midi_cc, t: Sync.vt, num: number, val: val, port: port, channel: channel)
+          MockState.add_event(type: :midi_cc, t: Sync.vt, num: number, val: val, port: port, channel: channel)
         end
       end
     end

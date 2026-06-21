@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require_relative "test_helper"
-require_relative "track_test_helpers"
+require_relative "lib/init"
+require_relative "lib/track_helpers"
 require_relative "../lib/spiseq/math/curves"
 require_relative "../lib/spiseq/tracks/cctrack"
 require_relative "../lib/spiseq/tracks/track"
@@ -11,7 +11,7 @@ include SpiSeq::Math
 include SpiSeq::Tracks
 
 class CCTrackTest < Test::Unit::TestCase
-  include TrackTestHelpers
+  include TrackHelpers
 
   def equal_steps?(a, b)
     a.cc == b.cc &&

@@ -1,9 +1,8 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require_relative "test_helper"
-require_relative "player_extapi_stubs"
-require_relative "player_test_helpers"
+require_relative "lib/init"
+require_relative "lib/player_helpers"
 require_relative "../lib/spiseq/playback/ccplayer"
 
 include SpiSeq::Playback
@@ -13,7 +12,7 @@ include SpiSeq::Tracks
 # need to retest e.g. sleep, stop, and MIDI device targeting.
 
 class CCPlayerTest < Test::Unit::TestCase
-  include PlayerTestHelpers
+  include PlayerHelpers
 
   def setup
     use_bpm 60

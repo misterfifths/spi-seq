@@ -1,9 +1,8 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require_relative "test_helper"
-require_relative "player_extapi_stubs"
-require_relative "player_test_helpers"
+require_relative "lib/init"
+require_relative "lib/player_helpers"
 require_relative "../lib/spiseq/playback/player"
 require_relative "../lib/spiseq/theory/scale"
 
@@ -12,7 +11,7 @@ include SpiSeq::Theory
 include SpiSeq::Tracks
 
 class PlayerTest < Test::Unit::TestCase
-  include PlayerTestHelpers
+  include PlayerHelpers
 
   def setup
     use_bpm 60

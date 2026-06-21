@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require_relative "test_helper"
+require_relative "lib/init"
 require_relative "../lib/spiseq/theory/midinote"
 
 include SpiSeq::Theory

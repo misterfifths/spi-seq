@@ -3,8 +3,7 @@
 begin
   require "simplecov"
 
-  root_dir = File.expand_path("#{File.dirname(__FILE__)}/..")
-  core_dir = "#{root_dir}/lib/spiseq"
+  root_dir = File.expand_path("#{File.dirname(__FILE__)}/../..")
 
   SimpleCov.start do
     root(root_dir)
@@ -33,7 +32,7 @@ begin
     add_filter "lib/spiseq/utils.rb"
   end
 rescue LoadError
-  require_relative "../internal/log"
+  require_relative "../../lib/spiseq/internal/log"
   SpiSeq::Internal::Log.warn("coverage is unavailable")
 end
 
