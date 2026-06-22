@@ -35,6 +35,8 @@ module SpiSeq; module Tracks
     # instance, a value of 0.5 means the note will last half the duration of the
     # slot in the {Track} that contains it.
     #
+    # Gates are rounded to 2 decimal places.
+    #
     # The note will not be played with a gate of 0. With a gate of 1, the note
     # is "tied". That is, it will continue without interruption if there is a
     # Step in the next played slot with the same note.
@@ -62,10 +64,10 @@ module SpiSeq; module Tracks
     #   the nearest extreme. See {#vel}.
     # @param gate [Number] The gate for the note event, as a fraction of the
     #   duration of its slot. Values outside of 0.0 - 1.0 will be clamped to the
-    #   nearest extreme. See {#gate}.
+    #   nearest extreme. Gates are rounded to 2 decimal places. See {#gate}.
     def initialize(note, vel: 127, gate: 1.0, prob: nil,
-                  accum_delta: 0, accum_max: 12, accum_min: 0,
-                  accum_mode: :wrap, accum_prob: nil, accum_target: nil)
+                   accum_delta: 0, accum_max: 12, accum_min: 0,
+                   accum_mode: :wrap, accum_prob: nil, accum_target: nil)
       @note = Theory::MIDINote.new(note)
 
       @vel = vel.to_i
@@ -75,7 +77,7 @@ module SpiSeq; module Tracks
         @vel = 127
       end
 
-      @gate = gate.to_f
+      @gate = gate.to_f.round(2)
       if @gate < 0.0
         @gate = 0.0
       elsif @gate > 1.0

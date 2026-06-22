@@ -13,7 +13,7 @@ class StepTest < Test::Unit::TestCase
     assert_equal step.note, note
     assert_equal step.vel, vel
     assert_in_delta step.velf, vel / 127.0, 0.001
-    assert_equal step.gate, gate
+    assert_equal step.gate, gate.to_f.round(2)
     assert_equal step.tied?, gate == 1.0  # rubocop:disable Lint/FloatComparison
     if prob.nil?
       assert_nil step.prob
@@ -28,6 +28,11 @@ class StepTest < Test::Unit::TestCase
     assert_attrs S("c4"), :c4, 127, 1.0
     assert_attrs S("C4"), :c4, 127, 1.0
     assert_attrs S(60.5), 60.5, 127, 1.0
+
+    # Gates are rounded to two decimal points
+    assert_attrs S(:c4, gate: 0.005), :c4, 127, 0.01
+    assert_attrs S(:c4, gate: 0.159), :c4, 127, 0.16
+    assert_attrs S(:c4, gate: 0.999), :c4, 127, 1.0
 
     # We've already tested the hell out of MIDINote, so there's not much point
     # in continuing variations on the type of the note argument.

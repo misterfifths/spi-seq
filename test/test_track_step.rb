@@ -479,7 +479,7 @@ class TrackStepTest < Test::Unit::TestCase
       assert_grid t.evolve(tone_shifts: 0, gate_delta: 0.5, gate_limit: 0.1..1, velf_delta: 0, p: 1),
                   [[S(:c1, vel: 63, gate: 0.35)], [S(:c2, gate: 0.53)], [S(:c3, gate: 0.1, vel: 10)]]
       assert_grid t.evolve(tone_shifts: 0, gate_delta: 1, gate_limit: 0..1, velf_delta: 0, p: 1),
-                  [[S(:c1, vel: 63, gate: 0)], [S(:c2, gate: 0.32)], [S(:c3, gate: 0.07, vel: 10)]]
+                  [[S(:c1, vel: 63, gate: 0)], [S(:c2, gate: 0.33)], [S(:c3, gate: 0.08, vel: 10)]]
 
       assert_grid t.evolve(tone_shifts: 0, gate_delta: 0, velf_delta: 0.5, velf_limit: 0.1..1, p: 1),
                   [[S(:c1, vel: 12, gate: 0.5)], [S(:c2, vel: 119)], [S(:c3, gate: 0.1, vel: 12)]]

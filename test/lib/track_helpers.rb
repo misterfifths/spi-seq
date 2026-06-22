@@ -3,21 +3,14 @@
 require_relative "../../lib/spiseq/internal/utils"
 require_relative "../../lib/spiseq/theory/notelength"
 require_relative "../../lib/spiseq/theory/scale"
+require_relative "../../lib/spiseq/tracks"
 
 module TrackHelpers
-  def equal_steps?(step, stepish, tol = 0.01)
-    if stepish.is_a?(Step)
-      return step.note == stepish.note &&
-             ((step.gate - stepish.gate).abs < tol) &&
-             step.vel == stepish.vel &&
-             step.prob == stepish.prob
-    end
+  def equal_steps?(step, stepish)
+    return step == stepish if stepish.is_a?(SpiSeq::Tracks::Step)
 
-    # something MIDINote-ish
-    step.note == stepish &&
-      step.tied? &&
-      step.vel == 127 &&
-      step.prob.nil?
+    # something MIDINote-ish; should have the default properties
+    step == SpiSeq::Tracks::Step.new(stepish)
   end
 
   def assert_grid(track, slots)
@@ -98,7 +91,7 @@ module TrackHelpers
     # Testing different groupings to make sure syntax errors don't sneak in.
     [nil, 8, 4, 1].each do |group|
       roundtrip = eval(t.repr(group: group))  # rubocop:disable Security/Eval
-      assert_gt roundtrip, t.granularity, t.timescale, scale: t.is_a?(Track) ? t.scale : nil
+      assert_gt roundtrip, t.granularity, t.timescale, scale: t.is_a?(SpiSeq::Tracks::Track) ? t.scale : nil
       assert_grid roundtrip, t.grid
     end
   end
