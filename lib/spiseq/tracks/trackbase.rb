@@ -61,8 +61,8 @@ module SpiSeq; module Tracks
   #     additional keyword arguments to its initializer.
   class TrackBase
     # The duration of slots in the track, represented as a fraction of a beat.
-    # For instance, a granularity of {Theory::NoteLength::Eighth} means that
-    # each slot lasts for half a beat.
+    # For instance, a granularity of {Theory::NoteLength::Eighth :eighth} means
+    # that each slot lasts for half a beat.
     # @return [Theory::NoteLength]
     # @see #with_granularity
     # @see Track#condense
@@ -110,7 +110,7 @@ module SpiSeq; module Tracks
     #   for the new track. Can be a {Theory::NoteLength} or a value understood
     #   by {Theory::NoteLength.new}.
     # @param timescale [Number] The {#timescale} for the new track.
-    def initialize(*gridish, granularity: Theory::NoteLength::Eighth, timescale: 1)
+    def initialize(*gridish, granularity: :eighth, timescale: 1)
       @grid = self.class.gridify(gridish)
       raise ArgumentError, "A Track's grid must have at least one slot" if @grid.empty?
       @granularity = Theory::NoteLength.new(granularity)
@@ -150,7 +150,7 @@ module SpiSeq; module Tracks
     # @param timescale [Number] The {#timescale} for the new track.
     # @return [TrackBase]
     # @see #initialize
-    def self.from_grid(gridish, granularity: Theory::NoteLength::Eighth, timescale: 1)
+    def self.from_grid(gridish, granularity: :eighth, timescale: 1)
       if Internal::Enumerables.enumerable?(gridish)
         gridish = Internal::Enumerables.arrayify(gridish)  # see note in enumerable?
         gridish = [[]] if gridish.empty?
@@ -168,7 +168,7 @@ module SpiSeq; module Tracks
     #   by {Theory::NoteLength.new}.
     # @param timescale [Number] The {#timescale} for the new track.
     # @return [TrackBase]
-    def self.rest(num_slots = 1, granularity: Theory::NoteLength::Eighth, timescale: 1)
+    def self.rest(num_slots = 1, granularity: :eighth, timescale: 1)
       grid = [[]] * num_slots
       new(*grid, granularity: granularity, timescale: timescale)
     end
@@ -234,7 +234,7 @@ module SpiSeq; module Tracks
     # @param timescale [Number] The {#timescale} for the new track.
     # @return [TrackBase]
     # @see Theory.euclid
-    def self.euclid(gridish, pulses, length, invert: false, rotate: 0, cycle: true, full_cycle: false, granularity: Theory::NoteLength::Eighth, timescale: 1)
+    def self.euclid(gridish, pulses, length, invert: false, rotate: 0, cycle: true, full_cycle: false, granularity: :eighth, timescale: 1)
       hits = Theory.euclid(pulses, length)
       # TODO: this is a different notion of rotation than that of Theory.euclid.
       # Should we standardize it?
@@ -1813,7 +1813,7 @@ module SpiSeq; module Tracks
     # arguments their initializer accepts.
     def ctor_kwargs
       {
-        granularity: Theory::NoteLength::Eighth,
+        granularity: :eighth,
         timescale: 1
       }
     end

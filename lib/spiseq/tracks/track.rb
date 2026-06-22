@@ -114,7 +114,7 @@ module SpiSeq; module Tracks
     # @param timescale [Number] The {#timescale} for the new track.
     # @param scale [Theory::Scale, nil] The {#scale} for the new track; see
     #   above.
-    def initialize(*gridish, granularity: Theory::NoteLength::Eighth, scale: nil, timescale: 1)
+    def initialize(*gridish, granularity: :eighth, scale: nil, timescale: 1)
       # Track itself does basically nothing with the scale; it's all handled by
       # the Player.
       @scale = scale
@@ -175,7 +175,7 @@ module SpiSeq; module Tracks
     # @return [Track]
     # @see Theory::Arp.arpeggiate
     # @see .euclid
-    def self.arp(notes, direction = Theory::Arp::Up, spread: 0, extra_octaves: [], pulses: nil, length: nil, rotate: 0, full_cycle: true, granularity: Theory::NoteLength::Eighth, timescale: 1)
+    def self.arp(notes, direction = Theory::Arp::Up, spread: 0, extra_octaves: [], pulses: nil, length: nil, rotate: 0, full_cycle: true, granularity: :eighth, timescale: 1)
       notes = Theory::Arp.arpeggiate(notes, direction, spread: spread, extra_octaves: extra_octaves)
       if pulses.nil?
         grid = notes.map { |n| [Step.new(n)] }
@@ -231,7 +231,7 @@ module SpiSeq; module Tracks
     # @return [Track]
     # @see .euclid
     # @see #extract_gates
-    def self.isorhythm(notes, gates, granularity: Theory::NoteLength::Eighth, timescale: 1)
+    def self.isorhythm(notes, gates, granularity: :eighth, timescale: 1)
       # Gameplan:
       # This is a variation on `euclid` above, really, with the added
       # complication that a "hit" can last more than one slot.

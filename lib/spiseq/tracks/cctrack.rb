@@ -67,7 +67,7 @@ module SpiSeq; module Tracks
     #   for the new track. Can be a {Theory::NoteLength} or a value understood
     #   by {Theory::NoteLength.new}.
     # @param timescale [Number] The {#timescale} for the new track.
-    def initialize(*gridish, granularity: Theory::NoteLength::Eighth, timescale: 1)
+    def initialize(*gridish, granularity: :eighth, timescale: 1)
       # Overridden purely to provide documentation.
       super
     end
@@ -96,7 +96,7 @@ module SpiSeq; module Tracks
     #   granularity} for the new track.
     # @param timescale [Number] The {#timescale timescale} for the new track.
     # @return [CCTrack]
-    def self.simple(cc_number, slots, granularity: Theory::NoteLength::Eighth, timescale: 1)
+    def self.simple(cc_number, slots, granularity: :eighth, timescale: 1)
       slots = slots.map do |slot|
         next :r if Theory::MIDINote.rest?(slot)
 

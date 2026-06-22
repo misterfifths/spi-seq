@@ -155,7 +155,7 @@ module SpiSeq; module Tracks
     #
     # @private
     def self.from_timeline(timeline,
-                          bpm: nil, granularity: Theory::NoteLength::Eighth,
+                          bpm: nil, granularity: :eighth,
                           start_time: nil, end_time: nil,
                           min_gate: 0.1, quantize_gates: true,
                           ignore_vel: false)
@@ -397,7 +397,7 @@ module SpiSeq; module Tracks
     # @return [Track, nil]
     def self.record(cc:, cc_port: nil, cc_channel: nil,
                     port: nil, channel: nil,
-                    bpm: nil, granularity: Theory::NoteLength::Eighth,
+                    bpm: nil, granularity: :eighth,
                     trim_start: false, trim_end: false,
                     min_gate: 0.1, quantize_gates: true,
                     ignore_vel: false)
