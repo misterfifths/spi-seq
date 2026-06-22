@@ -96,9 +96,10 @@ module SpiSeq; module Utils; module Lifecycle
       kq.pop
 
       unless State.stop_hooks.empty?
-        Internal::Log.log("Running stop hooks...", "stop-hooks")
-        State.stop_hooks.each_value { |b| b.call }
-        State.stop_hooks.clear
+        State.stop_hooks.each do |name, b|
+          Internal::Log.log("Running stop hook #{name}...", "stop-hooks")
+          b.call
+        end
         Internal::Log.log("Stop hooks complete", "stop-hooks")
       end
     end
