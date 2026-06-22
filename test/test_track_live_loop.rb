@@ -15,6 +15,8 @@ include SpiSeq::Tracks
 # linger and may break distant tests that use the same loop name.
 
 class TrackLiveLoopTest < Test::Unit::TestCase
+  BROKEN_IN_SONIC_PI = true
+
   include PlayerHelpers
 
   def setup

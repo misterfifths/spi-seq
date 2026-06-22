@@ -43,13 +43,12 @@ def run_tests(output_path)
   suite = collector.collect(TEST_DIR)
   SpiSeq::Internal::Log.log("Found #{suite.tests.count} test case classes")
 
-  buggy_test_classes = [TrackLiveLoopTest, MutableLiveLoopTest]
   subsuites_to_remove = []
   suite.tests.each do |subsuite|
-    first_case = subsuite.tests.first
-    if buggy_test_classes.include?(first_case.class)
+    cls = subsuite.tests.first.class
+    if cls.const_defined?(:BROKEN_IN_SONIC_PI) && cls::BROKEN_IN_SONIC_PI
       subsuites_to_remove << subsuite
-      SpiSeq::Internal::Log.log("Skipping #{first_case.class}: known to be buggy in Sonic Pi")
+      SpiSeq::Internal::Log.log("Skipping #{cls}: known to be buggy in Sonic Pi")
     end
   end
   subsuites_to_remove.each { |subsuite| suite.delete(subsuite) }

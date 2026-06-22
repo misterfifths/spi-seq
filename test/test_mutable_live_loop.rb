@@ -10,6 +10,8 @@ require_relative "../lib/spiseq/utils/live_loops"
 include SpiSeq::Utils::LiveLoops
 
 class MutableLiveLoopTest < Test::Unit::TestCase
+  BROKEN_IN_SONIC_PI = true
+
   include PlayerHelpers
 
   def test_start_muted
