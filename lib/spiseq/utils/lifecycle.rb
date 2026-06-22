@@ -51,8 +51,11 @@ module SpiSeq; module Utils; module Lifecycle
     External::Sync.in_thread(name: thread_name) do
       block.call
 
-      # spin to keep this thread alive until the script is manually stopped
-      loop { External::Sync.sleep(100) }
+      # Sleep for a jiffy so Sonic Pi fires off things like logging.
+      External::Sync.sleep(1)
+
+      # And permanently park the thread so it lives until killed.
+      Thread.stop
     end
   end
 
