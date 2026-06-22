@@ -29,7 +29,7 @@ end
 module SpiSeq; module Utils; module Lifecycle
   # @private
   module State
-    @one_time_init_keys = {}
+    @one_time_init_keys = Set.new
     @stop_hooks = {}
     class << self
       attr_accessor :one_time_init_keys, :stop_hooks
