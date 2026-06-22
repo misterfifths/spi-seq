@@ -21,7 +21,6 @@ begin
 
     # These are basically Sonic Pi-only.
     add_filter "lib/spiseq/utils/midi.rb"
-    add_filter "lib/spiseq/utils/lifecycle.rb"
 
     # We don't use the module import files in the tests.
     add_filter "lib/spiseq.rb"
