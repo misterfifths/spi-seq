@@ -3,13 +3,13 @@
 require_relative "../external/sync"
 require_relative "../internal/log"
 
-module SpiSeq; module Internal; module MonkeyPatches; module ThreadKill
-  # This is a bit of a sin but the alternative is some overriding of Sonic Pi
-  # internals and hopping between the special user threads it uses. This way we
-  # can at least easily execute the hooks in a sensible thread context.
+# Monkey-patch Thread#kill to cooperatively terminate a thread that has a magic
+# Thread::Queue variable. This is a bit of a sin but we want to catch Sonic Pi
+# killing a thread it spawns, and the alternative is patching its internals,
+# which necessitates hopping around the special user threads it uses. This way
+# we can easily execute the hooks in a usable thread context.
+Thread.prepend(Module.new do
   def kill
-    # If there's a magic Thread::Queue thread-local variable, signal it and
-    # join; we hope the thread exits quickly after we push to the queue.
     kill_queue = self[:__kill_queue]
     if kill_queue.nil?
       super
@@ -18,12 +18,7 @@ module SpiSeq; module Internal; module MonkeyPatches; module ThreadKill
       join
     end
   end
-end; end; end; end
-
-# @private
-class Thread
-  prepend SpiSeq::Internal::MonkeyPatches::ThreadKill
-end
+end)
 
 
 module SpiSeq; module Utils; module Lifecycle
