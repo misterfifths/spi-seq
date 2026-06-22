@@ -35,9 +35,9 @@ module SpiSeq; module Theory
     # each gets us all of Enumerable. The others are common methods on Array
     # that aren't in Enumerable.
     def_delegators :@intervals,
-                  :each, :[], :slice, :length, :size, :last, :to_a, :to_ary,
-                  :values_at, :empty?, :each_index, :fetch, :index, :rindex,
-                  :==, :eql?, :hash
+                   :each, :[], :slice, :length, :size, :last, :to_a, :to_ary,
+                   :values_at, :empty?, :each_index, :fetch, :index, :rindex,
+                   :==, :eql?, :hash
 
 
     ABBREV_DEFS = {

@@ -144,8 +144,8 @@ module SpiSeq; module Tracks
     #   the only valid option for CCSteps. You may pass `:note`, `:gate`, or
     #   `:vel` for Steps, to direct accumulation to the corresponding attribute.
     def initialize(prob: nil,
-                  accum_delta: 0, accum_max: 12, accum_min: 0,
-                  accum_mode: :wrap, accum_prob: nil, accum_target: nil)
+                   accum_delta: 0, accum_max: 12, accum_min: 0,
+                   accum_mode: :wrap, accum_prob: nil, accum_target: nil)
       @prob = probify(prob)
 
       raise RangeError, "accum_min must be <= 0" unless accum_min <= 0
@@ -176,7 +176,7 @@ module SpiSeq; module Tracks
     # @return [StepBase]
     def accum(delta, min: 0, max: 12, mode: :wrap, prob: nil, target: nil)
       mutate(accum_delta: delta, accum_min: min, accum_max: max,
-            accum_mode: mode, accum_prob: prob, accum_target: target)
+             accum_mode: mode, accum_prob: prob, accum_target: target)
     end
     alias with_accum accum
 

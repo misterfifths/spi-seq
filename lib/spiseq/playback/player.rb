@@ -220,8 +220,8 @@ module SpiSeq; module Playback
 
     def step_should_trigger?(step)
       step.should_trigger?(cycle: @cycle, fill: @fill,
-                          effective_note: effective_note(step),
-                          prev_notes: prev_notes)
+                           effective_note: effective_note(step),
+                           prev_notes: prev_notes)
 
       # We don't want to (and can't) dedupe on effective note yet. We want the
       # accumulation data for all of those steps to be committed so PlayerBase

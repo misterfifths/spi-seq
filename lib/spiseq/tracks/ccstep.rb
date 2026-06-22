@@ -45,8 +45,8 @@ module SpiSeq; module Tracks
     #   accumulation). Values outside of 0 - 127 (inclusive) will be clamped to
     #   the nearest extreme.
     def initialize(cc, value, prob: nil,
-                  accum_delta: 0, accum_max: 12, accum_min: 0,
-                  accum_mode: :wrap, accum_prob: nil, accum_target: nil)
+                   accum_delta: 0, accum_max: 12, accum_min: 0,
+                   accum_mode: :wrap, accum_prob: nil, accum_target: nil)
       @cc = cc.to_i
       raise RangeError, "CC numbers must be between 0 and 127, inclusive" if @cc < 0 || @cc > 127
 

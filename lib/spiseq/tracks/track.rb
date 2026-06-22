@@ -1645,8 +1645,8 @@ module SpiSeq; module Tracks
         if Internal::Enumerables.enumerable?(x)
           # See the note in enumerable? about arrayify
           raw_slot = Internal::Enumerables.arrayify(x)
-                      .reject { |s| Theory::MIDINote.rest?(s) }
-                      .map { |s| stepify(s, def_gate: def_gate, def_vel: def_vel) }
+                       .reject { |s| Theory::MIDINote.rest?(s) }
+                       .map { |s| stepify(s, def_gate: def_gate, def_vel: def_vel) }
           dedupe_slot(raw_slot).freeze
         else
           raise TypeError, "Not a valid value for a slot: #{x.inspect}"

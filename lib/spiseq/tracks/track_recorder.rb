@@ -38,7 +38,7 @@ module SpiSeq; module Tracks
     # If quantize is true, the second element of the return will be rounded up
     # to the nearest multiple of min_gate.
     private_class_method def self.gates_for_duration(duration, secs_per_slot,
-                                                    min_gate: 0.1, quantize: true)
+                                                     min_gate: 0.1, quantize: true)
       return [0, min_gate] if duration == 0
 
       total_gate = duration.to_f / secs_per_slot
@@ -155,10 +155,10 @@ module SpiSeq; module Tracks
     #
     # @private
     def self.from_timeline(timeline,
-                          bpm: nil, granularity: :eighth,
-                          start_time: nil, end_time: nil,
-                          min_gate: 0.1, quantize_gates: true,
-                          ignore_vel: false)
+                           bpm: nil, granularity: :eighth,
+                           start_time: nil, end_time: nil,
+                           min_gate: 0.1, quantize_gates: true,
+                           ignore_vel: false)
       bpm = External::Sync.current_bpm if bpm.nil?
       granularity = Theory::NoteLength.new(granularity)
       beats_per_sec = bpm * (1 / 60.0)
@@ -404,7 +404,7 @@ module SpiSeq; module Tracks
       start_time = end_time = timeline = nil
       External::Sync.with_real_time do
         start_time, end_time, timeline = record_timeline(control_cc: cc, cc_port: cc_port, cc_channel: cc_channel,
-                                                        port: port, channel: channel)
+                                                         port: port, channel: channel)
       end
 
       start_time = nil if trim_start
