@@ -20,7 +20,7 @@ module SpiSeq; module External; module Sync
     @in_threads ||= {}
     if name
       t = @in_threads[name]
-      return if t && t.weakref_alive? && t.alive?
+      return if t&.weakref_alive? && t.alive?
     end
 
     t = Thread.new do
@@ -42,6 +42,8 @@ module SpiSeq; module External; module Sync
       next unless t.weakref_alive? && t.alive?
       t.kill
       t.join
+    rescue RefError
+      # The WeakRef was reaped out from underneath us
     end
 
     @in_threads.clear
