@@ -30,4 +30,10 @@ module SpiSeq; module Internal; module ComparisonUtils
       end
     end
   end
+
+  # Prepends an anonymous module to `target` containing the reverse comparison
+  # operations from `define_reverse_comparison_ops` for `rhs_cls`.
+  module_function def monkey_patch_reverse_comparisons(target, rhs_cls)
+    target.prepend(Module.new { ComparisonUtils.define_reverse_comparison_ops(self, rhs_cls) })
+  end
 end; end; end

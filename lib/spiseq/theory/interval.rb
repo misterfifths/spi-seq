@@ -496,19 +496,7 @@ module SpiSeq; module Theory
 end; end
 
 
-# Some overrides so comparison works when a string or symbol is on the left.
+# Patch comparisons so they work when a string or symbol is on the left.
 # We don't need to do anything about Numeric; that already works via coercion.
-#-
-module SpiSeq; module Internal; module MonkeyPatches; module IntervalComparison
-  ComparisonUtils.define_reverse_comparison_ops(self, Theory::Interval)
-end; end; end; end
-
-# @private
-class Symbol
-  prepend SpiSeq::Internal::MonkeyPatches::IntervalComparison
-end
-
-# @private
-class String
-  prepend SpiSeq::Internal::MonkeyPatches::IntervalComparison
-end
+SpiSeq::Internal::ComparisonUtils.monkey_patch_reverse_comparisons(Symbol, SpiSeq::Theory::Interval)
+SpiSeq::Internal::ComparisonUtils.monkey_patch_reverse_comparisons(String, SpiSeq::Theory::Interval)
