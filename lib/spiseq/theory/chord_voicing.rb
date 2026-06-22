@@ -7,26 +7,6 @@ require_relative "midinote"
 require_relative "scale"
 
 module SpiSeq; module Theory
-  # This documentation should live in chord.rb, but I couldn't convince yard to
-  # parse that file first.
-
-  # A grouping of Intervals that represents a chord.
-  #
-  # Sonic Pi already provides a class called `Chord`, so this class is aliased
-  # to {Ch}.
-  #
-  # Enumerable over its {#intervals}, and has most of the read-only methods of
-  # Array. The intervals are always sorted ascending and will never contain
-  # duplicates, even if a mutation might produce one.
-  #
-  # This class only represents intervals; it does not track a root note or
-  # inversions. Instances can be concretely expressed (i.e., converted to actual
-  # {MIDINote}s) on a particular root note with {#voice}, {.voiced} or the {C}
-  # helper function. Inversions also happen at voice-time.
-  #
-  # **Chord objects are immutable.** The various mutation methods it provides
-  # (e.g. {#flat}, {#sus4}, {#add}) return new Chord instances with different
-  # intervals.
   class Chord
     VOICING_DEFS = {
       %i[closed]                  => :voice_closed,

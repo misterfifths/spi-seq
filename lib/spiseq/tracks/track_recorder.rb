@@ -9,7 +9,7 @@ require_relative "../theory/notelength"
 require_relative "../utils/midi"
 
 module SpiSeq; module Tracks
-  class Track
+  class Track < TrackBase
     private_class_method def self.float_lt(a, b, threshold = 0.01)
       (a - b) < threshold
     end

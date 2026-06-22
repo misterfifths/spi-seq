@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 require_relative "lib/init"
-require_relative "../lib/spiseq/theory/chordvoicing"
+require_relative "../lib/spiseq/theory/chord_voicing"
 
 include SpiSeq::Theory
 

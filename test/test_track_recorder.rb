@@ -3,7 +3,7 @@
 
 require_relative "lib/init"
 require_relative "lib/track_helpers"
-require_relative "../lib/spiseq/tracks/trackrecorder"
+require_relative "../lib/spiseq/tracks/track_recorder"
 
 include SpiSeq::Tracks
 
