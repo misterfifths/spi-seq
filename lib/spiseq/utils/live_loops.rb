@@ -1,52 +1,12 @@
 # frozen_string_literal: true
 
-require "weakref"
 require_relative "midi"
 require_relative "../external/midi"
 require_relative "../external/sync"
 require_relative "../internal/log"
 require_relative "../internal/midi"
+require_relative "../internal/thread_tracker"
 require_relative "../internal/utils"
-
-module SpiSeq; module Internal; module LiveLoopTracker
-  # Record the live loop with the given name as being associated with `thread`
-  # (which is the return value of `live_loop`). You must call this after
-  # creating a live loop for this module to be able to track the loop.
-  def self.register(loop_name, thread)
-    @ll_threads ||= {}
-    @ll_threads[loop_name] = WeakRef.new(thread)
-  end
-
-  # Returns the Thread object associated with the live loop with the given
-  # name. If the live loop is not running (or has not been created), returns
-  # nil.
-  def self.get_thread(loop_name)
-    @ll_threads ||= {}
-    thread = @ll_threads[loop_name]
-    return thread if !thread.nil? && thread.weakref_alive? && thread.alive?
-    nil
-  end
-
-  # Returns true if a live loop with the given name is running.
-  def self.is_running?(loop_name)
-    !get_thread(loop_name).nil?
-  end
-
-  # Associates a value with the live loop with the given name. The value can
-  # be retrieved with live_loop_var_get. When the live loop stops, this value
-  # will no longer be accessible.
-  def self.loop_var_set(loop_name, var_name, value)
-    get_thread(loop_name)&.thread_variable_set(var_name, value)
-  end
-
-  # Returns the value of a variable associated with the live loop with the
-  # given name, as set by live_loop_var_set. Returns nil if there is no such
-  # variable associated with the loop, or if the live loop has stopped.
-  def self.loop_var_get(loop_name, var_name)
-    get_thread(loop_name)&.thread_variable_get(var_name)
-  end
-end; end; end
-
 
 module SpiSeq; module Utils; module LiveLoops
   # @private
@@ -117,13 +77,13 @@ module SpiSeq; module Utils; module LiveLoops
 
     # Only apply start_muted if this is a fresh definition of the loop (i.e, not
     # a restart of the same sketch).
-    mute_live_loop(loop_name, start_muted) unless Internal::LiveLoopTracker.is_running?(loop_name)
+    mute_live_loop(loop_name, start_muted) unless Internal::ThreadTracker.is_running?(loop_name)
 
     ll = External::Sync.live_loop(loop_name, **kwargs) do |arg|
       Internal::Utils.call_varargs(block, loop_is_muted?(loop_name), arg)
     end
 
-    Internal::LiveLoopTracker.register(loop_name, ll)
+    Internal::ThreadTracker.register(loop_name, ll)
     ll
   end
 
@@ -160,7 +120,7 @@ module SpiSeq; module Utils; module LiveLoops
 
     # Only send a CC for the start_muted value if this is a fresh definition of
     # the loop (i.e., not a restart of the same sketch).
-    unless Internal::LiveLoopTracker.is_running?(loop_name)
+    unless Internal::ThreadTracker.is_running?(loop_name)
       default_cc_val = start_muted ? 0 : 127
       Internal::Log.log("sending default CC #{cc} value #{default_cc_val} for live loop #{loop_name}", "cc_mute_control")
       External::MIDI.midi_cc(cc, default_cc_val, port: port, channel: channel)

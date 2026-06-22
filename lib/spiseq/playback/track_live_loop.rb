@@ -6,6 +6,7 @@ require_relative "../external/midi"
 require_relative "../external/sync"
 require_relative "../internal/log"
 require_relative "../internal/midi"
+require_relative "../internal/thread_tracker"
 require_relative "../internal/utils"
 require_relative "../tracks/cctrack"
 require_relative "../tracks/track"
@@ -14,11 +15,11 @@ require_relative "../utils/midi"
 
 module SpiSeq; module Internal; module TrackLiveLoopUtils
   module_function def get_player(loop_name)
-    LiveLoopTracker.loop_var_get(loop_name, :__player)
+    ThreadTracker.var_get(loop_name, :__player)
   end
 
   module_function def set_player(loop_name, player)
-    LiveLoopTracker.loop_var_set(loop_name, :__player, player)
+    ThreadTracker.var_set(loop_name, :__player, player)
   end
 
   # Returns a lambda for use as a live_loop block which handles playback of
@@ -309,7 +310,7 @@ module SpiSeq; module Playback
       end
 
       # Don't send a 0 fill CC for restarts of the same sketch.
-      unless Internal::LiveLoopTracker.is_running?(loop_name)
+      unless Internal::ThreadTracker.is_running?(loop_name)
         Internal::Log.log("sending default CC #{fill_cc} value 0 for live loop #{loop_name}", "cc_fill_control")
         External::MIDI.midi_cc(fill_cc, 0, port: cc_port, channel: cc_channel)
       end
