@@ -102,7 +102,7 @@ module SpiSeq; module Tracks
       end
 
       [grid1.empty? ? nil : mutate(grid: grid1),
-      grid2.empty? ? nil : mutate(grid: grid2)]
+       grid2.empty? ? nil : mutate(grid: grid2)]
     end
 
     # Returns a new track containing only select slots from this one.
