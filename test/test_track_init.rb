@@ -23,8 +23,8 @@ class TrackInitTest < Test::Unit::TestCase
     assert_grid T[:a1, :b2, :c3], [[:a1], [:b2], [:c3]]
 
     assert_raises { T[] }
-    assert_raises(TypeError) { T[false] }
-    assert_raises(TypeError) { T[[false]] }
+    assert_raises(ArgumentError) { T[false] }
+    assert_raises(ArgumentError) { T[[false]] }
   end
 
   def test_enums

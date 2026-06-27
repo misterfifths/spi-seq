@@ -1569,110 +1569,28 @@ module SpiSeq; module Tracks
 
     ### Track construction helpers
 
-    # Attempts to convert its argument to a Step. Conversion rules are:
-    # - Steps are passed through verbatim.
-    # - Notes (symbols, strings, numbers and MIDINote instances) are converted
-    #   to Steps using that note and the default values for the other arguments
-    #   of Step's initializer.
-    # - It is an error to pass a rest (as defined by `MIDINote.rest?`) to this
-    #   function.
-    #
-    # `def_gate` and `def_vel` will be used for any Steps that need to be
-    # constructed.
-    #
-    # @private
-    def self.stepify(x, def_gate: 1.0, def_vel: 127)
-      raise TypeError, "A rest cannot be converted to a Step" if Theory::MIDINote.rest?(x)
+    private_class_method def self.step_class
+      Step
+    end
 
+    # Attempts to convert its non-Step argument to a Step. Possible note-like
+    # things (symbols, strings, numbers and MIDINote instances) are converted to
+    # Steps using that value as the note and the default values for the other
+    # arguments of Step's initializer.
+    private_class_method def self.stepify(x)
       case x
-      when Step
-        x
       when Symbol, String, Numeric, Theory::MIDINote
-        Step.new(x, gate: def_gate, vel: def_vel)
-      else
-        raise TypeError, "Not a valid value for a Step: #{x.inspect}"
+        begin
+          Step.new(x)
+        rescue StandardError
+          # Don't want to raise; TrackBase#slotify wants nil on failure
+        end
       end
     end
 
     private_class_method def self.preferred_step(step1, step2)
       # If two steps in a slot share a note, prefer the step with a longer gate.
       (step1.gate >= step2.gate) ? step1 : step2
-    end
-
-    # Attempts to convert its argument to a grid slot (i.e. an array of Steps).
-    # The returned array will be frozen. Conversion rules:
-    # - Rests (see `MIDINote.rest?`) become an empty slot ([]).
-    # - Single notes (symbols, strings, numbers, or MIDINote instances) become a
-    #   slot with a single Step that is the result of calling `stepify` on the
-    #   argument.
-    # - Single Steps become a slot containing just that Step.
-    # - Array-like arguments are converted as follows:
-    #   1. All rests are removed.
-    #   2. All remaining elements are passed through `stepify`.
-    #   3. If more than one of the resulting Steps has the same note, a warning
-    #      is printed, and only the Step with the longest gate is chosen.
-    #
-    # `def_gate` and `def_vel` will be used for any Steps that need to be
-    # constructed.
-    #
-    # @private
-    def self.slotify(x, def_gate: 1.0, def_vel: 127)
-      return [].freeze if Theory::MIDINote.rest?(x)
-
-      case x
-      when Step
-        [x].freeze
-      when Symbol, String, Numeric, Theory::MIDINote
-        [stepify(x, def_gate: def_gate, def_vel: def_vel)].freeze
-      else
-        if Internal::Enumerables.enumerable?(x)
-          # See the note in enumerable? about arrayify
-          raw_slot = Internal::Enumerables.arrayify(x)
-                       .reject { |s| Theory::MIDINote.rest?(s) }
-                       .map { |s| stepify(s, def_gate: def_gate, def_vel: def_vel) }
-          dedupe_slot(raw_slot).freeze
-        else
-          raise TypeError, "Not a valid value for a slot: #{x.inspect}"
-        end
-      end
-    end
-
-    # Attempts to convert its argument to a grid (a 2d array of Steps). The
-    # returned array and all of its elements will be frozen. Conversion rules:
-    # - A single rest (see `MIDINote.rest?`) becomes a grid with one rest
-    #   ([[]]).
-    # - A single note (symbol, string, number or MIDINote instance) becomes a
-    #   grid with one slot that is the result of calling `slotify` on the
-    #   argument.
-    # - A single Step becomes a grid with one slot containing that Step.
-    # - Array-like arguments are converted by passing each element through
-    #   `slotify`.
-    #
-    # `def_gate` and `def_vel` will be used for any Steps that need to be
-    # constructed.
-    #
-    # @private
-    def self.gridify(x, def_gate: 1.0, def_vel: 127)
-      return [[].freeze].freeze if Theory::MIDINote.rest?(x)
-
-      case x
-      when Step
-        [[x].freeze].freeze
-      when Symbol, String, Numeric, Theory::MIDINote
-        [slotify(x, def_gate: def_gate, def_vel: def_vel)].freeze
-      else
-        if Internal::Enumerables.enumerable?(x)
-          # This will convert non-array child elements into individual slots.
-          # E.g. gridify([:a1, :b1]) will turn into [[:a1], [:b1]]. I think
-          # that's desirable - it's a sort of 'smart' conversion, preferring
-          # mono-like behavior unless notes are explicitly grouped into their
-          # own array. See the note in enumerable? about why we need to call
-          # arrayify.
-          Internal::Enumerables.arrayify(x).map { |s| slotify(s, def_gate: def_gate, def_vel: def_vel) }.freeze
-        else
-          raise TypeError, "Not a valid value for a grid: #{x.inspect}"
-        end
-      end
     end
 
 

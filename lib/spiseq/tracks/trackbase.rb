@@ -4,6 +4,7 @@ require_relative "prob"
 require_relative "step"
 require_relative "trackbase_partitions"
 require_relative "../theory/euclid"
+require_relative "../theory/midinote"  # for rest?
 require_relative "../theory/notelength"
 require_relative "../internal/clipboard"
 require_relative "../internal/enumerables"
@@ -54,10 +55,9 @@ module SpiSeq; module Tracks
   # class are also available for use with {CCTrack}s.
   #
   # @abstract Subclasses of TrackBase must provide the following methods:
-  #   - `gridify`, `slotify`, `stepify` - class methods to convert values to
-  #     grids, slots, and steps.
-  #   - `preferred_step` - used to implement `dedupe_slot`, which `slotify`
-  #     should call.
+  #   - `stepify` - optional, used to convert non-step values to steps.
+  #   - `preferred_step` and `step_class` - used to implement `slotify` and
+  #     `gridify`.
   #   - `ctor_kwargs` - optional, used to implement `mutate` and {#repr}, and to
   #     test for track compatibility. Implement this if your subclass takes
   #     additional keyword arguments to its initializer.
@@ -1762,15 +1762,34 @@ module SpiSeq; module Tracks
 
     ### Track construction helpers
 
-    # Attempts to convert its argument to a Step.
+    # Returns the type of steps the subclass expects in its slots, a subclass of
+    # StepBase. Used to implement `slotify` and `gridify`.
+    private_class_method def self.step_class
+      raise NotImplementedError, "subclassers must implement step_class"
+    end
+
+    # Attempts to convert a non-step argument into a step.
     #
-    # Subclasses must implement this method and may do whatever conversion is
+    # Subclasses can override this method to do whatever conversion is
     # convenient for users. E.g. symbols or strings may be converted to MIDI
     # note Steps.
     #
-    # @private
-    def self.stepify(_)
-      raise NotImplementedError, "subclasses must implement stepify"
+    # Return nil if a conversion is not possible. This method will never be
+    # called with rests (i.e. values for which MIDINote.rest? returns true) or
+    # with instances of `step_class`.
+    #
+    # The method should not raise an exception.
+    #
+    # The default implementation returns nil. That is, it does no conversion.
+    private_class_method def self.stepify(_)
+      nil
+    end
+
+    # Same as stepify, but raises an ArgumentError if the conversion fails.
+    private_class_method def self.throwing_stepify(x)
+      res = stepify(x)
+      raise ArgumentError, "invalid value for a step: #{x.inspect}" if res.nil?
+      res
     end
 
     # Given two steps in the same slot that share a `unique_slot_key`, returns
@@ -1804,32 +1823,51 @@ module SpiSeq; module Tracks
     end
 
     # Attempts to convert its argument to a grid slot (i.e. an array of steps).
+    # Implemented using `stepify` and `step_class`, which subclassers must
+    # provide.
     #
-    # Subclasses must implement this method, presumably by using `stepify` to
-    # convert applicable step-like things (step instances or scalars) into a
-    # single-element slot with that step, and doing the same for each element of
-    # an enumerable. Rests should be removed from the result entirely.
+    # Rests (`MIDINote.rest?`) become single empty slots. Steps or things
+    # convertible to them (via `stepify`) become a single-element slot with that
+    # step. Elements of enumerables are treated with the same logic, and the
+    # resulting steps are deduplicated on `Step#unique_slot_key` with
+    # `dedupe_slot`. Subclassers must implement `preferred_step` for
+    # `dedupe_slot`.
     #
-    # Implementations should probably use `dedupe_slot` to ensure that the steps
-    # in the result are unique by Step#unique_slot_key.
-    #
-    # The result must be frozen.
+    # The result is frozen.
     #
     # @private
-    def self.slotify(_)
-      raise NotImplementedError, "subclasses must implement slotify"
+    def self.slotify(x)
+      return [].freeze if Theory::MIDINote.rest?(x)
+      return [x].freeze if x.is_a?(step_class)
+
+      step = stepify(x)
+      return [step].freeze unless step.nil?
+
+      raise ArgumentError, "invalid value for a slot: #{x.inspect}" unless Internal::Enumerables.enumerable?(x)
+
+      # See the note in enumerable? about arrayify.
+      raw_slot = Internal::Enumerables.arrayify(x)
+                   .reject { |s| Theory::MIDINote.rest?(s) }
+                   .map { |s| s.is_a?(step_class) ? s : throwing_stepify(s) }
+      dedupe_slot(raw_slot).freeze
     end
 
     # Attempts to convert its argument to a grid (a 2d array of steps).
-    #
-    # Subclasses must implement this method, presumably based on the result of
-    # `slotify`.
-    #
-    # The result must be frozen.
-    #
+    # Implemented using `slotify` and ultimately `stepify` and `step_class`,
+    # which subclassers must provide. The result and its subarrays are frozen.
     # @private
-    def self.gridify(_)
-      raise NotImplementedError, "subclasses must implement gridify"
+    def self.gridify(x)
+      return [[].freeze].freeze if Theory::MIDINote.rest?(x)
+      return [[x].freeze].freeze if x.is_a?(step_class)
+
+      step = stepify(x)
+      return [[step].freeze].freeze unless step.nil?
+
+      raise ArgumentError, "invalid value for a grid: #{x.inspect}" unless Internal::Enumerables.enumerable?(x)
+
+      Internal::Enumerables.arrayify(x)
+        .map { |s| slotify(s) }
+        .freeze
     end
 
 

@@ -52,9 +52,9 @@ class CCTrackTest < Test::Unit::TestCase
     assert_grid CCTg([a, b, c]), [[a], [b], [c]]
 
     assert_raises { CCT[] }
-    assert_raises(TypeError) { CCT[:c4] }
-    assert_raises(TypeError) { CCT[[:c4]] }
-    assert_raises(TypeError) { CCT.from_grid([[:c4]]) }
+    assert_raises(ArgumentError) { CCT[:c4] }
+    assert_raises(ArgumentError) { CCT[[:c4]] }
+    assert_raises(ArgumentError) { CCT.from_grid([[:c4]]) }
   end
 
   def test_dupe_numbers
