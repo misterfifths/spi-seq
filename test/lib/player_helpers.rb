@@ -5,7 +5,9 @@ require_relative "live_loop_mock"
 require_relative "player_mocks"
 require_relative "../../lib/spiseq/playback/ccplayer"
 require_relative "../../lib/spiseq/playback/player"
+require_relative "../../lib/spiseq/tracks/track"
 require_relative "../../lib/spiseq/utils/live_loops"
+require_relative "../../lib/spiseq/utils/midi"
 
 module PlayerHelpers
   extend Forwardable
@@ -19,7 +21,7 @@ module PlayerHelpers
   QT = ->(*gridish, **kwargs) { SpiSeq::Tracks::Track.new(*gridish, granularity: :quarter, **kwargs) }
 
   def player(track, port: nil, channel: nil, debug: false)
-    if track.is_a?(Track)
+    if track.is_a?(SpiSeq::Tracks::Track)
       SpiSeq::Playback::Player.new(track, midi: true, port: port, channel: channel, debug: debug)
     else
       SpiSeq::Playback::CCPlayer.new(track, port: port, channel: channel, debug: debug)
