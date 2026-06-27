@@ -28,7 +28,7 @@ module SpiSeq; module Tracks
   # @abstract Subclasses should override `ctor_args`, `ctor_kwargs`, and
   #   `repr_ctor_method` so that {#repr} and `mutate` work as expected. They
   #   must provide `default_accum_target` and `valid_accum_targets` to handle
-  #   initialization of accumulation parameters. And `slot_uniqueness_key` must
+  #   initialization of accumulation parameters. And `unique_slot_key` must
   #   be implemented to provide a key that uniquely identifies a step among
   #   other steps in the same slot.
   class StepBase
@@ -343,11 +343,12 @@ module SpiSeq; module Tracks
     # since no two Steps in the same slot of a Track can share a note. If all
     # steps should be considered unique, you may return `object_id`.
     #
-    # This is used to identify steps when tracking accumulation.
+    # This is used to identify steps when tracking accumulation, and when
+    # deduplicating steps within a slot at track construction time.
     #
     # @private
     def unique_slot_key
-      raise NotImplementedError, "subclasses must implement slot_uniqueness_key"
+      raise NotImplementedError, "subclasses must implement unique_slot_key"
     end
 
 

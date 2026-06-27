@@ -1594,26 +1594,9 @@ module SpiSeq; module Tracks
       end
     end
 
-    # Given a slot (an array of Steps), returns a new slot with at most one Step
-    # with each note. If multiple Steps in the input have the same note, one
-    # with the longest gate is chosen.
-    private_class_method def self.dedupe_slot(slot)
-      steps_by_note = {}
-      yelled = false
-      slot.each do |step|
-        old_step_with_same_note = steps_by_note[step.note]
-        if old_step_with_same_note.nil?
-          steps_by_note[step.note] = step
-        else
-          unless yelled
-            Internal::Log.warn("more than one Step with note #{step.note} in the same slot! Picking one with the longest gate!", "track")
-            yelled = true
-          end
-          steps_by_note[step.note] = step if old_step_with_same_note.gate < step.gate
-        end
-      end
-
-      steps_by_note.values
+    private_class_method def self.preferred_step(step1, step2)
+      # If two steps in a slot share a note, prefer the step with a longer gate.
+      (step1.gate >= step2.gate) ? step1 : step2
     end
 
     # Attempts to convert its argument to a grid slot (i.e. an array of Steps).

@@ -225,26 +225,10 @@ module SpiSeq; module Tracks
       end
     end
 
-    # Given a slot (an array of CCSteps), returns a new slot with at most one
-    # CCStep for each CC number. If multiple CCSteps in the input have the same
-    # CC number, one with the highest `value` is chosen.
-    private_class_method def self.dedupe_slot(slot)
-      steps_by_cc = {}
-      yelled = false
-      slot.each do |step|
-        old_step_with_same_cc = steps_by_cc[step.cc]
-        if old_step_with_same_cc.nil?
-          steps_by_cc[step.cc] = step
-        else
-          unless yelled
-            Internal::Log.warn("more than one step with CC #{step.cc} in the same slot! Picking one with the highest value!", "cctrack")
-            yelled = true
-          end
-          steps_by_cc[step.cc] = step if old_step_with_same_cc.value < step.value
-        end
-      end
-
-      steps_by_cc.values
+    private_class_method def self.preferred_step(step1, step2)
+      # If two steps in a slot share a CC number, prefer the step with a higher
+      # value.
+      (step1.value >= step2.value) ? step1 : step2
     end
 
     # Attempts to convert its argument to a grid slot (i.e. an array of

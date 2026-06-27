@@ -56,6 +56,8 @@ module SpiSeq; module Tracks
   # @abstract Subclasses of TrackBase must provide the following methods:
   #   - `gridify`, `slotify`, `stepify` - class methods to convert values to
   #     grids, slots, and steps.
+  #   - `preferred_step` - used to implement `dedupe_slot`, which `slotify`
+  #     should call.
   #   - `ctor_kwargs` - optional, used to implement `mutate` and {#repr}, and to
   #     test for track compatibility. Implement this if your subclass takes
   #     additional keyword arguments to its initializer.
@@ -1771,12 +1773,45 @@ module SpiSeq; module Tracks
       raise NotImplementedError, "subclasses must implement stepify"
     end
 
+    # Given two steps in the same slot that share a `unique_slot_key`, returns
+    # the one that should be kept. Used by `dedupe_slot` to determine which
+    # step wins in the case of a duplicate.
+    private_class_method def self.preferred_step(step1, step2)
+      raise NotImplementedError, "subclasses must implement preferred_step"
+    end
+
+    # Given a slot (an array of steps), returns a new slot where no two steps
+    # share the same `unique_slot_key`. If two steps share a key, the one
+    # returned from `preferred_step` is returned.
+    private_class_method def self.dedupe_slot(slot)
+      steps_by_key = {}
+      yelled = false
+      slot.each do |step|
+        key = step.unique_slot_key
+        other_matching_step = steps_by_key[key]
+        if other_matching_step.nil?
+          steps_by_key[key] = step
+        else
+          unless yelled
+            Internal::Log.warn("More than one step with key #{key} in the same slot! Discarding one!", "track")
+            yelled = true
+          end
+          steps_by_key[key] = preferred_step(step, other_matching_step)
+        end
+      end
+
+      steps_by_key.values
+    end
+
     # Attempts to convert its argument to a grid slot (i.e. an array of steps).
     #
     # Subclasses must implement this method, presumably by using `stepify` to
     # convert applicable step-like things (step instances or scalars) into a
     # single-element slot with that step, and doing the same for each element of
     # an enumerable. Rests should be removed from the result entirely.
+    #
+    # Implementations should probably use `dedupe_slot` to ensure that the steps
+    # in the result are unique by Step#unique_slot_key.
     #
     # The result must be frozen.
     #
