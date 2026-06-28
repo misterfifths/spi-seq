@@ -5,6 +5,7 @@ require_relative "../external/midi"
 require_relative "../external/sync"
 require_relative "../external/synth"
 require_relative "../internal/log"
+require_relative "../internal/utils"
 require_relative "../tracks/track"
 
 module SpiSeq; module Playback
@@ -234,24 +235,19 @@ module SpiSeq; module Playback
     # more than one Step has the same effective note, chooses one with the
     # longest gate.
     def dedupe_steps(steps)
-      steps_by_note = {}
+      key_getter = ->(step) { effective_note(step) }
+
       yelled = false
-      steps.each do |step|
-        step_note, step_gate, = effective_attrs(step)
-        old_step_with_same_note = steps_by_note[step_note]
-        if old_step_with_same_note.nil?
-          steps_by_note[step_note] = step
-        else
-          if @debug && !yelled
-            Internal::Log.warn("wound up with more than one Step with note #{step_note} in the same slot! Picking one with the longest gate!", "player")
-            yelled = true
-          end
-          old_step_gate = effective_gate(old_step_with_same_note)
-          steps_by_note[step_note] = step if old_step_gate < step_gate
+      tie_breaker = lambda do |step1, step2|
+        if @debug && !yelled
+          Internal::Log.warn("wound up with more than one Step with note #{effective_note(step1)} in the same slot! Picking one with the longest gate!", "player")
+          yelled = true
         end
+
+        (effective_gate(step1) >= effective_gate(step2)) ? step1 : step2
       end
 
-      steps_by_note.values
+      Internal::Utils.unique_by(steps, key_getter, tie_breaker)
     end
 
     # Returns an array of arrays of steps representing the state of playback,

@@ -1803,23 +1803,19 @@ module SpiSeq; module Tracks
     # share the same `unique_slot_key`. If two steps share a key, the one
     # returned from `preferred_step` is returned.
     private_class_method def self.dedupe_slot(slot)
-      steps_by_key = {}
+      key_getter = ->(step) { step.unique_slot_key }
+
       yelled = false
-      slot.each do |step|
-        key = step.unique_slot_key
-        other_matching_step = steps_by_key[key]
-        if other_matching_step.nil?
-          steps_by_key[key] = step
-        else
-          unless yelled
-            Internal::Log.warn("More than one step with key #{key} in the same slot! Discarding one!", "track")
-            yelled = true
-          end
-          steps_by_key[key] = preferred_step(step, other_matching_step)
+      tie_breaker = lambda do |step1, step2|
+        unless yelled
+          Internal::Log.warn("more than one step with key #{step1.unique_slot_key} in the same slot! Discarding one!", "track")
+          yelled = true
         end
+
+        preferred_step(step1, step2)
       end
 
-      steps_by_key.values
+      Internal::Utils.unique_by(slot, key_getter, tie_breaker)
     end
 
     # Attempts to convert its argument to a grid slot (i.e. an array of steps).

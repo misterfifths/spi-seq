@@ -1,6 +1,20 @@
 # frozen_string_literal: true
 
 module SpiSeq; module Internal; module Utils
+  # Returns an array containing elements of `enum` with unique returns from the
+  # `key_getter` lambda. If two elements have the same key, `tie_breaker` is
+  # called with both elements and the element it returns will be in the result
+  # (the one it doesn't return is discarded).
+  module_function def unique_by(enum, key_getter, tie_breaker)
+    objs_by_key = {}
+    enum.each do |obj|
+      key = key_getter.call(obj)
+      other = objs_by_key[key]
+      objs_by_key[key] = other.nil? ? obj : tie_breaker.call(obj, other)
+    end
+    objs_by_key.values
+  end
+
   # Given a proc or lambda and a hash of keyword arguments, returns a new hash
   # containing only the members of the hash that are valid keyword arguments.
   # If the proc or lambda takes a double-star **kwargs argument, the hash is
