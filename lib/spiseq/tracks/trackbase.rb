@@ -479,8 +479,7 @@ module SpiSeq; module Tracks
     # @return [TrackBase]
     # @see #append_slot
     def append(other_track)
-      other_track = compatibly_trackify(other_track)
-      mutate(grid: @grid + other_track.grid)
+      mutate(grid: @grid + self.class.gridify(other_track))
     end
     alias concat append
     alias add append
@@ -507,18 +506,23 @@ module SpiSeq; module Tracks
     # @return [TrackBase]
     # @see #append
     def merge(other_track)
-      other_track = compatibly_trackify(other_track)
+      other_grid = self.class.gridify(other_track)
 
-      if num_slots > other_track.num_slots
-        longer_track = self
-        shorter_track = other_track
+      if num_slots > other_grid.length
+        longer_grid = @grid
+        shorter_grid = other_grid
       else
-        longer_track = other_track
-        shorter_track = self
+        longer_grid = other_grid
+        shorter_grid = @grid
       end
 
-      new_grid = longer_track.mutable_grid_dup
-      shorter_track.grid.each_with_index { |slot, i| new_grid[i].concat(slot) }
+      new_grid = longer_grid.map.with_index do |long_slot, i|
+        if i < shorter_grid.length
+          long_slot + shorter_grid[i]
+        else
+          long_slot
+        end
+      end
 
       mutate(grid: new_grid)
     end
@@ -629,7 +633,7 @@ module SpiSeq; module Tracks
     # @see #zip
     # @see #space
     def grouped_zip(other_track, group_size, other_group_size, cycle: true, pad_with_rests: true)
-      other_track = compatibly_trackify(other_track)
+      other_grid = self.class.gridify(other_track)
 
       new_grid = []
 
@@ -656,7 +660,7 @@ module SpiSeq; module Tracks
       num_groups = (@grid.length / group_size.to_f).ceil
       num_groups.times do
         a_idx = add_group.call(group_size, @grid, a_idx)
-        b_idx = add_group.call(other_group_size, other_track.grid, b_idx)
+        b_idx = add_group.call(other_group_size, other_grid, b_idx)
       end
 
       mutate(grid: new_grid)
@@ -1851,8 +1855,13 @@ module SpiSeq; module Tracks
     # Attempts to convert its argument to a grid (a 2d array of steps).
     # Implemented using `slotify` and ultimately `stepify` and `step_class`,
     # which subclassers must provide. The result and its subarrays are frozen.
+    #
+    # If passed an instance of this class, returns its `grid` attribute.
+    #
     # @private
     def self.gridify(x)
+      return x.grid if x.is_a?(self)
+
       return [[].freeze].freeze if Theory::MIDINote.rest?(x)
       return [[x].freeze].freeze if x.is_a?(step_class)
 
@@ -1906,16 +1915,6 @@ module SpiSeq; module Tracks
       end
 
       self.class.new(*grid, **mutations)
-    end
-
-    # Attempts to convert its argument into a track. If it is already a track,
-    # it is returned as-is. Otherwise, constructs a new track which will inherit
-    # the granularity and timescale from self.
-    def compatibly_trackify(x)
-      return x if x.is_a?(self.class)
-
-      # We can just pass this off to the initializer and let it call gridify.
-      mutate(grid: x)
     end
   end
 end; end
