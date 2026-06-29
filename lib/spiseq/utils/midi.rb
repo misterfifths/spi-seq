@@ -156,8 +156,6 @@ module SpiSeq; module Utils; module MIDI
       panic.call(port: port, channel: channel)
     end
   end
-  alias midi_uber_stop midi_panic
-  class << self; alias midi_uber_stop midi_panic; end
 
   # Registers a hook with {Lifecycle.on_stop} that will call {midi_panic} when
   # playback in Sonic Pi is stopped or when the application exits.
