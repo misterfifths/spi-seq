@@ -333,6 +333,7 @@ module SpiSeq; module Playback
     ll
   end
   alias tll track_live_loop
+  class << self; alias tll track_live_loop; end
 
 
   # This method is identical to {track_live_loop} except that it plays a dummy
@@ -348,6 +349,7 @@ module SpiSeq; module Playback
     track_live_loop(loop_name, track || Tracks::CCTrack.rest, **kwargs, &block)
   end
   alias cctll cc_track_live_loop
+  class << self; alias cctll cc_track_live_loop; end
 
 
   # Sets the {PlayerBase#fill fill mode} on the player associated with a
@@ -364,6 +366,7 @@ module SpiSeq; module Playback
     Internal::TrackLiveLoopUtils.get_player(loop_name)&.fill = fill
   end
   alias fill_live_loop set_live_loop_fill
+  class << self; alias fill_live_loop set_live_loop_fill; end
 
   # Turns off {PlayerBase#fill fill mode} on the player associated with a
   # `live_loop` made by {track_live_loop}.
@@ -376,4 +379,5 @@ module SpiSeq; module Playback
     set_live_loop_fill(loop_name, false)
   end
   alias unfill_live_loop unset_live_loop_fill
+  class << self; alias unfill_live_loop unset_live_loop_fill; end
 end; end
