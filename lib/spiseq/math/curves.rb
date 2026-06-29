@@ -88,7 +88,7 @@ module SpiSeq; module Math
     # @param orig_max [Number] The maximum output of `f`, before scaling.
     # @return [#call] A lambda that will call `f` and scale its output so that
     #   it falls between `min` and `max` inclusive.
-    def self.scale(f, min, max, orig_min: 0, orig_max: 1)
+    module_function def scale(f, min, max, orig_min: 0, orig_max: 1)
       ->(x) { min + (max - min) * ((f.call(x) - orig_min) / (orig_max - orig_min)) }
     end
 
@@ -101,7 +101,7 @@ module SpiSeq; module Math
     # @param max_value [Number]
     # @param ramp_up_start [Number]
     # @return [#call]
-    def self.fade_in_linear(min_value = 0.0, max_value = 1.0, ramp_up_start = 0.0)
+    module_function def fade_in_linear(min_value = 0.0, max_value = 1.0, ramp_up_start = 0.0)
       min_value = min_value.to_f
       max_value = max_value.to_f
       ramp_up_start = ramp_up_start.to_f
@@ -130,7 +130,7 @@ module SpiSeq; module Math
     # @param max_value [Number]
     # @param ramp_down_start [Number]
     # @return [#call]
-    def self.fade_out_linear(max_value = 1.0, min_value = 0.0, ramp_down_start = 0.0)
+    module_function def fade_out_linear(max_value = 1.0, min_value = 0.0, ramp_down_start = 0.0)
       max_value = max_value.to_f
       min_value = min_value.to_f
       ramp_down_start = ramp_down_start.to_f
@@ -153,7 +153,7 @@ module SpiSeq; module Math
     # The same as {fade_in_linear}, but quadratically increases values.
     # @param (see fade_in_linear)
     # @return [#call]
-    def self.fade_in_quad(min_value = 0.0, max_value = 1.0, ramp_up_start = 0.0)
+    module_function def fade_in_quad(min_value = 0.0, max_value = 1.0, ramp_up_start = 0.0)
       min_value = min_value.to_f
       max_value = max_value.to_f
       ramp_up_start = ramp_up_start.to_f
@@ -175,7 +175,7 @@ module SpiSeq; module Math
     # The same as {fade_out_linear}, but quadratically decreases values.
     # @param (see fade_out_linear)
     # @return [#call]
-    def self.fade_out_quad(max_value = 1.0, min_value = 0.0, ramp_down_start = 0.0)
+    module_function def fade_out_quad(max_value = 1.0, min_value = 0.0, ramp_down_start = 0.0)
       max_value = max_value.to_f
       min_value = min_value.to_f
       ramp_down_start = ramp_down_start.to_f
