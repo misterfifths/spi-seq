@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module SpiSeq; module Theory
+  # @!group Music theory
+
   # Returns an array representing a Euclidean rhythm that evenly spreads
   # `pulses` hits over `length` many beats. The array contains booleans, true
   # for hits and false for rests.

@@ -316,6 +316,8 @@ module SpiSeq; module Theory
     end
   end
 
+  # @!group Music theory
+
   # (see Arp.arpeggiate)
   # An alias for {Arp.arpeggiate}.
   module_function def arp(notes, direction, spread: 0, extra_octaves: [])
