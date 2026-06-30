@@ -40,7 +40,8 @@ module SpiSeq; module Theory
                    :==, :eql?, :hash
 
 
-    ABBREV_DEFS = {
+    # Names to symbols for class methods, or 0-argument lambdas.
+    ABBREVS = {
       %i[major   maj   M]       => :major_triad,
       %i[major6  maj6  M6 6]    => :major_sixth,
       %i[major7  maj7  M7]      => :major_seventh,
@@ -56,13 +57,13 @@ module SpiSeq; module Theory
       %i[minor13 min13 m13]     => :minor_thirteenth,
 
       %i[minor_major7 min_maj7
-        mM7 m/M7]               => :minor_major_seventh,
+         mM7 m/M7]              => :minor_major_seventh,
       %i[minor_major9 min_maj9
-        mM9 m/M9]               => :minor_major_ninth,
+         mM9 m/M9]              => :minor_major_ninth,
       %i[minor_major11
-        min_maj11 mM11 m/M11]   => :minor_major_eleventh,
+         min_maj11 mM11 m/M11]  => :minor_major_eleventh,
       %i[minor_major13
-        min_maj13 mM13 m/M13]   => :minor_major_thirteenth,
+         min_maj13 mM13 m/M13]  => :minor_major_thirteenth,
 
       %i[aug +5 +]              => :aug_triad,
       %i[aug6 +6 ger6 ger+6]    => :aug_sixth,
@@ -74,13 +75,13 @@ module SpiSeq; module Theory
       %i[aug13 +13]             => :aug_thirteenth,
 
       %i[aug_major7 aug_maj7
-        augM7 +M7]              => :aug_major_seventh,
+         augM7 +M7]             => :aug_major_seventh,
       %i[aug_major9 aug_maj9
-        augM9 +M9]              => :aug_major_ninth,
+         augM9 +M9]             => :aug_major_ninth,
       %i[aug_major11 aug_maj11
-        augM11 +M11]            => :aug_major_eleventh,
+         augM11 +M11]           => :aug_major_eleventh,
       %i[aug_major13 aug_maj13
-        augM13 +M13]            => :aug_major_thirteenth,
+         augM13 +M13]           => :aug_major_thirteenth,
 
       %i[dim -5]                => :dim_triad,
       %i[dim7 -7]               => :dim_seventh,
@@ -95,7 +96,7 @@ module SpiSeq; module Theory
 
       %i[dom v]                 => :dom_triad,
       %i[dom_parallel dom_par
-        dompar]                 => :dom_parallel,
+         dompar]                => :dom_parallel,
       %i[dom7 v7 7]             => :dom_seventh,
       %i[dom9 v9 9]             => :dom_ninth,
       %i[dom11 v11 11]          => :dom_eleventh,
@@ -154,16 +155,9 @@ module SpiSeq; module Theory
       # I have no idea what these are supposed to be.
       %i[9+5]                   => -> { Chord.new(%i[P1 m7 m9]) },
       %i[m9+5]                  => -> { Chord.new(%i[P1 m7 M9]) }
-    }.freeze
-    ABBREV_DEFS.each_key { |names| names.freeze }
-    private_constant :ABBREV_DEFS
-
-    # Blow ABBREV_DEFS up into a 1-d map from names.
-    ABBREVS = {}  # rubocop:disable Style/MutableConstant
-    ABBREV_DEFS.each do |names, val|
-      names.each { |name| ABBREVS[name] = val }
-    end
-    ABBREVS.freeze
+    }.flat_map do |names, val|
+      names.map { |name| [name, val] }
+    end.to_h.freeze
     private_constant :ABBREVS
 
     # All chord names supported by this class. The keys of this hash are valid

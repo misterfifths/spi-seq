@@ -8,71 +8,66 @@ require_relative "scale"
 
 module SpiSeq; module Theory
   class Chord
-    VOICING_DEFS = {
+    # Names to symbols for class methods, or 0-argument lambdas.
+    VOICINGS = {
       %i[closed]                  => :voice_closed,
       %i[rootless]                => :voice_rootless,
       %i[shell]                   => :voice_shell,
       %i[drop_two drop_2 drop2]   => ->(intervals, root) { voice_drop(intervals, root, 2) },
       %i[drop_three drop_3 drop3] => ->(intervals, root) { voice_drop(intervals, root, 3) },
       %i[drop_two_three drop_2_3
-        drop23]                   => ->(intervals, root) { voice_drop(intervals, root, 2, 3) },
+         drop23]                  => ->(intervals, root) { voice_drop(intervals, root, 2, 3) },
       %i[drop_two_four drop_2_4
-        drop24]                   => ->(intervals, root) { voice_drop(intervals, root, 2, 4) },
+         drop24]                  => ->(intervals, root) { voice_drop(intervals, root, 2, 4) },
       %i[drop_three_four drop_3_4
-        drop34]                   => ->(intervals, root) { voice_drop(intervals, root, 3, 4) },
+         drop34]                  => ->(intervals, root) { voice_drop(intervals, root, 3, 4) },
       %i[drop_four drop_4 drop4]  => ->(intervals, root) { voice_drop(intervals, root, 4) },
       %i[double_root
-        double_root_down
-        double_bass
-        double_bass_down]         => ->(intervals, root) { voice_double_bass(intervals, root, -12) },
+         double_root_down
+         double_bass
+         double_bass_down]        => ->(intervals, root) { voice_double_bass(intervals, root, -12) },
       %i[double_root_up
-        double_bass_up]           => ->(intervals, root) { voice_double_bass(intervals, root, 12) },
+         double_bass_up]          => ->(intervals, root) { voice_double_bass(intervals, root, 12) },
       %i[double_third double_three
-        double_3 double3
-        double_third_down
-        double_three_down
-        double_3_down
-        double3_down
-        double3down]              => ->(intervals, root) { voice_double_interval(intervals, root, %i[m3 M3], -12) },
+         double_3 double3
+         double_third_down
+         double_three_down
+         double_3_down
+         double3_down
+         double3down]             => ->(intervals, root) { voice_double_interval(intervals, root, %i[m3 M3], -12) },
       %i[double_third_up
-        double_three_up
-        double_3_up double3_up
-        double3up]                => ->(intervals, root) { voice_double_interval(intervals, root, %i[m3 M3], 12) },
+         double_three_up
+         double_3_up double3_up
+         double3up]               => ->(intervals, root) { voice_double_interval(intervals, root, %i[m3 M3], 12) },
       %i[double_fifth double_five
-        double_5 double5
-        double_fifth_down
-        double_five_down
-        double_5_down
-        double5_down
-        double5down]              => ->(intervals, root) { voice_double_interval(intervals, root, [:P5], -12) },
+         double_5 double5
+         double_fifth_down
+         double_five_down
+         double_5_down
+         double5_down
+         double5down]             => ->(intervals, root) { voice_double_interval(intervals, root, [:P5], -12) },
       %i[double_fifth_up
-        double_five_up
-        double_5_up double5_up
-        double5up]                => ->(intervals, root) { voice_double_interval(intervals, root, [:P5], 12) },
+         double_five_up
+         double_5_up double5_up
+         double5up]               => ->(intervals, root) { voice_double_interval(intervals, root, [:P5], 12) },
       %i[double_seventh
-        double_seven double_7
-        double7
-        double_seventh_down
-        double_seven_down
-        double_7_down
-        double7_down
-        double7down]              => ->(intervals, root) { voice_double_interval(intervals, root, %i[m7 M7], -12) },
+         double_seven double_7
+         double7
+         double_seventh_down
+         double_seven_down
+         double_7_down
+         double7_down
+         double7down]             => ->(intervals, root) { voice_double_interval(intervals, root, %i[m7 M7], -12) },
       %i[double_seventh_up
-        double_seven_up
-        double_7_up double7_up
-        double7up]                => ->(intervals, root) { voice_double_interval(intervals, root, %i[m7 M7], 12) },
+         double_seven_up
+         double_7_up double7_up
+         double7up]               => ->(intervals, root) { voice_double_interval(intervals, root, %i[m7 M7], 12) },
       %i[open]                    => :voice_open,
       %i[open2]                   => :voice_open2,
       %i[open3]                   => :voice_open3
-    }.freeze
-    private_constant :VOICING_DEFS
-
-    # Blow VOICING_DEFS up into a 1-d map from names.
-    VOICINGS = {}  # rubocop:disable Style/MutableConstant
-    VOICING_DEFS.each do |names, val|
-      names.each { |name| VOICINGS[name] = val }
-    end
-    VOICINGS.freeze
+    }.flat_map do |names, val|
+      names.map { |name| [name, val] }
+    end.to_h.freeze
     private_constant :VOICINGS
 
     # The names of all voicing styles supported by this class. These are the
