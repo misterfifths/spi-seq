@@ -44,6 +44,8 @@ module SpiSeq; module Utils; module MIDI
   end
 
 
+  # @!group MIDI utilities
+
   # Starts a `live_loop` named `loop_name` that sends MIDI clock beats for the
   # global BPM.
   # @param loop_name [Symbol] The name for the live loop.
