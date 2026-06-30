@@ -150,9 +150,8 @@ module SpiSeq; module Tracks
     # @param notes [Array<Theory::MIDINote, String, Symbol, Integer>] The notes
     #   to arpeggiate, an array of {Theory::MIDINote}s or any of the values
     #   understood by {Theory::MIDINote.new}.
-    # @param direction [Symbol] One of the direction symbols defined on
-    #   {Theory::Arp}, e.g. {Theory::Arp::Pinky :pinky} or
-    #   {Theory::Arp::UpDown :updown}.
+    # @param direction [Symbol, String] One of the direction names understood by
+    #   {Theory::Arp}, e.g. `:pinky` or `:updown`.
     # @param spread [Integer] Adds notes an octave above some number of the
     #   lowest notes in the result. See {Theory::Arp.arpeggiate} for details.
     # @param extra_octaves [Array<Integer>] Adds a copy of the incoming notes
@@ -176,7 +175,7 @@ module SpiSeq; module Tracks
     # @return [Track]
     # @see Theory::Arp.arpeggiate
     # @see .euclid
-    def self.arp(notes, direction = Theory::Arp::Up, spread: 0, extra_octaves: [], pulses: nil, length: nil, rotate: 0, full_cycle: true, granularity: :eighth, timescale: 1)
+    def self.arp(notes, direction = :up, spread: 0, extra_octaves: [], pulses: nil, length: nil, rotate: 0, full_cycle: true, granularity: :eighth, timescale: 1)
       notes = Theory::Arp.arpeggiate(notes, direction, spread: spread, extra_octaves: extra_octaves)
       if pulses.nil?
         grid = notes.map { |n| [Step.new(n)] }
