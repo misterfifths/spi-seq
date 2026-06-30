@@ -38,7 +38,8 @@ module SpiSeq; module Tracks
     # {Theory::Scale#snap snapped} when it is played. See {#initialize} for
     # details.
     # @return [Theory::Scale]
-    # @see #with_scale @see #snap_to_scale
+    # @see #with_scale
+    # @see #snap_to_scale
     attr_reader :scale
 
 
