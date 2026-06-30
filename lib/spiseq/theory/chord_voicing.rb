@@ -117,7 +117,7 @@ module SpiSeq; module Theory
     # all possible names.
     #
     # @return [Array<Symbol>]
-    VOICING_STYLES = VOICINGS.keys.to_a.freeze
+    VOICING_STYLES = VOICINGS.keys.freeze
 
 
     SHELL_INTERVALS = [:P1, :m3, :M3, :m7, :M7].map { |i| Interval.new(i) }

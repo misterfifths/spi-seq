@@ -182,7 +182,7 @@ module SpiSeq; module Theory
     # intervals.
     #
     # @return [Array<Symbol>]
-    SCALE_NAMES = SCALES.keys.to_a.freeze
+    SCALE_NAMES = SCALES.keys.freeze
 
 
     # Creates a new Scale consisting of some number of octaves starting on a

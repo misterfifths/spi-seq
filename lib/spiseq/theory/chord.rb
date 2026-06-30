@@ -227,7 +227,7 @@ module SpiSeq; module Theory
     # Sonic Pi's `chord` function and more.
     #
     # @return [Array<Symbol>]
-    CHORD_NAMES = ABBREVS.keys.to_a.freeze
+    CHORD_NAMES = ABBREVS.keys.freeze
 
 
     # @!group Initialization
