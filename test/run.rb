@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-# test_helper should be required first so coverage catches other requires.
+# lib/init should be required first so coverage catches other requires.
 require_relative "lib/init"
 require_relative "../lib/spiseq/internal/log"
 
@@ -17,10 +17,10 @@ end
 # To run the tests from inside Sonic Pi, require this file, then call
 # `run_tests("path/to/output.log")`. E.g.:
 #
-# require "~/spi-seq/tests/run"
+# require "~/spi-seq/test/run"
 # run_tests("~/spi-seq-tests.log")
 #
-# You should *not* require `core.rb` in this case, or coverage will miss quite a
+# You should *not* require `core` in this case, or coverage will miss quite a
 # few files.
 #
 # Since Sonic Pi maintains a single persistent Ruby context per launch, if you
@@ -36,8 +36,8 @@ def run_tests(output_path)
   require "test/unit/ui/console/testrunner"
 
   # For some reason not everything gets picked up for coverage when manually
-  # setting up Test::Unit as below. Requiring core gets us most of the way there
-  require_relative "../core"
+  # setting up Test::Unit as below. Requiring the whole shebang here helps.
+  require_relative "../lib/spiseq"
 
   collector = Test::Unit::Collector::Dir.new
   suite = collector.collect(TEST_DIR)
