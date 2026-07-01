@@ -1,39 +1,36 @@
 # frozen_string_literal: true
 
 module SpiSeq; module Internal; module ComparisonUtils
-  # Defines comparison operators on `ctx` that delegate to the RHS of the
-  # operation if the RHS is of type `cls`. Intended to be called at the class
-  # level (with ctx = self) on, e.g., Symbol and String, to allow comparisons
-  # with such types on the LHS.
-  module_function def define_reverse_comparison_ops(ctx, cls)
-    {
-      :eql? => :eql?,
-      :==   => :==,
-      :<    => :>,
-      :<=   => :>=,
-      :>    => :<,
-      :>=   => :<=
-    }.each do |op, inverse_op|
-      ctx.define_method(op) do |other|
-        next other.send(inverse_op, self) if other.instance_of?(cls)
-        super(other)
+  # Prepends a module defining comparison operators on that delegate to the RHS
+  # of the operation if the RHS is of type `cls`. Useful on builtin classes like
+  # String and Symbol to allow "yoda" comparisons with another class.
+  module_function def monkey_patch_reverse_comparisons(target, cls)
+    patch_module = Module.new do
+      {
+        :eql? => :eql?,
+        :==   => :==,
+        :<    => :>,
+        :<=   => :>=,
+        :>    => :<,
+        :>=   => :<=
+      }.each do |op, inverse_op|
+        define_method(op) do |other|
+          next other.send(inverse_op, self) if other.instance_of?(cls)
+          super(other)
+        end
+      end
+
+      define_method(:<=>) do |other|
+        if other.instance_of?(cls)
+          res = other <=> self
+          next res if res.nil?
+          -res
+        else
+          super(other)
+        end
       end
     end
 
-    ctx.define_method(:<=>) do |other|
-      if other.instance_of?(cls)
-        res = other <=> self
-        next res if res.nil?
-        -res
-      else
-        super(other)
-      end
-    end
-  end
-
-  # Prepends an anonymous module to `target` containing the reverse comparison
-  # operations from `define_reverse_comparison_ops` for `rhs_cls`.
-  module_function def monkey_patch_reverse_comparisons(target, rhs_cls)
-    target.prepend(Module.new { ComparisonUtils.define_reverse_comparison_ops(self, rhs_cls) })
+    target.prepend(patch_module)
   end
 end; end; end
