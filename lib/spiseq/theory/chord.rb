@@ -582,7 +582,7 @@ module SpiSeq; module Theory
       when :ger
         new(%i[P1 M3 P5 A6])
       when :fr
-        new(%i[P1 M3 d5 A6])
+        new(%i[P1 M3 A4 A6])
       when :it
         new(%i[P1 M3 A6])
       else
