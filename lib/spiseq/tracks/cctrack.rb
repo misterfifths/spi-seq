@@ -4,8 +4,8 @@ require_relative "ccstep"
 require_relative "trackbase"
 require_relative "../internal/enumerables"
 require_relative "../internal/log"
-require_relative "../theory/midinote"  # Only for `rest?`
 require_relative "../theory/notelength"
+require_relative "../theory/rest"
 
 module SpiSeq; module Tracks
   # A CCTrack deals with a grid whose slots contain {CCStep}s. CCStep instances
@@ -80,8 +80,7 @@ module SpiSeq; module Tracks
     # - An integer, which is used as the {CCStep#value value} in a {CCStep} with
     #   {CCStep#number number} `cc_number`.
     # - A {CCStep} instance, which will be passed through verbatim.
-    # - A rest (see {Theory::MIDINote.rest?}), which will result in an empty
-    #   slot.
+    # - A rest (see {Theory.rest?}), which will result in an empty slot.
     #
     # @example
     #   CCTrack.simple(56, [1, 2, :r, CC(100, 5), 3])
@@ -98,7 +97,7 @@ module SpiSeq; module Tracks
     # @return [CCTrack]
     def self.simple(cc_number, slots, granularity: :eighth, timescale: 1)
       slots = slots.map do |slot|
-        next :r if Theory::MIDINote.rest?(slot)
+        next :r if Theory.rest?(slot)
 
         case slot
         when CCStep

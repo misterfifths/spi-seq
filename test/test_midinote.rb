@@ -3,6 +3,7 @@
 
 require_relative "lib/init"
 require_relative "../lib/spiseq/theory/midinote"
+require_relative "../lib/spiseq/theory/rest"
 
 include SpiSeq::Theory
 
@@ -223,14 +224,14 @@ class MIDINoteTest < Test::Unit::TestCase
   end
 
   def test_rest?
-    assert MIDINote.rest?(:r)
-    assert MIDINote.rest?(:rest)
-    assert MIDINote.rest?(nil)
-    refute MIDINote.rest?("r")
-    refute MIDINote.rest?("rest")
-    refute MIDINote.rest?(123)
-    refute MIDINote.rest?(:c4)
-    refute MIDINote.rest?(N(:c))
+    assert rest?(:r)
+    assert rest?(:rest)
+    assert rest?(nil)
+    refute rest?("r")
+    refute rest?("rest")
+    refute rest?(123)
+    refute rest?(:c4)
+    refute rest?(N(:c))
   end
 
   def test_has_octave?

@@ -13,6 +13,7 @@ require_relative "../math/curves"
 require_relative "../theory/arp"
 require_relative "../theory/midinote"
 require_relative "../theory/notelength"
+require_relative "../theory/rest"
 require_relative "../theory/scale"
 
 module SpiSeq; module Tracks
@@ -1323,7 +1324,7 @@ module SpiSeq; module Tracks
     # @return [Track]
     def sub_note(target, repl)
       orig_has_octave = Theory::MIDINote.has_octave?(target)
-      repl_is_rest = Theory::MIDINote.rest?(repl)
+      repl_is_rest = Theory.rest?(repl)
       repl_has_octave = repl_is_rest ? false : Theory::MIDINote.has_octave?(repl)
 
       target = Theory::MIDINote.new(target)

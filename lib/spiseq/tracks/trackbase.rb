@@ -4,8 +4,8 @@ require_relative "prob"
 require_relative "step"
 require_relative "trackbase_partitions"
 require_relative "../theory/euclid"
-require_relative "../theory/midinote"  # for rest?
 require_relative "../theory/notelength"
+require_relative "../theory/rest"
 require_relative "../internal/clipboard"
 require_relative "../internal/enumerables"
 require_relative "../internal/utils"
@@ -987,7 +987,7 @@ module SpiSeq; module Tracks
     #   array of the subclass-appropriate step type (e.g. {Step} for {Track}s),
     #   a single such step (which will be converted to a single-step slot), or a
     #   value convertible to a step (e.g. a {Theory::MIDINote} for {Track}s). If
-    #   this value is a {Theory::MIDINote.rest? rest}, the slot is cleared.
+    #   this value is a {Theory.rest? rest}, the slot is cleared.
     # @return [TrackBase]
     # @see #clear_slot
     # @see #append_slot
@@ -1009,7 +1009,7 @@ module SpiSeq; module Tracks
     #   array of the subclass-appropriate step type (e.g. {Step} for {Track}s),
     #   a single such step (which will be converted to a single-step slot), or a
     #   value convertible to a step (e.g. a {Theory::MIDINote} for {Track}s). If
-    #   this value is a {Theory::MIDINote.rest? rest}, the slot is cleared.
+    #   this value is a {Theory.rest? rest}, the slot is cleared.
     # @return [TrackBase]
     # @see #set_slot
     # @see #indexes_of_filled_slots
@@ -1779,7 +1779,7 @@ module SpiSeq; module Tracks
     # note Steps.
     #
     # Return nil if a conversion is not possible. This method will never be
-    # called with rests (i.e. values for which MIDINote.rest? returns true) or
+    # called with rests (i.e. values for which Theory.rest? returns true) or
     # with instances of `step_class`.
     #
     # The method should not raise an exception.
@@ -1826,7 +1826,7 @@ module SpiSeq; module Tracks
     # Implemented using `stepify` and `step_class`, which subclassers must
     # provide.
     #
-    # Rests (`MIDINote.rest?`) become single empty slots. Steps or things
+    # Rests (`Theory.rest?`) become single empty slots. Steps or things
     # convertible to them (via `stepify`) become a single-element slot with that
     # step. Elements of enumerables are treated with the same logic, and the
     # resulting steps are deduplicated on `Step#unique_slot_key` with
@@ -1837,7 +1837,7 @@ module SpiSeq; module Tracks
     #
     # @private
     def self.slotify(x)
-      return [].freeze if Theory::MIDINote.rest?(x)
+      return [].freeze if Theory.rest?(x)
       return [x].freeze if x.is_a?(step_class)
 
       step = stepify(x)
@@ -1847,7 +1847,7 @@ module SpiSeq; module Tracks
 
       # See the note in enumerable? about arrayify.
       raw_slot = Internal::Enumerables.arrayify(x)
-                   .reject { |s| Theory::MIDINote.rest?(s) }
+                   .reject { |s| Theory.rest?(s) }
                    .map { |s| s.is_a?(step_class) ? s : throwing_stepify(s) }
       dedupe_slot(raw_slot).freeze
     end
@@ -1862,7 +1862,7 @@ module SpiSeq; module Tracks
     def self.gridify(x)
       return x.grid if x.is_a?(self)
 
-      return [[].freeze].freeze if Theory::MIDINote.rest?(x)
+      return [[].freeze].freeze if Theory.rest?(x)
       return [[x].freeze].freeze if x.is_a?(step_class)
 
       step = stepify(x)

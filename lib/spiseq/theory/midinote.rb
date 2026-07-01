@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "rest"
 require_relative "scale"
 require_relative "../internal/comparison_utils"
 
@@ -107,7 +108,7 @@ module SpiSeq; module Theory
     # @return [MIDINote]
     def self.new(note)
       return note if note.is_a?(MIDINote)
-      raise TypeError, "Cannot convert a rest to a MIDINote" if rest?(note)
+      raise TypeError, "Cannot convert a rest to a MIDINote" if Theory.rest?(note)
 
       @note_cache ||= {}
 
@@ -248,7 +249,7 @@ module SpiSeq; module Theory
     # @param other [MIDINote, Symbol, String, Integer]
     # @return [Boolean]
     def match?(other)
-      return false if MIDINote.rest?(other)
+      return false if Theory.rest?(other)
       return self == other if MIDINote.has_octave?(other)
       @pitch_class == MIDINote.new(other).pitch_class
     end
@@ -417,16 +418,6 @@ module SpiSeq; module Theory
       match = NOTE_REGEX.match(note.to_s)
       raise ArgumentError, "Invalid note symbol #{note}" if match.nil?
       !match[:octave].nil?
-    end
-
-    # Returns true if the given value represents a rest. nil, `:r`, and `:rest`
-    # are considered rests.
-    # @param val [Object]
-    # @return [Boolean]
-    def self.rest?(val)
-      return true if val.nil?
-      return false unless val.is_a?(Symbol)
-      [:r, :rest].include?(val)
     end
   end
 
