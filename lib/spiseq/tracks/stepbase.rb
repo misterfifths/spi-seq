@@ -151,6 +151,16 @@ module SpiSeq; module Tracks
       raise RangeError, "accum_min must be <= 0" unless accum_min <= 0
       raise RangeError, "accum_delta must be between accum_min and accum_max" if accum_delta < accum_min || accum_delta > accum_max
       @accum_delta = accum_delta
+
+      # If accum_delta is 0, effectively ignore all the other accum args.
+      if @accum_delta == 0
+        accum_max = 12
+        accum_min = 0
+        accum_mode = :wrap
+        accum_prob = nil
+        accum_target = nil
+      end
+
       @accum_max = accum_max
       @accum_min = accum_min
 

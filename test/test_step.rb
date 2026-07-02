@@ -166,6 +166,10 @@ class StepTest < Test::Unit::TestCase
     assert_raises { S(:c4).accum(1, mode: nil) }
     assert_raises { S(:c4).accum(1, target: :nope) }
     assert_raises { S(:c4).accum(1, target: :value) }
+
+    # Accum parameters should be ignored when accum_delta is 0.
+    assert_accum S(:c4).accum(0, min: -5), 0
+    assert_accum S(:c4).accum(1, min: -5).accum(0), 0
   end
 
   def assert_repr(s)
@@ -192,6 +196,11 @@ class StepTest < Test::Unit::TestCase
     assert_repr S(:c4, gate: 0.25, vel: 50).accum(1, min: -5, max: 22, mode: :freeze)
     assert_repr S(:c4, gate: 0.25, vel: 50).accum(1, min: -5, max: 22, mode: :freeze, target: :gate)
     assert_repr S(:c4, gate: 0.25, vel: 50).accum(1, min: -5, max: 22, mode: :freeze, target: :vel)
+
+    # 0 accum_delta but other accum params are non-default. The non-default
+    # values should be ignored in this case and not present in the repr.
+    assert_repr S(:c4).accum(0, min: -5)
+    assert_equal S(:c4).accum(0, min: -5).repr, S(:c4).repr
 
     # Prob spot-checks
     assert_repr S(:c4, gate: 0.25, vel: 50, prob: Prob.every_other).accum(1, min: -5, max: 22, mode: :freeze)
@@ -256,5 +265,8 @@ class StepTest < Test::Unit::TestCase
                  S(:c4).accum(1, min: -5, max: 22, mode: :freeze, target: :vel, prob: Prob.pre)
     refute_equal S(:c4).accum(1, min: -5, max: 22, mode: :freeze, target: :vel, prob: Prob.every(3)),
                  S(:c4).accum(1, min: -5, max: 22, mode: :freeze, target: :vel, prob: Prob.every(2))
+
+    # When accum_delta is 0, all other accum parameters should be ignored
+    assert_equal S(:c4).accum(0, min: -5), S(:c4)
   end
 end
