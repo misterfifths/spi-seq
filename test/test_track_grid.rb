@@ -66,7 +66,7 @@ class TrackGridTest < Test::Unit::TestCase
     assert_grid T[:c4] + :r, [[:c4], []]
     assert_grid T[:c4] + [:r, [:d5, :e5]], [[:c4], [], [:d5, :e5]]
 
-    assert_gt T[:c4, granularity: :whole, timescale: 2] + T[:c4, granularity: :whole, timescale: 2], NoteLength::Whole, 2
+    assert_gt T[:c4, granularity: :whole, timescale: 2] + T[:c4, granularity: :whole, timescale: 2], :whole, 2
   end
 
   def test_merge

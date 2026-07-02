@@ -17,7 +17,7 @@ class TrackRegrainTest < Test::Unit::TestCase
     x = T[S(:a1, gate: 0.25), S(:b1, gate: 0.5), S(:c1, gate: 0.75), :d1]
 
     t = x.expand
-    assert_gt t, NoteLength::Sixteenth, 1
+    assert_gt t, :sixteenth, 1
     assert_grid t, [
       [S(:a1, gate: 0.5)], [],
       [:b1], [],
@@ -26,7 +26,7 @@ class TrackRegrainTest < Test::Unit::TestCase
     ]
 
     t = t.expand
-    assert_gt t, NoteLength::ThirtySecond, 1
+    assert_gt t, :thirty_second, 1
     assert_grid t, [
       [:a1], [], [], [],
       [:b1], [:b1], [], [],
@@ -38,7 +38,7 @@ class TrackRegrainTest < Test::Unit::TestCase
     assert_gt t, oneshot.granularity, oneshot.timescale
 
     t = t.expand
-    assert_gt t, NoteLength::SixtyFourth, 1
+    assert_gt t, :sixty_fourth, 1
     oneshot = x.expand(3)
     assert_grid t, oneshot.grid
     assert_gt t, oneshot.granularity, oneshot.timescale
@@ -63,7 +63,7 @@ class TrackRegrainTest < Test::Unit::TestCase
           [:d1], [:d1], [:d1], [:d1]]
 
     t = x.condense
-    assert_gt t, NoteLength::Quarter, 1
+    assert_gt t, :quarter, 1
     assert_grid t, [
       [S(:a1, gate: 0.5)], [],
       [:b1], [],
@@ -72,7 +72,7 @@ class TrackRegrainTest < Test::Unit::TestCase
     ]
 
     t = t.condense
-    assert_gt t, NoteLength::Half, 1
+    assert_gt t, :half, 1
     assert_grid t, [
       [S(:a1, gate: 0.25)],
       [S(:b1, gate: 0.5)],
@@ -84,7 +84,7 @@ class TrackRegrainTest < Test::Unit::TestCase
     assert_gt t, oneshot.granularity, oneshot.timescale
 
     t = t.condense
-    assert_gt t, NoteLength::Whole, 1
+    assert_gt t, :whole, 1
     oneshot = x.condense(3)
     assert_grid t, oneshot.grid
     assert_gt t, oneshot.granularity, oneshot.timescale
@@ -109,7 +109,7 @@ class TrackRegrainTest < Test::Unit::TestCase
     t = T[S(:a1, gate: 0.25), S(:b1, gate: 0.5), S(:c1, gate: 0.75), :d1]
 
     t = t.regrain(:thirty_second)
-    assert_gt t, NoteLength::ThirtySecond, 1
+    assert_gt t, :thirty_second, 1
     assert_grid t, [
       [:a1], [], [], [],
       [:b1], [:b1], [], [],
@@ -118,7 +118,7 @@ class TrackRegrainTest < Test::Unit::TestCase
     ]
 
     t = t.regrain(:eighth)
-    assert_gt t, NoteLength::Eighth, 1
+    assert_gt t, :eighth, 1
     assert_grid t, [[S(:a1, gate: 0.25)], [S(:b1, gate: 0.5)], [S(:c1, gate: 0.75)], [:d1]]
   end
 end

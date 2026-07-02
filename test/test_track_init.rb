@@ -69,14 +69,14 @@ class TrackInitTest < Test::Unit::TestCase
   end
 
   def test_granularity_and_timescale
-    assert_gt T[:a1], NoteLength::Eighth, 1
+    assert_gt T[:a1], :eighth, 1
 
     [:whole, NoteLength::Whole, 4].each do |grain|
-      assert_gt T[:a1, granularity: grain], NoteLength::Whole, 1
+      assert_gt T[:a1, granularity: grain], :whole, 1
     end
 
-    assert_gt T[:a1, timescale: 2], NoteLength::Eighth, 2
-    assert_gt T[:a1, granularity: 0.25, timescale: 0.5], NoteLength::Sixteenth, 0.5
+    assert_gt T[:a1, timescale: 2], :eighth, 2
+    assert_gt T[:a1, granularity: 0.25, timescale: 0.5], :sixteenth, 0.5
   end
 
   def test_explicit_steps
@@ -135,9 +135,9 @@ class TrackInitTest < Test::Unit::TestCase
   def test_isorhythm
     ns = [:a1, :b2, :c3, :d4]
 
-    assert_gt Track.iso(ns, [1]), NoteLength::Eighth, 1
-    assert_gt Track.iso(ns, [1], granularity: :sixteenth), NoteLength::Sixteenth, 1
-    assert_gt Track.iso(ns, [1], timescale: 2), NoteLength::Eighth, 2
+    assert_gt Track.iso(ns, [1]), :eighth, 1
+    assert_gt Track.iso(ns, [1], granularity: :sixteenth), :sixteenth, 1
+    assert_gt Track.iso(ns, [1], timescale: 2), :eighth, 2
 
     # Single runs, even division.
     assert_grid Track.iso(ns, [1]), [[:a1], [:b2], [:c3], [:d4]]

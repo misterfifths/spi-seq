@@ -37,17 +37,17 @@ class TrackBasicTest < Test::Unit::TestCase
   end
 
   def test_attr_mutators
-    assert_gt T[:c4].with_granularity(:whole), NoteLength::Whole, 1
-    assert_gt T[:c4, granularity: :half].with_granularity(:sixteenth), NoteLength::Sixteenth, 1
+    assert_gt T[:c4].with_granularity(:whole), :whole, 1
+    assert_gt T[:c4, granularity: :half].with_granularity(:sixteenth), :sixteenth, 1
 
-    assert_gt T[:c4].with_rate(2), NoteLength::Eighth, 2
-    assert_gt T[:c4, timescale: 5].with_rate(0.5), NoteLength::Eighth, 0.5
+    assert_gt T[:c4].with_rate(2), :eighth, 2
+    assert_gt T[:c4, timescale: 5].with_rate(0.5), :eighth, 0.5
 
     c_maj = Scale.full_scale(:c, :major)
     c_min = Scale.full_scale(:c, :minor)
-    assert_gt T[:c4].with_scale(c_maj), NoteLength::Eighth, 1, scale: c_maj
-    assert_gt T[:c4, scale: c_min].with_scale(c_maj), NoteLength::Eighth, 1, scale: c_maj
-    assert_gt T[:c4, scale: c_min].with_scale(nil), NoteLength::Eighth, 1
+    assert_gt T[:c4].with_scale(c_maj), :eighth, 1, scale: c_maj
+    assert_gt T[:c4, scale: c_min].with_scale(c_maj), :eighth, 1, scale: c_maj
+    assert_gt T[:c4, scale: c_min].with_scale(nil), :eighth, 1
   end
 
   def test_filled_slots

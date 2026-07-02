@@ -21,6 +21,7 @@ module TrackHelpers
   end
 
   def assert_gt(track, granularity, timescale, scale: nil)
+    granularity = SpiSeq::Theory::NoteLength.new(granularity)
     assert_equal track.granularity, granularity
     assert_equal track.timescale, timescale
 
@@ -65,13 +66,13 @@ module TrackHelpers
     t16_1 = T[:c3, granularity: :sixteenth]
     t32_2 = T[:c4, granularity: :thirty_second, timescale: 2]
 
-    assert_gt t8_1.send(method, t8_1_cmajor, *args, **kwargs), SpiSeq::Theory::NoteLength::Eighth, 1
-    assert_gt t8_1_cmajor.send(method, t8_1, *args, **kwargs), SpiSeq::Theory::NoteLength::Eighth, 1, scale: c_maj
-    assert_gt t8_1.send(method, t8_2, *args, **kwargs), SpiSeq::Theory::NoteLength::Eighth, 1
-    assert_gt t8_1.send(method, t16_1, *args, **kwargs), SpiSeq::Theory::NoteLength::Eighth, 1
-    assert_gt t16_1.send(method, t8_1, *args, **kwargs), SpiSeq::Theory::NoteLength::Sixteenth, 1
-    assert_gt t8_2.send(method, t16_1, *args, **kwargs), SpiSeq::Theory::NoteLength::Eighth, 2
-    assert_gt t16_1.send(method, t32_2, *args, **kwargs), SpiSeq::Theory::NoteLength::Sixteenth, 1
+    assert_gt t8_1.send(method, t8_1_cmajor, *args, **kwargs), :eighth, 1
+    assert_gt t8_1_cmajor.send(method, t8_1, *args, **kwargs), :eighth, 1, scale: c_maj
+    assert_gt t8_1.send(method, t8_2, *args, **kwargs), :eighth, 1
+    assert_gt t8_1.send(method, t16_1, *args, **kwargs), :eighth, 1
+    assert_gt t16_1.send(method, t8_1, *args, **kwargs), :sixteenth, 1
+    assert_gt t8_2.send(method, t16_1, *args, **kwargs), :eighth, 2
+    assert_gt t16_1.send(method, t32_2, *args, **kwargs), :sixteenth, 1
   end
 
   # Asserts that the given track round-trips to an equivalent one if its repr
