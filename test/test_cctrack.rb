@@ -13,27 +13,16 @@ include SpiSeq::Tracks
 class CCTrackTest < Test::Unit::TestCase
   include TrackHelpers
 
-  def equal_steps?(a, b)
-    a.cc == b.cc &&
-      a.val == b.val &&
-      a.prob == b.prob
-  end
-
   def assert_grid(track, slots)
     assert_equal track.length, slots.length, "grid length mismatch between #{track.repr} and #{slots.inspect}"
 
-    track.grid.each_with_index do |slot, slot_idx|
-      target_slot = slots[slot_idx]
-      assert_equal slot.length, target_slot.length, "slot #{slot_idx} length mismatch: expected #{slot.inspect}, got #{target_slot.inspect}, track: #{track.repr}"
-
-      # Step order is not significant and may be changed by the initializer, so
-      # we need to check each target step against all steps in the track's slot.
-      candidates = slot.dup
-      target_slot.each do |step|
-        winning_idx = candidates.index { |candstep| equal_steps?(candstep, step) }
-        refute_nil winning_idx, "no Step in slot #{slot_idx} matched #{step.inspect}, track: #{track.repr}"
-        candidates.delete_at(winning_idx)
+    i = 0
+    track.grid.zip(slots) do |actual_slot, expected_slot|
+      assert_equal expected_slot.length, actual_slot.length, "slot #{i} length mismatch: expected #{expected_slot.inspect}, got #{actual_slot.inspect}, track: #{track.repr}"
+      expected_slot.each do |step|
+        assert actual_slot.include?(step), "no CCStep in slot #{i} matched #{step.inspect}, track: #{track.repr}"
       end
+      i += 1
     end
   end
 
