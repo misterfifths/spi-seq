@@ -6,12 +6,51 @@ require_relative "../../lib/spiseq/external/sync"
 # testing stubs, requiring this file in Sonic Pi will break spi-seq playback
 # until it is restarted.
 #
-# No attempt is made to enforce uniquely named live loops. And, since there is
-# only one global event tracker in player_extapi_stubs, you should only attempt
-# to deal with one of these fake live loops at a time.
+# Loops are tracked by name to ensure Sonic Pi-like behavior for the argument
+# passed to the block between iterations. Namely, the `init` value is only used
+# the first time a live loop executes. If it is later redefined (e.g. the sketch
+# is restarted), the value the block most recently returned is used across the
+# definitions.
+#
+# NOTE: It is very important that you remember to `stop` the mocked live loop
+# threads! State is stored by loop name both here and in TrackLiveLoopUtils, and
+# that's only cleared when a thread is stopped. If you don't stop the thread,
+# state will linger and may break distant tests that use the same loop name.
 
 class LiveLoopThread < Thread
-  def initialize(init: nil, sync: nil, &block)
+  @loops = {}
+  @last_block_return_by_name = {}
+
+  def self.add_loop_thread(name, thread)
+    loops_for_name = @loops[name]
+    if loops_for_name.nil?
+      @loops[name] = [thread]
+    else
+      loops_for_name << thread
+    end
+  end
+
+  def self.remove_loop_thread(name, thread)
+    loops_for_name = @loops[name]
+    loops_for_name.delete(thread)
+    if loops_for_name.empty?
+      @loops.delete(name)
+
+      # Clean up the last block return if this was the last thread with that name.
+      @last_block_return_by_name.delete(name) if loops_for_name.empty?
+    end
+  end
+
+  def self.set_block_return(loop_name, val)
+    @last_block_return_by_name[loop_name] = val
+  end
+
+  def self.get_block_return(loop_name, default: nil)
+    @last_block_return_by_name.fetch(loop_name, default)
+  end
+
+  def initialize(name, init: nil, sync: nil, &block)
+    @name = name
     @pump_queue = Thread::Queue.new
     @cycle_queue = Thread::Queue.new
     first = true
@@ -23,7 +62,12 @@ class LiveLoopThread < Thread
         SpiSeq::External::Sync.sync(sync) if first && !sync.nil?
         first = false
 
-        init = (block.arity == 1) ? block.call(init) : block.call
+        # Call the block with the most recent thing it returned (persisted
+        # across threads by name), or with `init` if this looks like the first
+        # run.
+        block_arg = LiveLoopThread.get_block_return(name, default: init)
+        block_res = (block.arity == 1) ? block.call(block_arg) : block.call
+        LiveLoopThread.set_block_return(name, block_res)
         @cycle_queue << true
       end
     end
@@ -35,6 +79,8 @@ class LiveLoopThread < Thread
     # And since we're going to re-raise, we don't need to report them at the
     # thread level. Especially if, e.g., we're doing an `assert_raises`.
     self.report_on_exception = false
+
+    LiveLoopThread.add_loop_thread(name, self)
   end
 
   # Runs n many iterations of the given loop. Does not return until all cycles
@@ -52,6 +98,7 @@ class LiveLoopThread < Thread
   # expires. If the timeout expires, the thread is not forcefully stopped.
   # Returns immediately if the thread is already stopped.
   def stop(timeout = 1)
+    LiveLoopThread.remove_loop_thread(@name, self)
     return unless alive?
     @pump_queue << false
     raise RuntimeError, "thread join timed out!" if join(timeout).nil?
@@ -64,8 +111,8 @@ module SpiSeq
       # The thread this returns is parked and can be signaled to run an
       # iteration with its `pump` method. It can be stopped and joined with
       # `stop`.
-      def self.live_loop(_name, init: nil, sync: nil, **_kwargs, &block)
-        LiveLoopThread.new(init: init, sync: sync, &block)
+      def self.live_loop(name, init: nil, sync: nil, **_kwargs, &block)
+        LiveLoopThread.new(name, init: init, sync: sync, &block)
       end
     end
   end

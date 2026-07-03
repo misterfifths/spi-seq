@@ -9,11 +9,6 @@ require_relative "../lib/spiseq/playback/track_live_loop"
 include SpiSeq::Playback
 include SpiSeq::Tracks
 
-# NOTE: It is very important that you remember to `stop` the mocked live loop
-# threads! SpiSeq::LiveLoops stores player state by loop name, and that's only
-# cleared when a thread exits. So if you don't stop the thread, its state will
-# linger and may break distant tests that use the same loop name.
-
 class TrackLiveLoopTest < Test::Unit::TestCase
   BROKEN_IN_SONIC_PI = true
 
