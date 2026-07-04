@@ -130,6 +130,7 @@ module PlayerHelpers
       # If off time is missing or nil, will not look for a corresponding
       # midi_note_off event.
       note, on_time, off_time, vel, port, channel = *shorthand
+      vel ||= 127  # No velocity in the shorthand means 127
       on_event_idx = raw_events.index do |ev|
         ev_type = ev[:type]
         ev_t = ev[:t]
@@ -141,7 +142,7 @@ module PlayerHelpers
         next false unless ev_type == :midi_note_on
         next false unless (ev_t - on_time).abs < tol
         next false unless ev_note == note
-        next false unless vel.nil? || ev_vel == vel
+        next false unless ev_vel == vel
         next false unless port.nil? || ev_port == port
         next false unless channel.nil? || ev_channel == channel
         true
