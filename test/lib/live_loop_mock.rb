@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "../../lib/spiseq/internal/log"
 require_relative "../../lib/spiseq/external/sync"
 
 # Dummy implementation of live_loop for testing purposes. As with the other
@@ -47,6 +48,14 @@ class LiveLoopThread < Thread
 
   def self.get_block_return(loop_name, default: nil)
     @last_block_return_by_name.fetch(loop_name, default)
+  end
+
+  def self.clean_up_loops(caller)
+    @loops.dup.each do |name, threads|
+      expected_loop = name.to_s.end_with?("_cc_fill_watcher") || name.to_s.end_with?("_cc_mute_watcher")
+      SpiSeq::Internal::Log.err("lingering loop #{name} in #{caller}") unless expected_loop
+      threads.each(&:stop)
+    end
   end
 
   def initialize(name, init: nil, sync: nil, &block)

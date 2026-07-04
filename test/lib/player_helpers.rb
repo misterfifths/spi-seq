@@ -20,6 +20,10 @@ module PlayerHelpers
 
   QT = ->(*gridish, **kwargs) { SpiSeq::Tracks::Track.new(*gridish, granularity: :quarter, **kwargs) }
 
+  def teardown
+    LiveLoopThread.clean_up_loops(name)
+  end
+
   def player(track, port: nil, channel: nil, debug: false)
     if track.is_a?(SpiSeq::Tracks::Track)
       SpiSeq::Playback::Player.new(track, midi: true, port: port, channel: channel, debug: debug)
