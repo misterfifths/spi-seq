@@ -76,92 +76,67 @@ module PlayerHelpers
     case _event_shorthand_type(shorthand)
     when :cue
       # form: [:cue, name, time[, arg1, ..., argN, kwarg1: ..., ..., kwargN: ...]]
-      _, name, time, *args = *shorthand
-      args ||= []
-      kwargs = args.last.is_a?(Hash) ? args.pop : {}
+      _, exp_name, exp_t, *exp_args = *shorthand
+      exp_args ||= []
+      exp_kwargs = exp_args.last.is_a?(Hash) ? exp_args.pop : {}
       raw_events.index do |ev|
-        ev_type = ev[:type]
-        ev_t = ev[:t]
-        ev_name = ev[:name]
-        ev_args = ev[:args]
-        ev_kwargs = ev[:kwargs]
-
-        next false unless ev_type == :cue
-        next false unless (ev_t - time).abs < tol
-        next false unless ev_name == name
-        next false unless ev_args == args
-        next false unless ev_kwargs == kwargs
+        next false unless ev[:type] == :cue
+        ev => {t:, name:, args:, kwargs:}
+        next false unless (t - exp_t).abs < tol
+        next false unless name == exp_name
+        next false unless args == exp_args
+        next false unless kwargs == exp_kwargs
         true
       end
     when :sync
       # form: [:sync, name, time]
-      _, name, time = *shorthand
+      _, exp_name, exp_t = *shorthand
       raw_events.index do |ev|
-        ev_type = ev[:type]
-        ev_t = ev[:t]
-        ev_name = ev[:name]
-
-        next false unless ev_type == :sync
-        next false unless (ev_t - time).abs < tol
-        next false unless ev_name == name
+        next false unless ev[:type] == :sync
+        ev => {t:, name:}
+        next false unless (t - exp_t).abs < tol
+        next false unless name == exp_name
         true
       end
     when :midi_cc
       # form [cc number, cc value, time[, port, channel]]
-      cc_num, val, time, port, channel = *shorthand
+      exp_num, exp_val, exp_t, exp_port, exp_channel = *shorthand
       raw_events.index do |ev|
-        ev_type = ev[:type]
-        ev_t = ev[:t]
-        ev_num = ev[:num]
-        ev_val = ev[:val]
-        ev_port = ev[:port]
-        ev_channel = ev[:channel]
-
-        next false unless ev_type == :midi_cc
-        next false unless (ev_t - time).abs < tol
-        next false unless ev_num == cc_num
-        next false unless ev_val == val
-        next false unless port.nil? || ev_port == port
-        next false unless channel.nil? || ev_channel == channel
+        next false unless ev[:type] == :midi_cc
+        ev => {t:, num:, val:, port:, channel:}
+        next false unless (t - exp_t).abs < tol
+        next false unless num == exp_num
+        next false unless val == exp_val
+        next false unless exp_port.nil? || port == exp_port
+        next false unless exp_channel.nil? || channel == exp_channel
         true
       end
     when :midi_note
       # form: [note, on time[, off time or nil, velocity, port, channel]]
       # If off time is missing or nil, will not look for a corresponding
       # midi_note_off event.
-      note, on_time, off_time, vel, port, channel = *shorthand
-      vel ||= 127  # No velocity in the shorthand means 127
+      exp_note, exp_on_time, exp_off_time, exp_vel, exp_port, exp_channel = *shorthand
+      exp_vel ||= 127  # No velocity in the shorthand means 127
       on_event_idx = raw_events.index do |ev|
-        ev_type = ev[:type]
-        ev_t = ev[:t]
-        ev_note = ev[:note]
-        ev_vel = ev[:vel]
-        ev_port = ev[:port]
-        ev_channel = ev[:channel]
-
-        next false unless ev_type == :midi_note_on
-        next false unless (ev_t - on_time).abs < tol
-        next false unless ev_note == note
-        next false unless ev_vel == vel
-        next false unless port.nil? || ev_port == port
-        next false unless channel.nil? || ev_channel == channel
+        next false unless ev[:type] == :midi_note_on
+        ev => {t:, note:, vel:, port:, channel:}
+        next false unless (t - exp_on_time).abs < tol
+        next false unless note == exp_note
+        next false unless vel == exp_vel
+        next false unless exp_port.nil? || port == exp_port
+        next false unless exp_channel.nil? || channel == exp_channel
         true
       end
 
       off_event_idx = nil
-      unless off_time.nil?
+      unless exp_off_time.nil?
         off_event_idx = raw_events.index do |ev|
-          ev_type = ev[:type]
-          ev_t = ev[:t]
-          ev_note = ev[:note]
-          ev_port = ev[:port]
-          ev_channel = ev[:channel]
-
-          next false unless ev_type == :midi_note_off
-          next false unless (ev_t - off_time).abs < tol
-          next false unless ev_note == note
-          next false unless port.nil? || ev_port == port
-          next false unless channel.nil? || ev_channel == channel
+          next false unless ev[:type] == :midi_note_off
+          ev => {t:, note:, port:, channel:}
+          next false unless (t - exp_off_time).abs < tol
+          next false unless note == exp_note
+          next false unless exp_port.nil? || port == exp_port
+          next false unless exp_channel.nil? || channel == exp_channel
           true
         end
       end
