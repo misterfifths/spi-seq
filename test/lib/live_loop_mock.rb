@@ -68,6 +68,9 @@ class LiveLoopThread < Thread
       loop do
         break unless @pump_queue.pop
 
+        # Kind of a TODO: this shouldn't be sent on a restart of the same loop.
+        # But that's functionality implemented by Sonic Pi that's kind of
+        # outside of what we care to test here, so not particularly worth fixing
         SpiSeq::External::Sync.sync(sync) if first && !sync.nil?
         first = false
 
