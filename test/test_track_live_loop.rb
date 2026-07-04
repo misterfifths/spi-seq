@@ -294,9 +294,9 @@ class TrackLiveLoopTest < Test::Unit::TestCase
     t = QT[S(:c4, gate: 0.5)] * 3
     u = QT[S(:d4, gate: 0.5)] * 3
     normal_events = lambda do |start_time, note: :c4|
-      [[note, start_time, start_time + 0.5],
-       [note, start_time + 1, start_time + 1.5],
-       [note, start_time + 2, start_time + 2.5]]
+      [[note, start_time, start_time + 0.5, 127],
+       [note, start_time + 1, start_time + 1.5, 127],
+       [note, start_time + 2, start_time + 2.5, 127]]
     end
     fade_in_events = lambda do |start_time, quad: false, note: :c4|
       [[note, start_time, start_time + 0.5, 0],
@@ -447,6 +447,28 @@ class TrackLiveLoopTest < Test::Unit::TestCase
       *fade_out_events[6, note: :d4],
       *fade_in_events[12],
       *normal_events[15, note: :d4]
+    ]
+
+    # Track should not fade in again when the sketch is restarted
+    l1 = tll(:t, t, fade_in: true, start_muted: true, debug: true)
+    es = events do
+      l1.pump  # i=0, muted
+      unmute_live_loop(:t)
+      l1.pump  # i=1, fading in
+
+      l2 = tll(:t, t, fade_in: true, start_muted: true, debug: true)
+      l1.pump  # i=2, normal
+      l2.pump  # i=3, simulated restart, normal
+      l2.pump  # i=4, normal
+
+      l2.stop
+      l1.stop
+    end
+    assert_events es, [
+      *fade_in_events[3],
+      *normal_events[6],
+      *normal_events[9],
+      *normal_events[12]
     ]
   end
 
