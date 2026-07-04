@@ -1,4 +1,5 @@
 AllCops:
+  TargetRubyVersion: 3.4
   NewCops: enable
   Exclude:
     - 'scratch/*.rb'
@@ -22,6 +23,9 @@ Style/ModuleFunction:
     - 'lib/spiseq/external/midi.rb'
     - 'lib/spiseq/external/sync.rb'
     - 'lib/spiseq/external/synth.rb'
+
+Style/ArgumentsForwarding:
+  Enabled: false
 
 Style/RedundantException:
   Enabled: false

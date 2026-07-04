@@ -40,7 +40,7 @@ module SpiSeq; module Theory
   #   :bf3 == N(:as3)
   #   N(:Bs3) == :c4
   class MIDINote < Numeric
-    NOTE_REGEX = /^(?<pitch_class>[a-g](?:s|b|f|ss|bb|ff)?)(?<octave>-?\d+)?$/i.freeze
+    NOTE_REGEX = /^(?<pitch_class>[a-g](?:s|b|f|ss|bb|ff)?)(?<octave>-?\d+)?$/i
     private_constant :NOTE_REGEX
 
     # Order is significant, both in the subarrays and the array as a whole. The
