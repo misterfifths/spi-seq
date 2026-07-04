@@ -22,15 +22,29 @@ module SpiSeq; module Internal; module TrackLiveLoopUtils
     ThreadTracker.var_set(loop_name, :__player, player)
   end
 
+  module_function def track_live_loop_block_state(block_arg:, was_muted: true, unfaded_track: nil)
+    {
+      block_arg: block_arg,
+      was_muted: was_muted,
+      unfaded_track: unfaded_track
+    }
+  end
+
   # Returns a lambda for use as a live_loop block which handles playback of
   # a track. A helper for track_live_loop.
   module_function def track_live_loop_block(loop_name:, player:, old_player:,
                                             send_cycle_cues:, fade_in:, fade_out:,
                                             user_block:, debug:)
-    was_muted = true
-    unfaded_track = nil
+    # It is tempting to maintain state in captured variables rather than passing
+    # it between iterations of the loop, but such state gets lost when the loop
+    # is recreated (e.g. if the sketch is re-run). Sonic Pi makes sure to pass
+    # the block's return between iterations even across recreations however, so
+    # that's a more appropriate mechanism.
+    lambda do |muted, smuggled_state|
+      was_muted = smuggled_state[:was_muted]
+      unfaded_track = smuggled_state[:unfaded_track]
+      block_arg = smuggled_state[:block_arg]
 
-    lambda do |muted, arg|
       ### Inherit state from an old player
       # If old_player is not nil, this must be our first iteration after it
       # finished its final loop. Pick up where it left off.
@@ -53,7 +67,7 @@ module SpiSeq; module Internal; module TrackLiveLoopUtils
       unless user_block.nil?
         block_res = Utils.call_varargs(user_block,
                                        cycle: player.cycle, track: player.track,
-                                       muted: muted, was_muted: was_muted, arg: arg)
+                                       muted: muted, was_muted: was_muted, arg: block_arg)
 
         if block_res.is_a?(TrackBase)
           raise TypeError, "cannot switch track live loop #{loop_name} between track types" unless block_res.instance_of?(player.track.class)
@@ -88,10 +102,8 @@ module SpiSeq; module Internal; module TrackLiveLoopUtils
         player.play
       end
 
-      ### Update locals for the next iteration
-      was_muted = muted
-
-      block_res
+      ### Assemble state for the next iteration.
+      track_live_loop_block_state(block_arg: block_res, was_muted: muted, unfaded_track: unfaded_track)
     end
   end
 end; end; end
@@ -321,6 +333,8 @@ module SpiSeq; module Playback
       loop_name: loop_name, player: player, old_player: old_player,
       send_cycle_cues: send_cycle_cues, fade_in: fade_in, fade_out: fade_out,
       user_block: block, debug: debug)
+
+    init = Internal::TrackLiveLoopUtils.track_live_loop_block_state(block_arg: init)
 
     ll = if cc.nil?
       Utils::LiveLoops.mutable_live_loop(loop_name, start_muted: start_muted, init: init, sync: sync, **kwargs, &ll_block)
