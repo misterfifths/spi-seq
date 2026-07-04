@@ -9,7 +9,7 @@ BASE_DIR = File.expand_path("#{File.dirname(__FILE__)}/..")
 TEST_DIR = File.join(BASE_DIR, "test")
 
 unless in_sonic_pi?
-  SpiSeq::Internal::Log.silence!
+  SpiSeq::Internal::Log.quiet!
   exit Test::Unit::AutoRunner.run(true, TEST_DIR)
 end
 
@@ -53,7 +53,7 @@ def run_tests(output_path)
   end
   subsuites_to_remove.each { |subsuite| suite.delete(subsuite) }
 
-  SpiSeq::Internal::Log.with_silence do
+  SpiSeq::Internal::Log.with_quiet do
     Test::Unit::UI::Console::TestRunner.run(suite, {
       use_color: false,
       progress_style: :mark,
