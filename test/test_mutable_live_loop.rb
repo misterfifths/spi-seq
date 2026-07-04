@@ -61,6 +61,7 @@ class MutableLiveLoopTest < Test::Unit::TestCase
     end
     es = events do
       l.pump 4
+      l.stop
     end
     assert_events es, [[:sync, :test_sync, 0]]
   end
