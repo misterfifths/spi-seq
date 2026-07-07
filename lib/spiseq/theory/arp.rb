@@ -16,7 +16,7 @@ module SpiSeq; module Theory
       end
 
       def self.down(notes)
-        notes.sort!.reverse!
+        notes.sort! { |a, b| b <=> a }
       end
 
       def self.up_down(notes)
@@ -27,22 +27,38 @@ module SpiSeq; module Theory
       end
 
       def self.two_up_two_down(notes)
-        notes.sort!
-        notes += notes.reverse.drop(1)
-        notes.pop
-        notes.zip(notes).flatten
+        up_down(notes).flat_map { |n| [n, n] }
       end
 
-      private_class_method def self.altern_indexes(length, direction)
-        # in: work in toward the center from the edges, alternating low and high
+      def self.altern_in(notes)
+        # Work in toward the center from the edges, alternating low and high
         # notes, starting each alternation with the low note.
         # 0 1 2 3 4 5 -> 0 5 1 4 2 3
         # 0 1 2 3 4 -> 0 4 1 3 2
         # 0 1 2 3 -> 0 3 1 2
         # 0 1 2 -> 0 2 1
         # 0 1 -> 0 1
+        length = notes.length
+        return notes if length <= 1
 
-        # out: work outward from the center (rounding up when even-length),
+        notes.sort!
+
+        low_idx = 0
+        high_idx = length - 1
+        res = []
+        while low_idx <= high_idx
+          res << notes[low_idx]
+          break if low_idx == high_idx
+          res << notes[high_idx]
+          low_idx += 1
+          high_idx -= 1
+        end
+
+        res
+      end
+
+      def self.altern_out(notes)
+        # Work outward from the center (rounding up when even-length),
         # alternating low and high notes, starting each alternation with the
         # lower note.
         # 0 1 2 3 4 5 -> 3 2 4 1 5 0
@@ -50,132 +66,91 @@ module SpiSeq; module Theory
         # 0 1 2 3 -> 2 1 3 0
         # 0 1 2 -> 1 0 2
         # 0 1 -> 1 0
+        length = notes.length
+        return notes if length <= 1
 
-        # in-out: in, then out, but not repeating the middle note
-
-        return [] if length == 0
-        return [0] if length == 1
-
-        case direction
-        when :in
-          low_idx = 0
-          high_idx = length - 1
-          idxs = []
-          while low_idx <= high_idx
-            idxs << low_idx
-            break if low_idx == high_idx
-            idxs << high_idx
-            low_idx += 1
-            high_idx -= 1
-          end
-
-          idxs
-        when :out
-          center_idx = length.odd? ? (length - 1) / 2 : length / 2
-          idxs = [center_idx]
-          low_idx = center_idx - 1
-          high_idx = center_idx + 1
-          while low_idx >= 0 || high_idx < length
-            idxs << low_idx if low_idx >= 0
-            idxs << high_idx if high_idx < length
-            low_idx -= 1
-            high_idx += 1
-          end
-
-          idxs
-        when :inout
-          in_idxs = altern_indexes(length, :in)
-          out_idxs = altern_indexes(length, :out)
-          in_idxs + out_idxs.drop(1)
-        end
-      end
-
-      private_class_method def self.altern(notes, direction)
         notes.sort!
-        notes = notes.values_at(*altern_indexes(notes.length, direction))
-        notes.pop if notes.length > 1 && notes[0] == notes[-1]  # cycle cleanly
-        notes
-      end
 
-      def self.altern_in(notes)
-        altern(notes, :in)
-      end
+        center_idx = length.odd? ? (length - 1) / 2 : length / 2
+        res = [notes[center_idx]]
+        low_idx = center_idx - 1
+        high_idx = center_idx + 1
+        while low_idx >= 0 || high_idx < length
+          res << notes[low_idx] if low_idx >= 0
+          res << notes[high_idx] if high_idx < length
+          low_idx -= 1
+          high_idx += 1
+        end
 
-      def self.altern_out(notes)
-        altern(notes, :out)
+        res
       end
 
       def self.altern_in_out(notes)
-        altern(notes, :inout)
+        # In, then out, but not repeating the middle or final note
+        res = altern_in(notes) + altern_out(notes).drop(1)
+        res.pop if res.length > 1 && res[0] == res[-1]  # cycle cleanly
+        res
       end
 
       def self.pinky(notes)
         # play the highest note after each (but don't double at end)
         notes.sort!
         highest = notes.pop
-        notes.zip([highest].cycle).flatten
+        notes.flat_map { |n| [n, highest] }
       end
 
       def self.thumb(notes)
         # play the lowest note after each (but don't double at beginning)
         notes.sort!
         lowest = notes.shift
-        notes.zip([lowest].cycle).flatten
-      end
-
-      private_class_method def self.peak_indexes(length, direction)
-        return [] if length == 0
-        return [0] if length == 1
-
-        case direction
-        when :peak
-          # Climb up to the maximum with even indexes, then descend with the
-          # odds.
-          rising_idxs = []
-          falling_idxs = []
-          0.upto(length - 1) do |i|
-            if i.even?
-              rising_idxs << i
-            else
-              falling_idxs << i
-            end
-          end
-
-          rising_idxs + falling_idxs.reverse
-        when :valley
-          # Descend from the maximum then ascend, with alternating indexes going
-          # into the descension and ascension.
-          falling_idxs = []
-          rising_idxs = []
-          (length - 1).downto(0) do |i|
-            if length.even?
-              if i.odd?
-                falling_idxs << i
-              else
-                rising_idxs << i
-              end
-            elsif i.odd?
-              rising_idxs << i
-            else
-              falling_idxs << i
-            end
-          end
-
-          falling_idxs + rising_idxs.reverse
-        end
-      end
-
-      private_class_method def self.peak_valley(notes, direction)
-        notes.sort!
-        notes.values_at(*peak_indexes(notes.length, direction))
+        notes.flat_map { |n| [n, lowest] }
       end
 
       def self.peak(notes)
-        peak_valley(notes, :peak)
+        # Climb up to the maximum with even indexes, then descend with the odds.
+        length = notes.length
+        return notes if length <= 1
+
+        notes.sort!
+
+        rising = []
+        falling = []
+        0.upto(length - 1) do |i|
+          if i.even?
+            rising << notes[i]
+          else
+            falling.unshift(notes[i])
+          end
+        end
+
+        rising + falling
       end
 
       def self.valley(notes)
-        peak_valley(notes, :valley)
+        # Descend from the maximum then ascend, with alternating indexes going
+        # into the descension and ascension.
+        length = notes.length
+        return notes if length <= 1
+
+        notes.sort!
+
+        falling = []
+        rising = []
+        (length - 1).downto(0) do |i|
+          if length.even?
+            if i.odd?
+              falling << notes[i]
+            else
+              rising.unshift(notes[i])
+            end
+          elsif i.odd?
+            rising.unshift(notes[i])
+          else
+            falling << notes[i]
+          end
+        end
+
+        falling + rising
       end
 
       def self.random(notes)
@@ -342,7 +317,7 @@ module SpiSeq; module Theory
       raise ArgumentError, "unknown arpeggiator direction #{direction}" if arp_method_name.nil?
       arpeggiator = Arpeggiators.method(arp_method_name)
 
-      # See the note in SpiSeq::Utils.enumerable? about arrayify.
+      # See the note in enumerable? about arrayify.
       notes = Internal::Enumerables.arrayify(notes).map { |n| MIDINote.new(n) }
       return [] if notes.empty?
 
