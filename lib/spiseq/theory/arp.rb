@@ -11,26 +11,26 @@ module SpiSeq; module Theory
     # `arpeggiate` calls these via name lookup in ARPEGGIATORS.
     # @private
     module Arpeggiators
-      def self.up(notes)
+      module_function def up(notes)
         notes.sort!
       end
 
-      def self.down(notes)
+      module_function def down(notes)
         notes.sort! { |a, b| b <=> a }
       end
 
-      def self.up_down(notes)
+      module_function def up_down(notes)
         notes.sort!
         notes += notes.reverse.drop(1)  # don't repeat the middle note
         notes.pop  # cycle cleanly without repeating the final note either
         notes
       end
 
-      def self.two_up_two_down(notes)
+      module_function def two_up_two_down(notes)
         up_down(notes).flat_map { |n| [n, n] }
       end
 
-      def self.altern_in(notes)
+      module_function def altern_in(notes)
         # Work in toward the center from the edges, alternating low and high
         # notes, starting each alternation with the low note.
         # 0 1 2 3 4 5 -> 0 5 1 4 2 3
@@ -57,7 +57,7 @@ module SpiSeq; module Theory
         res
       end
 
-      def self.altern_out(notes)
+      module_function def altern_out(notes)
         # Work outward from the center (rounding up when even-length),
         # alternating low and high notes, starting each alternation with the
         # lower note.
@@ -85,28 +85,28 @@ module SpiSeq; module Theory
         res
       end
 
-      def self.altern_in_out(notes)
+      module_function def altern_in_out(notes)
         # In, then out, but not repeating the middle or final note
         res = altern_in(notes) + altern_out(notes).drop(1)
         res.pop if res.length > 1 && res[0] == res[-1]  # cycle cleanly
         res
       end
 
-      def self.pinky(notes)
+      module_function def pinky(notes)
         # play the highest note after each (but don't double at end)
         notes.sort!
         highest = notes.pop
         notes.flat_map { |n| [n, highest] }
       end
 
-      def self.thumb(notes)
+      module_function def thumb(notes)
         # play the lowest note after each (but don't double at beginning)
         notes.sort!
         lowest = notes.shift
         notes.flat_map { |n| [n, lowest] }
       end
 
-      def self.peak(notes)
+      module_function def peak(notes)
         # Climb up to the maximum with even indexes, then descend with the odds.
         length = notes.length
         return notes if length <= 1
@@ -126,7 +126,7 @@ module SpiSeq; module Theory
         rising + falling
       end
 
-      def self.valley(notes)
+      module_function def valley(notes)
         # Descend from the maximum then ascend, with alternating indexes going
         # into the descension and ascension.
         length = notes.length
@@ -153,11 +153,11 @@ module SpiSeq; module Theory
         falling + rising
       end
 
-      def self.random(notes)
+      module_function def random(notes)
         notes.shuffle!
       end
 
-      def self.order(notes)
+      module_function def order(notes)
         notes
       end
     end
