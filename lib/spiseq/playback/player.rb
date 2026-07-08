@@ -16,6 +16,7 @@ module SpiSeq; module Playback
       attr_accessor :player_defaults
     end
   end
+  private_constant :State
 
 
   # @!group Default settings

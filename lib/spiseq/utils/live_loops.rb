@@ -16,6 +16,7 @@ module SpiSeq; module Utils; module LiveLoops
       attr_accessor :loop_mute_states
     end
   end
+  private_constant :State
 
 
   # @!group Playback and live loops

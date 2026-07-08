@@ -14,6 +14,7 @@ module SpiSeq; module Utils; module MIDI
       attr_accessor :cc_control_defaults
     end
   end
+  private_constant :State
 
 
   # @!group Default settings

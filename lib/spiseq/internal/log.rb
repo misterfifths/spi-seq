@@ -10,6 +10,8 @@ module SpiSeq; module Internal; module Log
       attr_accessor :quiet
     end
   end
+  private_constant :State
+
 
   module_function def quiet!(flag = true)
     State.quiet = flag

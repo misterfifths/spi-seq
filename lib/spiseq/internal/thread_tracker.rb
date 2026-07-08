@@ -24,6 +24,8 @@ module SpiSeq; module Internal; module ThreadTracker
       nil
     end
   end
+  private_constant :State
+
 
   # Associate the thread with the given name. Overwrites an existing thread with
   # that name if there already is one.

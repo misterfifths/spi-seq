@@ -161,6 +161,7 @@ module SpiSeq; module Theory
         notes
       end
     end
+    private_constant :Arpeggiators
 
 
     # Names to methods on the Arpeggiators module.

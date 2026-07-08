@@ -30,6 +30,8 @@ module SpiSeq; module Utils; module Lifecycle
       attr_accessor :one_time_init_keys, :stop_hooks
     end
   end
+  private_constant :State
+
 
   # @!group Sonic Pi lifecycle utilities
 
