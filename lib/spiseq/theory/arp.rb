@@ -11,6 +11,26 @@ module SpiSeq; module Theory
     # `arpeggiate` calls these via name lookup in ARPEGGIATORS.
     # @private
     module Arpeggiators
+      # Names (as passed to `arpeggiate`) to methods.
+      ALIASES = {
+        %i[up]                                   => :up,
+        %i[down]                                 => :down,
+        %i[updown up_down]                       => :up_down,
+        %i[twouptwodown two_up_two_down
+           2up2down doubleupdown double_up_down] => :two_up_two_down,
+        %i[alternin altern_in in]                => :altern_in,
+        %i[alternout altern_out out]             => :altern_out,
+        %i[alterninout altern_in_out inout]      => :altern_in_out,
+        %i[pinky]                                => :pinky,
+        %i[thumb]                                => :thumb,
+        %i[peak]                                 => :peak,
+        %i[valley]                               => :valley,
+        %i[random rand rnd shuffle]              => :random,
+        %i[order]                                => :order
+      }.flat_map do |names, meth|
+        names.map { |name| [name, meth] }
+      end.to_h.freeze
+
       module_function def up(notes)
         notes.sort!
       end
@@ -163,28 +183,6 @@ module SpiSeq; module Theory
     end
     private_constant :Arpeggiators
 
-
-    # Names to methods on the Arpeggiators module.
-    ARPEGGIATORS = {
-      %i[up]                                   => :up,
-      %i[down]                                 => :down,
-      %i[updown up_down]                       => :up_down,
-      %i[twouptwodown two_up_two_down
-         2up2down doubleupdown double_up_down] => :two_up_two_down,
-      %i[alternin altern_in in]                => :altern_in,
-      %i[alternout altern_out out]             => :altern_out,
-      %i[alterninout altern_in_out inout]      => :altern_in_out,
-      %i[pinky]                                => :pinky,
-      %i[thumb]                                => :thumb,
-      %i[peak]                                 => :peak,
-      %i[valley]                               => :valley,
-      %i[random rand rnd shuffle]              => :random,
-      %i[order]                                => :order
-    }.flat_map do |names, meth|
-      names.map { |name| [name, meth] }
-    end.to_h.freeze
-    private_constant :ARPEGGIATORS
-
     # All arpeggiation directions supported by {.arpeggiate}.
     #
     # Valid directions are:
@@ -268,7 +266,7 @@ module SpiSeq; module Theory
     # possible values.
     #
     # @return [Array<Symbol>]
-    DIRECTIONS = ARPEGGIATORS.keys.freeze
+    ARP_DIRECTIONS = Arpeggiators::ALIASES.keys.freeze
 
 
     # Returns an array of {MIDINote}s by arpeggiating the given array of notes.
@@ -314,7 +312,7 @@ module SpiSeq; module Theory
     # @return [Array<MIDINote>] The arpeggiated notes.
     # @see Tracks::Track.arp
     module_function def arpeggiate(notes, direction, spread: 0, extra_octaves: [])
-      arp_method_name = ARPEGGIATORS[direction.to_sym]
+      arp_method_name = Arpeggiators::ALIASES[direction.to_sym]
       raise ArgumentError, "unknown arpeggiator direction #{direction}" if arp_method_name.nil?
       arpeggiator = Arpeggiators.method(arp_method_name)
 
