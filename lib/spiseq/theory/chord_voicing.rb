@@ -291,8 +291,8 @@ module SpiSeq; module Theory
 
 
     # These voicing methods receive an array of Intervals which will be uniq'd
-    # and sorted low to high. They should return an array of MIDINotes that are
-    # also uniq'd and sorted.
+    # and sorted low to high. They should return an array of MIDINotes, which
+    # does not need to be sorted & unique (that will be done by the caller).
     #
     # Voicings are applied after inversion of the intervals.
 
@@ -326,8 +326,6 @@ module SpiSeq; module Theory
         next if idx > notes.length
         notes[-idx] -= 12
       end
-      notes.sort!
-      notes.uniq!
       notes
     end
 
@@ -336,8 +334,6 @@ module SpiSeq; module Theory
     private_class_method def self.voice_double_bass(intervals, root, shift)
       notes = voice_closed(intervals, root)
       notes.append(notes[0] + shift)
-      notes.sort!
-      notes.uniq!
       notes
     end
 
@@ -352,8 +348,6 @@ module SpiSeq; module Theory
         notes << root + i
         notes << root + i + shift if double_ints.include?(i.simple_interval)
       end
-      notes.sort!
-      notes.uniq!
       notes
     end
 
@@ -362,8 +356,6 @@ module SpiSeq; module Theory
     private_class_method def self.voice_open(intervals, root)
       notes = voice_closed(intervals, root)
       notes[1] += 12 if notes.length >= 2
-      notes.sort!
-      notes.uniq!
       notes
     end
 
@@ -373,8 +365,6 @@ module SpiSeq; module Theory
       notes = voice_closed(intervals, root)
       notes[0] += 12
       notes[2] -= 12 if notes.length >= 3
-      notes.sort!
-      notes.uniq!
       notes
     end
 
@@ -383,8 +373,6 @@ module SpiSeq; module Theory
     private_class_method def self.voice_open3(intervals, root)
       notes = voice_closed(intervals, root)
       notes[1] -= 12 if notes.length >= 2
-      notes.sort!
-      notes.uniq!
       notes
     end
   end
