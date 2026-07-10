@@ -117,7 +117,6 @@ module SpiSeq; module Playback
     def stop
       super
 
-      @prev_steps = []
       @attrs_for_prev_steps = {}
     end
 
@@ -125,7 +124,6 @@ module SpiSeq; module Playback
     def inherit_state(other)
       super
 
-      @prev_steps = other.prev_steps
       @attrs_for_prev_steps = other.attrs_for_prev_steps
       @active_synth_nodes = other.active_synth_nodes
       @active_midi_notes = other.active_midi_notes
@@ -134,7 +132,7 @@ module SpiSeq; module Playback
 
     protected
 
-    attr_reader :active_synth_nodes, :active_midi_notes, :prev_steps, :attrs_for_prev_steps
+    attr_reader :active_synth_nodes, :active_midi_notes, :attrs_for_prev_steps
 
     def slot_advanced
       @effective_attrs_cache.clear
@@ -266,8 +264,8 @@ module SpiSeq; module Playback
     # than 1.
     def categorize_steps(triggering_steps)
       # As noted in PlayerBase, it is important that this method assume nothing
-      # about the order in which slots were or will be played. @prev_steps and
-      # @attrs_for_prev_steps track active steps from previous slots.
+      # about the order in which slots were or will be played.
+      # @attrs_for_prev_steps tracks active steps from previous slots.
       new_steps = []
       tied_steps = []
       ended_steps = []
@@ -287,8 +285,8 @@ module SpiSeq; module Playback
         next if gate == 0
 
         # were we just playing this note as a tie?
-        is_tie = @prev_steps.any? do |prev_step|
-          prev_note, prev_gate, = prev_attrs(prev_step)
+        is_tie = @attrs_for_prev_steps.any? do |_, prev_attrs|
+          prev_note, prev_gate, = prev_attrs
           prev_gate == 1 && prev_note == note
         end
 
@@ -299,10 +297,11 @@ module SpiSeq; module Playback
         end
       end
 
-      # find notes from the last slot that have ended.
-      @prev_steps.each do |prev_step|
+      # find notes from the previous slots that have ended.
+      @attrs_for_prev_steps.each do |prev_step, prev_attrs|
         # any note we were playing that is not tied has ended
-        note_continues = tied_steps.any? { |tie| effective_note(tie) == prev_note(prev_step) }
+        prev_note, = prev_attrs
+        note_continues = tied_steps.any? { |tie| effective_note(tie) == prev_note }
         ended_steps << prev_step unless note_continues
       end
 
@@ -342,24 +341,20 @@ module SpiSeq; module Playback
         Internal::Log.log("ended steps: #{steps_debug_string(ended_steps, from_prev: true)}", "player")
       end
 
-      # Turn off or kill ended steps. ended_steps is a subset of @prev_steps;
-      # end_step will handle finding the correct note for them from
-      # @attrs_for_prev_steps.
+      # Turn off or kill ended steps. ended_steps is a subset of the keys of
+      # @attrs_for_prev_steps; end_step will handle finding the correct note for
+      # them from that hash.
       ended_steps.each { |step| end_step(step) }
 
       # Start new steps
       new_steps.each { |step| start_step(step) }
 
-      # Update prev_steps for the next round
-      @prev_steps = tied_steps + new_steps
-
-      # The next slot may not come from @track, so we can't safely use
-      # effective_attrs in the next iteration on anything in @prev_steps. We
-      # need to cache the resolved notes we actually played for each of those
-      # steps, so that we can detect ties and ended notes in the next call to
-      # play_steps/categorize_steps.
+      # We can't use effective_attrs on anything that's not in this slot. We
+      # need to cache the resolved attributes as played for ongoing steps, so
+      # that we can detect ties and ended notes in the next call to play_steps/
+      # categorize_steps.
       @attrs_for_prev_steps.clear
-      @prev_steps.each do |step|
+      (tied_steps + new_steps).each do |step|
         @attrs_for_prev_steps[step] = effective_attrs(step)
       end
 
@@ -387,9 +382,9 @@ module SpiSeq; module Playback
     end
 
     # Stop the MIDI note or kill the synth node corresponding to the given Step,
-    # which is assumed to be in @prev_steps (and thus may not be part of
-    # @track). We may have already ended the step if it didn't have a full gate,
-    # in which case it will not have an entry in active_midi_notes or
+    # which is assumed to be in @attrs_for_prev_steps (and thus may not be part
+    # of @track). We may have already ended the step if it didn't have a full
+    # gate, in which case it will not have an entry in active_midi_notes or
     # active_synth_nodes. Do nothing in that case.
     def end_step(step)
       step_note = prev_note(step)
@@ -414,7 +409,7 @@ module SpiSeq; module Playback
         @active_synth_nodes.clear
       end
 
-      @prev_steps&.clear
+      @attrs_for_prev_steps&.clear
     end
 
     # Begins playback of the given Step, which must be from the current slot in
