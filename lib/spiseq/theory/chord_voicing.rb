@@ -378,8 +378,8 @@ module SpiSeq; module Theory
 
   # @!group Music theory
 
-  # (see Chord.voiced)
   # An alias for {Chord.voiced}.
+  # @return [Array<MIDINote>]
   module_function def C(...) = Chord.voiced(...)
 
   # @!endgroup

@@ -395,9 +395,9 @@ module SpiSeq; module Theory
 
   # @!group Music theory
 
-  # (see MIDINote.new)
   # An alias for {MIDINote.new}.
-  module_function def N(note) = MIDINote.new(note)
+  # @return [MIDINote]
+  module_function def N(...) = MIDINote.new(...)
 
   # @!endgroup
 end; end

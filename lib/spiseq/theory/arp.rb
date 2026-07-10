@@ -260,7 +260,7 @@ module SpiSeq; module Theory
 
 
     # Returns an array of {MIDINote}s by arpeggiating the given array of notes.
-    # See {DIRECTIONS} for details on the possible values for `direction`.
+    # See {ARP_DIRECTIONS} for details on the possible values for `direction`.
     #
     # If `spread` is > 0, the result will have a note added an octave above each
     # of the the `spread` lowest notes. If this operation creates duplicate
@@ -293,7 +293,7 @@ module SpiSeq; module Theory
     #   arpeggiate; an array of {MIDINote}s or any value accepted by
     #   {MIDINote.new}.
     # @param direction [Symbol, String] One of the direction names defined in
-    #   {DIRECTIONS}, e.g. `:pinky` or `:updown`.
+    #   {ARP_DIRECTIONS}, e.g. `:pinky` or `:updown`.
     # @param spread [Integer] Adds notes an octave above some number of the
     #   lowest notes in the result. See above for details.
     # @param extra_octaves [Array<Integer>] Adds a copy of the incoming notes
@@ -344,7 +344,7 @@ module SpiSeq; module Theory
 
   # @!group Music theory
 
-  # (see Arp.arpeggiate)
   # An alias for {Arp.arpeggiate}.
+  # @return [Array<MIDINote>]
   module_function def arp(...) = Arp.arpeggiate(...)
 end; end

@@ -481,7 +481,6 @@ module SpiSeq; module Theory
 
   # @!group Music theory
 
-  # (see Scale#initialize)
   # An alias for {Scale#initialize Scale.new}.
   # @return [Scale]
   module_function def SC(...) = Scale.new(...)

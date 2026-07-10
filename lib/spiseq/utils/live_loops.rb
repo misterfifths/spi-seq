@@ -29,6 +29,7 @@ module SpiSeq; module Utils; module LiveLoops
   # @param mute [Boolean] Whether to mute or unmute the loop.
   # @return [void]
   # @see unmute_live_loop
+  # @see loop_is_muted?
   module_function def mute_live_loop(loop_name, mute = true)
     # It could potentially make sense to store this state as a thread variable
     # on the loop, but we want it in place before the thread exists in
@@ -38,12 +39,21 @@ module SpiSeq; module Utils; module LiveLoops
     State.loop_mute_states[loop_name] = mute
   end
 
-  # Unmutes the given mutable `live_loop`. An alias passing false to
-  # {mute_live_loop}.
+  # Unmutes the given mutable `live_loop` (i.e., one created by
+  # {mutable_live_loop}, {cc_mutable_live_loop}, or {Playback.track_live_loop}).
+  # An alias passing false to {mute_live_loop}.
   # @param loop_name [Symbol] The name of the target live loop.
   # @return [void]
+  # @see loop_is_muted?
   module_function def unmute_live_loop(loop_name) = mute_live_loop(loop_name, false)
 
+  # Returns whether the given mutable `live_loop` (i.e., one created by
+  # {mutable_live_loop}, {cc_mutable_live_loop}, or {Playback.track_live_loop})
+  # is muted.
+  # @param loop_name [Symbol] The name of the target live loop.
+  # @return [Boolean]
+  # @see mute_live_loop
+  # @see unmute_live_loop
   module_function def loop_is_muted?(loop_name) = State.loop_mute_states[loop_name] || false
 
   # Starts a new `live_loop` that can be muted with {mute_live_loop}. What

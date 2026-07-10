@@ -450,8 +450,8 @@ module SpiSeq; module Theory
 
   # @!group Music theory
 
-  # (see Interval.new)
   # An alias for {Interval.new}.
+  # @return [Interval]
   module_function def I(...) = Interval.new(...)
 
   # @!endgroup

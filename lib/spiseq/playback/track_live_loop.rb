@@ -363,7 +363,7 @@ module SpiSeq; module Playback
   # @param fill [Boolean] The desired fill mode for the loop's internal player.
   # @return [void]
   # @see PlayerBase#fill
-  # @see Prob.fill
+  # @see Tracks::Prob.fill
   # @see unset_live_loop_fill
   module_function def set_live_loop_fill(loop_name, fill = true)
     Internal::TrackLiveLoopUtils.get_player(loop_name)&.fill = fill
@@ -376,7 +376,7 @@ module SpiSeq; module Playback
   # @param loop_name [Symbol] The name of the target live loop.
   # @return [void]
   # @see PlayerBase#fill
-  # @see Prob.fill
+  # @see Tracks::Prob.fill
   # @see set_live_loop_fill
   module_function def unset_live_loop_fill(loop_name) = set_live_loop_fill(loop_name, false)
   alias unfill_live_loop unset_live_loop_fill

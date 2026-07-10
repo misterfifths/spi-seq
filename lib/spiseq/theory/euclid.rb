@@ -21,7 +21,7 @@ module SpiSeq; module Theory
   # @param rotate [Integer] The result is rotated leftward such that the first
   #   element is a hit, this many times.
   # @return [Array<Boolean>]
-  # @see TrackBase.euclid
+  # @see SpiSeq::Tracks::TrackBase.euclid
   module_function def euclid(pulses, length, rotate: 0)
     raise TypeError, "all arguments must be integers" unless pulses.is_a?(Integer) && length.is_a?(Integer) && rotate.is_a?(Integer)
     raise RangeError, "all arguments must be >= 0" unless pulses >= 0 && length >= 0 && rotate >= 0
