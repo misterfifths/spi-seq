@@ -112,4 +112,43 @@ class TrackBasicTest < Test::Unit::TestCase
     assert_raises(ArgumentError) { T[s.accum(1, prob: p)].repr }
     assert_nothing_raised { T[s.accum(1, prob: p)].repr(safe: true) }
   end
+
+  def assert_eql_with_hash(a, b)
+    assert_equal a, b
+    assert_equal a.hash, b.hash
+  end
+
+  def assert_eql_yield
+    assert_eql_with_hash yield, yield
+  end
+
+  def test_equality
+    assert_eql_yield { T.rest }
+    assert_eql_yield { T.rest(4) }
+    assert_eql_yield { T[:c4] }
+    assert_eql_yield { T[:c4, :d4] }
+    assert_eql_yield { T[:c4, :d4, scale: Scale.full_scale(:c, :major)] }
+    assert_eql_yield { T[:c4, :d4, scale: Scale.new(:c4, :major)] }
+    assert_eql_yield { T[:c4, :d4, granularity: :eighth] }
+    assert_eql_yield { T[:c4, :d4, granularity: :whole, timescale: 2] }
+    assert_eql_yield { T[[:c4, :d4], [:e4, :f4]] }
+    assert_eql_yield { T[[S(:c4, gate: 0.5), :c4]] }
+
+    assert_eql_with_hash T[:c4], T[S(:c4, gate: 1)]
+    assert_eql_with_hash T[:c4].gate(0.5), T[S(:c4, gate: 0.5)]
+
+    # Order of steps in a slot as passed to the ctor is insignificant
+    assert_eql_with_hash T[[:c4, :d4]], T[[:d4, :c4]]
+
+    # Step deduplication
+    assert_eql_with_hash T[[S(:c4, gate: 0.5), :c4]], T[:c4]
+
+    # All attrs matter
+    refute_equal T[:c4, granularity: :eighth],
+                 T[:c4, granularity: :whole]
+    refute_equal T[:c4, granularity: :whole, timescale: 2],
+                 T[:c4, granularity: :whole, timescale: 3]
+    refute_equal T[:c4, granularity: :whole, timescale: 3, scale: Scale.new(:c4, :major)],
+                 T[:c4, granularity: :whole, timescale: 3, scale: Scale.new(:c4, :minor)]
+  end
 end

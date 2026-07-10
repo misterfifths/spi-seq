@@ -412,6 +412,31 @@ module SpiSeq; module Tracks
     end
 
 
+    ### Equatability
+
+    # @private
+    def ==(other)
+      return false unless other.instance_of?(self.class)
+      return false if @grid.length != other.grid.length
+
+      ctor_kwargs.each_key do |arg|
+        return false unless send(arg) == other.send(arg)
+      end
+
+      @grid == other.grid
+    end
+    alias eql? ==
+
+    # @private
+    def hash
+      return @hash unless @hash.nil?
+
+      components = ctor_kwargs.map { |arg, _| send(arg) }
+      components << @grid
+      @hash = components.hash
+    end
+
+
     ### Mutators
 
     ## @!group Attribute mutations
