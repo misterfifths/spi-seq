@@ -220,9 +220,9 @@ module SpiSeq; module Playback
     # `slot_idx` is the new index in the track. Provided for use by subclassers.
     def slot_advanced; end
 
-    # Called by `play` after `triggering_steps_at_slot` has been used to
-    # determine which steps should have their accumulation committed. Provided
-    # for use by subclassers.
+    # Called by `play` after `step_should_trigger?` has been used to determine
+    # which steps should have their accumulation committed. Provided for use by
+    # subclassers.
     def accums_committed; end
 
     # Evaluate the `accum_prob` of the given step in the current slot of @track.
