@@ -3,11 +3,11 @@
 require_relative "sonic_pi"
 
 module SpiSeq; module External; module IO
-  module_function def puts(*args)
+  module_function def puts(*)
     if External.in_sonic_pi?
-      SonicPi.puts(*args)
+      SonicPi.puts(*)
     else
-      Kernel.puts(*args)
+      Kernel.puts(*)
     end
   end
 end; end; end

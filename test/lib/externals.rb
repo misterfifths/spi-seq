@@ -7,22 +7,22 @@ require_relative "../../lib/spiseq/external/sonic_pi"
 module SpiSeq
   module External
     module Enumerables
-      def self.ring(*args)
-        SonicPi.spi_call(:ring, *args)
+      def self.ring(*)
+        SonicPi.spi_call(:ring, *)
       end
     end
 
     module Theory
-      def self.chord(root, name, **kwargs)
-        SonicPi.spi_call(:chord, root, name, **kwargs)
+      def self.chord(root, name, **)
+        SonicPi.spi_call(:chord, root, name, **)
       end
 
       def self.chord_names
         SonicPi.spi_call(:chord_names)
       end
 
-      def self.chord_degree(degree, tonic, scale_name, n, **kwargs)
-        SonicPi.spi_call(:chord_degree, degree, tonic, scale_name, n, **kwargs)
+      def self.chord_degree(degree, tonic, scale_name, n, **)
+        SonicPi.spi_call(:chord_degree, degree, tonic, scale_name, n, **)
       end
 
       def self.degree(degree, root, scale_name)

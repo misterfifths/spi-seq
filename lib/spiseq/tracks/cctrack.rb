@@ -241,8 +241,8 @@ module SpiSeq; module Tracks
   # An alias for {TrackBase.from_grid CCTrack.from_grid}.
   # @return [CCTrack]
   # @see CCTrack#initialize
-  module_function def CCTg(*args, **kwargs)
-    CCTrack.from_grid(*args, **kwargs)
+  module_function def CCTg(...)
+    CCTrack.from_grid(...)
   end
 
   # @!endgroup

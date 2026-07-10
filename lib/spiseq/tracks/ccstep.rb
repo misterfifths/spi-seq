@@ -118,8 +118,8 @@ module SpiSeq; module Tracks
 
   # An alias for {CCStep#initialize CCStep.new}.
   # @return [CCStep]
-  module_function def CC(*args, **kwargs)
-    CCStep.new(*args, **kwargs)
+  module_function def CC(...)
+    CCStep.new(...)
   end
 
   # @!endgroup

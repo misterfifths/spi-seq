@@ -58,7 +58,7 @@ module TrackHelpers
   # Namely, the result should have the granularity and timescale of the first
   # track. This method does not check the grid of the returned track; it only
   # checks for a correct granularity and timescale.
-  def assert_merge_gt(method, *args, **kwargs)
+  def assert_merge_gt(method, *, **)
     t8_1 = T[:c1]
     c_maj = SpiSeq::Theory::Scale.full_scale(:c, :major)
     t8_1_cmajor = T[:c1, scale: c_maj]
@@ -66,13 +66,13 @@ module TrackHelpers
     t16_1 = T[:c3, granularity: :sixteenth]
     t32_2 = T[:c4, granularity: :thirty_second, timescale: 2]
 
-    assert_gt t8_1.send(method, t8_1_cmajor, *args, **kwargs), :eighth, 1
-    assert_gt t8_1_cmajor.send(method, t8_1, *args, **kwargs), :eighth, 1, scale: c_maj
-    assert_gt t8_1.send(method, t8_2, *args, **kwargs), :eighth, 1
-    assert_gt t8_1.send(method, t16_1, *args, **kwargs), :eighth, 1
-    assert_gt t16_1.send(method, t8_1, *args, **kwargs), :sixteenth, 1
-    assert_gt t8_2.send(method, t16_1, *args, **kwargs), :eighth, 2
-    assert_gt t16_1.send(method, t32_2, *args, **kwargs), :sixteenth, 1
+    assert_gt t8_1.send(method, t8_1_cmajor, *, **), :eighth, 1
+    assert_gt t8_1_cmajor.send(method, t8_1, *, **), :eighth, 1, scale: c_maj
+    assert_gt t8_1.send(method, t8_2, *, **), :eighth, 1
+    assert_gt t8_1.send(method, t16_1, *, **), :eighth, 1
+    assert_gt t16_1.send(method, t8_1, *, **), :sixteenth, 1
+    assert_gt t8_2.send(method, t16_1, *, **), :eighth, 2
+    assert_gt t16_1.send(method, t32_2, *, **), :sixteenth, 1
   end
 
   # Asserts that the given track round-trips to an equivalent one if its repr

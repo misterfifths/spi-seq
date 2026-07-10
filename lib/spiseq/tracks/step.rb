@@ -239,8 +239,8 @@ module SpiSeq; module Tracks
 
   # An alias for {Step#initialize Step.new}.
   # @return [Step]
-  module_function def S(*args, **kwargs)
-    Step.new(*args, **kwargs)
+  module_function def S(...)
+    Step.new(...)
   end
 
   # @!endgroup

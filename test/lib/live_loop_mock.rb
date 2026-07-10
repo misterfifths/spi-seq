@@ -123,8 +123,8 @@ module SpiSeq
       # The thread this returns is parked and can be signaled to run an
       # iteration with its `pump` method. It can be stopped and joined with
       # `stop`.
-      def self.live_loop(name, init: nil, sync: nil, **_kwargs, &block)
-        LiveLoopThread.new(name, init:, sync:, &block)
+      def self.live_loop(name, init: nil, sync: nil, **_kwargs, &)
+        LiveLoopThread.new(name, init:, sync:, &)
       end
     end
   end

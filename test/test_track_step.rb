@@ -17,8 +17,8 @@ include SpiSeq::Tracks
 class TrackStepTest < Test::Unit::TestCase
   include TrackHelpers
 
-  def assert_mutate_steps(track, grid, &block)
-    t = track.mutate_steps(&block)
+  def assert_mutate_steps(track, grid, &)
+    t = track.mutate_steps(&)
     assert_grid t, grid
   end
 
@@ -48,8 +48,8 @@ class TrackStepTest < Test::Unit::TestCase
     assert_mutate_steps(t, [[:a1], [:f8, :f9], [:d4]]) { |s, i| (i == 1) ? [:f8, :f9] : s }
   end
 
-  def assert_mutate_in_slot(track, i, grid, &block)
-    t = track.mutate_steps_in_slot(i, &block)
+  def assert_mutate_in_slot(track, i, grid, &)
+    t = track.mutate_steps_in_slot(i, &)
     assert_grid t, grid
   end
 
@@ -70,8 +70,8 @@ class TrackStepTest < Test::Unit::TestCase
     assert_mutate_in_slot(t, -3, [[:a2], [:b2, :c3], []]) { |s| s.shift_tone(12) }
   end
 
-  def assert_mutate_filled_slot(track, n, grid, &block)
-    t = track.mutate_filled_slot(n, &block)
+  def assert_mutate_filled_slot(track, n, grid, &)
+    t = track.mutate_filled_slot(n, &)
     assert_grid t, grid
   end
 

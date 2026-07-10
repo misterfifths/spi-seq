@@ -73,14 +73,14 @@ module SpiSeq; module Utils; module LiveLoops
   # @return [void]
   # @see cc_mutable_live_loop
   # @see Playback.track_live_loop
-  module_function def mutable_live_loop(loop_name, start_muted: false, **kwargs, &block)
+  module_function def mutable_live_loop(loop_name, start_muted: false, **, &block)
     raise ArgumentError, "Block must take 1 or 2 arguments" if block.arity == 0 || block.arity > 2
 
     # Only apply start_muted if this is a fresh definition of the loop (i.e, not
     # a restart of the same sketch).
     mute_live_loop(loop_name, start_muted) unless Internal::ThreadTracker.is_running?(loop_name)
 
-    ll = External::Sync.live_loop(loop_name, **kwargs) do |arg|
+    ll = External::Sync.live_loop(loop_name, **) do |arg|
       Internal::Utils.call_varargs(block, loop_is_muted?(loop_name), arg)
     end
 
@@ -108,7 +108,7 @@ module SpiSeq; module Utils; module LiveLoops
   # @return [void]
   # @see mutable_live_loop
   # @see Playback.track_live_loop
-  module_function def cc_mutable_live_loop(loop_name, cc:, port: nil, channel: nil, start_muted: false, **kwargs, &block)
+  module_function def cc_mutable_live_loop(loop_name, cc:, port: nil, channel: nil, start_muted: false, **, &)
     port, channel = Internal::MIDI.resolve_cc_port_and_channel(port, channel)
 
     MIDI.cc_watcher_live_loop(:"__#{loop_name}_cc_mute_watcher", port:, channel:) do |incoming_cc, cc_val|
@@ -126,6 +126,6 @@ module SpiSeq; module Utils; module LiveLoops
       External::MIDI.midi_cc(cc, default_cc_val, port:, channel:)
     end
 
-    mutable_live_loop(loop_name, start_muted:, **kwargs, &block)
+    mutable_live_loop(loop_name, start_muted:, **, &)
   end
 end; end; end

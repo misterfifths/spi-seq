@@ -1623,8 +1623,8 @@ module SpiSeq; module Tracks
   # An alias for {TrackBase.from_grid Track.from_grid}.
   # @return [Track]
   # @see Track#initialize
-  module_function def Tg(*args, **kwargs)
-    Track.from_grid(*args, **kwargs)
+  module_function def Tg(...)
+    Track.from_grid(...)
   end
 
   # @!endgroup

@@ -7,8 +7,8 @@ require_relative "../lib/spiseq/theory/arp"
 include SpiSeq::Theory
 
 class ArpTest < Test::Unit::TestCase
-  def assert_arp(notes, order, result, **kwargs)
-    assert_equal arp(notes, order, **kwargs), result
+  def assert_arp(notes, order, result, **)
+    assert_equal arp(notes, order, **), result
   end
 
   def test_args

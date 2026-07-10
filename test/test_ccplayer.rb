@@ -30,20 +30,20 @@ class CCPlayerTest < Test::Unit::TestCase
     shorthand
   end
 
-  def a_at(t, **kwargs)
-    _cc_step_at(A, t, **kwargs)
+  def a_at(t, **)
+    _cc_step_at(A, t, **)
   end
 
-  def b_at(t, **kwargs)
-    _cc_step_at(B, t, **kwargs)
+  def b_at(t, **)
+    _cc_step_at(B, t, **)
   end
 
-  def c_at(t, **kwargs)
-    _cc_step_at(C, t, **kwargs)
+  def c_at(t, **)
+    _cc_step_at(C, t, **)
   end
 
-  def d_at(t, **kwargs)
-    _cc_step_at(D, t, **kwargs)
+  def d_at(t, **)
+    _cc_step_at(D, t, **)
   end
 
   def test_basics

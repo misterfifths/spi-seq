@@ -21,12 +21,12 @@ class AccumTest < Test::Unit::TestCase
 
   # Asserts that playing a standard track will result in sequential events with
   # the given set of deltas from the starting note.
-  def assert_std_accum(delta, deltas:, min: 0, max: 12, mode: :wrap, prob: nil, **kwargs)
+  def assert_std_accum(delta, deltas:, min: 0, max: 12, mode: :wrap, prob: nil, **)
     expected_events = deltas.map.with_index { |d, i| [N(:c4) + d, i, i + 0.5] }
 
     assert_playback_events(QT[S(:c4, gate: 0.5).accum(delta, min:, max:, mode:, prob:)],
                            expected_events,
-                           **kwargs)
+                           **)
   end
 
   def test_freeze_mode

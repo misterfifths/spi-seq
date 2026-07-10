@@ -140,11 +140,11 @@ class ChordTest < Test::Unit::TestCase
     assert_equal Chord.new(:fr6).intervals, [:P1, :M3, :d5, :A6]
   end
 
-  def try_spi_chord(root, name, *args, **kwargs)
+  def try_spi_chord(root, name, *, **)
     return nil unless in_sonic_pi?
 
     begin
-      ns = SpiSeq::External::Theory.chord(root, name, *args, **kwargs)
+      ns = SpiSeq::External::Theory.chord(root, name, *, **)
       ns.to_a.map { |n| N(n) }
     rescue RuntimeError
       nil

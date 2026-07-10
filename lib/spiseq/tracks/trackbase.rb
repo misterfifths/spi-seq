@@ -1286,8 +1286,8 @@ module SpiSeq; module Tracks
     # index, an index and a length, or a range. Returns nil if the arguments
     # constitute an invalid range of the grid.
     # @return [TrackBase]
-    def slice(*args)
-      s = @grid.slice(*args)
+    def slice(*)
+      s = @grid.slice(*)
       return nil if s.nil?
       s = [s] if s.empty? || !s[0].is_a?(Array)
       mutate(grid: s)
@@ -1507,8 +1507,8 @@ module SpiSeq; module Tracks
     # @see #partition_steps
     # @see #select_slots
     # @see #reject_steps
-    def select_steps(&block)
-      t, = partition_steps(&block)
+    def select_steps(&)
+      t, = partition_steps(&)
       t
     end
     alias select select_steps
@@ -1543,8 +1543,8 @@ module SpiSeq; module Tracks
     # @see #partition_steps
     # @see #select_steps
     # @see #reject_slots
-    def reject_steps(&block)
-      _, t = partition_steps(&block)
+    def reject_steps(&)
+      _, t = partition_steps(&)
       t
     end
     alias reject reject_steps
@@ -1671,9 +1671,9 @@ module SpiSeq; module Tracks
     # @see #mutate_steps_in_slot
     # @see #indexes_of_filled_slots
     # @see #filled_slot
-    def mutate_filled_slot(n, &block)
+    def mutate_filled_slot(n, &)
       idx = indexes_of_filled_slots[n]
-      mutate_steps_in_slot(idx, &block)
+      mutate_steps_in_slot(idx, &)
     end
     alias map_filled_slot mutate_filled_slot
 

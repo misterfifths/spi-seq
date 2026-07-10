@@ -262,7 +262,7 @@ module SpiSeq; module Playback
                                       midi: nil, port: nil, channel: nil,
                                       cc: nil, fill_cc: nil, cc_port: nil, cc_channel: nil,
                                       send_cycle_cues: nil, debug: false,
-                                      init: nil, sync: :default_sync, **kwargs, &block)
+                                      init: nil, sync: :default_sync, **, &block)
     ### Validate arguments
     unless block.nil?
       req_pos_args, opt_pos_args, req_keywords, = Internal::Utils.describe_args(block)
@@ -330,9 +330,9 @@ module SpiSeq; module Playback
     init = Internal::TrackLiveLoopUtils.track_live_loop_block_state(block_arg: init)
 
     ll = if cc.nil?
-      Utils::LiveLoops.mutable_live_loop(loop_name, start_muted:, init:, sync:, **kwargs, &ll_block)
+      Utils::LiveLoops.mutable_live_loop(loop_name, start_muted:, init:, sync:, **, &ll_block)
     else
-      Utils::LiveLoops.cc_mutable_live_loop(loop_name, start_muted:, init:, sync:, cc:, port: cc_port, channel: cc_channel, **kwargs, &ll_block)
+      Utils::LiveLoops.cc_mutable_live_loop(loop_name, start_muted:, init:, sync:, cc:, port: cc_port, channel: cc_channel, **, &ll_block)
     end
 
     Internal::TrackLiveLoopUtils.set_player(loop_name, player)
@@ -352,8 +352,8 @@ module SpiSeq; module Playback
   # you can just use {track_live_loop} to play CCTracks.
   #
   # @return [void]
-  module_function def cc_track_live_loop(loop_name, track = nil, **kwargs, &block)
-    track_live_loop(loop_name, track || Tracks::CCTrack.rest, **kwargs, &block)
+  module_function def cc_track_live_loop(loop_name, track = nil, **, &)
+    track_live_loop(loop_name, track || Tracks::CCTrack.rest, **, &)
   end
   alias cctll cc_track_live_loop
   class << self; alias cctll cc_track_live_loop; end

@@ -85,10 +85,10 @@ module SpiSeq; module External
 
     # Make a direct call to a method on the Sonic Pi context. Only for use
     # by tests, to call methods that would not otherwise be exposed.
-    def spi_call(method, *args, **kwargs, &block)
+    def spi_call(method, ...)
       ensure_inited
       raise RuntimeError, "not in Sonic Pi" if @spi.nil?
-      @spi.send(method, *args, **kwargs, &block)
+      @spi.send(method, ...)
     end
   end
 

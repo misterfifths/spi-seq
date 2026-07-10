@@ -16,8 +16,8 @@ include SpiSeq::Tracks
 class TrackGridTest < Test::Unit::TestCase
   include TrackHelpers
 
-  def assert_mutate_slots(track, grid, &block)
-    t = track.mutate_each_slot(&block)
+  def assert_mutate_slots(track, grid, &)
+    t = track.mutate_each_slot(&)
     assert_grid t, grid
   end
 
@@ -720,7 +720,7 @@ class TrackGridTest < Test::Unit::TestCase
   # For slot-based methods, assumes the track has no rests, so it's easy to test
   # the dropping versions by compacting the grids. Won't attempt methods that
   # drop slots if no_drop_tests is true.
-  def assert_partition(track, a_grid, b_grid, method = :partition, *args, rand_seed: nil, no_drop_tests: false, **kwargs, &block)
+  def assert_partition(track, a_grid, b_grid, method = :partition, *, rand_seed: nil, no_drop_tests: false, **kwargs, &)
     apply_seed = lambda do
       next if rand_seed.nil?
 
@@ -748,7 +748,7 @@ class TrackGridTest < Test::Unit::TestCase
     kwargs[:drop] = false if slot
 
     apply_seed.call
-    a, b = track.send(method, *args, **kwargs, &block)
+    a, b = track.send(method, *, **kwargs, &)
     assert_grid a, a_grid
     assert_grid b, b_grid
     assert_grid a | b, track.grid  # Should reconstitute the original track
@@ -758,7 +758,7 @@ class TrackGridTest < Test::Unit::TestCase
     if slot && !no_drop_tests
       # Now try the dropping version.
       apply_seed.call
-      a, b = track.send(method, *args, **kwargs, &block)
+      a, b = track.send(method, *, **kwargs, &)
       # Since this may have dropped slots, the result should be either nil (if
       # the expected grid is all rests), or the compactified version of the grid
       _assert_compact_grid_or_nil a, a_grid
@@ -770,7 +770,7 @@ class TrackGridTest < Test::Unit::TestCase
     # Select
     unless select_method.nil? || no_drop_tests
       apply_seed.call
-      res = track.send(select_method, *args, **kwargs, &block)
+      res = track.send(select_method, *, **kwargs, &)
       if slot
         # We expect this to drop slots.
         _assert_compact_grid_or_nil res, a_grid
@@ -782,7 +782,7 @@ class TrackGridTest < Test::Unit::TestCase
     # Reject
     unless reject_method.nil? || no_drop_tests
       apply_seed.call
-      res = track.send(reject_method, *args, **kwargs, &block)
+      res = track.send(reject_method, *, **kwargs, &)
       if slot
         # We expect this to drop slots.
         _assert_compact_grid_or_nil res, b_grid
@@ -794,7 +794,7 @@ class TrackGridTest < Test::Unit::TestCase
     # Clear
     unless clear_method.nil?
       apply_seed.call
-      res = track.send(clear_method, *args, **kwargs, &block)
+      res = track.send(clear_method, *, **kwargs, &)
       # We do not expect slots to be dropped here.
       assert_grid res, b_grid
     end
@@ -802,7 +802,7 @@ class TrackGridTest < Test::Unit::TestCase
     # Inverse of clear
     unless clear_inv_method.nil?
       apply_seed.call
-      res = track.send(clear_inv_method, *args, **kwargs, &block)
+      res = track.send(clear_inv_method, *, **kwargs, &)
       # We do not expect slots to be dropped here.
       assert_grid res, a_grid
     end
@@ -825,8 +825,8 @@ class TrackGridTest < Test::Unit::TestCase
     assert_partition(t, [[], [], [:c3]], [[:a1], [:b2, :b3], []]) { |_, _, idx| idx == 2 }
   end
 
-  def assert_partition_slots(track, a_grid, b_grid, &block)
-    assert_partition(track, a_grid, b_grid, :partition_slots, &block)
+  def assert_partition_slots(track, a_grid, b_grid, &)
+    assert_partition(track, a_grid, b_grid, :partition_slots, &)
   end
 
   def test_partition_slots
