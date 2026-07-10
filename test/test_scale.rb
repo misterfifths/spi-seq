@@ -163,6 +163,15 @@ class ScaleTest < Test::Unit::TestCase
     end
   end
 
+  def assert_eql_with_hash(a, b)
+    assert_equal a, b
+    assert_equal a.hash, b.hash
+  end
+
+  def assert_eql_yield
+    assert_eql_with_hash yield, yield
+  end
+
   def assert_repr(sc)
     roundtrip = eval(sc.repr)  # rubocop:disable Security/Eval
     assert_equal roundtrip.name, sc.name
@@ -170,6 +179,7 @@ class ScaleTest < Test::Unit::TestCase
     assert_equal roundtrip.num_octaves, sc.num_octaves
     assert_equal roundtrip.clamp_to_midi, sc.clamp_to_midi
     assert_equal roundtrip.notes, sc.notes
+    assert_eql_with_hash sc, roundtrip
   end
 
   def test_repr
@@ -178,5 +188,23 @@ class ScaleTest < Test::Unit::TestCase
     assert_repr Scale.new(:c4, :major, num_octaves: 10, clamp_to_midi: true)
 
     assert_repr Scale.full_scale(:c, :minor)
+  end
+
+  def test_equality
+    assert_eql_yield { Scale.new(:c4, :major) }
+    assert_eql_yield { Scale.new(:c4, :major, num_octaves: 2) }
+    assert_eql_yield { Scale.new(:c4, :major, num_octaves: 10, clamp_to_midi: true) }
+    assert_eql_yield { Scale.full_scale(:c, :minor) }
+
+    refute_equal Scale.full_scale(:c, :major), Scale.full_scale(:c, :minor)
+
+    refute_equal Scale.new(:c4, :major),
+                 Scale.new(:b3, :major)
+    refute_equal Scale.new(:c4, :major),
+                 Scale.new(:c4, :minor)
+    refute_equal Scale.new(:c4, :major, num_octaves: 2),
+                 Scale.new(:c4, :major, num_octaves: 3)
+    refute_equal Scale.new(:c4, :major, num_octaves: 3, clamp_to_midi: true),
+                 Scale.new(:c4, :major, num_octaves: 3, clamp_to_midi: false)
   end
 end

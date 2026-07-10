@@ -468,6 +468,22 @@ module SpiSeq; module Theory
       end
       "#{res})"
     end
+
+
+    # @private
+    def ==(other)
+      other.is_a?(Scale) &&
+        @tonic == other.tonic &&
+        @name == other.name &&
+        @num_octaves == other.num_octaves &&
+        @clamp_to_midi == other.clamp_to_midi
+    end
+    alias eql? ==
+
+    # @private
+    def hash
+      @hash ||= [@tonic, @name, @num_octaves, @clamp_to_midi].hash
+    end
   end
 
   # @!group Class aliases
