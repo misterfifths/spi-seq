@@ -92,7 +92,5 @@ module SpiSeq; module External
     end
   end
 
-  module_function def in_sonic_pi?
-    SonicPi.in_sonic_pi?
-  end
+  module_function def in_sonic_pi? = SonicPi.in_sonic_pi?
 end; end

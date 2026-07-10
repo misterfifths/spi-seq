@@ -208,9 +208,7 @@ module SpiSeq; module Playback
     attr_reader :slot_idx
 
     # The steps in the current slot in the track.
-    def current_steps
-      @track.grid[@slot_idx]
-    end
+    def current_steps = @track.grid[@slot_idx]
 
     # Called by `play` before beginning a cycle of playback. Provided for use by
     # subclassers.
@@ -232,9 +230,7 @@ module SpiSeq; module Playback
     # provide about the current state of playback. It is not legal to call
     # `accum_delta` at this point, since this method is used in the process of
     # calculating those deltas.
-    def accum_should_trigger?(_step)
-      raise NotImplementedError, "subclasses must implement accum_should_trigger?"
-    end
+    def accum_should_trigger?(_step) = raise(NotImplementedError, "subclasses must implement accum_should_trigger?")
 
     # Evaluate the `prob` of the given step in the current slot of @track.
     # Called by `play` after `slot_advanced`. Subclasses must implement this
@@ -242,9 +238,7 @@ module SpiSeq; module Playback
     # as it can provide about the current state of playback. If necessary,
     # subclasses can peek at the potential accumulation for the step with
     # `accum_delta`.
-    def step_should_trigger?(_step)
-      raise NotImplementedError, "subclasses must implement step_should_trigger?"
-    end
+    def step_should_trigger?(_step) = raise(NotImplementedError, "subclasses must implement step_should_trigger?")
 
     # Play the given steps, which are the triggering ones from the current slot.
     # Subclasses must implement this method. In general, they should:
@@ -259,9 +253,7 @@ module SpiSeq; module Playback
     #
     # Subclasses may need elaborate logic to track the world state if steps
     # linger (e.g. note-based Steps in Tracks).
-    def play_steps(_steps)
-      raise NotImplementedError, "subclasses must implement play_steps"
-    end
+    def play_steps(_steps) = raise(NotImplementedError, "subclasses must implement play_steps")
 
     # Returns the current accumulation delta for the given step in the current
     # slot in @track. Returns 0 if there is no accumulation for the step. This

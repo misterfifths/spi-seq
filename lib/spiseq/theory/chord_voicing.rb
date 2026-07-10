@@ -297,9 +297,7 @@ module SpiSeq; module Theory
     # Voicings are applied after inversion of the intervals.
 
     # Straight voicing of the intervals in order on the root.
-    private_class_method def self.voice_closed(intervals, root)
-      intervals.map { |i| root + i }
-    end
+    private_class_method def self.voice_closed(intervals, root) = intervals.map { |i| root + i }
 
     # Closed voicing without the root.
     private_class_method def self.voice_rootless(intervals, root)
@@ -382,9 +380,7 @@ module SpiSeq; module Theory
 
   # (see Chord.voiced)
   # An alias for {Chord.voiced}.
-  module_function def C(root, name, voicing = :closed, num_octaves: 1, invert: 0)
-    Chord.voiced(root, name, voicing, num_octaves:, invert:)
-  end
+  module_function def C(...) = Chord.voiced(...)
 
   # @!endgroup
 end; end

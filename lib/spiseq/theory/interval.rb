@@ -333,60 +333,42 @@ module SpiSeq; module Theory
     # @param number [Integer]
     # @return [Boolean]
     # @see #as
-    def expressible_as(number)
-      !as(number).nil?
-    end
+    def expressible_as(number) = !as(number).nil?
 
     # Returns true if this interval is compound, i.e. its {#number} is greater
     # than 8 or its {#size} is greater than 12.
     # @return [Boolean]
     # @see #simple?
     # @see #simple_interval
-    def compound?
-      # The two cases are really only necessary because d9 and A8 are weird
-      # outliers; otherwise either would do.
-      @number > 8 || @size > 12
-    end
+    def compound? = @number > 8 || @size > 12
 
     # Returns true if this interval is simple, i.e. its {#number} is <= 8 and
     # its {#size} is <= 12.
     # @return [Boolean]
     # @see #compound?
     # @see #simple_interval
-    def simple?
-      !compound?
-    end
+    def simple? = !compound?
 
     # Returns true if this interval has perfect {#quality}.
     # @return [Boolean]
-    def perfect?
-      @quality == :perfect
-    end
+    def perfect? = @quality == :perfect
 
     # Returns true if this interval has major {#quality}.
     # @return [Boolean]
-    def major?
-      @quality == :major
-    end
+    def major? = @quality == :major
 
     # Returns true if this interval has minor {#quality}.
     # @return [Boolean]
-    def minor?
-      @quality == :minor
-    end
+    def minor? = @quality == :minor
 
     # Returns true if this interval has augmented {#quality}.
     # @return [Boolean]
-    def augmented?
-      @quality == :aug
-    end
+    def augmented? = @quality == :aug
     alias aug? augmented?
 
     # Returns true if this interval has diminished {#quality}.
     # @return [Boolean]
-    def diminished?
-      @quality == :dim
-    end
+    def diminished? = @quality == :dim
     alias dim? diminished?
 
 
@@ -394,9 +376,7 @@ module SpiSeq; module Theory
 
     # Returns the interval's {#size} as a floating point number.
     # @return [Float]
-    def to_f
-      @size.to_f
-    end
+    def to_f = @size.to_f
 
     # @private
     def <=>(other)
@@ -418,51 +398,37 @@ module SpiSeq; module Theory
     alias eql? ==
 
     # @private
-    def hash
-      @size.hash
-    end
+    def hash = @size.hash
 
     # @private
-    def coerce(other)
-      [Interval.new(size: other), self]
-    end
+    def coerce(other) = [Interval.new(size: other), self]
 
     # Returns a new Interval by adding `other` many semitones to this one's
     # {#size}.
     # @param other [Integer]
     # @return [Interval]
-    def +(other)
-      Interval.new(size: @size + other.to_f)
-    end
+    def +(other) = Interval.new(size: @size + other.to_f)
 
     # Returns a new Interval by subtracting `other` many semitones from this
     # one's {#size}.
     # @param other [Integer]
     # @return [Interval]
-    def -(other)
-      Interval.new(size: @size - other.to_f)
-    end
+    def -(other) = Interval.new(size: @size - other.to_f)
 
     # Returns a new Interval by multiplying this one's {#size} by `other`.
     # @param other [Integer]
     # @return [Interval]
-    def *(other)
-      Interval.new(size: @size * other.to_f)
-    end
+    def *(other) = Interval.new(size: @size * other.to_f)
 
     # Returns a new Interval by dividing this one's {#size} by `other`.
     # @param other [Integer]
     # @return [Interval]
-    def /(other)
-      Interval.new(size: @size / other.to_f)
-    end
+    def /(other) = Interval.new(size: @size / other.to_f)
 
     # The string representation of this interval, in the abbreviated format
     # described by {.new}.
     # @return [String]
-    def to_s
-      @sym.to_s
-    end
+    def to_s = @sym.to_s
     alias to_str to_s
 
     # @private
@@ -479,18 +445,14 @@ module SpiSeq; module Theory
     # A symbol representation of this interval, in the abbreviated format
     # described by {.new}.
     # @return [Symbol]
-    def to_sym
-      @sym
-    end
+    def to_sym = @sym
   end
 
   # @!group Music theory
 
   # (see Interval.new)
   # An alias for {Interval.new}.
-  module_function def I(name = nil, number: nil, size: nil, quality: nil)
-    Interval.new(name, number:, size:, quality:)
-  end
+  module_function def I(...) = Interval.new(...)
 
   # @!endgroup
 end; end

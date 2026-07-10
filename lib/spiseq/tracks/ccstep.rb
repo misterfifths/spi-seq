@@ -64,9 +64,7 @@ module SpiSeq; module Tracks
     # pass a value outside of 0 - 127 inclusive.
     # @param new_cc [Integer]
     # @return [CCStep]
-    def with_cc(new_cc)
-      mutate(cc: new_cc)
-    end
+    def with_cc(new_cc) = mutate(cc: new_cc)
     alias with_cc_number with_cc
     alias with_number with_cc
     alias with_num with_cc
@@ -75,42 +73,25 @@ module SpiSeq; module Tracks
     # will be clamped.
     # @param new_value [Integer]
     # @return [CCStep]
-    def with_value(new_value)
-      mutate(value: new_value)
-    end
+    def with_value(new_value) = mutate(value: new_value)
     alias with_val with_value
 
     # Returns a new CCStep with a value equal to {#value} plus `shift`. If the
     # resulting value is outside of 0 - 127, it will be clamped.
     # @param shift [Integer]
     # @return [CCStep]
-    def shift_value(shift)
-      mutate(value: @value + shift)
-    end
+    def shift_value(shift) = mutate(value: @value + shift)
     alias shift_val shift_value
 
     # @private
-    def unique_slot_key
-      @cc
-    end
+    def unique_slot_key = @cc
 
     protected
 
-    def ctor_args
-      [:cc, :value]
-    end
-
-    def default_accum_target
-      :value
-    end
-
-    def valid_accum_targets
-      [:value]
-    end
-
-    def repr_ctor_method
-      "CC"
-    end
+    def ctor_args = [:cc, :value]
+    def default_accum_target = :value
+    def valid_accum_targets = [:value]
+    def repr_ctor_method = "CC"
   end
 
 
@@ -118,9 +99,7 @@ module SpiSeq; module Tracks
 
   # An alias for {CCStep#initialize CCStep.new}.
   # @return [CCStep]
-  module_function def CC(...)
-    CCStep.new(...)
-  end
+  module_function def CC(...) = CCStep.new(...)
 
   # @!endgroup
 end; end

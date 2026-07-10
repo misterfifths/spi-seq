@@ -46,17 +46,13 @@ module SpiSeq; module Tracks
     #
     # @param [#call] callable
     # @return [Prob]
-    def self.custom(callable)
-      new(callable, "custom", nil)
-    end
+    def self.custom(callable) = new(callable, "custom", nil)
 
     # Returns a Prob that will trigger the step with the given probability
     # (0 - 1 inclusive).
     # @param [Number] p
     # @return [Prob]
-    def self.chance(p)
-      new(->{ Internal::Random.chance(p) }, p.round(2).to_s, "chance(#{p})")
-    end
+    def self.chance(p) = new(->{ Internal::Random.chance(p) }, p.round(2).to_s, "chance(#{p})")
 
     # Returns a Prob that will trigger the step with a probability of 1 in `n`.
     # `n` must be > 0.
@@ -74,9 +70,7 @@ module SpiSeq; module Tracks
     # @param [Integer] x
     # @param [Integer] y
     # @return [Prob]
-    def self.x_of_y(x, y)
-      new(->(cycle:) { cycle % y == x - 1 }, "#{x}|#{y}", "x_of_y(#{x}, #{y})")
-    end
+    def self.x_of_y(x, y) = new(->(cycle:) { cycle % y == x - 1 }, "#{x}|#{y}", "x_of_y(#{x}, #{y})")
 
     # Returns a Prob that will trigger the step every other
     # {Playback::PlayerBase#cycle cycle} of playback, beginning with the first.
@@ -84,9 +78,7 @@ module SpiSeq; module Tracks
     # @return [Prob]
     # @see .x_of_y
     # @see .every
-    def self.every_other
-      @every_other_inst ||= x_of_y(1, 2)
-    end
+    def self.every_other = @every_other_inst ||= x_of_y(1, 2)
 
     # Returns a Prob that will trigger the step on the first out of each set of
     # `n` {Playback::PlayerBase#cycle cycles} of playback. Equivalent to
@@ -95,9 +87,7 @@ module SpiSeq; module Tracks
     # @return [Prob]
     # @see .x_of_y
     # @see .every_other
-    def self.every(n)
-      x_of_y(1, n)
-    end
+    def self.every(n) = x_of_y(1, n)
 
     # Returns a Prob that will trigger the step on every
     # {Playback::PlayerBase#cycle cycle} *except* for the `x`th out of every `y`
@@ -105,25 +95,19 @@ module SpiSeq; module Tracks
     # @param [Integer] x
     # @param [Integer] y
     # @return [Prob]
-    def self.not_x_of_y(x, y)
-      new(->(cycle:) { cycle % y != x - 1 }, "!#{x}|#{y}", "not_x_of_y(#{x}, #{y})")
-    end
+    def self.not_x_of_y(x, y) = new(->(cycle:) { cycle % y != x - 1 }, "!#{x}|#{y}", "not_x_of_y(#{x}, #{y})")
 
     # Returns a Prob that will trigger the step only on the first
     # {Playback::PlayerBase#cycle cycle} of playback.
     # @return [Prob]
     # @see .not_first
-    def self.first
-      @first_inst ||= new(->(cycle:) { cycle == 0 }, "first", "first")
-    end
+    def self.first = @first_inst ||= new(->(cycle:) { cycle == 0 }, "first", "first")
 
     # Returns a Prob that will trigger the step on every
     # {Playback::PlayerBase#cycle cycle} of playback except the first. This is
     # the inverse of {.first}.
     # @return [Prob]
-    def self.not_first
-      @not_first_inst ||= new(->(cycle:) { cycle != 0 }, "!first", "not_first")
-    end
+    def self.not_first = @not_first_inst ||= new(->(cycle:) { cycle != 0 }, "!first", "not_first")
 
     # Returns a Prob that will trigger the step if any step triggered in the
     # previously played slot.
@@ -132,9 +116,7 @@ module SpiSeq; module Tracks
     # evaluate to false for {CCStep}s in {CCTrack}s.
     #
     # @return [Prob]
-    def self.pre
-      @pre_inst ||= new(->(prev_notes:) { !prev_notes.empty? }, "pre", "pre")
-    end
+    def self.pre = @pre_inst ||= new(->(prev_notes:) { !prev_notes.empty? }, "pre", "pre")
 
     # Returns a Prob that will trigger the step if no step triggered in the
     # previously played slot.
@@ -143,9 +125,7 @@ module SpiSeq; module Tracks
     # evaluate to true for {CCStep}s in {CCTrack}s.
     #
     # @return [Prob]
-    def self.not_pre
-      @not_pre_inst ||= new(->(prev_notes:) { prev_notes.empty? }, "!pre", "not_pre")
-    end
+    def self.not_pre = @not_pre_inst ||= new(->(prev_notes:) { prev_notes.empty? }, "!pre", "not_pre")
 
     # Returns a Prob that will trigger the step if a step triggered in the
     # previously played slot with the same {Step#note note} as this step.
@@ -160,9 +140,7 @@ module SpiSeq; module Tracks
     # false if used as an `accum_prob`.
     #
     # @return [Prob]
-    def self.pre_same_note
-      @pre_same_note_inst ||= new(->(note:, prev_notes:) { prev_notes.include?(note) }, "pre same note", "pre_same_note")
-    end
+    def self.pre_same_note = @pre_same_note_inst ||= new(->(note:, prev_notes:) { prev_notes.include?(note) }, "pre same note", "pre_same_note")
 
     # Returns a Prob that will trigger the step only if none of the steps that
     # triggered in the previously played slot had the same {Step#note note} as
@@ -178,26 +156,20 @@ module SpiSeq; module Tracks
     # true if used as an `accum_prob`.
     #
     # @return [Prob]
-    def self.not_pre_same_note
-      @not_pre_same_inst ||= new(->(note:, prev_notes:) { !prev_notes.include?(note) }, "!pre same note", "not_pre_same_note")
-    end
+    def self.not_pre_same_note = @not_pre_same_inst ||= new(->(note:, prev_notes:) { !prev_notes.include?(note) }, "!pre same note", "not_pre_same_note")
 
     # Returns a Prob that will trigger the step if the
     # {Playback::PlayerBase#fill fill attribute} of the associated player is
     # true.
     # @return [Prob]
     # @see .not_fill
-    def self.fill
-      @fill_inst ||= new(->(fill:) { fill }, "fill", "fill")
-    end
+    def self.fill = @fill_inst ||= new(->(fill:) { fill }, "fill", "fill")
 
     # Returns a Prob that will trigger the step if the
     # {Playback::PlayerBase#fill fill attribute} of the associated player is
     # false. This is the inverse of {.fill}.
     # return [Prob]
-    def self.not_fill
-      @not_fill_inst ||= new(->(fill:) { !fill }, "!fill", "not_fill")
-    end
+    def self.not_fill = @not_fill_inst ||= new(->(fill:) { !fill }, "!fill", "not_fill")
 
     # Evaluates the probability predicate, accounting for:
     # - `cycle`: The current cycle of playback of the track
@@ -215,15 +187,11 @@ module SpiSeq; module Tracks
 
     # Returns a human-readable description of the Prob.
     # @return [String]
-    def to_s
-      @desc
-    end
+    def to_s = @desc
     alias to_str to_s
 
     # (see #to_s)
-    def inspect
-      "<Prob #{self}>"
-    end
+    def inspect = "<Prob #{self}>"
 
     # Returns a representation of the Prob as Ruby code.
     #
@@ -259,9 +227,7 @@ module SpiSeq; module Tracks
     alias eql? ==
 
     # @private
-    def hash
-      @repr.nil? ? @callable.hash : @repr.hash
-    end
+    def hash = @repr.nil? ? @callable.hash : @repr.hash
 
 
     protected

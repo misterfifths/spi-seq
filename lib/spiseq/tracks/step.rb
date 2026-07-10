@@ -91,147 +91,105 @@ module SpiSeq; module Tracks
     # @param new_note [Theory::MIDINote, String, Symbol, Integer] A MIDINote or
     #   any value understood by {Theory::MIDINote.new}.
     # @return [Step]
-    def with_note(new_note)
-      mutate(note: new_note)
-    end
+    def with_note(new_note) = mutate(note: new_note)
 
     # Returns a new Step with the given {#vel velocity}. Values outside of 0 -
     # 127 will be clamped.
     # @param new_vel [Integer] The new velocity; see {#vel}.
     # @return [Step]
-    def with_vel(new_vel)
-      mutate(vel: new_vel)
-    end
+    def with_vel(new_vel) = mutate(vel: new_vel)
 
     # Returns a new Step with a velocity equal to {#vel} plus `shift`. If the
     # resulting velocity is outside of 0 - 127, it will be clamped.
     # @param shift [Integer]
     # @return [Step]
-    def shift_vel(shift)
-      with_vel(@vel + shift)
-    end
+    def shift_vel(shift) = with_vel(@vel + shift)
 
     # Returns a new Step with the given {#velf velocity}, expressed as a
     # fraction between 0 and 1. Values outside of that range will be clamped.
     # @param new_velf [Number]
     # @see #velf
     # @return [Step]
-    def with_velf(new_velf)
-      mutate(vel: new_velf * 127)  # this is clamped to 0-127 in the ctor
-    end
+    def with_velf(new_velf) = mutate(vel: new_velf * 127)
 
     # Returns a new Step a velocity equal to the current {#velf} plus `shift`.
     # If the resulting velocity is outside of 0 - 127, it will be clamped.
     # @param shift [Number]
     # @return [Step]
-    def shift_velf(shift)
-      with_velf(velf + shift)
-    end
+    def shift_velf(shift) = with_velf(velf + shift)
 
     # Returns a new Step with the given {#gate}. If the value is outside of 0 -
     # 1, it will be clamped.
     # @param new_gate [Integer]
     # @return [Step]
-    def with_gate(new_gate)
-      mutate(gate: new_gate)
-    end
+    def with_gate(new_gate) = mutate(gate: new_gate)
 
     # Returns a new Step with a gate equal to {#gate} + shift. If the result is
     # outside of 0 - 1, it will be clamped.
     # @param shift [Integer]
     # @return [Step]
-    def shift_gate(shift)
-      with_gate(@gate + shift)
-    end
+    def shift_gate(shift) = with_gate(@gate + shift)
 
     # Returns a new Step with a note that has the same pitch class as {#note}
     # but is in the given octave. For instance, `S(:c1).with_octave(5)` will
     # return a step with a note of C5.
     # @param new_octave [Integer]
     # @return [Step]
-    def with_octave(new_octave)
-      with_note(@note.with_octave(new_octave))
-    end
+    def with_octave(new_octave) = with_note(@note.with_octave(new_octave))
 
     # Returns a new Step with a note that has the same pitch class as {#note}
     # but an octave offset by `shift`. For instance, `S(:c1).shift_octave(3)`
     # will return a step with a note of C4.
     # @param shift [Integer]
     # @return [Step]
-    def shift_octave(shift)
-      with_note(@note.shift_octave(shift))
-    end
+    def shift_octave(shift) = with_note(@note.shift_octave(shift))
 
     # Returns a new Step with the same pitch class as {#note} but with its
     # octave shifted up by the given amount. This is equivalent to
     # {#shift_octave}.
     # @param shift [Integer]
     # @return [Step]
-    def up(shift = 1)
-      shift_octave(shift)
-    end
+    def up(shift = 1) = shift_octave(shift)
 
     # Returns a new Step with the same pitch class as {#note} but with its
     # octave shifted down by the given amount. This is equivalent to
     # {#shift_octave} with the negation of its argument.
     # @param shift [Integer]
     # @return [Step]
-    def down(shift = 1)
-      shift_octave(-shift)
-    end
+    def down(shift = 1) = shift_octave(-shift)
 
     # Returns a new Step with {#note} offset by the given number of semitones.
     # @param shift [Integer]
     # @return [Step]
-    def transpose(shift)
-      with_note(@note.transpose(shift))
-    end
+    def transpose(shift) = with_note(@note.transpose(shift))
     alias shift_tone transpose
     alias t transpose
 
     # The velocity of this step, as a fraction between 0 and 1.
     # @return [Number]
     # @see #vel
-    def velf
-      @vel / 127.0
-    end
+    def velf = @vel / 127.0
 
     # Returns true if this step is tied; that is, its {#gate} is 1.
     # @return [Boolean]
-    def tied?
-      @gate == 1.0  # rubocop:disable Lint/FloatComparison
-    end
+    def tied? = @gate == 1.0  # rubocop:disable Lint/FloatComparison
 
     # @private
-    def unique_slot_key
-      @note.to_sym
-    end
+    def unique_slot_key = @note.to_sym
 
 
     protected
 
-    def ctor_args
-      [:note]
-    end
-
+    def ctor_args = [:note]
     def ctor_kwargs
       kwargs = super
       kwargs[:vel] = 127
       kwargs[:gate] = 1
       kwargs
     end
-
-    def default_accum_target
-      :note
-    end
-
-    def valid_accum_targets
-      %i[note gate vel]
-    end
-
-    def repr_ctor_method
-      "S"
-    end
+    def default_accum_target = :note
+    def valid_accum_targets = %i[note gate vel]
+    def repr_ctor_method = "S"
   end
 
 
@@ -239,9 +197,7 @@ module SpiSeq; module Tracks
 
   # An alias for {Step#initialize Step.new}.
   # @return [Step]
-  module_function def S(...)
-    Step.new(...)
-  end
+  module_function def S(...) = Step.new(...)
 
   # @!endgroup
 end; end

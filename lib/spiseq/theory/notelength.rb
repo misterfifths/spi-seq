@@ -142,9 +142,7 @@ module SpiSeq; module Theory
     alias eql? ==
 
     # @private
-    def hash
-      @sym.hash
-    end
+    def hash = @sym.hash
 
     # Returns how many "steps" there are between this length and the given one.
     # Each halving or doubling represents one step. So, for instance, there are
@@ -152,42 +150,30 @@ module SpiSeq; module Theory
     # halvings to get between the two.
     # @param other_note_length [NoteLength]
     # @return [Integer]
-    def steps_to(other_note_length)
-      (@log2 - other_note_length.log2).abs
-    end
+    def steps_to(other_note_length) = (@log2 - other_note_length.log2).abs
 
     # The fraction of a beat represented by this length. For instance, returns
     # 0.5 for {.Eighth} and 4 for {.Whole}.
     # @return [Number]
-    def to_f
-      @float_val
-    end
+    def to_f = @float_val
     alias length to_f
 
     # Returns a symbol representing the note length, e.g. `:whole` or
     # `:quarter`.
     # @return [Symbol]
-    def to_sym
-      @sym
-    end
+    def to_sym = @sym
 
     # Returns a human-readable description of the NoteLength.
     # @return [String]
-    def to_s
-      "#{@desc}/#{@float_val}"
-    end
+    def to_s = "#{@desc}/#{@float_val}"
     alias to_str to_s
 
     # (see #to_s)
-    def inspect
-      "<NoteLength #{self}>"
-    end
+    def inspect = "<NoteLength #{self}>"
 
     # Returns a representation of the NoteLength as Ruby code.
     # @return [String]
-    def repr
-      ":#{@sym}"
-    end
+    def repr = ":#{@sym}"
 
 
     # Creating these constants has the side-effect of priming the cache so that

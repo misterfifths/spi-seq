@@ -202,17 +202,13 @@ module SpiSeq; module Theory
     # up by the given amount.
     # @param octave_shift [Integer]
     # @return [MIDINote]
-    def up(octave_shift = 1)
-      shift_octave(octave_shift)
-    end
+    def up(octave_shift = 1) = shift_octave(octave_shift)
 
     # Returns a new note with the same pitch class but with its octave shifted
     # down by the given amount.
     # @param octave_shift [Integer]
     # @return [MIDINote]
-    def down(octave_shift = 1)
-      shift_octave(-octave_shift)
-    end
+    def down(octave_shift = 1) = shift_octave(-octave_shift)
 
     # Returns a new note that is `shift` many semitones away.
     # @param shift [Integer]
@@ -235,9 +231,7 @@ module SpiSeq; module Theory
     #
     # @param cls [Symbol, String]
     # @return [MIDINote]
-    def with_pitch_class(cls)
-      MIDINote.new(:"#{cls}#{@octave}")
-    end
+    def with_pitch_class(cls) = MIDINote.new(:"#{cls}#{@octave}")
 
     # Returns true if `other` matches this note. That is:
     # - `other` has an explicit octave (or is a MIDI number) and refers to the
@@ -285,9 +279,7 @@ module SpiSeq; module Theory
     # @param scale_name [Symbol] The name of the scale used for snapping. Must
     #   be one of the scales known to the {Scale} class.
     # @return [MIDINote]
-    def snap_to_scale(tonic, scale_name)
-      snap(Scale.full_scale(tonic, scale_name))
-    end
+    def snap_to_scale(tonic, scale_name) = snap(Scale.full_scale(tonic, scale_name))
 
     # Returns all possible names for an note with this {#number}.
     # @return [Array<Symbol>]
@@ -311,9 +303,7 @@ module SpiSeq; module Theory
 
     # Returns {#number} as a floating point number.
     # @return [Float]
-    def to_f
-      @number.to_f
-    end
+    def to_f = @number.to_f
 
     # @private
     def <=>(other)
@@ -335,63 +325,45 @@ module SpiSeq; module Theory
     alias eql? ==
 
     # @private
-    def hash
-      @sym.hash
-    end
+    def hash = @sym.hash
 
     # @private
-    def coerce(other)
-      [MIDINote.new(other), self]
-    end
+    def coerce(other) = [MIDINote.new(other), self]
 
     # Returns a new MIDINote by adding `other` many semitones to this one.
     # @param other [Integer]
     # @return [MIDINote]
-    def +(other)
-      transpose(other.to_i)
-    end
+    def +(other) = transpose(other.to_i)
 
     # Returns a new MIDINote by subtracting `other` many semitones from this
     # one.
     # @param other [Integer]
     # @return [MIDINote]
-    def -(other)
-      transpose(-other.to_i)
-    end
+    def -(other) = transpose(-other.to_i)
 
     # Returns a new MIDINote by multiplying this note's {#number} by `other`.
     # @param other [Integer]
     # @return [MIDINote]
-    def *(other)
-      MIDINote.new(@number * other.to_i)
-    end
+    def *(other) = MIDINote.new(@number * other.to_i)
 
     # Returns a new MIDINote by dividing this note's {#number} by `other`.
     # @param other [Integer]
     # @return [MIDINote]
-    def /(other)
-      MIDINote.new(@number / other.to_i)
-    end
+    def /(other) = MIDINote.new(@number / other.to_i)
 
     # Returns the symbol for this note, which consists of its {#pitch_class} and
     # #{octave}. It is always lower case, and accidentals are normalized to
     # a natural (when possible) or a sharp.
     # @return [Symbol]
-    def to_sym
-      @sym
-    end
+    def to_sym = @sym
 
     # The string version of this MIDINote, normalized as per {#to_sym}.
     # @return [String]
-    def to_s
-      @sym.to_s
-    end
+    def to_s = @sym.to_s
     alias to_str to_s
 
     # @private
-    def inspect
-      ":#{@sym}"
-    end
+    def inspect = ":#{@sym}"
 
     # Returns a Ruby representation of this note.
     # @param short [Boolean] If true, the returned string will just be the
@@ -425,9 +397,7 @@ module SpiSeq; module Theory
 
   # (see MIDINote.new)
   # An alias for {MIDINote.new}.
-  module_function def N(note)
-    MIDINote.new(note)
-  end
+  module_function def N(note) = MIDINote.new(note)
 
   # @!endgroup
 end; end

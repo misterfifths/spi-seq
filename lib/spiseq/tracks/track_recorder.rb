@@ -10,9 +10,7 @@ require_relative "../utils/midi"
 
 module SpiSeq; module Tracks
   class Track < TrackBase
-    private_class_method def self.float_lt(a, b, threshold = 0.01)
-      (a - b) < threshold
-    end
+    private_class_method def self.float_lt(a, b, threshold = 0.01) = (a - b) < threshold
 
     # Return a description of the total length in steps for a duration in
     # seconds, given the seconds that a slot occupies. The return is a two-

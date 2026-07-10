@@ -908,9 +908,7 @@ module SpiSeq; module Tracks
     # @see #reject_rand
     # @see #clear_rand
     # @see #clear_except_rand
-    def partition_rand(p = 0.5, drop: true)
-      partition_slots(drop:) { Internal::Random.chance(p) }
-    end
+    def partition_rand(p = 0.5, drop: true) = partition_slots(drop:) { Internal::Random.chance(p) }
     alias rand_partition partition_rand
 
     # Returns a new track containing slots from this one with probability `p`.

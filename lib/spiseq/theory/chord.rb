@@ -352,26 +352,20 @@ module SpiSeq; module Theory
     # perfect fourth. Raises an ArgumentError if the chord has no third, or if
     # it has both a major and a minor third.
     # @return [Chord]
-    def sus4
-      suspend(:P4)
-    end
+    def sus4 = suspend(:P4)
     alias sus sus4
 
     # Returns a new chord with the (major or minor) third replaced with a major
     # second. Raises an ArgumentError if the chord has no third, or if it has
     # both a major and a minor third.
     # @return [Chord]
-    def sus2
-      suspend(:M2)
-    end
+    def sus2 = suspend(:M2)
 
     # Returns a new chord with the (major or minor) third replaced with a
     # perfect fourth, and an added major ninth. Raises an ArgumentError if the
     # chord has no third, or if it has both a major and a minor third.
     # @return [Chord]
-    def sus9
-      sus4 + :M9
-    end
+    def sus9 = sus4 + :M9
 
 
     # Returns a new chord with the given interval adjusted by delta many
@@ -397,9 +391,7 @@ module SpiSeq; module Theory
     #
     # @param interval [Interval, String, Symbol, Integer]
     # @return [Chord]
-    def flat(interval)
-      with_altered_interval(interval, -1)
-    end
+    def flat(interval) = with_altered_interval(interval, -1)
 
     # Returns a new Chord with the given interval sharpened (i.e., raised by one
     # semitone). The argument must be one of:
@@ -411,58 +403,44 @@ module SpiSeq; module Theory
     #
     # @param interval [Interval, String, Symbol, Integer]
     # @return [Chord]
-    def sharp(interval)
-      with_altered_interval(interval, 1)
-    end
+    def sharp(interval) = with_altered_interval(interval, 1)
 
     # Returns a new Chord with the major third flattened to a minor. Raises an
     # ArgumentError if the chord does not contain a major third.
     # @return [Chord]
-    def flat_three
-      flat(3)
-    end
+    def flat_three = flat(3)
     alias flat3 flat_three
 
     # Returns a new Chord with the perfect fifth flattened to a diminished
     # fifth. Raises an ArgumentError if the chord does not contain a perfect
     # fifth.
     # @return [Chord]
-    def flat_five
-      flat(5)
-    end
+    def flat_five = flat(5)
     alias flat5 flat_five
 
     # Returns a new Chord with the major ninth flattened to a minor. Raises an
     # ArgumentError if the chord does not contain a major ninth.
     # @return [Chord]
-    def flat_nine
-      flat(9)
-    end
+    def flat_nine = flat(9)
     alias flat9 flat_nine
 
     # Returns a new Chord with the major third sharpened to an augmented third.
     # Raises an ArgumentError if the chord does not contain a major third.
     # @return [Chord]
-    def sharp_three
-      sharp(3)
-    end
+    def sharp_three = sharp(3)
     alias sharp3 sharp_three
 
     # Returns a new Chord with the perfect fifth sharpened to an augmented
     # fifth. Raises an ArgumentError if the chord does not contain a perfect
     # fifth.
     # @return [Chord]
-    def sharp_five
-      sharp(5)
-    end
+    def sharp_five = sharp(5)
     alias sharp5 sharp_five
 
     # Returns a new Chord with the major ninth sharpened to an augmented ninth.
     # Raises an ArgumentError if the chord does not contain a major ninth.
     # @return [Chord]
-    def sharp_nine
-      sharp(9)
-    end
+    def sharp_nine = sharp(9)
     alias sharp9 sharp_nine
 
 
@@ -470,108 +448,74 @@ module SpiSeq; module Theory
 
     # Returns a major triad chord.
     # @return [Chord]
-    def self.major_triad
-      new(%i[P1 M3 P5])
-    end
+    def self.major_triad = new(%i[P1 M3 P5])
 
     # Returns a major 6th chord.
     # @return [Chord]
-    def self.major_sixth
-      major_triad + :M6
-    end
+    def self.major_sixth = major_triad + :M6
 
     # Returns a major 7th chord.
     # @return [Chord]
-    def self.major_seventh
-      major_triad + :M7
-    end
+    def self.major_seventh = major_triad + :M7
 
     # Returns a major 9th chord.
     # @return [Chord]
-    def self.major_ninth
-      major_seventh + :M9
-    end
+    def self.major_ninth = major_seventh + :M9
 
     # Returns a major 11th chord.
     # @return [Chord]
-    def self.major_eleventh
-      major_ninth + :P11
-    end
+    def self.major_eleventh = major_ninth + :P11
 
     # Returns a major 13th chord.
     # @return [Chord]
-    def self.major_thirteenth
-      major_eleventh + :M13
-    end
+    def self.major_thirteenth = major_eleventh + :M13
 
 
     # Returns a minor triad chord.
     # @return [Chord]
-    def self.minor_triad
-      new(%i[P1 m3 P5])
-    end
+    def self.minor_triad = new(%i[P1 m3 P5])
 
     # Returns a minor 6th chord.
     # @return [Chord]
-    def self.minor_sixth
-      minor_triad + :M6
-    end
+    def self.minor_sixth = minor_triad + :M6
 
     # Returns a minor 7th chord.
     # @return [Chord]
-    def self.minor_seventh
-      minor_triad + :m7
-    end
+    def self.minor_seventh = minor_triad + :m7
 
     # Returns a minor 9th chord.
     # @return [Chord]
-    def self.minor_ninth
-      minor_seventh + :M9
-    end
+    def self.minor_ninth = minor_seventh + :M9
 
     # Returns a minor 11th chord.
     # @return [Chord]
-    def self.minor_eleventh
-      minor_ninth + :P11
-    end
+    def self.minor_eleventh = minor_ninth + :P11
 
     # Returns a minor 13th chord.
     # @return [Chord]
-    def self.minor_thirteenth
-      minor_eleventh + :M13
-    end
+    def self.minor_thirteenth = minor_eleventh + :M13
 
 
     # Returns a minor/major 7th chord.
     # @return [Chord]
-    def self.minor_major_seventh
-      major_seventh.flat_three
-    end
+    def self.minor_major_seventh = major_seventh.flat_three
 
     # Returns a minor/major 9th chord.
     # @return [Chord]
-    def self.minor_major_ninth
-      major_ninth.flat_three
-    end
+    def self.minor_major_ninth = major_ninth.flat_three
 
     # Returns a minor/major 11th chord.
     # @return [Chord]
-    def self.minor_major_eleventh
-      major_eleventh.flat_three
-    end
+    def self.minor_major_eleventh = major_eleventh.flat_three
 
     # Returns a minor/major 13th chord.
     # @return [Chord]
-    def self.minor_major_thirteenth
-      major_thirteenth.flat_three
-    end
+    def self.minor_major_thirteenth = major_thirteenth.flat_three
 
 
     # Returns an augmented triad chord.
     # @return [Chord]
-    def self.aug_triad
-      new(%i[P1 M3 A5])
-    end
+    def self.aug_triad = new(%i[P1 M3 A5])
 
     # Returns an augmented sixth chord.
     # @param variation [:ger, :fr, :it] The desired variation of the 6th, either
@@ -592,151 +536,103 @@ module SpiSeq; module Theory
 
     # Returns an augmented 7th chord.
     # @return [Chord]
-    def self.aug_seventh
-      aug_triad + :m7
-    end
+    def self.aug_seventh = aug_triad + :m7
 
     # Returns an augmented 9th chord.
     # @return [Chord]
-    def self.aug_ninth
-      aug_seventh + :M9
-    end
+    def self.aug_ninth = aug_seventh + :M9
 
     # Returns an augmented 11th chord.
     # @return [Chord]
-    def self.aug_eleventh
-      aug_ninth + :P11
-    end
+    def self.aug_eleventh = aug_ninth + :P11
 
     # Returns an augmented 13th chord.
     # @return [Chord]
-    def self.aug_thirteenth
-      aug_eleventh + :M13
-    end
+    def self.aug_thirteenth = aug_eleventh + :M13
 
 
     # Returns an augmented major 7th chord.
     # @return [Chord]
-    def self.aug_major_seventh
-      major_seventh.sharp_five
-    end
+    def self.aug_major_seventh = major_seventh.sharp_five
 
     # Returns an augmented major 9th chord.
     # @return [Chord]
-    def self.aug_major_ninth
-      major_ninth.sharp_five
-    end
+    def self.aug_major_ninth = major_ninth.sharp_five
 
     # Returns an augmented major 11th chord.
     # @return [Chord]
-    def self.aug_major_eleventh
-      major_eleventh.sharp_five
-    end
+    def self.aug_major_eleventh = major_eleventh.sharp_five
 
     # Returns an augmented major 13th chord.
     # @return [Chord]
-    def self.aug_major_thirteenth
-      major_thirteenth.sharp_five
-    end
+    def self.aug_major_thirteenth = major_thirteenth.sharp_five
 
 
     # Returns a diminished triad chord.
     # @return [Chord]
-    def self.dim_triad
-      new(%i[P1 m3 d5])
-    end
+    def self.dim_triad = new(%i[P1 m3 d5])
 
     # Returns a diminished 6th chord.
     # @return [Chord]
-    def self.dim_sixth
-      dim_triad + :m6
-    end
+    def self.dim_sixth = dim_triad + :m6
 
     # Returns a diminished 7th chord.
     # @return [Chord]
-    def self.dim_seventh
-      dim_triad + :d7
-    end
+    def self.dim_seventh = dim_triad + :d7
 
     # Returns a diminished 9th chord.
     # @return [Chord]
-    def self.dim_ninth
-      dim_seventh + :M9
-    end
+    def self.dim_ninth = dim_seventh + :M9
 
     # Returns a diminished 11th chord.
     # @return [Chord]
-    def self.dim_eleventh
-      dim_ninth + :P11
-    end
+    def self.dim_eleventh = dim_ninth + :P11
 
     # Returns a diminished 13th chord.
     # @return [Chord]
-    def self.dim_thirteenth
-      dim_eleventh + :M13
-    end
+    def self.dim_thirteenth = dim_eleventh + :M13
 
 
     # Returns a half-diminished seventh chord.
     # @return [Chord]
-    def self.halfdim_seventh
-      minor_seventh.flat_five
-    end
+    def self.halfdim_seventh = minor_seventh.flat_five
 
     # Returns a half-diminished 9th chord.
     # @return [Chord]
-    def self.halfdim_ninth
-      minor_ninth.flat_five
-    end
+    def self.halfdim_ninth = minor_ninth.flat_five
 
     # Returns a half-diminished 11th chord.
     # @return [Chord]
-    def self.halfdim_eleventh
-      minor_eleventh.flat_five
-    end
+    def self.halfdim_eleventh = minor_eleventh.flat_five
 
     # Returns a half-diminished 13th chord.
     # @return [Chord]
-    def self.halfdim_thirteenth
-      minor_thirteenth.flat_five
-    end
+    def self.halfdim_thirteenth = minor_thirteenth.flat_five
 
 
     # Returns a dominant triad chord.
     # @return [Chord]
-    def self.dom_triad
-      major_triad
-    end
+    def self.dom_triad = major_triad
 
     # Returns a dominant parallel triad chord.
     # @return [Chord]
-    def self.dom_parallel
-      dom_triad.flat_three
-    end
+    def self.dom_parallel = dom_triad.flat_three
 
     # Returns a dominant 7th chord.
     # @return [Chord]
-    def self.dom_seventh
-      dom_triad + :m7
-    end
+    def self.dom_seventh = dom_triad + :m7
 
     # Returns a dominant 9th chord.
     # @return [Chord]
-    def self.dom_ninth
-      dom_seventh + :M9
-    end
+    def self.dom_ninth = dom_seventh + :M9
 
     # Returns a dominant 11th chord.
     # @return [Chord]
-    def self.dom_eleventh
-      dom_ninth + :P11
-    end
+    def self.dom_eleventh = dom_ninth + :P11
 
     # Returns a dominant 13th chord.
     # @return [Chord]
-    def self.dom_thirteenth
-      dom_eleventh + :M13
-    end
+    def self.dom_thirteenth = dom_eleventh + :M13
 
 
     # Returns fifth or "power" chord (P1 and P5) spanning the given number of

@@ -39,9 +39,7 @@ module SpiSeq; module Utils; module MIDI
   # Returns the current CC control defaults as set by {use_cc_control_defaults},
   # or an empty hash if no defaults have been set.
   # @return [Hash{Symbol => Object}]
-  module_function def current_cc_control_defaults
-    State.cc_control_defaults
-  end
+  module_function def current_cc_control_defaults = State.cc_control_defaults
 
 
   # @!group MIDI utilities

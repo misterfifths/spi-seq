@@ -42,13 +42,9 @@ module SpiSeq; module Utils; module LiveLoops
   # {mute_live_loop}.
   # @param loop_name [Symbol] The name of the target live loop.
   # @return [void]
-  module_function def unmute_live_loop(loop_name)
-    mute_live_loop(loop_name, false)
-  end
+  module_function def unmute_live_loop(loop_name) = mute_live_loop(loop_name, false)
 
-  module_function def loop_is_muted?(loop_name)
-    State.loop_mute_states[loop_name] || false
-  end
+  module_function def loop_is_muted?(loop_name) = State.loop_mute_states[loop_name] || false
 
   # Starts a new `live_loop` that can be muted with {mute_live_loop}. What
   # "mute" means must be implemented by the given block; this function merely

@@ -33,9 +33,7 @@ module SpiSeq; module Math
     alias call solve
     alias [] solve
 
-    def arity
-      1
-    end
+    def arity = 1
 
     def sample_curve_x(t)
       ensure_inited

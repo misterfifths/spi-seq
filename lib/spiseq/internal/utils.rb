@@ -69,7 +69,5 @@ module SpiSeq; module Internal; module Utils
     [req_pos_args, opt_pos_args, req_keywords, opt_keywords]
   end
 
-  module_function def is_macos?
-    RUBY_PLATFORM.include?("darwin")
-  end
+  module_function def is_macos? = RUBY_PLATFORM.include?("darwin")
 end; end; end

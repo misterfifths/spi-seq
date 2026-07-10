@@ -13,9 +13,7 @@ module SpiSeq; module Internal; module Log
   private_constant :State
 
 
-  module_function def quiet!(flag = true)
-    State.quiet = flag
-  end
+  module_function def quiet!(flag = true) = State.quiet = flag
 
   module_function def with_quiet
     old_quiet = State.quiet
@@ -31,11 +29,7 @@ module SpiSeq; module Internal; module Log
     External::IO.puts(s)
   end
 
-  module_function def warn(msg, channel = "spi-seq")
-    log("warning: #{msg}", channel)
-  end
+  module_function def warn(msg, channel = "spi-seq") = log("warning: #{msg}", channel)
 
-  module_function def err(msg, channel = "spi-seq")
-    log("error: #{msg}", channel, ignore_quiet: true)
-  end
+  module_function def err(msg, channel = "spi-seq") = log("error: #{msg}", channel, ignore_quiet: true)
 end; end; end

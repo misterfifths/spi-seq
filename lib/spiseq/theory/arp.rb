@@ -31,13 +31,9 @@ module SpiSeq; module Theory
         names.map { |name| [name, meth] }
       end.to_h.freeze
 
-      module_function def up(notes)
-        notes.sort!
-      end
+      module_function def up(notes) = notes.sort!
 
-      module_function def down(notes)
-        notes.sort! { |a, b| b <=> a }
-      end
+      module_function def down(notes) = notes.sort! { |a, b| b <=> a }
 
       module_function def up_down(notes)
         notes.sort!
@@ -46,9 +42,7 @@ module SpiSeq; module Theory
         notes
       end
 
-      module_function def two_up_two_down(notes)
-        up_down(notes).flat_map { |n| [n, n] }
-      end
+      module_function def two_up_two_down(notes) = up_down(notes).flat_map { |n| [n, n] }
 
       module_function def altern_in(notes)
         # Work in toward the center from the edges, alternating low and high
@@ -173,13 +167,9 @@ module SpiSeq; module Theory
         falling + rising
       end
 
-      module_function def random(notes)
-        notes.shuffle!
-      end
+      module_function def random(notes) = notes.shuffle!
 
-      module_function def order(notes)
-        notes
-      end
+      module_function def order(notes) = notes
     end
     private_constant :Arpeggiators
 
@@ -356,7 +346,5 @@ module SpiSeq; module Theory
 
   # (see Arp.arpeggiate)
   # An alias for {Arp.arpeggiate}.
-  module_function def arp(notes, direction, spread: 0, extra_octaves: [])
-    Arp.arpeggiate(notes, direction, spread:, extra_octaves:)
-  end
+  module_function def arp(...) = Arp.arpeggiate(...)
 end; end

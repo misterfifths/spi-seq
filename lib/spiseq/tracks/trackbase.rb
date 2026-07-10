@@ -284,25 +284,19 @@ module SpiSeq; module Tracks
 
     # The number of slots in the track; i.e., the length of the {#grid}.
     # @return [Integer]
-    def num_slots
-      @grid.length
-    end
+    def num_slots = @grid.length
     alias length num_slots
 
     # The duration of the track in beats. That is, the length of the {#grid}
     # multiplied by the {#granularity}.
     # @return [Number]
-    def beat_length
-      num_slots * @granularity.to_f
-    end
+    def beat_length = num_slots * @granularity.to_f
 
     # Returns whether the track consists entirely of rests (i.e., empty slots).
     # @return [Boolean]
     # @see #mono?
     # @see #poly?
-    def empty?
-      @grid.all? { |slot| slot.empty? }
-    end
+    def empty? = @grid.all? { |slot| slot.empty? }
     alias all_rests? empty?
     alias rest? empty?
 
@@ -310,17 +304,13 @@ module SpiSeq; module Tracks
     # @return [Boolean]
     # @see #poly?
     # @see #empty?
-    def mono?
-      @grid.all? { |slot| slot.length <= 1 }
-    end
+    def mono? = @grid.all? { |slot| slot.length <= 1 }
 
     # Returns whether the track is polyphonic (i.e., any slot has > 1 step).
     # @return [Boolean]
     # @see #mono?
     # @see #empty?
-    def poly?
-      @grid.any? { |slot| slot.length > 1 }
-    end
+    def poly? = @grid.any? { |slot| slot.length > 1 }
 
     # Returns the indexes of all non-empty slots in the {#grid}.
     # @return [Array<Integer>]
@@ -333,9 +323,7 @@ module SpiSeq; module Tracks
     # Returns the `n`th non-empty slot in the {#grid}.
     # @param n [Integer]
     # @return [Array<StepBase>]
-    def nth_filled_slot(n)
-      @grid[indexes_of_filled_slots[n]]
-    end
+    def nth_filled_slot(n) = @grid[indexes_of_filled_slots[n]]
     alias filled_slot nth_filled_slot
 
 
@@ -392,14 +380,10 @@ module SpiSeq; module Tracks
     # Copies the {#repr} of this track to the clipboard.
     # @param (see #repr)
     # @return [void]
-    def copy_repr(group: 8)
-      Internal::Clipboard.copy(repr(group:))
-    end
+    def copy_repr(group: 8) = Internal::Clipboard.copy(repr(group:))
 
     # @private
-    def inspect
-      repr(safe: true)
-    end
+    def inspect = repr(safe: true)
     alias to_s inspect
     alias to_str inspect
 
@@ -440,16 +424,12 @@ module SpiSeq; module Tracks
     #   granularity. Can be a {Theory::NoteLength} or a value understood by
     #   {Theory::NoteLength.new}.
     # @return [TrackBase]
-    def with_granularity(granularity)
-      mutate(granularity:)
-    end
+    def with_granularity(granularity) = mutate(granularity:)
 
     # Returns a new track with the given {#timescale}.
     # @param scale [Number]
     # @return [TrackBase]
-    def with_timescale(scale)
-      mutate(timescale: scale)
-    end
+    def with_timescale(scale) = mutate(timescale: scale)
     alias with_rate with_timescale
     alias rate with_rate
 
@@ -478,9 +458,7 @@ module SpiSeq; module Tracks
     #   subclass initializer for details.
     # @return [TrackBase]
     # @see #append_slot
-    def append(other_track)
-      mutate(grid: @grid + self.class.gridify(other_track))
-    end
+    def append(other_track) = mutate(grid: @grid + self.class.gridify(other_track))
     alias concat append
     alias add append
     alias + append
@@ -571,9 +549,7 @@ module SpiSeq; module Tracks
     # @return [TrackBase]
     # @see #grouped_zip
     # @see #space
-    def zip(other_track, cycle: true, pad_with_rests: true)
-      gzip(other_track, 1, 1, cycle:, pad_with_rests:)
-    end
+    def zip(other_track, cycle: true, pad_with_rests: true) = gzip(other_track, 1, 1, cycle:, pad_with_rests:)
 
     # Creates a new track that inserts the slots of `other_track` after some
     # number of slots from this track. If `other_track` is not a track, it is
@@ -676,9 +652,7 @@ module SpiSeq; module Tracks
     # @see #ltrim
     # @see #rtrim
     # @see #trim
-    def compact
-      mutate(grid: @grid.reject { |slot| slot.empty? })
-    end
+    def compact = mutate(grid: @grid.reject { |slot| slot.empty? })
 
     # Returns a new track with all empty slots (rests) removed from the
     # beginning of this track. Raises an exception if this would result in an
@@ -689,9 +663,7 @@ module SpiSeq; module Tracks
     # @see #trim
     # @see #lpad
     # @see #rpad
-    def ltrim
-      mutate(grid: @grid.drop_while { |slot| slot.empty? })
-    end
+    def ltrim = mutate(grid: @grid.drop_while { |slot| slot.empty? })
 
     # Returns a new track with all empty slots (rests) removed from the end of
     # this track. Raises an exception if this would result in an empty track.
@@ -717,9 +689,7 @@ module SpiSeq; module Tracks
     # @see #rtrim
     # @see #lpad
     # @see #rpad
-    def trim
-      ltrim.rtrim
-    end
+    def trim = ltrim.rtrim
 
     # Returns a new track by adding `num_rests` many empty slots (rests) to the
     # beginning of the track.
@@ -729,9 +699,7 @@ module SpiSeq; module Tracks
     # @see #ltrim
     # @see #rtrim
     # @see #trim
-    def left_pad(num_rests = 1)
-      mutate(grid: [[]] * num_rests + @grid)
-    end
+    def left_pad(num_rests = 1) = mutate(grid: [[]] * num_rests + @grid)
     alias lpad left_pad
 
     # Returns a new track by adding `num_rests` many empty slots (rests) to the
@@ -742,9 +710,7 @@ module SpiSeq; module Tracks
     # @see #rtrim
     # @see #ltrim
     # @see #trim
-    def right_pad(num_rests = 1)
-      mutate(grid: @grid + [[]] * num_rests)
-    end
+    def right_pad(num_rests = 1) = mutate(grid: @grid + [[]] * num_rests)
     alias rpad right_pad
 
     # Returns a new track by adding `num_rests` many empty slots (rests) after
@@ -761,9 +727,7 @@ module SpiSeq; module Tracks
     # @param num_rests [Integer]
     # @return [TrackBase]
     # @see #space_every
-    def space(num_rests = 1)
-      space_every(1, num_rests)
-    end
+    def space(num_rests = 1) = space_every(1, num_rests)
 
     # Returns a new track by adding `num_rests` many empty slots (rests) between
     # each group of `group_size` slots from this track.
@@ -799,9 +763,7 @@ module SpiSeq; module Tracks
     # @return [TrackBase]
     # @see #mirror
     # @see #reflect
-    def reverse
-      mutate(grid: @grid.reverse)
-    end
+    def reverse = mutate(grid: @grid.reverse)
     alias rev reverse
     alias bw reverse
 
@@ -816,9 +778,7 @@ module SpiSeq; module Tracks
     # @return [TrackBase]
     # @see #reverse
     # @see #reflect
-    def mirror
-      mutate(grid: @grid + @grid.reverse)
-    end
+    def mirror = mutate(grid: @grid + @grid.reverse)
 
     # Returns a new track with the slots of this track in order and then
     # reversed, without repeating the slot in the middle.
@@ -831,17 +791,13 @@ module SpiSeq; module Tracks
     # @return [TrackBase]
     # @see #reverse
     # @see #mirror
-    def reflect
-      mutate(grid: @grid + @grid.reverse.drop(1))
-    end
+    def reflect = mutate(grid: @grid + @grid.reverse.drop(1))
     alias bnf reflect
 
     # Returns a new track with the slots of this track in a random order.
     # @return [TrackBase]
     # @see #shuffle_filled_slots
-    def shuffle
-      mutate(grid: @grid.shuffle)
-    end
+    def shuffle = mutate(grid: @grid.shuffle)
 
     # Returns a new track by randomly swapping the filled slots in this track.
     # Any slots that were rests remain so; only the contents of filled slots is
@@ -873,9 +829,7 @@ module SpiSeq; module Tracks
     # @param leftward_shift [Integer]
     # @return [TrackBase]
     # @see #shr
-    def rotate(leftward_shift = 1)
-      mutate(grid: @grid.rotate(leftward_shift))
-    end
+    def rotate(leftward_shift = 1) = mutate(grid: @grid.rotate(leftward_shift))
     alias left rotate
     alias lshift rotate
     alias shl rotate
@@ -886,9 +840,7 @@ module SpiSeq; module Tracks
     # @param rightward_shift [Integer]
     # @return [TrackBase]
     # @see #left
-    def right(rightward_shift = 1)
-      rotate(-rightward_shift)
-    end
+    def right(rightward_shift = 1) = rotate(-rightward_shift)
     alias rshift right
     alias shr right
 
@@ -1148,9 +1100,7 @@ module SpiSeq; module Tracks
     # @return [TrackBase]
     # @see #cycle_to_length
     # @see #repeat_slots
-    def repeat(n)
-      mutate(grid: @grid * n)
-    end
+    def repeat(n) = mutate(grid: @grid * n)
     alias * repeat
 
     # Returns a new track that repeats the slots of this track for `n` slots.
@@ -1167,9 +1117,7 @@ module SpiSeq; module Tracks
     # @return [TrackBase]
     # @see #repeat
     # @see #repeat_slots
-    def cycle_to_length(n)
-      mutate(grid: @grid.cycle.take(n))
-    end
+    def cycle_to_length(n) = mutate(grid: @grid.cycle.take(n))
 
     # Returns a new track where each slot in this one is repeated `n` many times
     # in a row.
@@ -1241,9 +1189,7 @@ module SpiSeq; module Tracks
     # @see #rtrim
     # @see #drop
     # @see #take_last
-    def drop_last(n = 1)
-      drop(-n)
-    end
+    def drop_last(n = 1) = drop(-n)
 
     # Returns a new track consisting of only the first `n` slots of this track.
     # Or, if `n` is negative, a new track with the final `n` slots.
@@ -1277,9 +1223,7 @@ module SpiSeq; module Tracks
     # @return [TrackBase]
     # @see #take
     # @see #drop_last
-    def take_last(n = 1)
-      take(-n)
-    end
+    def take_last(n = 1) = take(-n)
 
     # Returns a new track consisting of only the selected slots of this track.
     # Takes the same arguments as Array#slice (aka `[]`): a single integer
@@ -1294,11 +1238,9 @@ module SpiSeq; module Tracks
     end
     alias [] slice
 
-    private def sample_enum(e, n)
-      # Sonic Pi overrides Array.sample with a version that returns a single
-      # value, not an array. Reimplement it.
-      e.to_a.shuffle.take(n)
-    end
+    # Sonic Pi overrides Array.sample with a version that returns a single
+    # value, not an array. Reimplement it.
+    private def sample_enum(e, n) = e.to_a.shuffle.take(n)
 
     # Returns a new track consisting of `n` random slots from this track's grid.
     # The relative order of the selected slots is maintained.
@@ -1394,9 +1336,7 @@ module SpiSeq; module Tracks
     # @param n [Integer, nil]
     # @return [TrackBase]
     # @see #combination
-    def permutation(n = nil)
-      mutate(grid: @grid.permutation(n).to_a.flatten(1))
-    end
+    def permutation(n = nil) = mutate(grid: @grid.permutation(n).to_a.flatten(1))
     alias permutations permutation
 
     # Returns a new track that contains every combination of `n` slots. The
@@ -1404,9 +1344,7 @@ module SpiSeq; module Tracks
     # @param n [Integer]
     # @return [TrackBase]
     # @see #permutation
-    def combination(n)
-      mutate(grid: @grid.combination(n).to_a.flatten(1))
-    end
+    def combination(n) = mutate(grid: @grid.combination(n).to_a.flatten(1))
     alias combinations combination
 
 
@@ -1709,9 +1647,7 @@ module SpiSeq; module Tracks
     # @see #with_prob
     # @see StepBase#prob
     # @see Prob
-    def without_prob
-      mutate_each_step { |step| step.without_prob }
-    end
+    def without_prob = mutate_each_step { |step| step.without_prob }
     alias clear_prob without_prob
 
     # Returns a new track where every step has the {Prob.fill fill probability}.
@@ -1755,9 +1691,7 @@ module SpiSeq; module Tracks
     # @return [TrackBase]
     # @see StepBase#accum
     # @see #with_accum
-    def without_accum
-      mutate_each_step { |step| step.without_accum }
-    end
+    def without_accum = mutate_each_step { |step| step.without_accum }
     alias clear_accum without_accum
 
     # @!endgroup
@@ -1767,9 +1701,7 @@ module SpiSeq; module Tracks
 
     # Returns the type of steps the subclass expects in its slots, a subclass of
     # StepBase. Used to implement `slotify` and `gridify`.
-    private_class_method def self.step_class
-      raise NotImplementedError, "subclassers must implement step_class"
-    end
+    private_class_method def self.step_class = raise(NotImplementedError, "subclassers must implement step_class")
 
     # Attempts to convert a non-step argument into a step.
     #
@@ -1784,9 +1716,7 @@ module SpiSeq; module Tracks
     # The method should not raise an exception.
     #
     # The default implementation returns nil. That is, it does no conversion.
-    private_class_method def self.stepify(_)
-      nil
-    end
+    private_class_method def self.stepify(_) = nil
 
     # Same as stepify, but raises an ArgumentError if the conversion fails.
     private_class_method def self.throwing_stepify(x)
@@ -1798,9 +1728,7 @@ module SpiSeq; module Tracks
     # Given two steps in the same slot that share a `unique_slot_key`, returns
     # the one that should be kept. Used by `dedupe_slot` to determine which
     # step wins in the case of a duplicate.
-    private_class_method def self.preferred_step(step1, step2)
-      raise NotImplementedError, "subclasses must implement preferred_step"
-    end
+    private_class_method def self.preferred_step(step1, step2) = raise(NotImplementedError, "subclasses must implement preferred_step")
 
     # Given a slot (an array of steps), returns a new slot where no two steps
     # share the same `unique_slot_key`. If two steps share a key, the one
@@ -1879,9 +1807,7 @@ module SpiSeq; module Tracks
 
     # Does a deep dup of the grid, returning a version where the grid itself and
     # each slot is mutable.
-    def mutable_grid_dup
-      @grid.map { |slot| slot.dup }
-    end
+    def mutable_grid_dup = @grid.map { |slot| slot.dup }
 
     # Returns a hash of the keyword arguments to the initializer and their
     # default values. The keys of the hash are assumed to also be readable
@@ -1899,9 +1825,7 @@ module SpiSeq; module Tracks
     # of this track subclass. Defaults to the name of the class; if there is a
     # shorthand method, subclasses should return it here. Used to implement
     # `repr`, which will call it with square brackets, not parentheses.
-    def repr_ctor_method
-      self.class.name
-    end
+    def repr_ctor_method = self.class.name
 
     # Returns a new track by applying the given mutations to this track. That
     # is, calls the track initializer, substituting the given keyword arguments

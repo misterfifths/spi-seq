@@ -437,13 +437,9 @@ module SpiSeq; module Theory
     #   a value understood by {MIDINote.new}.
     # @return [MIDINote]
     # @see MIDINote#snap
-    def snap(note)
-      MIDINote.new(note).snap(self)
-    end
+    def snap(note) = MIDINote.new(note).snap(self)
 
-    private def full_scale?
-      @tonic.octave == -2 && @num_octaves == 12 && @clamp_to_midi
-    end
+    private def full_scale? = @tonic.octave == -2 && @num_octaves == 12 && @clamp_to_midi
 
     # A string representation of this Scale.
     # @return [String]
@@ -488,9 +484,7 @@ module SpiSeq; module Theory
   # (see Scale#initialize)
   # An alias for {Scale#initialize Scale.new}.
   # @return [Scale]
-  module_function def SC(tonic, name, num_octaves: 1, clamp_to_midi: false)
-    Scale.new(tonic, name, num_octaves:, clamp_to_midi:)
-  end
+  module_function def SC(...) = Scale.new(...)
 
   # @!endgroup
 end; end

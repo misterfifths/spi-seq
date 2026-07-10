@@ -192,9 +192,7 @@ module SpiSeq; module Tracks
 
     # Returns a new step with all accumulation parameters removed.
     # @return [StepBase]
-    def without_accum
-      accum(0)
-    end
+    def without_accum = accum(0)
     alias clear_accum without_accum
 
     # Returns a new step with the given {#prob probability}. Non-{Prob} values
@@ -202,16 +200,12 @@ module SpiSeq; module Tracks
     # @param new_prob [Prob, Number, #call, nil]
     # @see #prob
     # @return [StepBase]
-    def with_prob(new_prob)
-      mutate(prob: new_prob)
-    end
+    def with_prob(new_prob) = mutate(prob: new_prob)
 
     # Returns a new step with the {#prob probability} (if any) removed.
     # @see #prob
     # @return [StepBase]
-    def without_prob
-      @prob.nil? ? self : with_prob(nil)
-    end
+    def without_prob = @prob.nil? ? self : with_prob(nil)
     alias clear_prob without_prob
 
     # Returns whether this step should play in the given cycle of playback, with
@@ -320,9 +314,7 @@ module SpiSeq; module Tracks
     end
 
     # @private
-    def inspect
-      repr(safe: true)
-    end
+    def inspect = repr(safe: true)
     alias to_s inspect
     alias to_str inspect
 
@@ -355,9 +347,7 @@ module SpiSeq; module Tracks
     # deduplicating steps within a slot at track construction time.
     #
     # @private
-    def unique_slot_key
-      raise NotImplementedError, "subclasses must implement unique_slot_key"
-    end
+    def unique_slot_key = raise(NotImplementedError, "subclasses must implement unique_slot_key")
 
 
     protected
@@ -366,26 +356,20 @@ module SpiSeq; module Tracks
     # as they are passed to it. Subclasses should override this method if they
     # accept such arguments. The symbols are expected to correspond to readable
     # instance attributes. Used to implement `repr` and `mutate`.
-    def ctor_args
-      []
-    end
+    def ctor_args = []
 
     # A hash of keyword arguments to the initializer and their default values.
     # Subclasses should override this method to add additional keyword arguments
     # that they accept. The keys are expected to correspond to readable instance
     # attributes. The standard accumulation arguments should *not* appear in
     # this hash. Used to implement `repr` and `mutate`.
-    def ctor_kwargs
-      {prob: nil}
-    end
+    def ctor_kwargs = {prob: nil}
 
     # The string representation of the method to call to create a new instance
     # of this step class. Defaults to "<class name>.new"; if there is a
     # shorthand method, subclasses should return it here. Used to implement
     # `repr`.
-    def repr_ctor_method
-      "#{self.class.name}.new"
-    end
+    def repr_ctor_method = "#{self.class.name}.new"
 
     def mutate(**mutations)
       args = ctor_args.map do |arg|
@@ -403,13 +387,8 @@ module SpiSeq; module Tracks
       self.class.new(*args, **mutations)
     end
 
-    def default_accum_target
-      raise NotImplementedError, "subclasses must implement default_accum_target"
-    end
-
-    def valid_accum_targets
-      raise NotImplementedError, "subclasses must implement valid_accum_targets"
-    end
+    def default_accum_target = raise(NotImplementedError, "subclasses must implement default_accum_target")
+    def valid_accum_targets = raise(NotImplementedError, "subclasses must implement valid_accum_targets")
 
 
     private

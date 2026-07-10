@@ -208,9 +208,7 @@ module SpiSeq; module Tracks
 
     ### Track construction helpers
 
-    private_class_method def self.step_class
-      CCStep
-    end
+    private_class_method def self.step_class = CCStep
 
     private_class_method def self.preferred_step(step1, step2)
       # If two steps in a slot share a CC number, prefer the step with a higher
@@ -221,9 +219,7 @@ module SpiSeq; module Tracks
 
     protected
 
-    def repr_ctor_method
-      "CCT"
-    end
+    def repr_ctor_method = "CCT"
   end
 
 
@@ -241,9 +237,7 @@ module SpiSeq; module Tracks
   # An alias for {TrackBase.from_grid CCTrack.from_grid}.
   # @return [CCTrack]
   # @see CCTrack#initialize
-  module_function def CCTg(...)
-    CCTrack.from_grid(...)
-  end
+  module_function def CCTg(...) = CCTrack.from_grid(...)
 
   # @!endgroup
 end; end

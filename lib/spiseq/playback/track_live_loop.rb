@@ -14,13 +14,9 @@ require_relative "../utils/live_loops"
 require_relative "../utils/midi"
 
 module SpiSeq; module Internal; module TrackLiveLoopUtils
-  module_function def get_player(loop_name)
-    ThreadTracker.var_get(loop_name, :__player)
-  end
+  module_function def get_player(loop_name) = ThreadTracker.var_get(loop_name, :__player)
 
-  module_function def set_player(loop_name, player)
-    ThreadTracker.var_set(loop_name, :__player, player)
-  end
+  module_function def set_player(loop_name, player) = ThreadTracker.var_set(loop_name, :__player, player)
 
   module_function def track_live_loop_block_state(block_arg:, was_muted: true, unfaded_track: nil)
     { block_arg:, was_muted:, unfaded_track: }
@@ -382,9 +378,7 @@ module SpiSeq; module Playback
   # @see PlayerBase#fill
   # @see Prob.fill
   # @see set_live_loop_fill
-  module_function def unset_live_loop_fill(loop_name)
-    set_live_loop_fill(loop_name, false)
-  end
+  module_function def unset_live_loop_fill(loop_name) = set_live_loop_fill(loop_name, false)
   alias unfill_live_loop unset_live_loop_fill
   class << self; alias unfill_live_loop unset_live_loop_fill; end
 end; end

@@ -543,9 +543,7 @@ module SpiSeq; module Tracks
     # on this functionality.
     # @param scale [Theory::Scale]
     # @return [Track]
-    def with_scale(scale)
-      mutate(scale:)
-    end
+    def with_scale(scale) = mutate(scale:)
 
 
     ## @!group Step attribute mutators
@@ -562,9 +560,7 @@ module SpiSeq; module Tracks
     # @see #scale_gate
     # @see #gate_curve
     # @see #vel
-    def with_gate(new_gate)
-      mutate_each_step { |step| step.with_gate(new_gate) }
-    end
+    def with_gate(new_gate) = mutate_each_step { |step| step.with_gate(new_gate) }
     alias gate with_gate
 
     # Return a new Track where each step's {Step#gate gate} is scaled by the
@@ -579,9 +575,7 @@ module SpiSeq; module Tracks
     # @return [Track]
     # @see #gate
     # @see #gate_curve
-    def scale_gate(factor)
-      mutate_each_step { |step| step.with_gate(step.gate * factor) }
-    end
+    def scale_gate(factor) = mutate_each_step { |step| step.with_gate(step.gate * factor) }
 
     # Return a new Track where each step has the given {Step#vel velocity},
     # specified in the MIDI range of 0 - 127.
@@ -597,9 +591,7 @@ module SpiSeq; module Tracks
     # @see #with_velf
     # @see #scale_vel
     # @see #vel_curve
-    def with_vel(new_vel)
-      mutate_each_step { |step| step.with_vel(new_vel) }
-    end
+    def with_vel(new_vel) = mutate_each_step { |step| step.with_vel(new_vel) }
     alias vel with_vel
 
     # Return a new Track where each step has the given {Step#vel velocity},
@@ -615,9 +607,7 @@ module SpiSeq; module Tracks
     # @see Step#velf
     # @see #with_vel
     # @see #vel_curve
-    def with_velf(new_velf)
-      mutate_each_step { |step| step.with_velf(new_velf) }
-    end
+    def with_velf(new_velf) = mutate_each_step { |step| step.with_velf(new_velf) }
     alias velf with_velf
 
     # Return a new Track where each step's {Step#vel velocity} is scaled by the
@@ -633,9 +623,7 @@ module SpiSeq; module Tracks
     # @see #with_vel
     # @see #with_velf
     # @see #vel_curve
-    def scale_vel(factor)
-      mutate_each_step { |step| step.with_vel(step.vel * factor) }
-    end
+    def scale_vel(factor) = mutate_each_step { |step| step.with_vel(step.vel * factor) }
     alias scale_velf scale_vel
 
     # Returns a new Track where the octave of each step's {Step#note note} is
@@ -652,9 +640,7 @@ module SpiSeq; module Tracks
     # @see #up
     # @see #down
     # @see #transpose
-    def with_octave(new_octave)
-      mutate_each_step { |step| step.with_octave(new_octave) }
-    end
+    def with_octave(new_octave) = mutate_each_step { |step| step.with_octave(new_octave) }
     alias octave with_octave
     alias oct octave
 
@@ -672,9 +658,7 @@ module SpiSeq; module Tracks
     # @see #up
     # @see #down
     # @see #transpose
-    def shift_octave(shift)
-      mutate_each_step { |step| step.shift_octave(shift) }
-    end
+    def shift_octave(shift) = mutate_each_step { |step| step.shift_octave(shift) }
 
     # Returns a new Track by increasing the octave of each step's {Step#note
     # note} by the given amount. This is equivalent to {#shift_octave}.
@@ -684,9 +668,7 @@ module SpiSeq; module Tracks
     # @see #shift_octave
     # @see #down
     # @see #transpose
-    def up(octave_shift = 1)
-      shift_octave(octave_shift)
-    end
+    def up(octave_shift = 1) = shift_octave(octave_shift)
 
     # Returns a new Track by decreasing the octave of each Step's note by the
     # given amount. This is equivalent to {#shift_octave} with the negation of
@@ -697,9 +679,7 @@ module SpiSeq; module Tracks
     # @see #shift_octave
     # @see #up
     # @see #transpose
-    def down(octave_shift = 1)
-      shift_octave(-octave_shift)
-    end
+    def down(octave_shift = 1) = shift_octave(-octave_shift)
 
     # Return a new Track where, with probability `p`, each step's {Step#note
     # note} is shifted by a random value in the given range.
@@ -749,9 +729,7 @@ module SpiSeq; module Tracks
     # @return [Track]
     # @see #semi_up
     # @see #semi_down
-    def transpose(shift)
-      mutate_each_step { |step| step.transpose(shift) }
-    end
+    def transpose(shift) = mutate_each_step { |step| step.transpose(shift) }
     alias tone transpose
     alias shift_tone transpose
     alias t transpose
@@ -761,9 +739,7 @@ module SpiSeq; module Tracks
     # @param tone_shift [Integer]
     # @return [Track]
     # @see #transpose
-    def semi_up(tone_shift = 1)
-      transpose(tone_shift)
-    end
+    def semi_up(tone_shift = 1) = transpose(tone_shift)
     alias sup semi_up
 
     # Returns a new Track where each step's {Step#note} is decreased by the
@@ -772,9 +748,7 @@ module SpiSeq; module Tracks
     # @param tone_shift [Integer]
     # @return [Track]
     # @see #transpose
-    def semi_down(tone_shift = 1)
-      transpose(-tone_shift)
-    end
+    def semi_down(tone_shift = 1) = transpose(-tone_shift)
     alias sdown semi_down
 
     # Return a new Track in which each step has its {Step#note note}
@@ -792,9 +766,7 @@ module SpiSeq; module Tracks
     # @return [Track]
     # @see #snap_to_scale
     # @see Theory::MIDINote#snap
-    def snap_to_notes(notes)
-      mutate_each_step { |step| step.with_note(step.note.snap(notes)) }
-    end
+    def snap_to_notes(notes) = mutate_each_step { |step| step.with_note(step.note.snap(notes)) }
 
     # Return a new Track in which each step has its {Step#note note} snapped to
     # the nearest note in a scale starting on a particular tonic.
@@ -924,9 +896,7 @@ module SpiSeq; module Tracks
     # @param max [Number, nil] Defines scaling for the curve.
     # @return [Track]
     # @see #with_vel_curve
-    def with_velf_curve(curve_func, min: nil, max: nil)
-      with_vel_curve(curve_func, zero_to_one: true, min:, max:)
-    end
+    def with_velf_curve(curve_func, min: nil, max: nil) = with_vel_curve(curve_func, zero_to_one: true, min:, max:)
     alias velf_curve with_velf_curve
 
     # Returns a new Track that fades in linearly, via {Step#vel velocity}.
@@ -953,9 +923,7 @@ module SpiSeq; module Tracks
     # @see Math::Curves.fade_in_linear
     # @see #fade_in_quad
     # @see #fade_out
-    def fade_in_linear(min = 0.0, max = 1.0, start: 0.0)
-      with_velf_curve(Math::Curves.fade_in_linear(min, max, start))
-    end
+    def fade_in_linear(min = 0.0, max = 1.0, start: 0.0) = with_velf_curve(Math::Curves.fade_in_linear(min, max, start))
     alias fade_in_lin fade_in_linear
     alias fade_in fade_in_linear
     alias in_lin fade_in_linear
@@ -969,9 +937,7 @@ module SpiSeq; module Tracks
     # @see Math::Curves.fade_in_quad
     # @see #fade_in
     # @see #fade_out
-    def fade_in_quad(min = 0.0, max = 1.0, start: 0.0)
-      with_velf_curve(Math::Curves.fade_in_quad(min, max, start))
-    end
+    def fade_in_quad(min = 0.0, max = 1.0, start: 0.0) = with_velf_curve(Math::Curves.fade_in_quad(min, max, start))
     alias in_quad fade_in_quad
 
     # Returns a new Track that fades out linearly, via {Step#vel velocity}.
@@ -998,9 +964,7 @@ module SpiSeq; module Tracks
     # @see Math::Curves.fade_out_linear
     # @see #fade_out_quad
     # @see #fade_in
-    def fade_out_linear(max = 1.0, min = 0.0, start: 0.0)
-      with_velf_curve(Math::Curves.fade_out_linear(max, min, start))
-    end
+    def fade_out_linear(max = 1.0, min = 0.0, start: 0.0) = with_velf_curve(Math::Curves.fade_out_linear(max, min, start))
     alias fade_out_lin fade_out_linear
     alias fade_out fade_out_linear
     alias out_lin fade_out_linear
@@ -1014,9 +978,7 @@ module SpiSeq; module Tracks
     # @see Math::Curves.fade_out_quad
     # @see #fade_out
     # @see #fade_in
-    def fade_out_quad(max = 1.0, min = 0.0, start: 0.0)
-      with_velf_curve(Math::Curves.fade_out_quad(max, min, start))
-    end
+    def fade_out_quad(max = 1.0, min = 0.0, start: 0.0) = with_velf_curve(Math::Curves.fade_out_quad(max, min, start))
     alias out_quad fade_out_quad
 
     # Finds runs of tied Steps with the same notes and yields to its block two
@@ -1234,9 +1196,7 @@ module SpiSeq; module Tracks
     # @see Theory::MIDINote#match?
     # @see #partition
     # @see #filter_notes
-    def partition_notes(note)
-      partition { |step| step.note.match?(note) }
-    end
+    def partition_notes(note) = partition { |step| step.note.match?(note) }
     alias partition_note partition_notes
 
     # Returns a new track containing only steps that match the given note. The
@@ -1570,9 +1530,7 @@ module SpiSeq; module Tracks
 
     ### Track construction helpers
 
-    private_class_method def self.step_class
-      Step
-    end
+    private_class_method def self.step_class = Step
 
     # Attempts to convert its non-Step argument to a Step. Possible note-like
     # things (symbols, strings, numbers and MIDINote instances) are converted to
@@ -1603,9 +1561,7 @@ module SpiSeq; module Tracks
       kwargs
     end
 
-    def repr_ctor_method
-      "T"
-    end
+    def repr_ctor_method = "T"
   end
 
 
@@ -1623,9 +1579,7 @@ module SpiSeq; module Tracks
   # An alias for {TrackBase.from_grid Track.from_grid}.
   # @return [Track]
   # @see Track#initialize
-  module_function def Tg(...)
-    Track.from_grid(...)
-  end
+  module_function def Tg(...) = Track.from_grid(...)
 
   # @!endgroup
 end; end

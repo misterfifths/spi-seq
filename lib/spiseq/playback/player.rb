@@ -44,9 +44,7 @@ module SpiSeq; module Playback
   # Returns the current player defaults as set by {use_player_defaults}, or an
   # empty hash if no defaults have been set.
   # @return [Hash{Symbol => Object}]
-  module_function def current_player_defaults
-    State.player_defaults
-  end
+  module_function def current_player_defaults = State.player_defaults
 
   # @!endgroup
 
@@ -129,15 +127,11 @@ module SpiSeq; module Playback
 
     attr_reader :active_synth_nodes, :active_midi_notes, :attrs_for_prev_steps
 
-    def slot_advanced
-      @effective_attrs_cache.clear
-    end
+    def slot_advanced = @effective_attrs_cache.clear
 
-    def accums_committed
-      # accum_delta is no longer peeking at potential accumulations, so we can't
-      # rely on anything we already cached.
-      @effective_attrs_cache.clear
-    end
+    # accum_delta is no longer peeking at potential accumulations once this is
+    # called, so we can't rely on anything we already cached.
+    def accums_committed = @effective_attrs_cache.clear
 
     # Returns the effective attributes for the given step in the current slot of
     # the track, accounting for the track's scale and the step's accumulation.
@@ -201,9 +195,7 @@ module SpiSeq; module Playback
     end
 
     # Returns the notes of all steps that were active during the previous slot.
-    def prev_notes
-      @attrs_for_prev_steps.map { |_, attrs| attrs[0] }
-    end
+    def prev_notes = @attrs_for_prev_steps.map { |_, attrs| attrs[0] }
 
     def accum_should_trigger?(step)
       # Accumulation deltas are in the middle of being calculated, so we can't
