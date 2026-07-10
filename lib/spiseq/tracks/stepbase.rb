@@ -338,13 +338,17 @@ module SpiSeq; module Tracks
     end
 
     # A value that uniquely identifies this step among others in the same slot
-    # in a track. No two steps in the same slot should share this key. For
-    # instance, the note-based Step could return a representation of its note,
-    # since no two Steps in the same slot of a Track can share a note. If all
-    # steps should be considered unique, you may return `object_id`.
+    # in a track. TrackBase deduplicates slots based on this key; no two steps
+    # in the same slot will share this value. For instance, the note-based Step
+    # could return a representation of its note, since no two Steps in the same
+    # slot of a Track can share a note. If all steps should be considered
+    # unique, you may return `object_id`.
     #
-    # This is used to identify steps when tracking accumulation, and when
-    # deduplicating steps within a slot at track construction time.
+    # The return must be equatable, hashable, and comparable.
+    #
+    # This is used to identify steps when tracking accumulation, when
+    # deduplicating steps within a slot at track construction time, and to sort
+    # steps within a slot.
     #
     # @private
     def unique_slot_key = raise(NotImplementedError, "subclasses must implement unique_slot_key")

@@ -19,7 +19,8 @@ module SpiSeq; module Tracks
   # contains 0 or more steps. A step represents some sort of event (a MIDI note,
   # in the case of {Step}, for example) that will trigger when that slot is
   # played. During playback, all the steps in a slot will trigger
-  # simultaneously. The order of steps within a slot is not significant.
+  # simultaneously. The order of steps within a slot is deterministic but not
+  # significant.
   #
   # Each slot lasts for a timespan equal to the track's {#granularity}, which is
   # some fraction of a beat (e.g. 1/4 for sixteenth note granularity). An empty
@@ -1776,6 +1777,7 @@ module SpiSeq; module Tracks
       raw_slot = Internal::Enumerables.arrayify(x)
                    .reject { |s| Theory.rest?(s) }
                    .map { |s| s.is_a?(step_class) ? s : throwing_stepify(s) }
+                   .sort { |s1, s2| s1.unique_slot_key <=> s2.unique_slot_key }
       dedupe_slot(raw_slot).freeze
     end
 
