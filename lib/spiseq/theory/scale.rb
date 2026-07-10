@@ -461,7 +461,7 @@ module SpiSeq; module Theory
       ctor_args[:num_octaves] = @num_octaves.to_s unless @num_octaves == 1
       ctor_args[:clamp_to_midi] = @clamp_to_midi.to_s if @clamp_to_midi
 
-      res = "SC(#{@tonic.repr}, :#{@name}"
+      res = "SC(#{@tonic.repr(short: true)}, :#{@name}"
       unless ctor_args.empty?
         res += ", "
         res += ctor_args.map { |k, v| "#{k}: #{v}" }.join(", ")
