@@ -167,8 +167,8 @@ module SpiSeq; module Playback
       gate = step.gate
       if delta != 0 && step.accum_target == :gate
         gate += delta
-        gate = 0 if gate < 0
-        gate = 1 if gate > 1
+        gate = 0.0 if gate < 0
+        gate = 1.0 if gate > 1
       end
 
       vel = step.vel
