@@ -296,7 +296,7 @@ class TrackInitTest < Test::Unit::TestCase
         extra_octaves.each do |extra_octaves|
           # With no Euclid stuff, arp should just act like making a track with
           # the result of the arpeggiated notes.
-          arped_ns = Arp.arpeggiate(ns, direction, spread:, extra_octaves:)
+          arped_ns = Arp.arp(ns, direction, spread:, extra_octaves:)
           assert_grid Track.arp(ns, direction, spread:, extra_octaves:),
                       Track.new(*arped_ns).grid
 

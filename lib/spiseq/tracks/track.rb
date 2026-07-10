@@ -130,7 +130,7 @@ module SpiSeq; module Tracks
     # and each step will be placed in a slot by itself.
     #
     # The `direction`, `spread`, and `extra_octaves` arguments are the same as
-    # those passed to {Theory::Arp.arpeggiate}.
+    # those passed to {Theory::Arp.arp}.
     #
     # Additionally, after arpeggiating the notes, this method can place them in
     # the new track according to a Euclidean rhythm. The `pulses`, `length`,
@@ -155,10 +155,10 @@ module SpiSeq; module Tracks
     # @param direction [Symbol, String] One of the direction names understood by
     #   {Theory::Arp}, e.g. `:pinky` or `:updown`.
     # @param spread [Integer] Adds notes an octave above some number of the
-    #   lowest notes in the result. See {Theory::Arp.arpeggiate} for details.
+    #   lowest notes in the result. See {Theory::Arp.arp} for details.
     # @param extra_octaves [Array<Integer>] Adds a copy of the incoming notes
     #   shifted by some number of octaves before arpeggiating. See
-    #   {Theory::Arp.arpeggiate} for details.
+    #   {Theory::Arp.arp} for details.
     # @param pulses [Integer, nil] The number of hits in the Euclidean rhythm,
     #   or nil if no rhythm should be applied. If this is non-nil, `length` must
     #   be as well.
@@ -175,10 +175,10 @@ module SpiSeq; module Tracks
     #   understood by {Theory::NoteLength.new}.
     # @param timescale [Number] The {#timescale timescale} for the new track.
     # @return [Track]
-    # @see Theory::Arp.arpeggiate
+    # @see Theory::Arp.arp
     # @see .euclid
     def self.arp(notes, direction = :up, spread: 0, extra_octaves: [], pulses: nil, length: nil, rotate: 0, full_cycle: true, granularity: :eighth, timescale: 1)
-      notes = Theory::Arp.arpeggiate(notes, direction, spread:, extra_octaves:)
+      notes = Theory::Arp.arp(notes, direction, spread:, extra_octaves:)
       if pulses.nil?
         grid = notes.map { |n| [Step.new(n)] }
         new(*grid, granularity:, timescale:)

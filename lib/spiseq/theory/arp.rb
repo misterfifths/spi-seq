@@ -4,14 +4,14 @@ require_relative "midinote"
 require_relative "../internal/enumerables"
 
 module SpiSeq; module Theory
-  # A simple arpeggiator. See {.arpeggiate} for details.
+  # A simple arpeggiator. See {.arp} for details.
   module Arp
     # The actual arpeggiation functions. Passed an array of MIDINotes, which
     # they may alter. Spread and octave additions have already been applied.
-    # `arpeggiate` calls these via name lookup in ARPEGGIATORS.
+    # `arp` calls these via name lookup in ARPEGGIATORS.
     # @private
     module Arpeggiators
-      # Names (as passed to `arpeggiate`) to methods.
+      # Names (as passed to `arp`) to methods.
       ALIASES = {
         %i[up]                                   => :up,
         %i[down]                                 => :down,
@@ -173,7 +173,7 @@ module SpiSeq; module Theory
     end
     private_constant :Arpeggiators
 
-    # All arpeggiation directions supported by {.arpeggiate}.
+    # All arpeggiation directions supported by {.arp}.
     #
     # Valid directions are:
     #
@@ -247,10 +247,9 @@ module SpiSeq; module Theory
     #
     # `:random` returns notes in a random order.
     #
-    # `:order` does not reorder notes; they will be returned as passed to
-    # {.arpeggiate}. This is not particularly useful on its own, but may be
-    # together with `spread` or `extra_octaves`, which add extra notes to the
-    # input.
+    # `:order` does not reorder notes; they will be returned as passed t
+    # {.arp}. This is not particularly useful on its own, but may be together
+    # with `spread` or `extra_octaves`, which add extra notes to the input.
     #
     # There are aliases for many of the above names; print this array to see all
     # possible values.
@@ -275,7 +274,7 @@ module SpiSeq; module Theory
     # added this way will appear at the end of the result, before notes from the
     # `spread`. Like `spread`, `extra_octaves` will not add duplicate notes.
     #
-    # This method is aliased to {Theory.arp} for convenience.
+    # This method is aliased globally as {Theory.arp} for convenience.
     #
     # @example
     #   arp([:a1, :b1], :down, extra_octaves: [-1, 2])
@@ -301,7 +300,7 @@ module SpiSeq; module Theory
     #   details.
     # @return [Array<MIDINote>] The arpeggiated notes.
     # @see Tracks::Track.arp
-    module_function def arpeggiate(notes, direction, spread: 0, extra_octaves: [])
+    module_function def arp(notes, direction, spread: 0, extra_octaves: [])
       arp_method_name = Arpeggiators::ALIASES[direction.to_sym]
       raise ArgumentError, "unknown arpeggiator direction #{direction}" if arp_method_name.nil?
       arpeggiator = Arpeggiators.method(arp_method_name)
@@ -344,7 +343,7 @@ module SpiSeq; module Theory
 
   # @!group Music theory
 
-  # An alias for {Arp.arpeggiate}.
+  # An alias for {Arp.arp}.
   # @return [Array<MIDINote>]
-  module_function def arp(...) = Arp.arpeggiate(...)
+  module_function def arp(...) = Arp.arp(...)
 end; end
