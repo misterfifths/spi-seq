@@ -24,9 +24,6 @@ Style/ModuleFunction:
     - 'lib/spiseq/external/sync.rb'
     - 'lib/spiseq/external/synth.rb'
 
-Style/ArgumentsForwarding:
-  Enabled: false
-
 Style/RedundantException:
   Enabled: false
 
