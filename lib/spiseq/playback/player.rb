@@ -36,12 +36,9 @@ module SpiSeq; module Playback
   # @return [void]
   # @see current_player_defaults
   module_function def use_player_defaults(midi: nil, sync: nil, start_muted: nil, fill_cc: nil, send_cycle_cues: nil)
-    defaults = {}
-    defaults[:midi] = midi unless midi.nil?
-    defaults[:sync] = sync unless sync.nil?
-    defaults[:start_muted] = start_muted unless start_muted.nil?
-    defaults[:fill_cc] = fill_cc unless fill_cc.nil?
-    defaults[:send_cycle_cues] = send_cycle_cues unless send_cycle_cues.nil?
+    defaults = { midi: midi, sync: sync, start_muted: start_muted,
+                 fill_cc: fill_cc, send_cycle_cues: send_cycle_cues }
+    defaults.compact!
     State.player_defaults = defaults.freeze
   end
 
@@ -97,9 +94,8 @@ module SpiSeq; module Playback
       @midi = current_player_defaults[:midi] || false if @midi.nil?
       @channel = channel
       @port = port
-      @midi_spi_kwargs = {}
-      @midi_spi_kwargs[:channel] = channel unless channel.nil?
-      @midi_spi_kwargs[:port] = port unless port.nil?
+      @midi_spi_kwargs = { channel: channel, port: port }
+      @midi_spi_kwargs.compact!
 
       # These track the current synth nodes or MIDI notes that are playing. Note
       # that steps with a gate < 1 that do not continue a tie are not added to

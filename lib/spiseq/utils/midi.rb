@@ -31,9 +31,8 @@ module SpiSeq; module Utils; module MIDI
   # @return [void]
   # @see current_cc_control_defaults
   module_function def use_cc_control_defaults(port: nil, channel: nil)
-    defaults = {}
-    defaults[:port] = port unless port.nil?
-    defaults[:channel] = channel unless channel.nil?
+    defaults = { port: port, channel: channel }
+    defaults.compact!
     State.cc_control_defaults = defaults.freeze
   end
 
@@ -66,10 +65,8 @@ module SpiSeq; module Utils; module MIDI
   # @return [void]
   module_function def midi_clock_live_loop(loop_name = :midi_clock, send_start: false, send_stop: true, port: nil, start_port: nil, start_channel: nil)
     beat_kwargs = port.nil? ? {} : { port: port }
-
-    start_stop_kwargs = {}
-    start_stop_kwargs[:port] = start_port unless start_port.nil?
-    start_stop_kwargs[:channel] = start_channel unless start_channel.nil?
+    start_stop_kwargs = { port: start_port, channel: start_channel }
+    start_stop_kwargs.compact!
 
     External::Sync.live_loop loop_name, init: false do |inited|
       External::MIDI.midi_stop(**start_stop_kwargs) if !inited && send_stop
@@ -136,9 +133,8 @@ module SpiSeq; module Utils; module MIDI
   # @return [void]
   module_function def midi_panic(*ports_and_channels, port: nil, channel: nil)
     panic = lambda do |port: nil, channel: nil|
-      midi_kwargs = {}
-      midi_kwargs[:port] = port unless port.nil?
-      midi_kwargs[:channel] = channel unless channel.nil?
+      midi_kwargs = { port: port, channel: channel }
+      midi_kwargs.compact!
 
       External::Sync.with_real_time do
         External::MIDI.midi_stop(**midi_kwargs)
