@@ -464,7 +464,7 @@ module SpiSeq; module Tracks
 
       gap_idx = 0
       kept_slots = 0
-      partition_slots(drop: drop) do |slot|
+      partition_slots(drop:) do |slot|
         next false if skip_empty && slot.empty?
 
         gap = gaps[gap_idx % gaps.length]
@@ -514,7 +514,7 @@ module SpiSeq; module Tracks
     # @see #select_rand
     # @see #select_steps
     def select_every(*gaps, skip_empty: false)
-      t, = partition_every(*gaps, skip_empty: skip_empty)
+      t, = partition_every(*gaps, skip_empty:)
       t
     end
     alias filter_every select_every
@@ -550,7 +550,7 @@ module SpiSeq; module Tracks
     # @see #reject_rand
     # @see #reject_steps
     def reject_every(*gaps, skip_empty: false)
-      _, t = partition_every(*gaps, skip_empty: skip_empty)
+      _, t = partition_every(*gaps, skip_empty:)
       t
     end
     alias drop_every reject_every
@@ -589,7 +589,7 @@ module SpiSeq; module Tracks
     # @see #clear_rand
     # @see #reject_steps
     def clear_every(*gaps, skip_empty: false)
-      _, t = partition_every(*gaps, drop: false, skip_empty: skip_empty)
+      _, t = partition_every(*gaps, drop: false, skip_empty:)
       t
     end
     alias dropout clear_every
@@ -626,7 +626,7 @@ module SpiSeq; module Tracks
     # @see #clear_except_rand
     # @see #reject_steps
     def clear_every_except(*gaps, skip_empty: false)
-      t, = partition_every(*gaps, drop: false, skip_empty: skip_empty)
+      t, = partition_every(*gaps, drop: false, skip_empty:)
       t
     end
 
@@ -700,7 +700,7 @@ module SpiSeq; module Tracks
       raise RangeError, "x must be <= y" unless x <= y
 
       i = 0
-      partition_slots(drop: drop) do |slot|
+      partition_slots(drop:) do |slot|
         next false if skip_empty && slot.empty?
 
         extract_this = i % y == x - 1
@@ -743,7 +743,7 @@ module SpiSeq; module Tracks
     # @see #select_rand
     # @see #select_steps
     def select_x_of_y(x, y, skip_empty: false)
-      t, = partition_x_of_y(x, y, skip_empty: skip_empty)
+      t, = partition_x_of_y(x, y, skip_empty:)
       t
     end
     alias grouped_select select_x_of_y
@@ -783,7 +783,7 @@ module SpiSeq; module Tracks
     # @see #reject_rand
     # @see #reject_steps
     def reject_x_of_y(x, y, skip_empty: false)
-      _, t = partition_x_of_y(x, y, skip_empty: skip_empty)
+      _, t = partition_x_of_y(x, y, skip_empty:)
       t
     end
     alias grouped_reject reject_x_of_y
@@ -825,7 +825,7 @@ module SpiSeq; module Tracks
     # @see #clear_rand
     # @see #reject_steps
     def clear_x_of_y(x, y, skip_empty: false)
-      _, t = partition_x_of_y(x, y, drop: false, skip_empty: skip_empty)
+      _, t = partition_x_of_y(x, y, drop: false, skip_empty:)
       t
     end
     alias grouped_clear clear_x_of_y
@@ -864,7 +864,7 @@ module SpiSeq; module Tracks
     # @see #clear_except_rand
     # @see #reject_steps
     def clear_except_x_of_y(x, y, skip_empty: false)
-      t, = partition_x_of_y(x, y, drop: false, skip_empty: skip_empty)
+      t, = partition_x_of_y(x, y, drop: false, skip_empty:)
       t
     end
 
@@ -909,7 +909,7 @@ module SpiSeq; module Tracks
     # @see #clear_rand
     # @see #clear_except_rand
     def partition_rand(p = 0.5, drop: true)
-      partition_slots(drop: drop) { Internal::Random.chance(p) }
+      partition_slots(drop:) { Internal::Random.chance(p) }
     end
     alias rand_partition partition_rand
 

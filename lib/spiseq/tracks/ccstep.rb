@@ -57,9 +57,7 @@ module SpiSeq; module Tracks
         @value = 127
       end
 
-      super(prob: prob, accum_delta: accum_delta, accum_max: accum_max,
-            accum_min: accum_min, accum_mode: accum_mode,
-            accum_prob: accum_prob, accum_target: accum_target)
+      super(prob:, accum_delta:, accum_max:, accum_min:, accum_mode:, accum_prob:, accum_target:)
     end
 
     # Returns a new CCStep with the given {#cc CC number}. It is an error to

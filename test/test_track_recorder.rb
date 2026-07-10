@@ -28,7 +28,7 @@ class TrackRecorderTest < Test::Unit::TestCase
 
     # baseline
     t = Track.from_timeline(timeline,
-                            bpm: bpm, granularity: granularity,
+                            bpm:, granularity:,
                             start_time: 0, end_time: 8,
                             min_gate: 0.1, quantize_gates: false,
                             ignore_vel: false)
@@ -44,7 +44,7 @@ class TrackRecorderTest < Test::Unit::TestCase
 
     # ignore_vel
     t = Track.from_timeline(timeline,
-                            bpm: bpm, granularity: granularity,
+                            bpm:, granularity:,
                             start_time: 0, end_time: 8,
                             min_gate: 0.1, quantize_gates: false,
                             ignore_vel: true)
@@ -60,7 +60,7 @@ class TrackRecorderTest < Test::Unit::TestCase
 
     # quantize_gates
     t = Track.from_timeline(timeline,
-                            bpm: bpm, granularity: granularity,
+                            bpm:, granularity:,
                             start_time: 0, end_time: 8,
                             min_gate: 0.1, quantize_gates: true,
                             ignore_vel: true)
@@ -76,7 +76,7 @@ class TrackRecorderTest < Test::Unit::TestCase
 
     # left trim
     t = Track.from_timeline(timeline,
-                            bpm: bpm, granularity: granularity,
+                            bpm:, granularity:,
                             start_time: nil, end_time: 8,
                             min_gate: 0.1, quantize_gates: false,
                             ignore_vel: true)
@@ -91,7 +91,7 @@ class TrackRecorderTest < Test::Unit::TestCase
 
     # left + right trim
     t = Track.from_timeline(timeline,
-                            bpm: bpm, granularity: granularity,
+                            bpm:, granularity:,
                             start_time: nil, end_time: nil,
                             min_gate: 0.1, quantize_gates: false,
                             ignore_vel: true)
@@ -105,7 +105,7 @@ class TrackRecorderTest < Test::Unit::TestCase
 
     # min gate big enough to remove a final step
     t = Track.from_timeline(timeline,
-                            bpm: bpm, granularity: granularity,
+                            bpm:, granularity:,
                             start_time: 0, end_time: 8,
                             min_gate: 0.2, quantize_gates: false,
                             ignore_vel: true)
@@ -121,7 +121,7 @@ class TrackRecorderTest < Test::Unit::TestCase
 
     # trimming should remove a rest made by a removed final step
     t = Track.from_timeline(timeline,
-                            bpm: bpm, granularity: granularity,
+                            bpm:, granularity:,
                             start_time: 0, end_time: nil,
                             min_gate: 0.2, quantize_gates: false,
                             ignore_vel: true)
@@ -135,7 +135,7 @@ class TrackRecorderTest < Test::Unit::TestCase
 
     # min gate big enough to round up a single step
     t = Track.from_timeline(timeline,
-                            bpm: bpm, granularity: granularity,
+                            bpm:, granularity:,
                             start_time: 0, end_time: 8,
                             min_gate: 0.5, quantize_gates: false,
                             ignore_vel: true)
@@ -158,21 +158,21 @@ class TrackRecorderTest < Test::Unit::TestCase
     # start snaps up to slot 2, end time remains the same
     timeline = [[:a1, 1.5, 2.5, 127]]
     t = Track.from_timeline(timeline,
-                            bpm: bpm, granularity: granularity,
+                            bpm:, granularity:,
                             start_time: 0)
     assert_grid t, [[], [], [S(:a1, gate: 0.5)]]
 
     # start snaps down to slot 1, end time remains the same
     timeline = [[:a1, 1.1, 2.5, 127]]
     t = Track.from_timeline(timeline,
-                            bpm: bpm, granularity: granularity,
+                            bpm:, granularity:,
                             start_time: 0)
     assert_grid t, [[], [:a1], [S(:a1, gate: 0.5)]]
 
     # starts on a step, end time quantized up to a tie
     timeline = [[:a1, 1.0, 2.95, 127]]
     t = Track.from_timeline(timeline,
-                            bpm: bpm, granularity: granularity,
+                            bpm:, granularity:,
                             start_time: 0)
     assert_grid t, [[], [:a1], [:a1]]
 
@@ -180,14 +180,14 @@ class TrackRecorderTest < Test::Unit::TestCase
     # to min_gate
     timeline = [[:a1, 0.75, 1.1, 127]]
     t = Track.from_timeline(timeline,
-                            bpm: bpm, granularity: granularity,
+                            bpm:, granularity:,
                             start_time: 0, min_gate: 0.2)
     assert_grid t, [[], [S(:a1, gate: 0.2)]]
 
     # but with a set end time, that can't happen and we'll just lose the event.
     timeline = [[:a1, 0.75, 1.1, 127], [:b1, 0, 1, 127]]
     t = Track.from_timeline(timeline,
-                            bpm: bpm, granularity: granularity,
+                            bpm:, granularity:,
                             start_time: 0, end_time: 1.1,
                             min_gate: 0.2)
     assert_grid t, [[:b1]]
@@ -196,14 +196,14 @@ class TrackRecorderTest < Test::Unit::TestCase
     # rounded up to min_gate though.
     timeline = [[:a1, 0.75, 1.0, 127]]
     t = Track.from_timeline(timeline,
-                            bpm: bpm, granularity: granularity,
+                            bpm:, granularity:,
                             start_time: 0, min_gate: 0.2)
     assert_grid t, [[], [S(:a1, gate: 0.2)]]
 
     # but again, with a fixed end time, that event will just get dropped
     timeline = [[:a1, 0.75, 1.0, 127], [:b1, 0, 1, 127]]
     t = Track.from_timeline(timeline,
-                            bpm: bpm, granularity: granularity,
+                            bpm:, granularity:,
                             start_time: 0, end_time: 1.0,
                             min_gate: 0.2)
     assert_grid t, [[:b1]]
@@ -212,7 +212,7 @@ class TrackRecorderTest < Test::Unit::TestCase
     # we should snap to min_gate
     timeline = [[:a1, 0.75, 0.8, 127]]
     t = Track.from_timeline(timeline,
-                            bpm: bpm, granularity: granularity,
+                            bpm:, granularity:,
                             start_time: 0, min_gate: 0.2)
     assert_grid t, [[], [S(:a1, gate: 0.2)]]
   end
@@ -280,40 +280,37 @@ class TrackRecorderTest < Test::Unit::TestCase
     # events starting before the start time should get moved to the start time
     timeline = [[:a1, 0.5, 1.5, 127]]
     t = Track.from_timeline(timeline,
-                            bpm: bpm, granularity: granularity,
+                            bpm:, granularity:,
                             start_time: 1)
     assert_grid t, [[S(:a1, gate: 0.5)]]
 
     # events ending after the end time should get snapped to it
     timeline = [[:a1, 0, 1.5, 127]]
     t = Track.from_timeline(timeline,
-                            bpm: bpm, granularity: granularity,
+                            bpm:, granularity:,
                             end_time: 1)
     assert_grid t, [[:a1]]
 
     # events starting after (or at) the end time should get thrown out
     timeline = [[:a1, 1, 2, 127], [:a1, 3, 4, 127], [:b2, 0, 1, 127]]
     t = Track.from_timeline(timeline,
-                            bpm: bpm, granularity: granularity,
+                            bpm:, granularity:,
                             start_time: 0, end_time: 1)
     assert_grid t, [[:b2]]
 
     # events that end before they start should be ignored
     timeline = [[:a1, 1, 0, 127], [:b2, 0, 1, 127]]
-    t = Track.from_timeline(timeline,
-                            bpm: bpm, granularity: granularity)
+    t = Track.from_timeline(timeline, bpm:, granularity:)
     assert_grid t, [[:b2]]
 
     # events with 0 duration should be ignored
     timeline = [[:a1, 1, 1, 127], [:b2, 0, 1, 127]]
-    t = Track.from_timeline(timeline,
-                            bpm: bpm, granularity: granularity)
+    t = Track.from_timeline(timeline, bpm:, granularity:)
     assert_grid t, [[:b2]]
 
     # events with 0 duration should not extend the track if we're trimming
     timeline = [[:a1, 5, 5, 127], [:b2, 0, 1, 127]]
-    t = Track.from_timeline(timeline,
-                            bpm: bpm, granularity: granularity)
+    t = Track.from_timeline(timeline, bpm:, granularity:)
     assert_grid t, [[:b2]]
   end
 

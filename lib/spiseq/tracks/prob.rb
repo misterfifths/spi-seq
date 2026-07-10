@@ -210,8 +210,7 @@ module SpiSeq; module Tracks
     #   instance, this should be the empty array.
     # @private
     def should_trigger?(cycle:, fill:, step:, effective_note: nil, prev_notes: [])
-      Internal::Utils.call_varargs(@callable, cycle: cycle, fill: fill, step: step,
-                                   note: effective_note, prev_notes: prev_notes)
+      Internal::Utils.call_varargs(@callable, cycle:, fill:, step:, note: effective_note, prev_notes:)
     end
 
     # Returns a human-readable description of the Prob.

@@ -220,8 +220,7 @@ module SpiSeq; module Tracks
     # @private
     def should_trigger?(cycle:, fill:, effective_note: nil, prev_notes: [])
       return true if @prob.nil?
-      @prob.should_trigger?(cycle: cycle, fill: fill, step: self,
-                            effective_note: effective_note, prev_notes: prev_notes)
+      @prob.should_trigger?(cycle:, fill:, step: self, effective_note:, prev_notes:)
     end
 
     # Returns whether this step's accumulation should trigger, by evaluating
@@ -231,8 +230,7 @@ module SpiSeq; module Tracks
       return true if @accum_prob.nil?
       # TODO: should `prev` probability mean "any *accumulation* triggered in
       # the previous slot" in this case?
-      @accum_prob.should_trigger?(cycle: cycle, fill: fill, step: self,
-                                  effective_note: effective_note, prev_notes: prev_notes)
+      @accum_prob.should_trigger?(cycle:, fill:, step: self, effective_note:, prev_notes:)
     end
 
     # Returns a string representation of the step as Ruby code.
@@ -251,7 +249,7 @@ module SpiSeq; module Tracks
       stringify = lambda do |val|
         if val.respond_to?(:repr)
           if val.is_a?(Prob)
-            val.repr(safe: safe)
+            val.repr(safe:)
           elsif val.is_a?(Theory::MIDINote)
             val.repr(short: true)
           else

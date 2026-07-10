@@ -26,9 +26,9 @@ module PlayerHelpers
 
   def player(track, port: nil, channel: nil, debug: false)
     if track.is_a?(SpiSeq::Tracks::Track)
-      SpiSeq::Playback::Player.new(track, midi: true, port: port, channel: channel, debug: debug)
+      SpiSeq::Playback::Player.new(track, midi: true, port:, channel:, debug:)
     else
-      SpiSeq::Playback::CCPlayer.new(track, port: port, channel: channel, debug: debug)
+      SpiSeq::Playback::CCPlayer.new(track, port:, channel:, debug:)
     end
   end
 
@@ -46,7 +46,7 @@ module PlayerHelpers
   def playback_events(track, play_count: 1, fill: false, port: nil, channel: nil)
     es = nil
     assert_duration(track.beat_length / track.timescale * play_count) do
-      player = player(track, port: port, channel: channel)
+      player = player(track, port:, channel:)
       player.fill = fill
       es = events do
         play_count.times { player.play }
@@ -170,7 +170,7 @@ module PlayerHelpers
   end
 
   def assert_playback_events(track, shorthands, play_count: 1, fill: false, port: nil, channel: nil)
-    events = playback_events(track, play_count: play_count, fill: fill, port: port, channel: channel)
+    events = playback_events(track, play_count:, fill:, port:, channel:)
     assert_events(events, shorthands)
   end
 

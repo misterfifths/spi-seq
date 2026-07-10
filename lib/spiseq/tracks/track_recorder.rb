@@ -77,7 +77,7 @@ module SpiSeq; module Tracks
     # min_gate and quantize_gates control the behavior of the internal
     # gates_for_duration call; see its documentation for details.
     private_class_method def self.add_note_to_slots(slots, secs_per_slot, note,
-                                                    start_time, end_time, velocity,
+                                                    start_time, end_time, vel,
                                                     min_gate: 0.1, quantize_gates: true)
       # This will snap notes that began >= halfway through a slot to the next one.
       start_slot = (start_time.to_f / secs_per_slot).round
@@ -94,10 +94,10 @@ module SpiSeq; module Tracks
       # gates_for_duration will give it min_gate.
 
       tied_steps, final_gate = gates_for_duration(duration, secs_per_slot,
-                                                  min_gate: min_gate, quantize: quantize_gates)
+                                                  min_gate:, quantize: quantize_gates)
 
       if tied_steps > 0
-        tied_step = Step.new(note, vel: velocity)
+        tied_step = Step.new(note, vel:)
         tied_steps.times do |i|
           slots[start_slot + i] << tied_step
         end
@@ -107,7 +107,7 @@ module SpiSeq; module Tracks
         if (start_slot + tied_steps) >= slots.length
           Internal::Log.warn("dropping a note that would go past the end of the track", "recorder")
         else
-          slots[start_slot + tied_steps] << Step.new(note, vel: velocity, gate: final_gate)
+          slots[start_slot + tied_steps] << Step.new(note, vel:, gate: final_gate)
         end
       end
     end
@@ -182,7 +182,7 @@ module SpiSeq; module Tracks
       duration = end_time - start_time
 
       total_track_gate = gates_for_duration(duration, secs_per_slot,
-                                            min_gate: min_gate, quantize: quantize_gates)
+                                            min_gate:, quantize: quantize_gates)
       num_slots = total_track_gate[0] + total_track_gate[1].ceil
 
       return nil if num_slots == 0
@@ -212,10 +212,10 @@ module SpiSeq; module Tracks
 
         add_note_to_slots(slots, secs_per_slot,
                           note, note_start, note_end, velocity,
-                          min_gate: min_gate, quantize_gates: quantize_gates)
+                          min_gate:, quantize_gates:)
       end
 
-      t = new(*slots, granularity: granularity)
+      t = new(*slots, granularity:)
 
       # If we're snapping endpoints to the timeline, with rounding error, it's
       # probably possible to wind up with rests at the beginning of the track.
@@ -403,18 +403,17 @@ module SpiSeq; module Tracks
                     ignore_vel: false)
       start_time = end_time = timeline = nil
       External::Sync.with_real_time do
-        start_time, end_time, timeline = record_timeline(control_cc: cc, cc_port: cc_port, cc_channel: cc_channel,
-                                                         port: port, channel: channel)
+        start_time, end_time, timeline = record_timeline(control_cc: cc, cc_port:, cc_channel:,
+                                                         port:, channel:)
       end
 
       start_time = nil if trim_start
       end_time = nil if trim_end
 
       from_timeline(timeline,
-                    start_time: start_time, end_time: end_time,
-                    bpm: bpm, granularity: granularity,
-                    min_gate: min_gate, quantize_gates: quantize_gates,
-                    ignore_vel: ignore_vel)
+                    start_time:, end_time:, bpm:, granularity:,
+                    min_gate:, quantize_gates:,
+                    ignore_vel:)
     end
   end
 end; end

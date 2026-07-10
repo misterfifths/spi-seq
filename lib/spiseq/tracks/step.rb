@@ -84,9 +84,7 @@ module SpiSeq; module Tracks
         @gate = 1.0
       end
 
-      super(prob: prob, accum_delta: accum_delta, accum_max: accum_max,
-            accum_min: accum_min, accum_mode: accum_mode,
-            accum_prob: accum_prob, accum_target: accum_target)
+      super(prob:, accum_delta:, accum_max:, accum_min:, accum_mode:, accum_prob:, accum_target:)
     end
 
     # Returns a new Step with the given {#note}.

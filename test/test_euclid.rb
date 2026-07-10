@@ -30,7 +30,7 @@ class EuclidTest < Test::Unit::TestCase
     1.upto(12) do |pulses|
       1.upto(12) do |length|
         0.upto(12) do |rotate|
-          res = euclid(pulses, length, rotate: rotate)
+          res = euclid(pulses, length, rotate:)
 
           assert_equal res.length, length, "pattern has incorrect length #{res.length}: (#{pulses}, #{length}, #{rotate})"
           assert res.first, "pattern did not start with a hit: (#{pulses}, #{length}, #{rotate})"

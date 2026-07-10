@@ -140,7 +140,7 @@ class ScaleTest < Test::Unit::TestCase
     return nil unless in_sonic_pi?
 
     begin
-      ns = SpiSeq::External::Theory.scale(tonic, name, num_octaves: num_octaves)
+      ns = SpiSeq::External::Theory.scale(tonic, name, num_octaves:)
       ns.to_a.map { |n| N(n) }
     rescue SonicPi::Scale::InvalidScaleError
       nil
@@ -155,8 +155,8 @@ class ScaleTest < Test::Unit::TestCase
 
       [:c4, :a4, :fs2].each do |tonic|
         1.upto(4) do |num_octaves|
-          spi_scale = try_spi_scale(tonic, scale_name, num_octaves: num_octaves)
-          our_scale = Scale.new(tonic, scale_name, num_octaves: num_octaves)
+          spi_scale = try_spi_scale(tonic, scale_name, num_octaves:)
+          our_scale = Scale.new(tonic, scale_name, num_octaves:)
           assert_equal spi_scale, our_scale.notes
         end
       end

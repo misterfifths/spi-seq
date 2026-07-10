@@ -843,7 +843,7 @@ class TrackGridTest < Test::Unit::TestCase
 
   def assert_partition_every(track, ns, a_grid, b_grid, no_drop_tests: false, skip_empty: false)
     ns = [ns] unless ns.is_a?(Enumerable)
-    assert_partition(track, a_grid, b_grid, :partition_every, *ns, no_drop_tests: no_drop_tests, skip_empty: skip_empty)
+    assert_partition(track, a_grid, b_grid, :partition_every, *ns, no_drop_tests:, skip_empty:)
   end
 
   def test_partition_every
@@ -888,7 +888,7 @@ class TrackGridTest < Test::Unit::TestCase
   end
 
   def assert_gpartition(t, x, y, grid1, grid2, no_drop_tests: false, skip_empty: false)
-    assert_partition t, grid1, grid2, :partition_x_of_y, x, y, no_drop_tests: no_drop_tests, skip_empty: skip_empty
+    assert_partition(t, grid1, grid2, :partition_x_of_y, x, y, no_drop_tests:, skip_empty:)
   end
 
   def test_partition_x_of_y
@@ -950,7 +950,7 @@ class TrackGridTest < Test::Unit::TestCase
   end
 
   def assert_rand_partition(track, p, a_grid, b_grid, rand_seed: nil)
-    assert_partition(track, a_grid, b_grid, :rand_partition, p, rand_seed: rand_seed)
+    assert_partition(track, a_grid, b_grid, :rand_partition, p, rand_seed:)
   end
 
   def test_rand_partition

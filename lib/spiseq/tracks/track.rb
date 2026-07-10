@@ -122,7 +122,7 @@ module SpiSeq; module Tracks
       # the Player.
       @scale = scale
 
-      super(*gridish, granularity: granularity, timescale: timescale)
+      super(*gridish, granularity:, timescale:)
     end
 
     # Constructs a Track that arpeggiates the given notes. A {Step} will be
@@ -178,13 +178,13 @@ module SpiSeq; module Tracks
     # @see Theory::Arp.arpeggiate
     # @see .euclid
     def self.arp(notes, direction = :up, spread: 0, extra_octaves: [], pulses: nil, length: nil, rotate: 0, full_cycle: true, granularity: :eighth, timescale: 1)
-      notes = Theory::Arp.arpeggiate(notes, direction, spread: spread, extra_octaves: extra_octaves)
+      notes = Theory::Arp.arpeggiate(notes, direction, spread:, extra_octaves:)
       if pulses.nil?
         grid = notes.map { |n| [Step.new(n)] }
-        new(*grid, granularity: granularity, timescale: timescale)
+        new(*grid, granularity:, timescale:)
       else
         raise TypeError, "pulses and length must both be nil or both be integers" if length.nil?
-        euclid(notes, pulses, length, rotate: rotate, full_cycle: full_cycle, granularity: granularity, timescale: timescale)
+        euclid(notes, pulses, length, rotate:, full_cycle:, granularity:, timescale:)
       end
     end
 
@@ -258,7 +258,7 @@ module SpiSeq; module Tracks
           Step.new(:c4, gate: g)
         end
       end
-      hit_track = new(*hit_grid, granularity: granularity, timescale: timescale)
+      hit_track = new(*hit_grid, granularity:, timescale:)
 
       # TODO: make these methods public so we don't have to call them with send.
       run_count = 0
@@ -544,7 +544,7 @@ module SpiSeq; module Tracks
     # @param scale [Theory::Scale]
     # @return [Track]
     def with_scale(scale)
-      mutate(scale: scale)
+      mutate(scale:)
     end
 
 
@@ -925,7 +925,7 @@ module SpiSeq; module Tracks
     # @return [Track]
     # @see #with_vel_curve
     def with_velf_curve(curve_func, min: nil, max: nil)
-      with_vel_curve(curve_func, zero_to_one: true, min: min, max: max)
+      with_vel_curve(curve_func, zero_to_one: true, min:, max:)
     end
     alias velf_curve with_velf_curve
 
@@ -1169,7 +1169,7 @@ module SpiSeq; module Tracks
     # @see #gate_curve
     # @see #taper_vel
     def taper_gate(trailing_gate = 0.75, taper_final_tie: false, taper_single: false)
-      taper_steps(taper_final_tie: taper_final_tie, taper_single: taper_single) { |s| s.with_gate(trailing_gate) }
+      taper_steps(taper_final_tie:, taper_single:) { |s| s.with_gate(trailing_gate) }
     end
 
     # Returns a new Track replacing the {Step#vel velocity} on the final step of
@@ -1194,7 +1194,7 @@ module SpiSeq; module Tracks
     # @see #taper_gate
     def taper_vel(trailing_vel = 64, taper_final_tie: false, taper_single: false, zero_to_one: false)
       trailing_vel *= 127 if zero_to_one
-      taper_steps(taper_final_tie: taper_final_tie, taper_single: taper_single) { |s| s.with_vel(trailing_vel) }
+      taper_steps(taper_final_tie:, taper_single:) { |s| s.with_vel(trailing_vel) }
     end
 
     # An alias for {#taper_vel} with `zero_to_one` set to true. See that method
@@ -1209,7 +1209,7 @@ module SpiSeq; module Tracks
     # @return [Track]
     # @see #taper_vel
     def taper_velf(trailing_vel = 0.5, taper_final_tie: false, taper_single: false)
-      taper_vel(trailing_vel, taper_final_tie: taper_final_tie, taper_single: taper_single, zero_to_one: true)
+      taper_vel(trailing_vel, taper_final_tie:, taper_single:, zero_to_one: true)
     end
 
 

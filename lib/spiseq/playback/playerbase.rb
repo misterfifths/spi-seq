@@ -376,7 +376,7 @@ module SpiSeq; module Playback
         end
       end
 
-      { direction: direction, delta: delta }
+      { direction:, delta: }
     end
 
     def calculate_pending_accums

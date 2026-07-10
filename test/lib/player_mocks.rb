@@ -139,11 +139,11 @@ module SpiSeq
         end
 
         def cue(name, *args, **kwargs)
-          MockState.add_event(type: :cue, t: vt, name: name, args: args, kwargs: kwargs)
+          MockState.add_event(type: :cue, t: vt, name:, args:, kwargs:)
         end
 
         def sync(name)
-          MockState.add_event(type: :sync, t: vt, name: name)
+          MockState.add_event(type: :sync, t: vt, name:)
         end
 
 
@@ -184,27 +184,27 @@ module SpiSeq
         def midi(note, velocity: 127, sustain: 1.0, port: nil, channel: nil)
           # For consistency's sake, we'll turn this into separate on and off
           # events.
-          midi_note_on(note, velocity: velocity, port: port, channel: channel)
+          midi_note_on(note, velocity:, port:, channel:)
           Sync.at(sustain) do
-            midi_note_off(note, port: port, channel: channel)
+            midi_note_off(note, port:, channel:)
           end
         end
 
         def midi_note_on(note, velocity: 127, port: nil, channel: nil)
           port, channel = resolve_midi_dest(port, channel)
           note = SpiSeq::Theory::MIDINote.new(note)
-          MockState.add_event(type: :midi_note_on, t: Sync.vt, note: note, vel: velocity, port: port, channel: channel)
+          MockState.add_event(type: :midi_note_on, t: Sync.vt, note:, vel: velocity, port:, channel:)
         end
 
         def midi_note_off(note, port: nil, channel: nil)
           port, channel = resolve_midi_dest(port, channel)
           note = SpiSeq::Theory::MIDINote.new(note)
-          MockState.add_event(type: :midi_note_off, t: Sync.vt, note: note, port: port, channel: channel)
+          MockState.add_event(type: :midi_note_off, t: Sync.vt, note:, port:, channel:)
         end
 
-        def midi_cc(number, val, port: nil, channel: nil)
+        def midi_cc(num, val, port: nil, channel: nil)
           port, channel = resolve_midi_dest(port, channel)
-          MockState.add_event(type: :midi_cc, t: Sync.vt, num: number, val: val, port: port, channel: channel)
+          MockState.add_event(type: :midi_cc, t: Sync.vt, num:, val:, port:, channel:)
         end
       end
     end

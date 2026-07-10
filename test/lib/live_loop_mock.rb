@@ -124,7 +124,7 @@ module SpiSeq
       # iteration with its `pump` method. It can be stopped and joined with
       # `stop`.
       def self.live_loop(name, init: nil, sync: nil, **_kwargs, &block)
-        LiveLoopThread.new(name, init: init, sync: sync, &block)
+        LiveLoopThread.new(name, init:, sync:, &block)
       end
     end
   end

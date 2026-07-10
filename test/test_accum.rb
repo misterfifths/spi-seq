@@ -24,7 +24,7 @@ class AccumTest < Test::Unit::TestCase
   def assert_std_accum(delta, deltas:, min: 0, max: 12, mode: :wrap, prob: nil, **kwargs)
     expected_events = deltas.map.with_index { |d, i| [N(:c4) + d, i, i + 0.5] }
 
-    assert_playback_events(QT[S(:c4, gate: 0.5).accum(delta, min: min, max: max, mode: mode, prob: prob)],
+    assert_playback_events(QT[S(:c4, gate: 0.5).accum(delta, min:, max:, mode:, prob:)],
                            expected_events,
                            **kwargs)
   end

@@ -80,7 +80,7 @@ module TrackHelpers
   def assert_repr(t)
     # Testing different groupings to make sure syntax errors don't sneak in.
     [nil, 8, 4, 1].each do |group|
-      roundtrip = eval(t.repr(group: group))  # rubocop:disable Security/Eval
+      roundtrip = eval(t.repr(group:))  # rubocop:disable Security/Eval
       assert_gt roundtrip, t.granularity, t.timescale, scale: t.is_a?(SpiSeq::Tracks::Track) ? t.scale : nil
       assert_grid roundtrip, t.grid
     end

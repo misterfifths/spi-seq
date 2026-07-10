@@ -37,10 +37,10 @@ module SpiSeq; module Playback
     def initialize(track, channel: nil, port: nil, debug: false)
       @channel = channel
       @port = port
-      @midi_spi_kwargs = { channel: channel, port: port }
+      @midi_spi_kwargs = { channel:, port: }
       @midi_spi_kwargs.compact!
 
-      super(track, debug: debug)
+      super(track, debug:)
     end
 
 

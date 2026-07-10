@@ -30,7 +30,7 @@ module SpiSeq
       end
 
       def self.scale(tonic, name, num_octaves: 1)
-        SonicPi.spi_call(:scale, tonic, name, num_octaves: num_octaves)
+        SonicPi.spi_call(:scale, tonic, name, num_octaves:)
       end
     end
 

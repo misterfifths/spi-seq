@@ -70,8 +70,8 @@ class ChordVoicingTest < Test::Unit::TestCase
         # Inversion will only match if they returned as many notes as us.
         next unless spi_notes.length == i
         1.upto(i - 1) do |invert|
-          spi_notes = SpiSeq::External::Theory.chord_degree(degree, tonic, scale_name, i, invert: invert).to_a.map { |n| N(n) }
-          degree_chord = Chord.degree(degree, tonic, scale_name, i, invert: invert)
+          spi_notes = SpiSeq::External::Theory.chord_degree(degree, tonic, scale_name, i, invert:).to_a.map { |n| N(n) }
+          degree_chord = Chord.degree(degree, tonic, scale_name, i, invert:)
           assert_equal spi_notes, degree_chord, "#{assert_msg}, #{invert} inversions"
         end
       end

@@ -111,8 +111,7 @@ module SpiSeq; module Utils; module LiveLoops
   module_function def cc_mutable_live_loop(loop_name, cc:, port: nil, channel: nil, start_muted: false, **kwargs, &block)
     port, channel = Internal::MIDI.resolve_cc_port_and_channel(port, channel)
 
-    MIDI.cc_watcher_live_loop(:"__#{loop_name}_cc_mute_watcher",
-                              port: port, channel: channel) do |incoming_cc, cc_val|
+    MIDI.cc_watcher_live_loop(:"__#{loop_name}_cc_mute_watcher", port:, channel:) do |incoming_cc, cc_val|
       next if incoming_cc != cc
       muted = cc_val == 0
       Internal::Log.log("CC #{cc} = #{cc_val} -> #{'un' unless muted}muting live loop #{loop_name}", "cc_mute_control")
@@ -124,9 +123,9 @@ module SpiSeq; module Utils; module LiveLoops
     unless Internal::ThreadTracker.is_running?(loop_name)
       default_cc_val = start_muted ? 0 : 127
       Internal::Log.log("sending default CC #{cc} value #{default_cc_val} for live loop #{loop_name}", "cc_mute_control")
-      External::MIDI.midi_cc(cc, default_cc_val, port: port, channel: channel)
+      External::MIDI.midi_cc(cc, default_cc_val, port:, channel:)
     end
 
-    mutable_live_loop(loop_name, start_muted: start_muted, **kwargs, &block)
+    mutable_live_loop(loop_name, start_muted:, **kwargs, &block)
   end
 end; end; end

@@ -296,8 +296,8 @@ class TrackInitTest < Test::Unit::TestCase
         extra_octaves.each do |extra_octaves|
           # With no Euclid stuff, arp should just act like making a track with
           # the result of the arpeggiated notes.
-          arped_ns = Arp.arpeggiate(ns, direction, spread: spread, extra_octaves: extra_octaves)
-          assert_grid Track.arp(ns, direction, spread: spread, extra_octaves: extra_octaves),
+          arped_ns = Arp.arpeggiate(ns, direction, spread:, extra_octaves:)
+          assert_grid Track.arp(ns, direction, spread:, extra_octaves:),
                       Track.new(*arped_ns).grid
 
           0.upto(4) do |pulses|
@@ -305,14 +305,14 @@ class TrackInitTest < Test::Unit::TestCase
               0.upto(3) do |rotate|
                 # With Euclid arguments, acts like applying Track.euclid to the
                 # arpeggiated notes.
-                arp_track = Track.arp(ns, direction, spread: spread, extra_octaves: extra_octaves,
-                                      pulses: pulses, length: length, rotate: rotate)
-                euc_track = Track.euclid(arped_ns, pulses, length, rotate: rotate, full_cycle: true)
+                arp_track = Track.arp(ns, direction, spread:, extra_octaves:,
+                                      pulses:, length:, rotate:)
+                euc_track = Track.euclid(arped_ns, pulses, length, rotate:, full_cycle: true)
                 assert_grid arp_track, euc_track.grid
 
-                arp_track = Track.arp(ns, direction, spread: spread, extra_octaves: extra_octaves,
-                                      pulses: pulses, length: length, rotate: rotate, full_cycle: false)
-                euc_track = Track.euclid(arped_ns, pulses, length, rotate: rotate)
+                arp_track = Track.arp(ns, direction, spread:, extra_octaves:,
+                                      pulses:, length:, rotate:, full_cycle: false)
+                euc_track = Track.euclid(arped_ns, pulses, length, rotate:)
                 assert_grid arp_track, euc_track.grid
               end
             end

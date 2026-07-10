@@ -156,9 +156,9 @@ module SpiSeq; module Tracks
       if Internal::Enumerables.enumerable?(gridish)
         gridish = Internal::Enumerables.arrayify(gridish)  # see note in enumerable?
         gridish = [[]] if gridish.empty?
-        new(*gridish, granularity: granularity, timescale: timescale)
+        new(*gridish, granularity:, timescale:)
       else
-        new(gridish, granularity: granularity, timescale: timescale)
+        new(gridish, granularity:, timescale:)
       end
     end
 
@@ -172,7 +172,7 @@ module SpiSeq; module Tracks
     # @return [TrackBase]
     def self.rest(num_slots = 1, granularity: :eighth, timescale: 1)
       grid = [[]] * num_slots
-      new(*grid, granularity: granularity, timescale: timescale)
+      new(*grid, granularity:, timescale:)
     end
 
     # Constructs a track that plays the slots of `gridish` in a Euclidean
@@ -276,7 +276,7 @@ module SpiSeq; module Tracks
         end
       end
 
-      new(*grid, granularity: granularity, timescale: timescale)
+      new(*grid, granularity:, timescale:)
     end
 
 
@@ -359,9 +359,9 @@ module SpiSeq; module Tracks
         if slot.empty?
           ":r"
         elsif slot.length == 1
-          slot[0].repr(short: true, safe: safe)
+          slot[0].repr(short: true, safe:)
         else
-          "[" + slot.map { |step| step.repr(short: true, safe: safe) }.join(", ") + "]"  # rubocop:disable Style/StringConcatenation
+          "[" + slot.map { |step| step.repr(short: true, safe:) }.join(", ") + "]"  # rubocop:disable Style/StringConcatenation
         end
       end
 
@@ -393,7 +393,7 @@ module SpiSeq; module Tracks
     # @param (see #repr)
     # @return [void]
     def copy_repr(group: 8)
-      Internal::Clipboard.copy(repr(group: group))
+      Internal::Clipboard.copy(repr(group:))
     end
 
     # @private
@@ -441,7 +441,7 @@ module SpiSeq; module Tracks
     #   {Theory::NoteLength.new}.
     # @return [TrackBase]
     def with_granularity(granularity)
-      mutate(granularity: granularity)
+      mutate(granularity:)
     end
 
     # Returns a new track with the given {#timescale}.
@@ -572,7 +572,7 @@ module SpiSeq; module Tracks
     # @see #grouped_zip
     # @see #space
     def zip(other_track, cycle: true, pad_with_rests: true)
-      gzip(other_track, 1, 1, cycle: cycle, pad_with_rests: pad_with_rests)
+      gzip(other_track, 1, 1, cycle:, pad_with_rests:)
     end
 
     # Creates a new track that inserts the slots of `other_track` after some
@@ -1745,8 +1745,7 @@ module SpiSeq; module Tracks
     # @see #without_accum
     def with_accum(delta, min: 0, max: 12, mode: :wrap, prob: nil, target: nil)
       mutate_each_step do |step|
-        step.accum(delta, min: min, max: max, mode: mode,
-                  prob: prob, target: target)
+        step.accum(delta, min:, max:, mode:, prob:, target:)
       end
     end
     alias accum with_accum

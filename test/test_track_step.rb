@@ -321,7 +321,7 @@ class TrackStepTest < Test::Unit::TestCase
     track_fn_name = :"fade_#{fade_in ? 'in' : 'out'}#{'_quad' if quad}"
     track_fn_args = fade_in ? [min, max] : [max, min]
 
-    t = t.send(track_fn_name, *track_fn_args, start: start)
+    t = t.send(track_fn_name, *track_fn_args, start:)
     assert_vel_curve t, curve_func
   end
 
@@ -330,15 +330,15 @@ class TrackStepTest < Test::Unit::TestCase
 
     [true, false].each do |fade_in|
       [true, false].each do |quad|
-        assert_fade t, fade_in: fade_in, quad: quad
-        assert_fade t, fade_in: fade_in, quad: quad, max: 0.5
-        assert_fade t, fade_in: fade_in, quad: quad, max: 0.5, start: 0.5
-        assert_fade t, fade_in: fade_in, quad: quad, min: 0.25
-        assert_fade t, fade_in: fade_in, quad: quad, min: 0.25, start: 0.25
-        assert_fade t, fade_in: fade_in, quad: quad, min: 0.25, max: 0.9
-        assert_fade t, fade_in: fade_in, quad: quad, min: 0.25, max: 0.9, start: 0.1
-        assert_fade t, fade_in: fade_in, quad: quad, min: 0.25, max: 0.9, start: 1
-        assert_fade t, fade_in: fade_in, quad: quad, min: 0.25, max: 0.9, start: 2
+        assert_fade(t, fade_in:, quad:)
+        assert_fade(t, fade_in:, quad:, max: 0.5)
+        assert_fade(t, fade_in:, quad:, max: 0.5, start: 0.5)
+        assert_fade(t, fade_in:, quad:, min: 0.25)
+        assert_fade(t, fade_in:, quad:, min: 0.25, start: 0.25)
+        assert_fade(t, fade_in:, quad:, min: 0.25, max: 0.9)
+        assert_fade(t, fade_in:, quad:, min: 0.25, max: 0.9, start: 0.1)
+        assert_fade(t, fade_in:, quad:, min: 0.25, max: 0.9, start: 1)
+        assert_fade(t, fade_in:, quad:, min: 0.25, max: 0.9, start: 2)
       end
     end
   end

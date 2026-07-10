@@ -140,7 +140,7 @@ module SpiSeq; module Theory
     # @see Chord.new
     # @see Chord#voice
     def self.voiced(root, name, voicing = :closed, num_octaves: 1, invert: 0)
-      new(name).voice(root, voicing, num_octaves: num_octaves, invert: invert)
+      new(name).voice(root, voicing, num_octaves:, invert:)
     end
 
     # Voices the chord. That is, converts the {#intervals} to concrete notes,
@@ -286,7 +286,7 @@ module SpiSeq; module Theory
       # `invert` may now be > notes.length. Quite the edge case; I'm just going
       # to take it down to the minimum.
       invert = intervals.length - 1 if invert >= intervals.length
-      chord.voice(root, voicing, invert: invert)
+      chord.voice(root, voicing, invert:)
     end
 
 
@@ -383,7 +383,7 @@ module SpiSeq; module Theory
   # (see Chord.voiced)
   # An alias for {Chord.voiced}.
   module_function def C(root, name, voicing = :closed, num_octaves: 1, invert: 0)
-    Chord.voiced(root, name, voicing, num_octaves: num_octaves, invert: invert)
+    Chord.voiced(root, name, voicing, num_octaves:, invert:)
   end
 
   # @!endgroup

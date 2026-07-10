@@ -341,11 +341,11 @@ class PlayerTest < Test::Unit::TestCase
     # debug will try to print tracks and slots and should not raise if one of
     # those has a custom prob
     prob = Prob.custom(-> { true })
-    t = T[S(:c4, prob: prob).accum(1, prob: prob)]
+    t = T[S(:c4, prob:).accum(1, prob:)]
     p = player(t, debug: true)
     assert_nothing_raised { p.play }
 
-    cct = CCT[CC(127, 64, prob: prob).accum(1, prob: prob)]
+    cct = CCT[CC(127, 64, prob:).accum(1, prob:)]
     p = player(cct, debug: true)
     assert_nothing_raised { p.play }
   end

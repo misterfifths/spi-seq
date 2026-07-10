@@ -489,7 +489,7 @@ module SpiSeq; module Theory
   # An alias for {Scale#initialize Scale.new}.
   # @return [Scale]
   module_function def SC(tonic, name, num_octaves: 1, clamp_to_midi: false)
-    Scale.new(tonic, name, num_octaves: num_octaves, clamp_to_midi: clamp_to_midi)
+    Scale.new(tonic, name, num_octaves:, clamp_to_midi:)
   end
 
   # @!endgroup

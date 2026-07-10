@@ -209,7 +209,7 @@ module SpiSeq; module Theory
         quality_if_nil, = SIZES_TO_NUMBERS[intra_octave_semitones].first
         cache_against_nil_quality = quality.nil? || quality == quality_if_nil
 
-        instance = super(size: size, quality: quality || quality_if_nil)
+        instance = super(size:, quality: quality || quality_if_nil)
 
         @size_cache[[size, nil]] = instance if cache_against_nil_quality
       else
@@ -231,7 +231,7 @@ module SpiSeq; module Theory
       raise ArgumentError, "invalid quality #{quality} for interval number #{num} - must be one of #{quals_to_sizes.keys.inspect}" if intra_octave_semitones.nil?
       size = intra_octave_semitones + 12 * num_octaves
 
-      new(size: size, quality: quality)
+      new(size:, quality:)
     end
 
     private_class_method def self.from_sym(sym)
@@ -489,7 +489,7 @@ module SpiSeq; module Theory
   # (see Interval.new)
   # An alias for {Interval.new}.
   module_function def I(name = nil, number: nil, size: nil, quality: nil)
-    Interval.new(name, number: number, size: size, quality: quality)
+    Interval.new(name, number:, size:, quality:)
   end
 
   # @!endgroup

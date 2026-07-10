@@ -31,7 +31,7 @@ module SpiSeq; module Utils; module MIDI
   # @return [void]
   # @see current_cc_control_defaults
   module_function def use_cc_control_defaults(port: nil, channel: nil)
-    defaults = { port: port, channel: channel }
+    defaults = { port:, channel: }
     defaults.compact!
     State.cc_control_defaults = defaults.freeze
   end
@@ -64,7 +64,7 @@ module SpiSeq; module Utils; module MIDI
   #   Falls back in the same manner as `port`.
   # @return [void]
   module_function def midi_clock_live_loop(loop_name = :midi_clock, send_start: false, send_stop: true, port: nil, start_port: nil, start_channel: nil)
-    beat_kwargs = port.nil? ? {} : { port: port }
+    beat_kwargs = port.nil? ? {} : { port: }
     start_stop_kwargs = { port: start_port, channel: start_channel }
     start_stop_kwargs.compact!
 
@@ -133,7 +133,7 @@ module SpiSeq; module Utils; module MIDI
   # @return [void]
   module_function def midi_panic(*ports_and_channels, port: nil, channel: nil)
     panic = lambda do |port: nil, channel: nil|
-      midi_kwargs = { port: port, channel: channel }
+      midi_kwargs = { port:, channel: }
       midi_kwargs.compact!
 
       External::Sync.with_real_time do
@@ -152,7 +152,7 @@ module SpiSeq; module Utils; module MIDI
       end
     else
       raise ArgumentError, "positional and keyword arguments are mutually exclusive" unless ports_and_channels.empty?
-      panic.call(port: port, channel: channel)
+      panic.call(port:, channel:)
     end
   end
 
@@ -176,7 +176,7 @@ module SpiSeq; module Utils; module MIDI
   # @return [void]
   module_function def midi_panic_on_stop(*ports_and_channels, hook_name: :midi_panic, port: nil, channel: nil)
     Lifecycle.on_stop(hook_name) do
-      midi_panic(*ports_and_channels, port: port, channel: channel)
+      midi_panic(*ports_and_channels, port:, channel:)
     end
   end
 end; end; end

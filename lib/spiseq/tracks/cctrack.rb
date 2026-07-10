@@ -109,7 +109,7 @@ module SpiSeq; module Tracks
         end
       end
 
-      new(*slots, granularity: granularity, timescale: timescale)
+      new(*slots, granularity:, timescale:)
     end
 
     # Creates a track containing {CCStep}s for the given number whose value

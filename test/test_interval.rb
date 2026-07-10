@@ -27,10 +27,10 @@ class IntervalTest < Test::Unit::TestCase
     i = I(sym)
     assert_attrs i, size, quality, number, sym, octave_span, simple_interval
 
-    i = I(size: size, quality: quality)
+    i = I(size:, quality:)
     assert_attrs i, size, quality, number, sym, octave_span, simple_interval
 
-    i = I(number: number, quality: quality)
+    i = I(number:, quality:)
     assert_attrs i, size, quality, number, sym, octave_span, simple_interval
   end
 
@@ -129,12 +129,12 @@ class IntervalTest < Test::Unit::TestCase
     assert_new size, quality, number, sym, octave_span, simple_interval
     assert Interval.new(sym).compound?
     refute Interval.new(sym).simple?
-    assert Interval.new(number: number, quality: quality).compound?
-    refute Interval.new(number: number, quality: quality).simple?
+    assert Interval.new(number:, quality:).compound?
+    refute Interval.new(number:, quality:).simple?
     if size > 12
       # d9 is a weird case that is compound even though its size is 12.
-      assert Interval.new(size: size).compound?
-      refute Interval.new(size: size).simple?
+      assert Interval.new(size:).compound?
+      refute Interval.new(size:).simple?
     end
   end
 
@@ -186,12 +186,12 @@ class IntervalTest < Test::Unit::TestCase
   end
 
   def assert_def_qual_for_size(size, quality, number, sym, octave_span = 1, simple_interval = nil)
-    i = Interval.new(size: size)  # Note: not passing quality here
+    i = Interval.new(size:)  # Note: not passing quality here
     assert_attrs i, size, quality, number, sym, octave_span, simple_interval
   end
 
   def assert_def_qual_for_num(size, quality, number, sym, octave_span = 1, simple_interval = nil)
-    i = Interval.new(number: number)  # Note: not passing quality here
+    i = Interval.new(number:)  # Note: not passing quality here
     assert_attrs i, size, quality, number, sym, octave_span, simple_interval
   end
 

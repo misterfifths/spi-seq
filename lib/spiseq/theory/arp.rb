@@ -357,6 +357,6 @@ module SpiSeq; module Theory
   # (see Arp.arpeggiate)
   # An alias for {Arp.arpeggiate}.
   module_function def arp(notes, direction, spread: 0, extra_octaves: [])
-    Arp.arpeggiate(notes, direction, spread: spread, extra_octaves: extra_octaves)
+    Arp.arpeggiate(notes, direction, spread:, extra_octaves:)
   end
 end; end

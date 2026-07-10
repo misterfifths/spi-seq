@@ -172,7 +172,7 @@ class ChordTest < Test::Unit::TestCase
 
         1.upto(num_notes - 1) do |invert|
           # Sonic Pi will duplicate notes in an inversion.
-          assert_eq_spi_chord root, name, uniq: true, invert: invert
+          assert_eq_spi_chord(root, name, uniq: true, invert:)
         end
 
         2.upto(4) do |octaves|

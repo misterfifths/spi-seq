@@ -23,11 +23,7 @@ module SpiSeq; module Internal; module TrackLiveLoopUtils
   end
 
   module_function def track_live_loop_block_state(block_arg:, was_muted: true, unfaded_track: nil)
-    {
-      block_arg: block_arg,
-      was_muted: was_muted,
-      unfaded_track: unfaded_track
-    }
+    { block_arg:, was_muted:, unfaded_track: }
   end
 
   # Returns a lambda for use as a live_loop block which handles playback of
@@ -65,7 +61,7 @@ module SpiSeq; module Internal; module TrackLiveLoopUtils
       unless user_block.nil?
         block_res = Utils.call_varargs(user_block,
                                        cycle: player.cycle, track: player.track,
-                                       muted: muted, was_muted: was_muted, arg: block_arg)
+                                       muted:, was_muted:, arg: block_arg)
 
         if block_res.is_a?(TrackBase)
           raise TypeError, "cannot switch track live loop #{loop_name} between track types" unless block_res.instance_of?(player.track.class)
@@ -101,7 +97,7 @@ module SpiSeq; module Internal; module TrackLiveLoopUtils
       end
 
       ### Assemble state for the next iteration.
-      track_live_loop_block_state(block_arg: block_res, was_muted: muted, unfaded_track: unfaded_track)
+      track_live_loop_block_state(block_arg: block_res, was_muted: muted, unfaded_track:)
     end
   end
 end; end; end
@@ -285,9 +281,9 @@ module SpiSeq; module Playback
 
     player = case track
     when Track
-      Player.new(track, midi: midi, port: port, channel: channel, debug: debug)
+      Player.new(track, midi:, port:, channel:, debug:)
     when CCTrack
-      CCPlayer.new(track, port: port, channel: channel, debug: debug)
+      CCPlayer.new(track, port:, channel:, debug:)
     end
 
     ### Fetch & validate against an existing player
@@ -328,16 +324,15 @@ module SpiSeq; module Playback
 
     ### Kick off the loop
     ll_block = Internal::TrackLiveLoopUtils.track_live_loop_block(
-      loop_name: loop_name, player: player, old_player: old_player,
-      send_cycle_cues: send_cycle_cues, fade_in: fade_in, fade_out: fade_out,
-      user_block: block, debug: debug)
+      loop_name:, player:, old_player:, send_cycle_cues:, fade_in:, fade_out:,
+      user_block: block, debug:)
 
     init = Internal::TrackLiveLoopUtils.track_live_loop_block_state(block_arg: init)
 
     ll = if cc.nil?
-      Utils::LiveLoops.mutable_live_loop(loop_name, start_muted: start_muted, init: init, sync: sync, **kwargs, &ll_block)
+      Utils::LiveLoops.mutable_live_loop(loop_name, start_muted:, init:, sync:, **kwargs, &ll_block)
     else
-      Utils::LiveLoops.cc_mutable_live_loop(loop_name, start_muted: start_muted, init: init, sync: sync, cc: cc, port: cc_port, channel: cc_channel, **kwargs, &ll_block)
+      Utils::LiveLoops.cc_mutable_live_loop(loop_name, start_muted:, init:, sync:, cc:, port: cc_port, channel: cc_channel, **kwargs, &ll_block)
     end
 
     Internal::TrackLiveLoopUtils.set_player(loop_name, player)
