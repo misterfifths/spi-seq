@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Module: SpiSeq::Playback
+  
+    &mdash; spi-seq Documentation
+  
+</title>
+
+  <link rel="stylesheet" href="../css/style.css" type="text/css">
+
+  <link rel="stylesheet" href="../css/common.css" type="text/css">
+
+<script type="text/javascript">
+  pathId = "SpiSeq::Playback";
+  relpath = '../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="main_progress" aria-hidden="true"></div>
+
+    <div class="nav_wrap">
+      <iframe id="nav" src="../class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../_index.html">Index (P)</a> &raquo;
+    <span class='title'><span class='object_link'><a href="../SpiSeq.html" title="SpiSeq (module)">SpiSeq</a></span></span>
+     &raquo; 
+    <span class="title">Playback</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="../class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Module: SpiSeq::Playback
+  
+  
+  
+</h1>
+<div class="box_info">
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>lib/spiseq/playback/player.rb<span class="defines">,<br>
+  lib/spiseq/playback/ccplayer.rb,<br> lib/spiseq/playback/playerbase.rb,<br> lib/spiseq/playback/track_live_loop.rb</span>
+
+</dd>
+  </dl>
+  
+</div>
+
+<h2>Defined Under Namespace</h2>
+<p class="children">
+  
+    
+  
+    
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Playback/CCPlayer.html" title="SpiSeq::Playback::CCPlayer (class)">CCPlayer</a></span>, <span class='object_link'><a href="Playback/Player.html" title="SpiSeq::Playback::Player (class)">Player</a></span>, <span class='object_link'><a href="Playback/PlayerBase.html" title="SpiSeq::Playback::PlayerBase (class)">PlayerBase</a></span>
+    
+  
+</p>
+
+
+
+
+
+
+
+  
+    <h2>
+      Default settings
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#current_player_defaults-class_method" title="current_player_defaults (class method)">.<strong>current_player_defaults</strong>  &#x21d2; Hash{Symbol =&gt; Object} </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns the current player defaults as set by <span class='object_link'><a href="#use_player_defaults-class_method" title="SpiSeq::Playback.use_player_defaults (method)">use_player_defaults</a></span>, or an empty hash if no defaults have been set.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#use_player_defaults-class_method" title="use_player_defaults (class method)">.<strong>use_player_defaults</strong>(midi: nil, sync: nil, start_muted: nil, fill_cc: nil, send_cycle_cues: nil)  </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Set global default <span class='object_link'><a href="Playback/Player.html" title="SpiSeq::Playback::Player (class)">Player</a></span> and <span class='object_link'><a href="#track_live_loop-class_method" title="SpiSeq::Playback.track_live_loop (method)">track_live_loop</a></span> behaviors.</p></div></span>
+  
+</li>
+
+      
+    </ul>
+    
+  
+    <h2>
+      Playback and live loops
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#cc_track_live_loop-class_method" title="cc_track_live_loop (class method)">.<strong>cc_track_live_loop</strong>(loop_name, track = nil)  </a>
+    
+
+    
+      (also: cctll)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>This method is identical to <span class='object_link'><a href="#track_live_loop-class_method" title="SpiSeq::Playback.track_live_loop (method)">track_live_loop</a></span> except that it plays a dummy <span class='object_link'><a href="Tracks/CCTrack.html" title="SpiSeq::Tracks::CCTrack (class)">CCTrack</a></span> (rather than a <span class='object_link'><a href="Tracks/Track.html" title="SpiSeq::Tracks::Track (class)">Track</a></span>) when the <code>track</code> parameter is nil.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#set_live_loop_fill-class_method" title="set_live_loop_fill (class method)">.<strong>set_live_loop_fill</strong>(loop_name, fill = true)  </a>
+    
+
+    
+      (also: fill_live_loop)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Sets the <span class='object_link'><a href="Playback/PlayerBase.html#fill-instance_method" title="SpiSeq::Playback::PlayerBase#fill (method)">fill mode</a></span> on the player associated with a <code>live_loop</code> made by <span class='object_link'><a href="#track_live_loop-class_method" title="SpiSeq::Playback.track_live_loop (method)">track_live_loop</a></span>.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#track_live_loop-class_method" title="track_live_loop (class method)">.<strong>track_live_loop</strong>(loop_name, track = nil, start_muted: nil, fade_in: false, fade_out: false, midi: nil, port: nil, channel: nil, cc: nil, fill_cc: nil, cc_port: nil, cc_channel: nil, send_cycle_cues: nil, debug: false, init: nil, sync: :default_sync) { ... } </a>
+    
+
+    
+      (also: tll)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Creates a <code>live_loop</code> that plays a track.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#unset_live_loop_fill-class_method" title="unset_live_loop_fill (class method)">.<strong>unset_live_loop_fill</strong>(loop_name)  </a>
+    
+
+    
+      (also: unfill_live_loop)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Turns off <span class='object_link'><a href="Playback/PlayerBase.html#fill-instance_method" title="SpiSeq::Playback::PlayerBase#fill (method)">fill mode</a></span> on the player associated with a <code>live_loop</code> made by <span class='object_link'><a href="#track_live_loop-class_method" title="SpiSeq::Playback.track_live_loop (method)">track_live_loop</a></span>.</p></div></span>
+  
+</li>
+
+      
+    </ul>
+    
+  
+
+
+
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="cc_track_live_loop-class_method">
+  
+    .<strong>cc_track_live_loop</strong>(loop_name, track = nil)  
+  
+
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='cctll-class_method'>cctll</span></span>
+    </span>
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>This method is identical to <span class='object_link'><a href="#track_live_loop-class_method" title="SpiSeq::Playback.track_live_loop (method)">track_live_loop</a></span> except that it plays a dummy
+<span class='object_link'><a href="Tracks/CCTrack.html" title="SpiSeq::Tracks::CCTrack (class)">CCTrack</a></span> (rather than a <span class='object_link'><a href="Tracks/Track.html" title="SpiSeq::Tracks::Track (class)">Track</a></span>) when the <code>track</code> parameter is nil. That
+allows the block of this method to return a CCTrack without causing an
+error.</p>
+<p>If you are passing a <span class='object_link'><a href="Tracks/CCTrack.html" title="SpiSeq::Tracks::CCTrack (class)">CCTrack</a></span> as the <code>track</code> parameter (rather than nil),
+you can just use <span class='object_link'><a href="#track_live_loop-class_method" title="SpiSeq::Playback.track_live_loop (method)">track_live_loop</a></span> to play CCTracks.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+351
+352
+353</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/playback/track_live_loop.rb', line 351</span>
+
+<span class='id identifier rubyid_module_function'>module_function</span> <span class='kw'>def</span> <span class='id identifier rubyid_cc_track_live_loop'>cc_track_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_track'>track</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>**</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_track_live_loop'><span class='object_link'><a href="#track_live_loop-class_method" title="SpiSeq::Playback.track_live_loop (method)">track_live_loop</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_track'>track</span> <span class='op'>||</span> <span class='const'><span class='object_link'><a href="Tracks.html" title="SpiSeq::Tracks (module)">Tracks</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Tracks/CCTrack.html" title="SpiSeq::Tracks::CCTrack (class)">CCTrack</a></span></span><span class='period'>.</span><span class='id identifier rubyid_rest'><span class='object_link'><a href="Tracks/TrackBase.html#rest-class_method" title="SpiSeq::Tracks::TrackBase.rest (method)">rest</a></span></span><span class='comma'>,</span> <span class='op'>**</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="current_player_defaults-class_method">
+  
+    .<strong>current_player_defaults</strong>  &#x21d2; <tt>Hash{Symbol =&gt; Object}</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns the current player defaults as set by <span class='object_link'><a href="#use_player_defaults-class_method" title="SpiSeq::Playback.use_player_defaults (method)">use_player_defaults</a></span>, or an
+empty hash if no defaults have been set.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Hash{Symbol =&gt; Object}</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+47</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/playback/player.rb', line 47</span>
+
+<span class='id identifier rubyid_module_function'>module_function</span> <span class='kw'>def</span> <span class='id identifier rubyid_current_player_defaults'>current_player_defaults</span> <span class='op'>=</span> <span class='const'>State</span><span class='period'>.</span><span class='id identifier rubyid_player_defaults'>player_defaults</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="set_live_loop_fill-class_method">
+  
+    .<strong>set_live_loop_fill</strong>(loop_name, fill = true)  
+  
+
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='fill_live_loop-class_method'>fill_live_loop</span></span>
+    </span>
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Sets the <span class='object_link'><a href="Playback/PlayerBase.html#fill-instance_method" title="SpiSeq::Playback::PlayerBase#fill (method)">fill mode</a></span> on the player associated with a
+<code>live_loop</code> made by <span class='object_link'><a href="#track_live_loop-class_method" title="SpiSeq::Playback.track_live_loop (method)">track_live_loop</a></span>. Unlike
+<span class='object_link'><a href="Utils/LiveLoops.html#mute_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.mute_live_loop (method)">muting</a></span>, setting fill mode takes effect
+immediately.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>loop_name</span>
+      
+      
+        <span class='type'>(<tt>Symbol</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The name of the target live loop.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>fill</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The desired fill mode for the loop's internal player.</p></div>
+      
+    </li>
+  
+</ul>
+
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><span class='object_link'><a href="Playback/PlayerBase.html#fill-instance_method" title="SpiSeq::Playback::PlayerBase#fill (method)">PlayerBase#fill</a></span></li>
+    
+      <li><span class='object_link'><a href="Tracks/Prob.html#fill-class_method" title="SpiSeq::Tracks::Prob.fill (method)">Prob.fill</a></span></li>
+    
+      <li><span class='object_link'><a href="#unset_live_loop_fill-class_method" title="SpiSeq::Playback.unset_live_loop_fill (method)">unset_live_loop_fill</a></span></li>
+    
+  </ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+368
+369
+370</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/playback/track_live_loop.rb', line 368</span>
+
+<span class='id identifier rubyid_module_function'>module_function</span> <span class='kw'>def</span> <span class='id identifier rubyid_set_live_loop_fill'>set_live_loop_fill</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_fill'>fill</span> <span class='op'>=</span> <span class='kw'>true</span><span class='rparen'>)</span>
+  <span class='const'>Internal</span><span class='op'>::</span><span class='const'>TrackLiveLoopUtils</span><span class='period'>.</span><span class='id identifier rubyid_get_player'>get_player</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rparen'>)</span><span class='op'>&amp;.</span><span class='id identifier rubyid_fill'>fill</span> <span class='op'>=</span> <span class='id identifier rubyid_fill'>fill</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="track_live_loop-class_method">
+  
+    .<strong>track_live_loop</strong>(loop_name, track = nil, start_muted: nil, fade_in: false, fade_out: false, midi: nil, port: nil, channel: nil, cc: nil, fill_cc: nil, cc_port: nil, cc_channel: nil, send_cycle_cues: nil, debug: false, init: nil, sync: :default_sync) { ... } 
+  
+
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='tll-class_method'>tll</span></span>
+    </span>
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Creates a <code>live_loop</code> that plays a track.</p>
+<p>This method accepts <span class='object_link'><a href="Tracks/Track.html" title="SpiSeq::Tracks::Track (class)">Track</a></span> and <span class='object_link'><a href="Tracks/CCTrack.html" title="SpiSeq::Tracks::CCTrack (class)">CCTrack</a></span> instances and will create and
+control an appropriate <span class='object_link'><a href="Playback/Player.html" title="SpiSeq::Playback::Player (class)">Player</a></span> or <span class='object_link'><a href="Playback/CCPlayer.html" title="SpiSeq::Playback::CCPlayer (class)">CCPlayer</a></span>, respectively. Certain options
+are only valid for one track type; those are called out below.</p>
+<p>The <code>track</code> argument may be nil (the default), in which case the live loop
+will play a single-slot <span class='object_link'><a href="Tracks/Track.html" title="SpiSeq::Tracks::Track (class)">Track</a></span> containing just a rest. This is useful if
+track_live_loop is called with a block that returns a track; see below for
+details.</p>
+<p>Each iteration of the live loop will either <span class='object_link'><a href="Playback/PlayerBase.html#play-instance_method" title="SpiSeq::Playback::PlayerBase#play (method)">play</a></span> a cycle
+of the track, or, if the loop is currently muted, <span class='object_link'><a href="Playback/PlayerBase.html#sleep-instance_method" title="SpiSeq::Playback::PlayerBase#sleep (method)">sleep</a></span>
+for its duration. That means that muting takes effect only after a full
+cycle of the track completes. track_live_loops can be muted via MIDI CCs
+(the <code>cc</code> argument) or with the <span class='object_link'><a href="Utils/LiveLoops.html#mute_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.mute_live_loop (method)">mute_live_loop</a></span> function.</p>
+<p>The internal player can be put into <span class='object_link'><a href="Playback/PlayerBase.html#fill-instance_method" title="SpiSeq::Playback::PlayerBase#fill (method)">fill mode</a></span> via a MIDI
+CC if the <code>fill_cc</code> argument is provided, or with the <span class='object_link'><a href="#fill_live_loop-class_method" title="SpiSeq::Playback.fill_live_loop (method)">fill_live_loop</a></span>
+function. Unlike muting, changes to fill mode take effect immediately.</p>
+<p>Any additional named arguments (e.g. <code>delay</code> or <code>seed</code>) to this function are
+used verbatim when creating the internal <code>live_loop</code>. If a <code>sync</code> parameter
+is not specified, the default from <span class='object_link'><a href="#use_player_defaults-class_method" title="SpiSeq::Playback.use_player_defaults (method)">use_player_defaults</a></span> is used, if there
+is one. You can explicitly use no sync by passing a nil value for <code>sync</code>.</p>
+<h3 id="The_block">The block</h3>
+<p>A block may be provided, in which case it is called before each cycle of
+playback. The block may accept any of the following keyword arguments:</p>
+<ul>
+<li><code>cycle</code> (Integer): The current <span class='object_link'><a href="Playback/PlayerBase.html#cycle-instance_method" title="SpiSeq::Playback::PlayerBase#cycle (method)">cycle</a></span> of the internal
+player.</li>
+<li><code>track</code> (<span class='object_link'><a href="Tracks/Track.html" title="SpiSeq::Tracks::Track (class)">Track</a></span> or <span class='object_link'><a href="Tracks/CCTrack.html" title="SpiSeq::Tracks::CCTrack (class)">CCTrack</a></span>): The track the internal player will play in
+this cycle, unless the block returns a new one (see below).</li>
+<li><code>muted</code> (Boolean): Whether playback from this loop is muted.</li>
+<li><code>was_muted</code> (Boolean): Whether playback was muted in this loop in the
+previous cycle. This argument is true the first time the block executes.</li>
+<li><code>arg</code>: The usual argument for a <code>live_loop</code> - the value of the <code>init</code>
+argument on the first iteration, and the return of the prior execution of
+the block afterwards.</li>
+</ul>
+<p>A block is mandatory if the <code>track</code> argument is nil.</p>
+<p>The internal block that plays the track will sleep, so a user-provided block
+does not need to call <code>sleep</code> or <code>sync</code>, unlike normal <code>live_loop</code> blocks.
+If it does sync or sleep, it may cause delays between cycles of the track.</p>
+<p>If the block returns a <span class='object_link'><a href="Tracks/Track.html" title="SpiSeq::Tracks::Track (class)">Track</a></span> or <span class='object_link'><a href="Tracks/CCTrack.html" title="SpiSeq::Tracks::CCTrack (class)">CCTrack</a></span>, the internal player instance
+will swap to that track. The swap takes effect immediately; the new track
+will play as soon as it is returned. The <span class='object_link'><a href="Playback/PlayerBase.html#cycle-instance_method" title="SpiSeq::Playback::PlayerBase#cycle (method)">cycle</a></span> will not
+reset to 0 when a track is swapped in this way. Any other return type from
+the block is ignored, though it will be passed to the next iteration of the
+block via the <code>arg</code> parameter.</p>
+<p>It is an error for the block to attempt to switch between types of tracks.
+For example, the block cannot return a <span class='object_link'><a href="Tracks/CCTrack.html" title="SpiSeq::Tracks::CCTrack (class)">CCTrack</a></span> when the initial call to
+<code>track_live_loop</code> was given a <span class='object_link'><a href="Tracks/Track.html" title="SpiSeq::Tracks::Track (class)">Track</a></span>.</p>
+<p>Note: a nil <code>track</code> argument results in playback of a Track, not a CCTrack.
+So it is invalid for a block to return a CCTrack when this method is not
+passed a track, because that would constitute a switch in track type. If you
+find yourself in that situation, you can use <span class='object_link'><a href="#cc_track_live_loop-class_method" title="SpiSeq::Playback.cc_track_live_loop (method)">cc_track_live_loop</a></span>, as that
+method uses a single-slot rest CCTrack instead but is otherwise identical to
+this one.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <h4 class="tag_title">Examples:</h4>
+    
+      
+        <h5 class="example_title"><div class='inline'><p>Simple playback</p></div></h5>
+      
+      <pre class="example code"><code><span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Tracks.html#T-constant" title="SpiSeq::Tracks::T (constant)">T</a></span></span><span class='lbracket'>[</span><span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:d4</span><span class='comma'>,</span> <span class='symbol'>:e4</span><span class='comma'>,</span> <span class='symbol'>:f4</span><span class='rbracket'>]</span>
+<span class='id identifier rubyid_track_live_loop'>track_live_loop</span> <span class='symbol'>:t</span><span class='comma'>,</span> <span class='id identifier rubyid_t'>t</span></code></pre>
+    
+      
+        <h5 class="example_title"><div class='inline'><p>Changing the track every iteration</p></div></h5>
+      
+      <pre class="example code"><code><span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Tracks.html#T-constant" title="SpiSeq::Tracks::T (constant)">T</a></span></span><span class='lbracket'>[</span><span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:d4</span><span class='comma'>,</span> <span class='symbol'>:e4</span><span class='comma'>,</span> <span class='symbol'>:f4</span><span class='rbracket'>]</span>
+<span class='id identifier rubyid_track_live_loop'>track_live_loop</span> <span class='symbol'>:t</span> <span class='kw'>do</span>
+  <span class='comment'># This block will run before each cycle of playback. And since it
+</span>  <span class='comment'># returns a Track, playback will switch to it. Each cycle will get a
+</span>  <span class='comment'># different random arrangement of slots.
+</span>  <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_shuffle'>shuffle</span>
+<span class='kw'>end</span></code></pre>
+    
+      
+        <h5 class="example_title"><div class='inline'><p>Varying playback based on cycle</p></div></h5>
+      
+      <pre class="example code"><code><span class='id identifier rubyid_t'>t</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Tracks.html#T-constant" title="SpiSeq::Tracks::T (constant)">T</a></span></span><span class='lbracket'>[</span><span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:d4</span><span class='comma'>,</span> <span class='symbol'>:e4</span><span class='comma'>,</span> <span class='symbol'>:f4</span><span class='rbracket'>]</span>
+<span class='id identifier rubyid_track_live_loop'>track_live_loop</span> <span class='symbol'>:t</span> <span class='kw'>do</span> <span class='op'>|</span><span class='label'>cycle:</span><span class='op'>|</span>
+  <span class='comment'># `cycle` increases after every round of playback, `gate` here will step
+</span>  <span class='comment'># up to 1.0 every 10 cycles, then reset.
+</span>  <span class='id identifier rubyid_gate'>gate</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='lparen'>(</span><span class='id identifier rubyid_cycle'>cycle</span> <span class='op'>+</span> <span class='int'>1</span><span class='rparen'>)</span> <span class='op'>%</span> <span class='int'>10</span><span class='rparen'>)</span> <span class='op'>/</span> <span class='float'>10.0</span>
+  <span class='id identifier rubyid_t'>t</span><span class='period'>.</span><span class='id identifier rubyid_gate'>gate</span><span class='lparen'>(</span><span class='id identifier rubyid_gate'>gate</span><span class='rparen'>)</span>
+<span class='kw'>end</span></code></pre>
+    
+  </div>
+
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>loop_name</span>
+      
+      
+        <span class='type'>(<tt>Symbol</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The name of the live loop.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>track</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Tracks/Track.html" title="SpiSeq::Tracks::Track (class)">Track</a></span></tt>, <tt><span class='object_link'><a href="Tracks/CCTrack.html" title="SpiSeq::Tracks::CCTrack (class)">CCTrack</a></span></tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The track that this loop will play, or nil to
+play a single-slot <span class='object_link'><a href="Tracks/Track.html" title="SpiSeq::Tracks::Track (class)">Track</a></span> containing only a rest. If this is nil, a block
+must be provided, and you will almost certainly want to return a track
+from it.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>start_muted</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The initial mute state of the loop. If nil,
+uses the global default set by <span class='object_link'><a href="#use_player_defaults-class_method" title="SpiSeq::Playback.use_player_defaults (method)">use_player_defaults</a></span>, or false if that was
+not set.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>fade_in</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>, <tt>:quad</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>If true, the track fades in linearly (via
+velocity; see <span class='object_link'><a href="Tracks/Track.html#fade_in-instance_method" title="SpiSeq::Tracks::Track#fade_in (method)">Track#fade_in</a></span>) whenever the loop transitions from
+muted to unmuted. Pass <code>:quad</code> to fade the track in with
+<span class='object_link'><a href="Tracks/Track.html#fade_in_quad-instance_method" title="SpiSeq::Tracks::Track#fade_in_quad (method)">Track#fade_in_quad</a></span>. It is an error to pass any value other than
+false if <code>track</code> is a <span class='object_link'><a href="Tracks/CCTrack.html" title="SpiSeq::Tracks::CCTrack (class)">CCTrack</a></span>.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>fade_out</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>, <tt>:quad</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>If true, the track fades out linearly (via
+velocity; see <span class='object_link'><a href="Tracks/Track.html#fade_out-instance_method" title="SpiSeq::Tracks::Track#fade_out (method)">Track#fade_out</a></span>) whenever the loop transitions from
+unmuted to muted. Pass <code>:quad</code> to fade the track out with
+<span class='object_link'><a href="Tracks/Track.html#fade_out_quad-instance_method" title="SpiSeq::Tracks::Track#fade_out_quad (method)">Track#fade_out_quad</a></span>. It is an error to pass any value other than
+false if <code>track</code> is a <span class='object_link'><a href="Tracks/CCTrack.html" title="SpiSeq::Tracks::CCTrack (class)">CCTrack</a></span>. The playback of the faded track happens
+<em>after</em> the loop becomes muted. That is, tracks that are set to fade out
+will actually play for one additional cycle after the loop is muted,
+during which they will fade out.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>midi</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>If true, the track will play over MIDI rather than
+Sonic Pi's internal synthesis. This argument is ignored for <span class='object_link'><a href="Tracks/CCTrack.html" title="SpiSeq::Tracks::CCTrack (class)">CCTrack</a></span>s,
+since they only function over MIDI. If nil, the global default from
+<span class='object_link'><a href="#use_player_defaults-class_method" title="SpiSeq::Playback.use_player_defaults (method)">use_player_defaults</a></span> is used, or false if that was not set.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>port</span>
+      
+      
+        <span class='type'>(<tt>String</tt>, <tt>nil</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The MIDI device to use when <code>midi</code> is true. If
+nil, falls back to the global default set by Sonic Pi's
+<code>use_midi_defaults</code>, or to all ports (i.e. &quot;*&quot;) if that was not set.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>channel</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>, <tt>String</tt>, <tt>nil</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The MIDI channel to use when <code>midi</code> is
+true. If nil, falls back in the same manner as <code>port</code>.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>cc</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The CC number to monitor to control muting of the loop.
+A value of 0 for this CC will mute the loop; any other value will unmute.
+You can also mute loops with <span class='object_link'><a href="Utils/LiveLoops.html#mute_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.mute_live_loop (method)">mute_live_loop</a></span>.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>fill_cc</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The CC number to monitor to control
+<span class='object_link'><a href="Playback/PlayerBase.html#fill-instance_method" title="SpiSeq::Playback::PlayerBase#fill (method)">fill mode</a></span> on the internal player. A value of 0 for this
+CC will turn off fill; any other value will turn it on. If this argument
+is nil, falls back to the global default set with <span class='object_link'><a href="#use_player_defaults-class_method" title="SpiSeq::Playback.use_player_defaults (method)">use_player_defaults</a></span>,
+or no CC fill control if no default was set. You can also set fill mode
+for a loop with <span class='object_link'><a href="#fill_live_loop-class_method" title="SpiSeq::Playback.fill_live_loop (method)">fill_live_loop</a></span>.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>cc_port</span>
+      
+      
+        <span class='type'>(<tt>String</tt>, <tt>nil</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The MIDI port to monitor for CC messages, if
+either <code>cc</code> or <code>fill_cc</code> are set. If nil, falls back to the global default
+set with <span class='object_link'><a href="Utils/MIDI.html#use_cc_control_defaults-class_method" title="SpiSeq::Utils::MIDI.use_cc_control_defaults (method)">use_cc_control_defaults</a></span> or all ports (i.e. &quot;*&quot;) if
+no default was set.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>cc_channel</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>, <tt>String</tt>, <tt>nil</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The MIDI channel to monitor for CC
+messages. If nil, falls back in the same manner as <code>cc_port</code>.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>send_cycle_cues</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>If true, sends sends a cue immediately
+before each cycle of play with the name <code>&lt;loop_name&gt;_cycle</code> and a single
+value, the <span class='object_link'><a href="Playback/PlayerBase.html#cycle-instance_method" title="SpiSeq::Playback::PlayerBase#cycle (method)">cycle</a></span> that's about to play. Cycle cues are
+not sent while the loop is muted. If nil, falls back to the global default
+set with <span class='object_link'><a href="#use_player_defaults-class_method" title="SpiSeq::Playback.use_player_defaults (method)">use_player_defaults</a></span>, or true if no default was set.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>debug</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>If true, details about muting, unmuting, and fill
+state will be logged, as well as any debug information from the internal
+player.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>init</span>
+      
+      
+        <span class='type'>(<tt>Object</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The initial value to pass to the <code>arg</code> parameter of the
+block.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>sync</span>
+      
+      
+        <span class='type'>(<tt>Symbol</tt>, <tt>nil</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>:default_sync</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The name of the initial cue to wait for before
+starting the live loop (as with <code>live_loop</code>). If <code>:default_sync</code>, uses the
+global default set with <span class='object_link'><a href="#use_player_defaults-class_method" title="SpiSeq::Playback.use_player_defaults (method)">use_player_defaults</a></span>, if any. If <code>nil</code>, the loop
+does not wait for a cue.</p></div>
+      
+    </li>
+  
+</ul>
+
+
+
+
+
+
+
+
+<p class="tag_title">Yields:</p>
+<ul class="yield">
+  
+    <li>
+      
+      
+        <span class='type'></span>
+      
+      
+      
+        
+        <div class='inline'><p>See the potential parameters to the block above.</p></div>
+      
+    </li>
+  
+</ul>
+
+
+
+
+
+
+
+<p class="tag_title">Yield Returns:</p>
+<ul class="yieldreturn">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>void</tt>, <tt>Object</tt>, <tt><span class='object_link'><a href="Tracks/Track.html" title="SpiSeq::Tracks::Track (class)">Track</a></span></tt>, <tt><span class='object_link'><a href="Tracks/CCTrack.html" title="SpiSeq::Tracks::CCTrack (class)">CCTrack</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>A value to pass to the next
+iteration of the block as the <code>arg</code> argument, and potentially a track to
+switch to. See above.</p></div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/playback/track_live_loop.rb', line 256</span>
+
+<span class='id identifier rubyid_module_function'>module_function</span> <span class='kw'>def</span> <span class='id identifier rubyid_track_live_loop'>track_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_track'>track</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>start_muted:</span> <span class='kw'>nil</span><span class='comma'>,</span>
+                                    <span class='label'>fade_in:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>fade_out:</span> <span class='kw'>false</span><span class='comma'>,</span>
+                                    <span class='label'>midi:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='kw'>nil</span><span class='comma'>,</span>
+                                    <span class='label'>cc:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>fill_cc:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>cc_port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>cc_channel:</span> <span class='kw'>nil</span><span class='comma'>,</span>
+                                    <span class='label'>send_cycle_cues:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>debug:</span> <span class='kw'>false</span><span class='comma'>,</span>
+                                    <span class='label'>init:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>sync:</span> <span class='symbol'>:default_sync</span><span class='comma'>,</span> <span class='op'>**</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
+  <span class='comment'>### Validate arguments
+</span>  <span class='kw'>unless</span> <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+    <span class='id identifier rubyid_req_pos_args'>req_pos_args</span><span class='comma'>,</span> <span class='id identifier rubyid_opt_pos_args'>opt_pos_args</span><span class='comma'>,</span> <span class='id identifier rubyid_req_keywords'>req_keywords</span><span class='comma'>,</span> <span class='op'>=</span> <span class='const'>Internal</span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_describe_args'>describe_args</span><span class='lparen'>(</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
+    <span class='comment'># We could allow optional required arguments, but a block&#39;s positional
+</span>    <span class='comment'># arguments are all reported as optional, so let&#39;s play it safe.
+</span>    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Block cannot have positional arguments</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_req_pos_args'>req_pos_args</span> <span class='op'>==</span> <span class='int'>0</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_opt_pos_args'>opt_pos_args</span> <span class='op'>==</span> <span class='int'>0</span>
+    <span class='id identifier rubyid_valid_keywords'>valid_keywords</span> <span class='op'>=</span> <span class='qsymbols_beg'>%i[</span><span class='tstring_content'>cycle</span><span class='words_sep'> </span><span class='tstring_content'>track</span><span class='words_sep'> </span><span class='tstring_content'>muted</span><span class='words_sep'> </span><span class='tstring_content'>was_muted</span><span class='words_sep'> </span><span class='tstring_content'>arg</span><span class='tstring_end'>]</span></span>
+    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Block requires an invalid keyword argument</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_req_keywords'>req_keywords</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_k'>k</span><span class='op'>|</span> <span class='op'>!</span><span class='id identifier rubyid_valid_keywords'>valid_keywords</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_k'>k</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
+  <span class='kw'>end</span>
+
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>If no track is provided, a block must be</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_track'>track</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+
+  <span class='comment'>### Make the player (and possibly track)
+</span>  <span class='id identifier rubyid_track'>track</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="Tracks.html" title="SpiSeq::Tracks (module)">Tracks</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Tracks/Track.html" title="SpiSeq::Tracks::Track (class)">Track</a></span></span><span class='period'>.</span><span class='id identifier rubyid_rest'><span class='object_link'><a href="Tracks/TrackBase.html#rest-class_method" title="SpiSeq::Tracks::TrackBase.rest (method)">rest</a></span></span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>The fade parameters cannot be used with CCTracks</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_track'>track</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="Tracks/CCTrack.html" title="SpiSeq::Tracks::CCTrack (class)">CCTrack</a></span></span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='lparen'>(</span><span class='id identifier rubyid_fade_in'>fade_in</span> <span class='op'>||</span> <span class='id identifier rubyid_fade_out'>fade_out</span><span class='rparen'>)</span>
+
+  <span class='id identifier rubyid_player'>player</span> <span class='op'>=</span> <span class='kw'>case</span> <span class='id identifier rubyid_track'>track</span>
+  <span class='kw'>when</span> <span class='const'><span class='object_link'><a href="Tracks/Track.html" title="SpiSeq::Tracks::Track (class)">Track</a></span></span>
+    <span class='const'><span class='object_link'><a href="Playback/Player.html" title="SpiSeq::Playback::Player (class)">Player</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Playback/Player.html#initialize-instance_method" title="SpiSeq::Playback::Player#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_track'>track</span><span class='comma'>,</span> <span class='label'>midi:</span><span class='comma'>,</span> <span class='label'>port:</span><span class='comma'>,</span> <span class='label'>channel:</span><span class='comma'>,</span> <span class='label'>debug:</span><span class='rparen'>)</span>
+  <span class='kw'>when</span> <span class='const'><span class='object_link'><a href="Tracks/CCTrack.html" title="SpiSeq::Tracks::CCTrack (class)">CCTrack</a></span></span>
+    <span class='const'><span class='object_link'><a href="Playback/CCPlayer.html" title="SpiSeq::Playback::CCPlayer (class)">CCPlayer</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Playback/CCPlayer.html#initialize-instance_method" title="SpiSeq::Playback::CCPlayer#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_track'>track</span><span class='comma'>,</span> <span class='label'>port:</span><span class='comma'>,</span> <span class='label'>channel:</span><span class='comma'>,</span> <span class='label'>debug:</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+
+  <span class='comment'>### Fetch &amp; validate against an existing player
+</span>  <span class='comment'># If this is a restart of the same track_live_loop, we will already have a
+</span>  <span class='comment'># player instance for the old one. We don&#39;t want to reuse it per se (other
+</span>  <span class='comment'># settings may have changed), but we do want the new player to inherit some
+</span>  <span class='comment'># of the old one&#39;s private state. We shouldn&#39;t do that immediately though;
+</span>  <span class='comment'># we should wait until the old player finishes its final loop so that its
+</span>  <span class='comment'># internal state is accurate. So we do the inheriting on the first iteration
+</span>  <span class='comment'># of the new live loop (see track_live_loop_block).
+</span>  <span class='id identifier rubyid_old_player'>old_player</span> <span class='op'>=</span> <span class='const'>Internal</span><span class='op'>::</span><span class='const'>TrackLiveLoopUtils</span><span class='period'>.</span><span class='id identifier rubyid_get_player'>get_player</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>cannot switch track live loop </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='embexpr_end'>}</span><span class='tstring_content'> between track types</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_old_player'>old_player</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>||</span> <span class='id identifier rubyid_player'>player</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='id identifier rubyid_old_player'>old_player</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='rparen'>)</span>
+
+  <span class='comment'>### Resolve default arguments
+</span>  <span class='id identifier rubyid_player_defaults'>player_defaults</span> <span class='op'>=</span> <span class='id identifier rubyid_current_player_defaults'><span class='object_link'><a href="#current_player_defaults-class_method" title="SpiSeq::Playback.current_player_defaults (method)">current_player_defaults</a></span></span>
+  <span class='id identifier rubyid_cc_port'>cc_port</span><span class='comma'>,</span> <span class='id identifier rubyid_cc_channel'>cc_channel</span> <span class='op'>=</span> <span class='const'>Internal</span><span class='op'>::</span><span class='const'>MIDI</span><span class='period'>.</span><span class='id identifier rubyid_resolve_cc_port_and_channel'>resolve_cc_port_and_channel</span><span class='lparen'>(</span><span class='id identifier rubyid_cc_port'>cc_port</span><span class='comma'>,</span> <span class='id identifier rubyid_cc_channel'>cc_channel</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_fill_cc'>fill_cc</span> <span class='op'>=</span> <span class='id identifier rubyid_player_defaults'>player_defaults</span><span class='lbracket'>[</span><span class='symbol'>:fill_cc</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id identifier rubyid_fill_cc'>fill_cc</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+  <span class='id identifier rubyid_sync'>sync</span> <span class='op'>=</span> <span class='id identifier rubyid_player_defaults'>player_defaults</span><span class='lbracket'>[</span><span class='symbol'>:sync</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id identifier rubyid_sync'>sync</span> <span class='op'>==</span> <span class='symbol'>:default_sync</span>
+  <span class='id identifier rubyid_start_muted'>start_muted</span> <span class='op'>=</span> <span class='id identifier rubyid_player_defaults'>player_defaults</span><span class='lbracket'>[</span><span class='symbol'>:start_muted</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='kw'>false</span> <span class='kw'>if</span> <span class='id identifier rubyid_start_muted'>start_muted</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+  <span class='id identifier rubyid_send_cycle_cues'>send_cycle_cues</span> <span class='op'>=</span> <span class='id identifier rubyid_player_defaults'>player_defaults</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='symbol'>:send_cycle_cues</span><span class='comma'>,</span> <span class='kw'>true</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_send_cycle_cues'>send_cycle_cues</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+
+  <span class='comment'>### Start a fill CC watcher if needed
+</span>  <span class='kw'>if</span> <span class='id identifier rubyid_fill_cc'>fill_cc</span>
+    <span class='const'><span class='object_link'><a href="Utils.html" title="SpiSeq::Utils (module)">Utils</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Utils/MIDI.html" title="SpiSeq::Utils::MIDI (module)">MIDI</a></span></span><span class='period'>.</span><span class='id identifier rubyid_cc_watcher_live_loop'><span class='object_link'><a href="Utils/MIDI.html#cc_watcher_live_loop-class_method" title="SpiSeq::Utils::MIDI.cc_watcher_live_loop (method)">cc_watcher_live_loop</a></span></span><span class='lparen'>(</span><span class='symbol'>:&quot;__</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='embexpr_end'>}</span><span class='tstring_content'>_cc_fill_watcher</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
+                        <span class='label'>port:</span> <span class='id identifier rubyid_cc_port'>cc_port</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='id identifier rubyid_cc_channel'>cc_channel</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_incoming_cc'>incoming_cc</span><span class='comma'>,</span> <span class='id identifier rubyid_cc_val'>cc_val</span><span class='op'>|</span>
+      <span class='kw'>next</span> <span class='kw'>if</span> <span class='id identifier rubyid_incoming_cc'>incoming_cc</span> <span class='op'>!=</span> <span class='id identifier rubyid_fill_cc'>fill_cc</span>
+
+      <span class='id identifier rubyid_player'>player</span><span class='period'>.</span><span class='id identifier rubyid_fill'>fill</span> <span class='op'>=</span> <span class='id identifier rubyid_cc_val'>cc_val</span> <span class='op'>!=</span> <span class='int'>0</span>
+      <span class='const'>Internal</span><span class='op'>::</span><span class='const'>Log</span><span class='period'>.</span><span class='id identifier rubyid_log'>log</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>CC </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_fill_cc'>fill_cc</span><span class='embexpr_end'>}</span><span class='tstring_content'> = </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_cc_val'>cc_val</span><span class='embexpr_end'>}</span><span class='tstring_content'> -&gt; </span><span class='embexpr_beg'>#{</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>un</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_player'>player</span><span class='period'>.</span><span class='id identifier rubyid_fill'>fill</span><span class='embexpr_end'>}</span><span class='tstring_content'>setting fill for live loop </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>cc_fill_control</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+    <span class='kw'>end</span>
+
+    <span class='comment'># Don&#39;t send a 0 fill CC for restarts of the same sketch.
+</span>    <span class='kw'>unless</span> <span class='const'>Internal</span><span class='op'>::</span><span class='const'>ThreadTracker</span><span class='period'>.</span><span class='id identifier rubyid_is_running?'>is_running?</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rparen'>)</span>
+      <span class='const'>Internal</span><span class='op'>::</span><span class='const'>Log</span><span class='period'>.</span><span class='id identifier rubyid_log'>log</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>sending default CC </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_fill_cc'>fill_cc</span><span class='embexpr_end'>}</span><span class='tstring_content'> value 0 for live loop </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>cc_fill_control</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+      <span class='const'>External</span><span class='op'>::</span><span class='const'>MIDI</span><span class='period'>.</span><span class='id identifier rubyid_midi_cc'>midi_cc</span><span class='lparen'>(</span><span class='id identifier rubyid_fill_cc'>fill_cc</span><span class='comma'>,</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>port:</span> <span class='id identifier rubyid_cc_port'>cc_port</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='id identifier rubyid_cc_channel'>cc_channel</span><span class='rparen'>)</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+
+  <span class='comment'>### Kick off the loop
+</span>  <span class='id identifier rubyid_ll_block'>ll_block</span> <span class='op'>=</span> <span class='const'>Internal</span><span class='op'>::</span><span class='const'>TrackLiveLoopUtils</span><span class='period'>.</span><span class='id identifier rubyid_track_live_loop_block'>track_live_loop_block</span><span class='lparen'>(</span>
+    <span class='label'>loop_name:</span><span class='comma'>,</span> <span class='label'>player:</span><span class='comma'>,</span> <span class='label'>old_player:</span><span class='comma'>,</span> <span class='label'>send_cycle_cues:</span><span class='comma'>,</span> <span class='label'>fade_in:</span><span class='comma'>,</span> <span class='label'>fade_out:</span><span class='comma'>,</span>
+    <span class='label'>user_block:</span> <span class='id identifier rubyid_block'>block</span><span class='comma'>,</span> <span class='label'>debug:</span><span class='rparen'>)</span>
+
+  <span class='id identifier rubyid_init'>init</span> <span class='op'>=</span> <span class='const'>Internal</span><span class='op'>::</span><span class='const'>TrackLiveLoopUtils</span><span class='period'>.</span><span class='id identifier rubyid_track_live_loop_block_state'>track_live_loop_block_state</span><span class='lparen'>(</span><span class='label'>block_arg:</span> <span class='id identifier rubyid_init'>init</span><span class='rparen'>)</span>
+
+  <span class='id identifier rubyid_ll'>ll</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='id identifier rubyid_cc'>cc</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+    <span class='const'><span class='object_link'><a href="Utils.html" title="SpiSeq::Utils (module)">Utils</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Utils/LiveLoops.html" title="SpiSeq::Utils::LiveLoops (module)">LiveLoops</a></span></span><span class='period'>.</span><span class='id identifier rubyid_mutable_live_loop'><span class='object_link'><a href="Utils/LiveLoops.html#mutable_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.mutable_live_loop (method)">mutable_live_loop</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='label'>start_muted:</span><span class='comma'>,</span> <span class='label'>init:</span><span class='comma'>,</span> <span class='label'>sync:</span><span class='comma'>,</span> <span class='op'>**</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_ll_block'>ll_block</span><span class='rparen'>)</span>
+  <span class='kw'>else</span>
+    <span class='const'><span class='object_link'><a href="Utils.html" title="SpiSeq::Utils (module)">Utils</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Utils/LiveLoops.html" title="SpiSeq::Utils::LiveLoops (module)">LiveLoops</a></span></span><span class='period'>.</span><span class='id identifier rubyid_cc_mutable_live_loop'><span class='object_link'><a href="Utils/LiveLoops.html#cc_mutable_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.cc_mutable_live_loop (method)">cc_mutable_live_loop</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='label'>start_muted:</span><span class='comma'>,</span> <span class='label'>init:</span><span class='comma'>,</span> <span class='label'>sync:</span><span class='comma'>,</span> <span class='label'>cc:</span><span class='comma'>,</span> <span class='label'>port:</span> <span class='id identifier rubyid_cc_port'>cc_port</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='id identifier rubyid_cc_channel'>cc_channel</span><span class='comma'>,</span> <span class='op'>**</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_ll_block'>ll_block</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+
+  <span class='const'>Internal</span><span class='op'>::</span><span class='const'>TrackLiveLoopUtils</span><span class='period'>.</span><span class='id identifier rubyid_set_player'>set_player</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_player'>player</span><span class='rparen'>)</span>
+
+  <span class='id identifier rubyid_ll'>ll</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="unset_live_loop_fill-class_method">
+  
+    .<strong>unset_live_loop_fill</strong>(loop_name)  
+  
+
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='unfill_live_loop-class_method'>unfill_live_loop</span></span>
+    </span>
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Turns off <span class='object_link'><a href="Playback/PlayerBase.html#fill-instance_method" title="SpiSeq::Playback::PlayerBase#fill (method)">fill mode</a></span> on the player associated with a
+<code>live_loop</code> made by <span class='object_link'><a href="#track_live_loop-class_method" title="SpiSeq::Playback.track_live_loop (method)">track_live_loop</a></span>.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>loop_name</span>
+      
+      
+        <span class='type'>(<tt>Symbol</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The name of the target live loop.</p></div>
+      
+    </li>
+  
+</ul>
+
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><span class='object_link'><a href="Playback/PlayerBase.html#fill-instance_method" title="SpiSeq::Playback::PlayerBase#fill (method)">PlayerBase#fill</a></span></li>
+    
+      <li><span class='object_link'><a href="Tracks/Prob.html#fill-class_method" title="SpiSeq::Tracks::Prob.fill (method)">Prob.fill</a></span></li>
+    
+      <li><span class='object_link'><a href="#set_live_loop_fill-class_method" title="SpiSeq::Playback.set_live_loop_fill (method)">set_live_loop_fill</a></span></li>
+    
+  </ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+381</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/playback/track_live_loop.rb', line 381</span>
+
+<span class='id identifier rubyid_module_function'>module_function</span> <span class='kw'>def</span> <span class='id identifier rubyid_unset_live_loop_fill'>unset_live_loop_fill</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='id identifier rubyid_set_live_loop_fill'><span class='object_link'><a href="#set_live_loop_fill-class_method" title="SpiSeq::Playback.set_live_loop_fill (method)">set_live_loop_fill</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='kw'>false</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="use_player_defaults-class_method">
+  
+    .<strong>use_player_defaults</strong>(midi: nil, sync: nil, start_muted: nil, fill_cc: nil, send_cycle_cues: nil)  
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Set global default <span class='object_link'><a href="Playback/Player.html" title="SpiSeq::Playback::Player (class)">Player</a></span> and <span class='object_link'><a href="#track_live_loop-class_method" title="SpiSeq::Playback.track_live_loop (method)">track_live_loop</a></span> behaviors. Removes any
+previous defaults.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>midi</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>, <tt>nil</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The default value for the <code>midi</code> parameter of
+<span class='object_link'><a href="Playback/Player.html#initialize-instance_method" title="SpiSeq::Playback::Player#initialize (method)">Player#initialize</a></span> and by extension <span class='object_link'><a href="#track_live_loop-class_method" title="SpiSeq::Playback.track_live_loop (method)">track_live_loop</a></span>. Default: false.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>sync</span>
+      
+      
+        <span class='type'>(<tt>Symbol</tt>, <tt>nil</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The default value for the <code>sync</code> parameter of
+<span class='object_link'><a href="#track_live_loop-class_method" title="SpiSeq::Playback.track_live_loop (method)">track_live_loop</a></span>. Default: nil (no sync).</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>start_muted</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>, <tt>nil</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>: The default value for the <code>start_muted</code>
+parameter of <span class='object_link'><a href="#track_live_loop-class_method" title="SpiSeq::Playback.track_live_loop (method)">track_live_loop</a></span> Default: false.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>fill_cc</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>, <tt>nil</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>: The default value for the <code>fill_cc</code> parameter
+of <code>track_live_loop</code>. Default: nil (no fill CC).</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>send_cycle_cues</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>, <tt>nil</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>: The default value for the
+<code>send_cycle_cues</code> parameter of <span class='object_link'><a href="#track_live_loop-class_method" title="SpiSeq::Playback.track_live_loop (method)">track_live_loop</a></span>. Default: true.</p></div>
+      
+    </li>
+  
+</ul>
+
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><span class='object_link'><a href="#current_player_defaults-class_method" title="SpiSeq::Playback.current_player_defaults (method)">current_player_defaults</a></span></li>
+    
+  </ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+38
+39
+40
+41
+42</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/playback/player.rb', line 38</span>
+
+<span class='id identifier rubyid_module_function'>module_function</span> <span class='kw'>def</span> <span class='id identifier rubyid_use_player_defaults'>use_player_defaults</span><span class='lparen'>(</span><span class='label'>midi:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>sync:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>start_muted:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>fill_cc:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>send_cycle_cues:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_defaults'>defaults</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>midi:</span><span class='comma'>,</span> <span class='label'>sync:</span><span class='comma'>,</span> <span class='label'>start_muted:</span><span class='comma'>,</span> <span class='label'>fill_cc:</span><span class='comma'>,</span> <span class='label'>send_cycle_cues:</span> <span class='rbrace'>}</span>
+  <span class='id identifier rubyid_defaults'>defaults</span><span class='period'>.</span><span class='id identifier rubyid_compact!'>compact!</span>
+  <span class='const'>State</span><span class='period'>.</span><span class='id identifier rubyid_player_defaults'>player_defaults</span> <span class='op'>=</span> <span class='id identifier rubyid_defaults'>defaults</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+
+      
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,2140 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Class: SpiSeq::Tracks::Step
+  
+    &mdash; spi-seq Documentation
+  
+</title>
+
+  <link rel="stylesheet" href="../../css/style.css" type="text/css">
+
+  <link rel="stylesheet" href="../../css/common.css" type="text/css">
+
+<script type="text/javascript">
+  pathId = "SpiSeq::Tracks::Step";
+  relpath = '../../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="main_progress" aria-hidden="true"></div>
+
+    <div class="nav_wrap">
+      <iframe id="nav" src="../../class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../../_index.html">Index (S)</a> &raquo;
+    <span class='title'><span class='object_link'><a href="../../SpiSeq.html" title="SpiSeq (module)">SpiSeq</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../Tracks.html" title="SpiSeq::Tracks (module)">Tracks</a></span></span>
+     &raquo; 
+    <span class="title">Step</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="../../class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Class: SpiSeq::Tracks::Step
+  
+  
+  
+</h1>
+<div class="box_info">
+  
+  <dl>
+    <dt>Inherits:</dt>
+    <dd>
+      <span class="inheritName"><span class='object_link'><a href="StepBase.html" title="SpiSeq::Tracks::StepBase (class)">StepBase</a></span></span>
+      
+        <ul class="fullTree">
+          <li>Object</li>
+          
+            <li class="next"><span class='object_link'><a href="StepBase.html" title="SpiSeq::Tracks::StepBase (class)">StepBase</a></span></li>
+          
+            <li class="next">SpiSeq::Tracks::Step</li>
+          
+        </ul>
+        <a href="#" class="inheritanceTree">show all</a>
+      
+    </dd>
+  </dl>
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>lib/spiseq/tracks/step.rb
+</dd>
+  </dl>
+  
+</div>
+
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    <p>A Step represents a sequenceable MIDI note event which can appear in slots
+in the grid of a <span class='object_link'><a href="Track.html" title="SpiSeq::Tracks::Track (class)">Track</a></span>. See the documentation for <span class='object_link'><a href="StepBase.html" title="SpiSeq::Tracks::StepBase (class)">StepBase</a></span> for details
+about steps in general, and their probability and accumulation mechanics.</p>
+<p>Accumulation on a Step applies a semitone offset to the <span class='object_link'><a href="#note-instance_method" title="SpiSeq::Tracks::Step#note (method)">#note</a></span> by default,
+but can also target the <span class='object_link'><a href="#gate-instance_method" title="SpiSeq::Tracks::Step#gate (method)">#gate</a></span> or <span class='object_link'><a href="#vel-instance_method" title="SpiSeq::Tracks::Step#vel (method)">#vel</a></span>.</p>
+<p><strong>Steps are immutable</strong>. The mutation methods provided here, like
+<span class='object_link'><a href="#with_note-instance_method" title="SpiSeq::Tracks::Step#with_note (method)">#with_note</a></span>, return new Steps that have all the same attributes as the
+receiver, with just the described change.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+
+
+
+  <h2>Instance Attribute Summary <small><a href="#" class="summary_toggle">collapse</a></small></h2>
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#gate-instance_method" title="#gate (instance method)">#<strong>gate</strong>  &#x21d2; Number </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+      <span class="note title readonly">readonly</span>
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The gate for this step as a percentage 0.0 - 1.0.</p></div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#note-instance_method" title="#note (instance method)">#<strong>note</strong>  &#x21d2; MIDINote </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+      <span class="note title readonly">readonly</span>
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The note that this step will play when triggered during playback.</p></div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#vel-instance_method" title="#vel (instance method)">#<strong>vel</strong>  &#x21d2; Integer </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+      <span class="note title readonly">readonly</span>
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The velocity to use when playing this step over MIDI, 0 - 127 inclusive.</p></div></span>
+  
+</li>
+
+    
+  </ul>
+
+
+
+  
+  
+  <h3 class="inherited">Attributes inherited from <span class='object_link'><a href="StepBase.html" title="SpiSeq::Tracks::StepBase (class)">StepBase</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="StepBase.html#accum_delta-instance_method" title="SpiSeq::Tracks::StepBase#accum_delta (method)">#accum_delta</a></span>, <span class='object_link'><a href="StepBase.html#accum_max-instance_method" title="SpiSeq::Tracks::StepBase#accum_max (method)">#accum_max</a></span>, <span class='object_link'><a href="StepBase.html#accum_min-instance_method" title="SpiSeq::Tracks::StepBase#accum_min (method)">#accum_min</a></span>, <span class='object_link'><a href="StepBase.html#accum_mode-instance_method" title="SpiSeq::Tracks::StepBase#accum_mode (method)">#accum_mode</a></span>, <span class='object_link'><a href="StepBase.html#accum_prob-instance_method" title="SpiSeq::Tracks::StepBase#accum_prob (method)">#accum_prob</a></span>, <span class='object_link'><a href="StepBase.html#accum_target-instance_method" title="SpiSeq::Tracks::StepBase#accum_target (method)">#accum_target</a></span>, <span class='object_link'><a href="StepBase.html#prob-instance_method" title="SpiSeq::Tracks::StepBase#prob (method)">#prob</a></span></p>
+
+
+  
+    <h2>
+      Instance Method Summary
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#down-instance_method" title="#down (instance method)">#<strong>down</strong>(shift = 1)  &#x21d2; Step </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new Step with the same pitch class as <span class='object_link'><a href="#note-instance_method" title="SpiSeq::Tracks::Step#note (method)">#note</a></span> but with its octave shifted down by the given amount.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(note, vel: 127, gate: 1.0, prob: nil, accum_delta: 0, accum_max: 12, accum_min: 0, accum_mode: :wrap, accum_prob: nil, accum_target: nil)  &#x21d2; Step </a>
+    
+
+    
+  </span>
+  
+  
+    <span class="note title constructor">constructor</span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Constructs a Step.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#shift_gate-instance_method" title="#shift_gate (instance method)">#<strong>shift_gate</strong>(shift)  &#x21d2; Step </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new Step with a gate equal to <span class='object_link'><a href="#gate-instance_method" title="SpiSeq::Tracks::Step#gate (method)">#gate</a></span> + shift.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#shift_octave-instance_method" title="#shift_octave (instance method)">#<strong>shift_octave</strong>(shift)  &#x21d2; Step </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new Step with a note that has the same pitch class as <span class='object_link'><a href="#note-instance_method" title="SpiSeq::Tracks::Step#note (method)">#note</a></span> but an octave offset by <code>shift</code>.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#shift_vel-instance_method" title="#shift_vel (instance method)">#<strong>shift_vel</strong>(shift)  &#x21d2; Step </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new Step with a velocity equal to <span class='object_link'><a href="#vel-instance_method" title="SpiSeq::Tracks::Step#vel (method)">#vel</a></span> plus <code>shift</code>.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#shift_velf-instance_method" title="#shift_velf (instance method)">#<strong>shift_velf</strong>(shift)  &#x21d2; Step </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new Step a velocity equal to the current <span class='object_link'><a href="#velf-instance_method" title="SpiSeq::Tracks::Step#velf (method)">#velf</a></span> plus <code>shift</code>.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#tied%3F-instance_method" title="#tied? (instance method)">#<strong>tied?</strong>  &#x21d2; Boolean </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns true if this step is tied; that is, its <span class='object_link'><a href="#gate-instance_method" title="SpiSeq::Tracks::Step#gate (method)">#gate</a></span> is 1.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#transpose-instance_method" title="#transpose (instance method)">#<strong>transpose</strong>(shift)  &#x21d2; Step </a>
+    
+
+    
+      (also: #shift_tone, #t)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new Step with <span class='object_link'><a href="#note-instance_method" title="SpiSeq::Tracks::Step#note (method)">#note</a></span> offset by the given number of semitones.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#up-instance_method" title="#up (instance method)">#<strong>up</strong>(shift = 1)  &#x21d2; Step </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new Step with the same pitch class as <span class='object_link'><a href="#note-instance_method" title="SpiSeq::Tracks::Step#note (method)">#note</a></span> but with its octave shifted up by the given amount.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#velf-instance_method" title="#velf (instance method)">#<strong>velf</strong>  &#x21d2; Number </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The velocity of this step, as a fraction between 0 and 1.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#with_gate-instance_method" title="#with_gate (instance method)">#<strong>with_gate</strong>(new_gate)  &#x21d2; Step </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new Step with the given <span class='object_link'><a href="#gate-instance_method" title="SpiSeq::Tracks::Step#gate (method)">#gate</a></span>.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#with_note-instance_method" title="#with_note (instance method)">#<strong>with_note</strong>(new_note)  &#x21d2; Step </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new Step with the given <span class='object_link'><a href="#note-instance_method" title="SpiSeq::Tracks::Step#note (method)">#note</a></span>.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#with_octave-instance_method" title="#with_octave (instance method)">#<strong>with_octave</strong>(new_octave)  &#x21d2; Step </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new Step with a note that has the same pitch class as <span class='object_link'><a href="#note-instance_method" title="SpiSeq::Tracks::Step#note (method)">#note</a></span> but is in the given octave.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#with_vel-instance_method" title="#with_vel (instance method)">#<strong>with_vel</strong>(new_vel)  &#x21d2; Step </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new Step with the given <span class='object_link'><a href="#vel-instance_method" title="SpiSeq::Tracks::Step#vel (method)">velocity</a></span>.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#with_velf-instance_method" title="#with_velf (instance method)">#<strong>with_velf</strong>(new_velf)  &#x21d2; Step </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new Step with the given <span class='object_link'><a href="#velf-instance_method" title="SpiSeq::Tracks::Step#velf (method)">velocity</a></span>, expressed as a fraction between 0 and 1.</p></div></span>
+  
+</li>
+
+      
+    </ul>
+    
+  
+
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <h3 class="inherited">Methods inherited from <span class='object_link'><a href="StepBase.html" title="SpiSeq::Tracks::StepBase (class)">StepBase</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="StepBase.html#accum-instance_method" title="SpiSeq::Tracks::StepBase#accum (method)">#accum</a></span>, <span class='object_link'><a href="StepBase.html#repr-instance_method" title="SpiSeq::Tracks::StepBase#repr (method)">#repr</a></span>, <span class='object_link'><a href="StepBase.html#with_prob-instance_method" title="SpiSeq::Tracks::StepBase#with_prob (method)">#with_prob</a></span>, <span class='object_link'><a href="StepBase.html#without_accum-instance_method" title="SpiSeq::Tracks::StepBase#without_accum (method)">#without_accum</a></span>, <span class='object_link'><a href="StepBase.html#without_prob-instance_method" title="SpiSeq::Tracks::StepBase#without_prob (method)">#without_prob</a></span></p>
+<div id="constructor_details" class="method_details_list">
+  <h2>Constructor Details</h2>
+  
+    <div class="method_details first">
+  <h3 class="signature first" id="initialize-instance_method">
+  
+    #<strong>initialize</strong>(note, vel: 127, gate: 1.0, prob: nil, accum_delta: 0, accum_max: 12, accum_min: 0, accum_mode: :wrap, accum_prob: nil, accum_target: nil)  &#x21d2; <tt><span class='object_link'><a href="" title="Step (class)">Step</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Constructs a Step.</p>
+<p><code>Step.new</code> is aliased to <span class='object_link'><a href="../Tracks.html#S-class_method" title="SpiSeq::Tracks.S (method)">S</a></span> for convenience.</p>
+<p>By default, accumulation on a Step manifests as a shift in the <span class='object_link'><a href="#note-instance_method" title="SpiSeq::Tracks::Step#note (method)">#note</a></span> by
+the accumulated number of semitones. It can also target the <span class='object_link'><a href="#gate-instance_method" title="SpiSeq::Tracks::Step#gate (method)">#gate</a></span> or
+<span class='object_link'><a href="#vel-instance_method" title="SpiSeq::Tracks::Step#vel (method)">#vel</a></span> with the <code>accum_target</code> parameter.</p>
+<p>You may find it more convenient to set the accumulation parameters after
+constructing a step with the <span class='object_link'><a href="StepBase.html#accum-instance_method" title="SpiSeq::Tracks::StepBase#accum (method)">StepBase#accum</a></span> method.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>note</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="../Theory/MIDINote.html" title="SpiSeq::Theory::MIDINote (class)">MIDINote</a></span></tt>, <tt>String</tt>, <tt>Symbol</tt>, <tt>Integer</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The note this step
+will play when triggered. May be any value understood by
+<span class='object_link'><a href="../Theory/MIDINote.html#new-class_method" title="SpiSeq::Theory::MIDINote.new (method)">MIDINote.new</a></span>.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>vel</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>127</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The velocity to use when triggering a MIDI not event
+for the step. Values outside of 0 - 127 (inclusive) will be clamped to
+the nearest extreme. See <span class='object_link'><a href="#vel-instance_method" title="SpiSeq::Tracks::Step#vel (method)">#vel</a></span>.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>gate</span>
+      
+      
+        <span class='type'>(<tt>Number</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>1.0</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The gate for the note event, as a fraction of the
+duration of its slot. Values outside of 0.0 - 1.0 will be clamped to the
+nearest extreme. Gates are rounded to 2 decimal places. See <span class='object_link'><a href="#gate-instance_method" title="SpiSeq::Tracks::Step#gate (method)">#gate</a></span>.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>prob</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Prob.html" title="SpiSeq::Tracks::Prob (class)">Prob</a></span></tt>, <tt>Number</tt>, <tt>#call</tt>, <tt>nil</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The probability that the step will
+trigger when its slot is played, or nil if it should always trigger.
+Non-<span class='object_link'><a href="Prob.html" title="SpiSeq::Tracks::Prob (class)">Prob</a></span> values will be converted <span class='object_link'><a href="StepBase.html#initialize-instance_method" title="SpiSeq::Tracks::StepBase#initialize (method)">as described</a></span>.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>accum_delta</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>0</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The amount to add to the accumulation each
+time the step triggers during playback; see <span class='object_link'><a href="StepBase.html#accum_delta-instance_method" title="SpiSeq::Tracks::StepBase#accum_delta (method)">StepBase#accum_delta</a></span>.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>accum_max</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>12</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Defines the maximum total accumulation; see
+<span class='object_link'><a href="StepBase.html#accum_max-instance_method" title="SpiSeq::Tracks::StepBase#accum_max (method)">StepBase#accum_max</a></span>.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>accum_min</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>0</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Defines the minimum total accumulation; see
+<span class='object_link'><a href="StepBase.html#accum_min-instance_method" title="SpiSeq::Tracks::StepBase#accum_min (method)">StepBase#accum_min</a></span>.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>accum_mode</span>
+      
+      
+        <span class='type'>(<tt>:freeze</tt>, <tt>:wrap</tt>, <tt>:reverse</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>:wrap</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Controls the behavior when
+the total accumulation exceeds the range defined by <code>accum_min</code> and
+<code>accum_max</code>. See <span class='object_link'><a href="StepBase.html#accum_mode-instance_method" title="SpiSeq::Tracks::StepBase#accum_mode (method)">StepBase#accum_mode</a></span>.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>accum_prob</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Prob.html" title="SpiSeq::Tracks::Prob (class)">Prob</a></span></tt>, <tt>Number</tt>, <tt>#call</tt>, <tt>nil</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The probability that
+accumulation will trigger when the step does, or nil if it should always
+trigger. Non-<span class='object_link'><a href="Prob.html" title="SpiSeq::Tracks::Prob (class)">Prob</a></span> values will be converted to <span class='object_link'><a href="Prob.html" title="SpiSeq::Tracks::Prob (class)">Prob</a></span>s as described for
+<code>prob</code>.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>accum_target</span>
+      
+      
+        <span class='type'>(<tt>Symbol</tt>, <tt>nil</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The target for accumulation. If nil,
+defaults to <code>:note</code> for <span class='object_link'><a href="" title="SpiSeq::Tracks::Step (class)">Step</a></span>s and <code>:value</code> for <span class='object_link'><a href="CCStep.html" title="SpiSeq::Tracks::CCStep (class)">CCStep</a></span>s. <code>:value</code> is
+the only valid option for CCSteps. You may pass <code>:note</code>, <code>:gate</code>, or
+<code>:vel</code> for Steps, to direct accumulation to the corresponding attribute.</p></div>
+      
+    </li>
+  
+</ul>
+
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/tracks/step.rb', line 68</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_note'>note</span><span class='comma'>,</span> <span class='label'>vel:</span> <span class='int'>127</span><span class='comma'>,</span> <span class='label'>gate:</span> <span class='float'>1.0</span><span class='comma'>,</span> <span class='label'>prob:</span> <span class='kw'>nil</span><span class='comma'>,</span>
+               <span class='label'>accum_delta:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>accum_max:</span> <span class='int'>12</span><span class='comma'>,</span> <span class='label'>accum_min:</span> <span class='int'>0</span><span class='comma'>,</span>
+               <span class='label'>accum_mode:</span> <span class='symbol'>:wrap</span><span class='comma'>,</span> <span class='label'>accum_prob:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>accum_target:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='ivar'>@note</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../Theory.html" title="SpiSeq::Theory (module)">Theory</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Theory/MIDINote.html" title="SpiSeq::Theory::MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../Theory/MIDINote.html#new-class_method" title="SpiSeq::Theory::MIDINote.new (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_note'>note</span><span class='rparen'>)</span>
+
+  <span class='ivar'>@vel</span> <span class='op'>=</span> <span class='id identifier rubyid_vel'>vel</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span>
+  <span class='kw'>if</span> <span class='ivar'>@vel</span> <span class='op'>&lt;</span> <span class='int'>0</span>
+    <span class='ivar'>@vel</span> <span class='op'>=</span> <span class='int'>0</span>
+  <span class='kw'>elsif</span> <span class='ivar'>@vel</span> <span class='op'>&gt;</span> <span class='int'>127</span>
+    <span class='ivar'>@vel</span> <span class='op'>=</span> <span class='int'>127</span>
+  <span class='kw'>end</span>
+
+  <span class='ivar'>@gate</span> <span class='op'>=</span> <span class='id identifier rubyid_gate'>gate</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span><span class='period'>.</span><span class='id identifier rubyid_round'>round</span><span class='lparen'>(</span><span class='int'>2</span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='ivar'>@gate</span> <span class='op'>&lt;</span> <span class='float'>0.0</span>
+    <span class='ivar'>@gate</span> <span class='op'>=</span> <span class='float'>0.0</span>
+  <span class='kw'>elsif</span> <span class='ivar'>@gate</span> <span class='op'>&gt;</span> <span class='float'>1.0</span>
+    <span class='ivar'>@gate</span> <span class='op'>=</span> <span class='float'>1.0</span>
+  <span class='kw'>end</span>
+
+  <span class='kw'>super</span><span class='lparen'>(</span><span class='label'>prob:</span><span class='comma'>,</span> <span class='label'>accum_delta:</span><span class='comma'>,</span> <span class='label'>accum_max:</span><span class='comma'>,</span> <span class='label'>accum_min:</span><span class='comma'>,</span> <span class='label'>accum_mode:</span><span class='comma'>,</span> <span class='label'>accum_prob:</span><span class='comma'>,</span> <span class='label'>accum_target:</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+  
+</div>
+
+  <div id="instance_attr_details" class="attr_details">
+    <h2>Instance Attribute Details</h2>
+    
+      
+      <span id=""></span>
+      <div class="method_details first">
+  <h3 class="signature first" id="gate-instance_method">
+  
+    #<strong>gate</strong>  &#x21d2; <tt>Number</tt>  <span class="extras">(readonly)</span>
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The gate for this step as a percentage 0.0 - 1.0. This is the percentage
+of the duration of a slot for which the step will trigger its note. For
+instance, a value of 0.5 means the note will last half the duration of the
+slot in the <span class='object_link'><a href="Track.html" title="SpiSeq::Tracks::Track (class)">Track</a></span> that contains it.</p>
+<p>Gates are rounded to 2 decimal places.</p>
+<p>The note will not be played with a gate of 0. With a gate of 1, the note
+is &quot;tied&quot;. That is, it will continue without interruption if there is a
+Step in the next played slot with the same note.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Number</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+45
+46
+47</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/tracks/step.rb', line 45</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_gate'>gate</span>
+  <span class='ivar'>@gate</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id=""></span>
+      <div class="method_details ">
+  <h3 class="signature " id="note-instance_method">
+  
+    #<strong>note</strong>  &#x21d2; <tt><span class='object_link'><a href="../Theory/MIDINote.html" title="MIDINote (class)">MIDINote</a></span></tt>  <span class="extras">(readonly)</span>
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The note that this step will play when triggered during playback.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="../Theory/MIDINote.html" title="SpiSeq::Theory::MIDINote (class)">MIDINote</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+23
+24
+25</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/tracks/step.rb', line 23</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_note'>note</span>
+  <span class='ivar'>@note</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id=""></span>
+      <div class="method_details ">
+  <h3 class="signature " id="vel-instance_method">
+  
+    #<strong>vel</strong>  &#x21d2; <tt>Integer</tt>  <span class="extras">(readonly)</span>
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The velocity to use when playing this step over MIDI, 0 - 127 inclusive.</p>
+<p>When played with Sonic Pi's internal synthesis, the velocity will
+translate into an <code>amp</code> value passed to <code>play</code>.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+31
+32
+33</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/tracks/step.rb', line 31</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_vel'>vel</span>
+  <span class='ivar'>@vel</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="down-instance_method">
+  
+    #<strong>down</strong>(shift = 1)  &#x21d2; <tt><span class='object_link'><a href="" title="Step (class)">Step</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a new Step with the same pitch class as <span class='object_link'><a href="#note-instance_method" title="SpiSeq::Tracks::Step#note (method)">#note</a></span> but with its
+octave shifted down by the given amount. This is equivalent to
+<span class='object_link'><a href="#shift_octave-instance_method" title="SpiSeq::Tracks::Step#shift_octave (method)">#shift_octave</a></span> with the negation of its argument.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>shift</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>1</tt>)</em>
+      
+      
+    </li>
+  
+</ul>
+
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Tracks::Step (class)">Step</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+159</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/tracks/step.rb', line 159</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_down'>down</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='id identifier rubyid_shift_octave'>shift_octave</span><span class='lparen'>(</span><span class='op'>-</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="shift_gate-instance_method">
+  
+    #<strong>shift_gate</strong>(shift)  &#x21d2; <tt><span class='object_link'><a href="" title="Step (class)">Step</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a new Step with a gate equal to <span class='object_link'><a href="#gate-instance_method" title="SpiSeq::Tracks::Step#gate (method)">#gate</a></span> + shift. If the result is
+outside of 0 - 1, it will be clamped.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>shift</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Tracks::Step (class)">Step</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+131</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/tracks/step.rb', line 131</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_shift_gate'>shift_gate</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='id identifier rubyid_with_gate'>with_gate</span><span class='lparen'>(</span><span class='ivar'>@gate</span> <span class='op'>+</span> <span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="shift_octave-instance_method">
+  
+    #<strong>shift_octave</strong>(shift)  &#x21d2; <tt><span class='object_link'><a href="" title="Step (class)">Step</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a new Step with a note that has the same pitch class as <span class='object_link'><a href="#note-instance_method" title="SpiSeq::Tracks::Step#note (method)">#note</a></span>
+but an octave offset by <code>shift</code>. For instance, <code>S(:c1).shift_octave(3)</code>
+will return a step with a note of C4.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>shift</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Tracks::Step (class)">Step</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+145</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/tracks/step.rb', line 145</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_shift_octave'>shift_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='id identifier rubyid_with_note'>with_note</span><span class='lparen'>(</span><span class='ivar'>@note</span><span class='period'>.</span><span class='id identifier rubyid_shift_octave'>shift_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="shift_vel-instance_method">
+  
+    #<strong>shift_vel</strong>(shift)  &#x21d2; <tt><span class='object_link'><a href="" title="Step (class)">Step</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a new Step with a velocity equal to <span class='object_link'><a href="#vel-instance_method" title="SpiSeq::Tracks::Step#vel (method)">#vel</a></span> plus <code>shift</code>. If the
+resulting velocity is outside of 0 - 127, it will be clamped.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>shift</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Tracks::Step (class)">Step</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+106</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/tracks/step.rb', line 106</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_shift_vel'>shift_vel</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='id identifier rubyid_with_vel'>with_vel</span><span class='lparen'>(</span><span class='ivar'>@vel</span> <span class='op'>+</span> <span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="shift_velf-instance_method">
+  
+    #<strong>shift_velf</strong>(shift)  &#x21d2; <tt><span class='object_link'><a href="" title="Step (class)">Step</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a new Step a velocity equal to the current <span class='object_link'><a href="#velf-instance_method" title="SpiSeq::Tracks::Step#velf (method)">#velf</a></span> plus <code>shift</code>.
+If the resulting velocity is outside of 0 - 127, it will be clamped.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>shift</span>
+      
+      
+        <span class='type'>(<tt>Number</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Tracks::Step (class)">Step</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+119</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/tracks/step.rb', line 119</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_shift_velf'>shift_velf</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='id identifier rubyid_with_velf'>with_velf</span><span class='lparen'>(</span><span class='id identifier rubyid_velf'>velf</span> <span class='op'>+</span> <span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="tied?-instance_method">
+  
+    #<strong>tied?</strong>  &#x21d2; <tt>Boolean</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns true if this step is tied; that is, its <span class='object_link'><a href="#gate-instance_method" title="SpiSeq::Tracks::Step#gate (method)">#gate</a></span> is 1.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+175</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/tracks/step.rb', line 175</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_tied?'>tied?</span> <span class='op'>=</span> <span class='ivar'>@gate</span> <span class='op'>==</span> <span class='float'>1.0</span>  <span class='comment'># rubocop:disable Lint/FloatComparison</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="transpose-instance_method">
+  
+    #<strong>transpose</strong>(shift)  &#x21d2; <tt><span class='object_link'><a href="" title="Step (class)">Step</a></span></tt> 
+  
+
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='shift_tone-instance_method'>shift_tone</span>, <span id='t-instance_method'>t</span></span>
+    </span>
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a new Step with <span class='object_link'><a href="#note-instance_method" title="SpiSeq::Tracks::Step#note (method)">#note</a></span> offset by the given number of semitones.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>shift</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Tracks::Step (class)">Step</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+164</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/tracks/step.rb', line 164</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_transpose'>transpose</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='id identifier rubyid_with_note'>with_note</span><span class='lparen'>(</span><span class='ivar'>@note</span><span class='period'>.</span><span class='id identifier rubyid_transpose'>transpose</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="up-instance_method">
+  
+    #<strong>up</strong>(shift = 1)  &#x21d2; <tt><span class='object_link'><a href="" title="Step (class)">Step</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a new Step with the same pitch class as <span class='object_link'><a href="#note-instance_method" title="SpiSeq::Tracks::Step#note (method)">#note</a></span> but with its
+octave shifted up by the given amount. This is equivalent to
+<span class='object_link'><a href="#shift_octave-instance_method" title="SpiSeq::Tracks::Step#shift_octave (method)">#shift_octave</a></span>.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>shift</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>1</tt>)</em>
+      
+      
+    </li>
+  
+</ul>
+
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Tracks::Step (class)">Step</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+152</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/tracks/step.rb', line 152</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_up'>up</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='id identifier rubyid_shift_octave'>shift_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_shift'>shift</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="velf-instance_method">
+  
+    #<strong>velf</strong>  &#x21d2; <tt>Number</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The velocity of this step, as a fraction between 0 and 1.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Number</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><span class='object_link'><a href="#vel-instance_method" title="SpiSeq::Tracks::Step#vel (method)">#vel</a></span></li>
+    
+  </ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+171</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/tracks/step.rb', line 171</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_velf'>velf</span> <span class='op'>=</span> <span class='ivar'>@vel</span> <span class='op'>/</span> <span class='float'>127.0</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="with_gate-instance_method">
+  
+    #<strong>with_gate</strong>(new_gate)  &#x21d2; <tt><span class='object_link'><a href="" title="Step (class)">Step</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a new Step with the given <span class='object_link'><a href="#gate-instance_method" title="SpiSeq::Tracks::Step#gate (method)">#gate</a></span>. If the value is outside of 0 -
+1, it will be clamped.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>new_gate</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Tracks::Step (class)">Step</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+125</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/tracks/step.rb', line 125</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_with_gate'>with_gate</span><span class='lparen'>(</span><span class='id identifier rubyid_new_gate'>new_gate</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>gate:</span> <span class='id identifier rubyid_new_gate'>new_gate</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="with_note-instance_method">
+  
+    #<strong>with_note</strong>(new_note)  &#x21d2; <tt><span class='object_link'><a href="" title="Step (class)">Step</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a new Step with the given <span class='object_link'><a href="#note-instance_method" title="SpiSeq::Tracks::Step#note (method)">#note</a></span>.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>new_note</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="../Theory/MIDINote.html" title="SpiSeq::Theory::MIDINote (class)">MIDINote</a></span></tt>, <tt>String</tt>, <tt>Symbol</tt>, <tt>Integer</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>A MIDINote or
+any value understood by <span class='object_link'><a href="../Theory/MIDINote.html#new-class_method" title="SpiSeq::Theory::MIDINote.new (method)">MIDINote.new</a></span>.</p></div>
+      
+    </li>
+  
+</ul>
+
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Tracks::Step (class)">Step</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+94</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/tracks/step.rb', line 94</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_with_note'>with_note</span><span class='lparen'>(</span><span class='id identifier rubyid_new_note'>new_note</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>note:</span> <span class='id identifier rubyid_new_note'>new_note</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="with_octave-instance_method">
+  
+    #<strong>with_octave</strong>(new_octave)  &#x21d2; <tt><span class='object_link'><a href="" title="Step (class)">Step</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a new Step with a note that has the same pitch class as <span class='object_link'><a href="#note-instance_method" title="SpiSeq::Tracks::Step#note (method)">#note</a></span>
+but is in the given octave. For instance, <code>S(:c1).with_octave(5)</code> will
+return a step with a note of C5.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>new_octave</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Tracks::Step (class)">Step</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+138</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/tracks/step.rb', line 138</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_with_octave'>with_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_new_octave'>new_octave</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='id identifier rubyid_with_note'>with_note</span><span class='lparen'>(</span><span class='ivar'>@note</span><span class='period'>.</span><span class='id identifier rubyid_with_octave'>with_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_new_octave'>new_octave</span><span class='rparen'>)</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="with_vel-instance_method">
+  
+    #<strong>with_vel</strong>(new_vel)  &#x21d2; <tt><span class='object_link'><a href="" title="Step (class)">Step</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a new Step with the given <span class='object_link'><a href="#vel-instance_method" title="SpiSeq::Tracks::Step#vel (method)">velocity</a></span>. Values outside of 0 -
+127 will be clamped.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>new_vel</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The new velocity; see <span class='object_link'><a href="#vel-instance_method" title="SpiSeq::Tracks::Step#vel (method)">#vel</a></span>.</p></div>
+      
+    </li>
+  
+</ul>
+
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Tracks::Step (class)">Step</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+100</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/tracks/step.rb', line 100</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_with_vel'>with_vel</span><span class='lparen'>(</span><span class='id identifier rubyid_new_vel'>new_vel</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>vel:</span> <span class='id identifier rubyid_new_vel'>new_vel</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="with_velf-instance_method">
+  
+    #<strong>with_velf</strong>(new_velf)  &#x21d2; <tt><span class='object_link'><a href="" title="Step (class)">Step</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a new Step with the given <span class='object_link'><a href="#velf-instance_method" title="SpiSeq::Tracks::Step#velf (method)">velocity</a></span>, expressed as a
+fraction between 0 and 1. Values outside of that range will be clamped.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>new_velf</span>
+      
+      
+        <span class='type'>(<tt>Number</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Tracks::Step (class)">Step</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><span class='object_link'><a href="#velf-instance_method" title="SpiSeq::Tracks::Step#velf (method)">#velf</a></span></li>
+    
+  </ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+113</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/tracks/step.rb', line 113</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_with_velf'>with_velf</span><span class='lparen'>(</span><span class='id identifier rubyid_new_velf'>new_velf</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>vel:</span> <span class='id identifier rubyid_new_velf'>new_velf</span> <span class='op'>*</span> <span class='int'>127</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+
+      
+
+    </div>
+  </body>
+</html>

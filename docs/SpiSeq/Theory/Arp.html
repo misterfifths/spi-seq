@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Module: SpiSeq::Theory::Arp
+  
+    &mdash; spi-seq Documentation
+  
+</title>
+
+  <link rel="stylesheet" href="../../css/style.css" type="text/css">
+
+  <link rel="stylesheet" href="../../css/common.css" type="text/css">
+
+<script type="text/javascript">
+  pathId = "SpiSeq::Theory::Arp";
+  relpath = '../../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="main_progress" aria-hidden="true"></div>
+
+    <div class="nav_wrap">
+      <iframe id="nav" src="../../class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../../_index.html">Index (A)</a> &raquo;
+    <span class='title'><span class='object_link'><a href="../../SpiSeq.html" title="SpiSeq (module)">SpiSeq</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../Theory.html" title="SpiSeq::Theory (module)">Theory</a></span></span>
+     &raquo; 
+    <span class="title">Arp</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="../../class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Module: SpiSeq::Theory::Arp
+  
+  
+  
+</h1>
+<div class="box_info">
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>lib/spiseq/theory/arp.rb
+</dd>
+  </dl>
+  
+</div>
+
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    <p>A simple arpeggiator. See <span class='object_link'><a href="#arp-class_method" title="SpiSeq::Theory::Arp.arp (method)">arp</a></span> for details.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+  
+    <h2>
+      Constant Summary
+      <small><a href="#" class="constants_summary_toggle">collapse</a></small>
+    </h2>
+
+    <dl class="constants">
+      
+        <dt id="ARP_DIRECTIONS-constant" class="">ARP_DIRECTIONS =
+          <div class="docstring">
+  <div class="discussion">
+    <p>All arpeggiation directions supported by <span class='object_link'><a href="#arp-class_method" title="SpiSeq::Theory::Arp.arp (method)">arp</a></span>.</p>
+<p>Valid directions are:</p>
+<p><code>:up</code> returns notes in increasing order.</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_arp'><span class='object_link'><a href="../Theory.html#arp-class_method" title="SpiSeq::Theory.arp (method)">arp</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:e4</span><span class='comma'>,</span> <span class='symbol'>:d4</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='symbol'>:up</span><span class='rparen'>)</span>
+<span class='comment'># returns [:c4, :d4, :e4]
+</span></code></pre>
+<p><code>:down</code> returns notes in decreasing order.</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_arp'><span class='object_link'><a href="../Theory.html#arp-class_method" title="SpiSeq::Theory.arp (method)">arp</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:e4</span><span class='comma'>,</span> <span class='symbol'>:d4</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='symbol'>:down</span><span class='rparen'>)</span>
+<span class='comment'># returns [:e4, :d4, :c4]
+</span></code></pre>
+<p><code>:updown</code> returns notes in increasing order, then in reverse. The middle
+note is not repeated, nor is the final note.</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_arp'><span class='object_link'><a href="../Theory.html#arp-class_method" title="SpiSeq::Theory.arp (method)">arp</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:e4</span><span class='comma'>,</span> <span class='symbol'>:d4</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='symbol'>:updown</span><span class='rparen'>)</span>
+<span class='comment'># returns [:c4, :d4, :e4, :d4]
+</span></code></pre>
+<p><code>:twouptwodown</code> returns notes in the same order as <code>:updown</code>, but with
+each note doubled. The middle note is not repeated, nor is the final note.</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_arp'><span class='object_link'><a href="../Theory.html#arp-class_method" title="SpiSeq::Theory.arp (method)">arp</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:e4</span><span class='comma'>,</span> <span class='symbol'>:d4</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='symbol'>:twouptwodown</span><span class='rparen'>)</span>
+<span class='comment'># returns [:c4, :c4, :d4, :d4, :e4, :e4, :d4, :d4]
+</span></code></pre>
+<p><code>:alternin</code> returns notes in alternating order, working inward from
+opposite edges of the input.</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_arp'><span class='object_link'><a href="../Theory.html#arp-class_method" title="SpiSeq::Theory.arp (method)">arp</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:a1</span><span class='comma'>,</span> <span class='symbol'>:b2</span><span class='comma'>,</span> <span class='symbol'>:c3</span><span class='comma'>,</span> <span class='symbol'>:d4</span><span class='comma'>,</span> <span class='symbol'>:e5</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='symbol'>:alternin</span><span class='rparen'>)</span>
+<span class='comment'># returns [:a1, :e5, :b2, :d4, :c3]
+</span></code></pre>
+<p><code>:alternout</code> returns notes in alternating order, working outward from the
+middle of the input.</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_arp'><span class='object_link'><a href="../Theory.html#arp-class_method" title="SpiSeq::Theory.arp (method)">arp</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:a1</span><span class='comma'>,</span> <span class='symbol'>:b2</span><span class='comma'>,</span> <span class='symbol'>:c3</span><span class='comma'>,</span> <span class='symbol'>:d4</span><span class='comma'>,</span> <span class='symbol'>:e5</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='symbol'>:alternout</span><span class='rparen'>)</span>
+<span class='comment'># returns [:c3, :b2, :d4, :a1, :e5]
+</span></code></pre>
+<p><code>:alterninout</code> returns notes in alternating order, first inward like
+<code>:alternin</code>, then outward like <code>:alternout</code>, but not repeating the middle
+note.</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_arp'><span class='object_link'><a href="../Theory.html#arp-class_method" title="SpiSeq::Theory.arp (method)">arp</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:a1</span><span class='comma'>,</span> <span class='symbol'>:b2</span><span class='comma'>,</span> <span class='symbol'>:c3</span><span class='comma'>,</span> <span class='symbol'>:d4</span><span class='comma'>,</span> <span class='symbol'>:e5</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='symbol'>:alterninout</span><span class='rparen'>)</span>
+<span class='comment'># returns [:a1, :e5, :b2, :d4, :c3, :b2, :d4, :a1, :e5]
+</span></code></pre>
+<p><code>:peak</code> returns notes in an order that climbs to the highest note and then
+descends. The notes are sorted ascending, then every other note is chosen
+to walk toward the highest note, then the remaining notes appear in
+descending order.</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_arp'><span class='object_link'><a href="../Theory.html#arp-class_method" title="SpiSeq::Theory.arp (method)">arp</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:c1</span><span class='comma'>,</span> <span class='symbol'>:c3</span><span class='comma'>,</span> <span class='symbol'>:c2</span><span class='comma'>,</span> <span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:c5</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='symbol'>:peak</span><span class='rparen'>)</span>
+<span class='comment'># returns [:c1, :c3, :c5, :c4, :c2]
+</span></code></pre>
+<p><code>:valley</code> returns notes in an order that descends from the highest note
+and then ascends. The highest note appears first, then every other note
+descending to the lowest, then the remaining notes in ascending order.</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_arp'><span class='object_link'><a href="../Theory.html#arp-class_method" title="SpiSeq::Theory.arp (method)">arp</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:c1</span><span class='comma'>,</span> <span class='symbol'>:c3</span><span class='comma'>,</span> <span class='symbol'>:c2</span><span class='comma'>,</span> <span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:c5</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='symbol'>:valley</span><span class='rparen'>)</span>
+<span class='comment'># returns [:c5, :c3, :c1, :c2, :c4]
+</span></code></pre>
+<p><code>:pinky</code> returns notes in ascending order, but with the highest note in
+every other position. The high note is not doubled at the end.</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_arp'><span class='object_link'><a href="../Theory.html#arp-class_method" title="SpiSeq::Theory.arp (method)">arp</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:e4</span><span class='comma'>,</span> <span class='symbol'>:d4</span><span class='comma'>,</span> <span class='symbol'>:c5</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='symbol'>:pinky</span><span class='rparen'>)</span>
+<span class='comment'># returns [:c4, :c5, :d4, :c5, :e4, :c5]
+</span></code></pre>
+<p><code>:thumb</code> returns notes in ascending order, but with the lowest note in
+every other position. The low note is not doubled at the beginning.</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_arp'><span class='object_link'><a href="../Theory.html#arp-class_method" title="SpiSeq::Theory.arp (method)">arp</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:e4</span><span class='comma'>,</span> <span class='symbol'>:d4</span><span class='comma'>,</span> <span class='symbol'>:c5</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='symbol'>:thumb</span><span class='rparen'>)</span>
+<span class='comment'># returns [:d4, :c4, :e4, :c4, :c5, :c4]
+</span></code></pre>
+<p><code>:random</code> returns notes in a random order.</p>
+<p><code>:order</code> does not reorder notes; they will be returned as passed t
+<span class='object_link'><a href="#arp-class_method" title="SpiSeq::Theory::Arp.arp (method)">arp</a></span>. This is not particularly useful on its own, but may be together
+with <code>spread</code> or <code>extra_octaves</code>, which add extra notes to the input.</p>
+<p>There are aliases for many of the above names; print this array to see all
+possible values.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Array&lt;Symbol&gt;</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'>Arpeggiators</span><span class='op'>::</span><span class='const'>ALIASES</span><span class='period'>.</span><span class='id identifier rubyid_keys'>keys</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+      
+    </dl>
+  
+
+
+
+
+
+
+
+  
+    <h2>
+      Class Method Summary
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#arp-class_method" title="arp (class method)">.<strong>arp</strong>(notes, direction, spread: 0, extra_octaves: [])  &#x21d2; Array&lt;MIDINote&gt; </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns an array of <span class='object_link'><a href="MIDINote.html" title="SpiSeq::Theory::MIDINote (class)">MIDINote</a></span>s by arpeggiating the given array of notes.</p></div></span>
+  
+</li>
+
+      
+    </ul>
+    
+  
+
+
+
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="arp-class_method">
+  
+    .<strong>arp</strong>(notes, direction, spread: 0, extra_octaves: [])  &#x21d2; <tt>Array&lt;<span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span>&gt;</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns an array of <span class='object_link'><a href="MIDINote.html" title="SpiSeq::Theory::MIDINote (class)">MIDINote</a></span>s by arpeggiating the given array of notes.
+See <span class='object_link'><a href="#ARP_DIRECTIONS-constant" title="SpiSeq::Theory::Arp::ARP_DIRECTIONS (constant)">ARP_DIRECTIONS</a></span> for details on the possible values for <code>direction</code>.</p>
+<p>If <code>spread</code> is &gt; 0, the result will have a note added an octave above each
+of the the <code>spread</code> lowest notes. If this operation creates duplicate
+notes (e.g. <code>spread</code>=1 with <code>[:e3, :e4]</code>, which would result in two E4s),
+the duplicates will not be added to the result. In the <code>:order</code> direction,
+the notes from the <code>spread</code> will appear at the end, in order from lowest
+to highest.</p>
+<p>If <code>extra_octaves</code> is specified, the result will contain copies of the
+notes in the <code>notes</code> array shifted by each offset in <code>extra_octaves</code>. This
+addition applies before any <code>spread</code>. If the direction is <code>:order</code>, notes
+added this way will appear at the end of the result, before notes from the
+<code>spread</code>. Like <code>spread</code>, <code>extra_octaves</code> will not add duplicate notes.</p>
+<p>This method is aliased globally as <span class='object_link'><a href="../Theory.html#arp-class_method" title="SpiSeq::Theory.arp (method)">arp</a></span> for convenience.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <h4 class="tag_title">Examples:</h4>
+    
+      
+      <pre class="example code"><code><span class='id identifier rubyid_arp'><span class='object_link'><a href="../Theory.html#arp-class_method" title="SpiSeq::Theory.arp (method)">arp</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:a1</span><span class='comma'>,</span> <span class='symbol'>:b1</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='symbol'>:down</span><span class='comma'>,</span> <span class='label'>extra_octaves:</span> <span class='lbracket'>[</span><span class='op'>-</span><span class='int'>1</span><span class='comma'>,</span> <span class='int'>2</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+<span class='comment'># The notes from [:a1, :b1], shifted down an octave and up 2 octaves,
+</span><span class='comment'># are added before applying the direction :down
+</span><span class='comment'># returns [:b3, :a3, :b1, :a1, :b0, :a0]</span></code></pre>
+    
+      
+      <pre class="example code"><code><span class='id identifier rubyid_arp'><span class='object_link'><a href="../Theory.html#arp-class_method" title="SpiSeq::Theory.arp (method)">arp</a></span></span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='symbol'>:b1</span><span class='comma'>,</span> <span class='symbol'>:a1</span><span class='comma'>,</span> <span class='symbol'>:c1</span><span class='comma'>,</span> <span class='symbol'>:d1</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='symbol'>:up</span><span class='comma'>,</span> <span class='label'>spread:</span> <span class='int'>3</span><span class='rparen'>)</span>
+<span class='comment'># Before applying the direction :up, the three lowest notes
+</span><span class='comment'># (:c1, :d1, :a1) are added to the pool, shifted up an octave.
+</span><span class='comment'># returns [:c1, :d1, :a1, :b1, :c2, :d2, :a2]</span></code></pre>
+    
+  </div>
+
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>notes</span>
+      
+      
+        <span class='type'>(<tt>Array&lt;<span class='object_link'><a href="MIDINote.html" title="SpiSeq::Theory::MIDINote (class)">MIDINote</a></span>, Symbol, String, Integer&gt;</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The notes to
+arpeggiate; an array of <span class='object_link'><a href="MIDINote.html" title="SpiSeq::Theory::MIDINote (class)">MIDINote</a></span>s or any value accepted by
+<span class='object_link'><a href="MIDINote.html#new-class_method" title="SpiSeq::Theory::MIDINote.new (method)">MIDINote.new</a></span>.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>direction</span>
+      
+      
+        <span class='type'>(<tt>Symbol</tt>, <tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>One of the direction names defined in
+<span class='object_link'><a href="#ARP_DIRECTIONS-constant" title="SpiSeq::Theory::Arp::ARP_DIRECTIONS (constant)">ARP_DIRECTIONS</a></span>, e.g. <code>:pinky</code> or <code>:updown</code>.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>spread</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>0</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Adds notes an octave above some number of the
+lowest notes in the result. See above for details.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>extra_octaves</span>
+      
+      
+        <span class='type'>(<tt>Array&lt;Integer&gt;</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>[]</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Adds a copy of the incoming notes
+shifted by some number of octaves before arpeggiating. See above for
+details.</p></div>
+      
+    </li>
+  
+</ul>
+
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Array&lt;<span class='object_link'><a href="MIDINote.html" title="SpiSeq::Theory::MIDINote (class)">MIDINote</a></span>&gt;</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The arpeggiated notes.</p></div>
+      
+    </li>
+  
+</ul>
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><span class='object_link'><a href="../Tracks/Track.html#arp-class_method" title="SpiSeq::Tracks::Track.arp (method)">Track.arp</a></span></li>
+    
+  </ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/arp.rb', line 303</span>
+
+<span class='id identifier rubyid_module_function'>module_function</span> <span class='kw'>def</span> <span class='id identifier rubyid_arp'><span class='object_link'><a href="../Theory.html#arp-class_method" title="SpiSeq::Theory.arp (method)">arp</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_notes'>notes</span><span class='comma'>,</span> <span class='id identifier rubyid_direction'>direction</span><span class='comma'>,</span> <span class='label'>spread:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>extra_octaves:</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_arp_method_name'>arp_method_name</span> <span class='op'>=</span> <span class='const'>Arpeggiators</span><span class='op'>::</span><span class='const'>ALIASES</span><span class='lbracket'>[</span><span class='id identifier rubyid_direction'>direction</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unknown arpeggiator direction </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_direction'>direction</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_arp_method_name'>arp_method_name</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+  <span class='id identifier rubyid_arpeggiator'>arpeggiator</span> <span class='op'>=</span> <span class='const'>Arpeggiators</span><span class='period'>.</span><span class='id identifier rubyid_method'>method</span><span class='lparen'>(</span><span class='id identifier rubyid_arp_method_name'>arp_method_name</span><span class='rparen'>)</span>
+
+  <span class='comment'># See the note in enumerable? about arrayify.
+</span>  <span class='id identifier rubyid_notes'>notes</span> <span class='op'>=</span> <span class='const'>Internal</span><span class='op'>::</span><span class='const'>Enumerables</span><span class='period'>.</span><span class='id identifier rubyid_arrayify'>arrayify</span><span class='lparen'>(</span><span class='id identifier rubyid_notes'>notes</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_n'>n</span><span class='op'>|</span> <span class='const'><span class='object_link'><a href="MIDINote.html" title="SpiSeq::Theory::MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="MIDINote.html#new-class_method" title="SpiSeq::Theory::MIDINote.new (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
+  <span class='kw'>return</span> <span class='lbracket'>[</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id identifier rubyid_notes'>notes</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
+
+  <span class='id identifier rubyid_orig_notes'>orig_notes</span> <span class='op'>=</span> <span class='id identifier rubyid_notes'>notes</span><span class='period'>.</span><span class='id identifier rubyid_dup'>dup</span>
+
+  <span class='id identifier rubyid_extra_octaves'>extra_octaves</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_octave_shift'>octave_shift</span><span class='op'>|</span>
+    <span class='id identifier rubyid_orig_notes'>orig_notes</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_n'>n</span><span class='op'>|</span>
+      <span class='id identifier rubyid_new_note'>new_note</span> <span class='op'>=</span> <span class='id identifier rubyid_n'>n</span><span class='period'>.</span><span class='id identifier rubyid_up'>up</span><span class='lparen'>(</span><span class='id identifier rubyid_octave_shift'>octave_shift</span><span class='rparen'>)</span>
+      <span class='id identifier rubyid_notes'>notes</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_new_note'>new_note</span> <span class='kw'>unless</span> <span class='id identifier rubyid_notes'>notes</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_new_note'>new_note</span><span class='rparen'>)</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+
+  <span class='kw'>if</span> <span class='id identifier rubyid_spread'>spread</span> <span class='op'>&gt;</span> <span class='int'>0</span>
+    <span class='comment'># Take at most spread lowest notes and add a note an octave up. Do not
+</span>    <span class='comment'># duplicate notes, and do not effect the sorting of the original array.
+</span>    <span class='comment'># Notes added from spread go at the end, in case we&#39;re playing in order.
+</span>    <span class='comment'># Notes added from a spread are eligible to be spread themselves.
+</span>    <span class='id identifier rubyid_sorted_notes'>sorted_notes</span> <span class='op'>=</span> <span class='id identifier rubyid_notes'>notes</span><span class='period'>.</span><span class='id identifier rubyid_sort'>sort</span>
+    <span class='id identifier rubyid_i'>i</span> <span class='op'>=</span> <span class='int'>0</span>
+    <span class='kw'>while</span> <span class='id identifier rubyid_spread'>spread</span> <span class='op'>&gt;</span> <span class='int'>0</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_i'>i</span> <span class='op'>&lt;</span> <span class='id identifier rubyid_sorted_notes'>sorted_notes</span><span class='period'>.</span><span class='id identifier rubyid_length'>length</span>
+      <span class='id identifier rubyid_new_note'>new_note</span> <span class='op'>=</span> <span class='id identifier rubyid_sorted_notes'>sorted_notes</span><span class='lbracket'>[</span><span class='id identifier rubyid_i'>i</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_up'>up</span>
+      <span class='id identifier rubyid_i'>i</span> <span class='op'>+=</span> <span class='int'>1</span>
+      <span class='kw'>next</span> <span class='kw'>if</span> <span class='id identifier rubyid_notes'>notes</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_new_note'>new_note</span><span class='rparen'>)</span>
+
+      <span class='id identifier rubyid_notes'>notes</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_new_note'>new_note</span>
+      <span class='id identifier rubyid_sorted_notes'>sorted_notes</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_new_note'>new_note</span>
+      <span class='id identifier rubyid_sorted_notes'>sorted_notes</span><span class='period'>.</span><span class='id identifier rubyid_sort!'>sort!</span>
+      <span class='id identifier rubyid_spread'>spread</span> <span class='op'>-=</span> <span class='int'>1</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+
+  <span class='id identifier rubyid_arpeggiator'>arpeggiator</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='id identifier rubyid_notes'>notes</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+
+      
+
+    </div>
+  </body>
+</html>

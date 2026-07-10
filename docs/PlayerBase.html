@@ -709,7 +709,7 @@ internally applying a BPM multiplier.</p>
   <span class='ivar'>@slot_idx</span> <span class='op'>=</span> <span class='int'>0</span>
   <span class='id identifier rubyid_reset_for_new_cycle'>reset_for_new_cycle</span>
 
-  <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_with_bpm_mul'>with_bpm_mul</span><span class='lparen'>(</span><span class='ivar'>@track</span><span class='period'>.</span><span class='id identifier rubyid_timescale'>timescale</span><span class='rparen'>)</span> <span class='kw'>do</span>
+  <span class='const'><span class='object_link'><a href="SpiSeq.html" title="SpiSeq (module)">SpiSeq</a></span></span><span class='op'>::</span><span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_with_bpm_mul'>with_bpm_mul</span><span class='lparen'>(</span><span class='ivar'>@track</span><span class='period'>.</span><span class='id identifier rubyid_timescale'>timescale</span><span class='rparen'>)</span> <span class='kw'>do</span>
     <span class='ivar'>@track</span><span class='period'>.</span><span class='id identifier rubyid_num_slots'>num_slots</span><span class='period'>.</span><span class='id identifier rubyid_times'>times</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_i'>i</span><span class='op'>|</span>
       <span class='ivar'>@slot_idx</span> <span class='op'>=</span> <span class='id identifier rubyid_i'>i</span>
 
@@ -721,7 +721,7 @@ internally applying a BPM multiplier.</p>
       <span class='id identifier rubyid_play_steps'>play_steps</span><span class='lparen'>(</span><span class='id identifier rubyid_triggering_steps'>triggering_steps</span><span class='rparen'>)</span>
 
       <span class='comment'># Sleep until it&#39;s time for the next slot
-</span>      <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_sleep'>sleep</span><span class='lparen'>(</span><span class='ivar'>@track</span><span class='period'>.</span><span class='id identifier rubyid_granularity'>granularity</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span><span class='rparen'>)</span>
+</span>      <span class='const'><span class='object_link'><a href="SpiSeq.html" title="SpiSeq (module)">SpiSeq</a></span></span><span class='op'>::</span><span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_sleep'>sleep</span><span class='lparen'>(</span><span class='ivar'>@track</span><span class='period'>.</span><span class='id identifier rubyid_granularity'>granularity</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span><span class='rparen'>)</span>
     <span class='kw'>end</span>
   <span class='kw'>end</span>
 
@@ -770,8 +770,8 @@ steps are stopped. The <span class='object_link'><a href="#cycle-instance_method
 
 <span class='kw'>def</span> <span class='id identifier rubyid_sleep'>sleep</span>
   <span class='id identifier rubyid_end_all_steps'>end_all_steps</span>
-  <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_with_bpm_mul'>with_bpm_mul</span><span class='lparen'>(</span><span class='ivar'>@track</span><span class='period'>.</span><span class='id identifier rubyid_timescale'>timescale</span><span class='rparen'>)</span> <span class='kw'>do</span>
-    <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_sleep'>sleep</span><span class='lparen'>(</span><span class='ivar'>@track</span><span class='period'>.</span><span class='id identifier rubyid_beat_length'>beat_length</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="SpiSeq.html" title="SpiSeq (module)">SpiSeq</a></span></span><span class='op'>::</span><span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_with_bpm_mul'>with_bpm_mul</span><span class='lparen'>(</span><span class='ivar'>@track</span><span class='period'>.</span><span class='id identifier rubyid_timescale'>timescale</span><span class='rparen'>)</span> <span class='kw'>do</span>
+    <span class='const'><span class='object_link'><a href="SpiSeq.html" title="SpiSeq (module)">SpiSeq</a></span></span><span class='op'>::</span><span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_sleep'>sleep</span><span class='lparen'>(</span><span class='ivar'>@track</span><span class='period'>.</span><span class='id identifier rubyid_beat_length'>beat_length</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>

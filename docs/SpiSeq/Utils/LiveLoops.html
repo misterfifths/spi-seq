@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Module: SpiSeq::Utils::LiveLoops
+  
+    &mdash; spi-seq Documentation
+  
+</title>
+
+  <link rel="stylesheet" href="../../css/style.css" type="text/css">
+
+  <link rel="stylesheet" href="../../css/common.css" type="text/css">
+
+<script type="text/javascript">
+  pathId = "SpiSeq::Utils::LiveLoops";
+  relpath = '../../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="main_progress" aria-hidden="true"></div>
+
+    <div class="nav_wrap">
+      <iframe id="nav" src="../../class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../../_index.html">Index (L)</a> &raquo;
+    <span class='title'><span class='object_link'><a href="../../SpiSeq.html" title="SpiSeq (module)">SpiSeq</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../Utils.html" title="SpiSeq::Utils (module)">Utils</a></span></span>
+     &raquo; 
+    <span class="title">LiveLoops</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="../../class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Module: SpiSeq::Utils::LiveLoops
+  
+  
+  
+</h1>
+<div class="box_info">
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>lib/spiseq/utils/live_loops.rb
+</dd>
+  </dl>
+  
+</div>
+
+
+
+
+
+
+
+
+  
+    <h2>
+      Playback and live loops
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#cc_mutable_live_loop-class_method" title="cc_mutable_live_loop (class method)">.<strong>cc_mutable_live_loop</strong>(loop_name, cc:, port: nil, channel: nil, start_muted: false) {|muted, arg| ... } </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Starts a new <code>live_loop</code> that can be muted by a MIDI CC message.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#loop_is_muted%3F-class_method" title="loop_is_muted? (class method)">.<strong>loop_is_muted?</strong>(loop_name)  &#x21d2; Boolean </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns whether the given mutable <code>live_loop</code> (i.e., one created by <span class='object_link'><a href="#mutable_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.mutable_live_loop (method)">mutable_live_loop</a></span>, <span class='object_link'><a href="#cc_mutable_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.cc_mutable_live_loop (method)">cc_mutable_live_loop</a></span>, or <span class='object_link'><a href="../Playback.html#track_live_loop-class_method" title="SpiSeq::Playback.track_live_loop (method)">track_live_loop</a></span>) is muted.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#mutable_live_loop-class_method" title="mutable_live_loop (class method)">.<strong>mutable_live_loop</strong>(loop_name, start_muted: false) {|muted, arg| ... } </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Starts a new <code>live_loop</code> that can be muted with <span class='object_link'><a href="#mute_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.mute_live_loop (method)">mute_live_loop</a></span>.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#mute_live_loop-class_method" title="mute_live_loop (class method)">.<strong>mute_live_loop</strong>(loop_name, mute = true)  </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Mutes or unmutes the given <code>live_loop</code>, assuming it was created by <span class='object_link'><a href="#mutable_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.mutable_live_loop (method)">mutable_live_loop</a></span>, <span class='object_link'><a href="#cc_mutable_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.cc_mutable_live_loop (method)">cc_mutable_live_loop</a></span>, or <span class='object_link'><a href="../Playback.html#track_live_loop-class_method" title="SpiSeq::Playback.track_live_loop (method)">track_live_loop</a></span>.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#unmute_live_loop-class_method" title="unmute_live_loop (class method)">.<strong>unmute_live_loop</strong>(loop_name)  </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Unmutes the given mutable <code>live_loop</code> (i.e., one created by <span class='object_link'><a href="#mutable_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.mutable_live_loop (method)">mutable_live_loop</a></span>, <span class='object_link'><a href="#cc_mutable_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.cc_mutable_live_loop (method)">cc_mutable_live_loop</a></span>, or <span class='object_link'><a href="../Playback.html#track_live_loop-class_method" title="SpiSeq::Playback.track_live_loop (method)">track_live_loop</a></span>).</p></div></span>
+  
+</li>
+
+      
+    </ul>
+    
+  
+
+
+
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="cc_mutable_live_loop-class_method">
+  
+    .<strong>cc_mutable_live_loop</strong>(loop_name, cc:, port: nil, channel: nil, start_muted: false) {|muted, arg| ... } 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Starts a new <code>live_loop</code> that can be muted by a MIDI CC message. A value of
+0 for the CC will mute, and any other value will unmute. What &quot;mute&quot; means
+must be implemented by the given block; this function merely manages the
+muted state and informs the block of it.</p>
+<p>Any additional named arguments (e.g. <code>sync</code> or <code>init</code>) to this function are
+passed verbatim to the internal <code>live_loop</code>.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>cc</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The CC number to monitor to control muting of the loop.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>channel</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>, <tt>String</tt>, <tt>nil</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The MIDI channel to watch for CC
+messages. If nil, falls back to the global default set by
+<span class='object_link'><a href="MIDI.html#use_cc_control_defaults-class_method" title="SpiSeq::Utils::MIDI.use_cc_control_defaults (method)">use_cc_control_defaults</a></span>, or to all channels (i.e. &quot;*&quot;) if that was
+not set.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>port</span>
+      
+      
+        <span class='type'>(<tt>String</tt>, <tt>nil</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The MIDI device to monitor. If nil, falls back in
+the same manner as <code>channel</code>.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>loop_name</span>
+      
+      
+        <span class='type'>(<tt>Symbol</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The name of the live loop.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>start_muted</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The initial state of the muted flag.</p></div>
+      
+    </li>
+  
+</ul>
+
+
+
+
+
+
+
+
+<p class="tag_title">Yield Parameters:</p>
+<ul class="yieldparam">
+  
+    <li>
+      
+        <span class='name'>muted</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>Whether the loop is muted.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>arg</span>
+      
+      
+        <span class='type'>(<tt>Object</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>(optional) The usual argument for a <code>live_loop</code>:
+the value of the <code>init</code> argument on the first iteration, and the return of
+the prior execution of the block afterwards.</p></div>
+      
+    </li>
+  
+</ul>
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><span class='object_link'><a href="#mutable_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.mutable_live_loop (method)">mutable_live_loop</a></span></li>
+    
+      <li><span class='object_link'><a href="../Playback.html#track_live_loop-class_method" title="SpiSeq::Playback.track_live_loop (method)">track_live_loop</a></span></li>
+    
+  </ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/utils/live_loops.rb', line 117</span>
+
+<span class='id identifier rubyid_module_function'>module_function</span> <span class='kw'>def</span> <span class='id identifier rubyid_cc_mutable_live_loop'>cc_mutable_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='label'>cc:</span><span class='comma'>,</span> <span class='label'>port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>start_muted:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='op'>**</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='id identifier rubyid_channel'>channel</span> <span class='op'>=</span> <span class='const'>Internal</span><span class='op'>::</span><span class='const'>MIDI</span><span class='period'>.</span><span class='id identifier rubyid_resolve_cc_port_and_channel'>resolve_cc_port_and_channel</span><span class='lparen'>(</span><span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='id identifier rubyid_channel'>channel</span><span class='rparen'>)</span>
+
+  <span class='const'><span class='object_link'><a href="MIDI.html" title="SpiSeq::Utils::MIDI (module)">MIDI</a></span></span><span class='period'>.</span><span class='id identifier rubyid_cc_watcher_live_loop'><span class='object_link'><a href="MIDI.html#cc_watcher_live_loop-class_method" title="SpiSeq::Utils::MIDI.cc_watcher_live_loop (method)">cc_watcher_live_loop</a></span></span><span class='lparen'>(</span><span class='symbol'>:&quot;__</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='embexpr_end'>}</span><span class='tstring_content'>_cc_mute_watcher</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>port:</span><span class='comma'>,</span> <span class='label'>channel:</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_incoming_cc'>incoming_cc</span><span class='comma'>,</span> <span class='id identifier rubyid_cc_val'>cc_val</span><span class='op'>|</span>
+    <span class='kw'>next</span> <span class='kw'>if</span> <span class='id identifier rubyid_incoming_cc'>incoming_cc</span> <span class='op'>!=</span> <span class='id identifier rubyid_cc'>cc</span>
+    <span class='id identifier rubyid_muted'>muted</span> <span class='op'>=</span> <span class='id identifier rubyid_cc_val'>cc_val</span> <span class='op'>==</span> <span class='int'>0</span>
+    <span class='const'>Internal</span><span class='op'>::</span><span class='const'>Log</span><span class='period'>.</span><span class='id identifier rubyid_log'>log</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>CC </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_cc'>cc</span><span class='embexpr_end'>}</span><span class='tstring_content'> = </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_cc_val'>cc_val</span><span class='embexpr_end'>}</span><span class='tstring_content'> -&gt; </span><span class='embexpr_beg'>#{</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>un</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_muted'>muted</span><span class='embexpr_end'>}</span><span class='tstring_content'>muting live loop </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>cc_mute_control</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_mute_live_loop'><span class='object_link'><a href="#mute_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.mute_live_loop (method)">mute_live_loop</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_muted'>muted</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+
+  <span class='comment'># Only send a CC for the start_muted value if this is a fresh definition of
+</span>  <span class='comment'># the loop (i.e., not a restart of the same sketch).
+</span>  <span class='kw'>unless</span> <span class='const'>Internal</span><span class='op'>::</span><span class='const'>ThreadTracker</span><span class='period'>.</span><span class='id identifier rubyid_is_running?'>is_running?</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_default_cc_val'>default_cc_val</span> <span class='op'>=</span> <span class='id identifier rubyid_start_muted'>start_muted</span> <span class='op'>?</span> <span class='int'>0</span> <span class='op'>:</span> <span class='int'>127</span>
+    <span class='const'>Internal</span><span class='op'>::</span><span class='const'>Log</span><span class='period'>.</span><span class='id identifier rubyid_log'>log</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>sending default CC </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_cc'>cc</span><span class='embexpr_end'>}</span><span class='tstring_content'> value </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_default_cc_val'>default_cc_val</span><span class='embexpr_end'>}</span><span class='tstring_content'> for live loop </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>cc_mute_control</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+    <span class='const'>External</span><span class='op'>::</span><span class='const'>MIDI</span><span class='period'>.</span><span class='id identifier rubyid_midi_cc'>midi_cc</span><span class='lparen'>(</span><span class='id identifier rubyid_cc'>cc</span><span class='comma'>,</span> <span class='id identifier rubyid_default_cc_val'>default_cc_val</span><span class='comma'>,</span> <span class='label'>port:</span><span class='comma'>,</span> <span class='label'>channel:</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+
+  <span class='id identifier rubyid_mutable_live_loop'><span class='object_link'><a href="#mutable_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.mutable_live_loop (method)">mutable_live_loop</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='label'>start_muted:</span><span class='comma'>,</span> <span class='op'>**</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="loop_is_muted?-class_method">
+  
+    .<strong>loop_is_muted?</strong>(loop_name)  &#x21d2; <tt>Boolean</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns whether the given mutable <code>live_loop</code> (i.e., one created by
+<span class='object_link'><a href="#mutable_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.mutable_live_loop (method)">mutable_live_loop</a></span>, <span class='object_link'><a href="#cc_mutable_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.cc_mutable_live_loop (method)">cc_mutable_live_loop</a></span>, or <span class='object_link'><a href="../Playback.html#track_live_loop-class_method" title="SpiSeq::Playback.track_live_loop (method)">track_live_loop</a></span>)
+is muted.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>loop_name</span>
+      
+      
+        <span class='type'>(<tt>Symbol</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The name of the target live loop.</p></div>
+      
+    </li>
+  
+</ul>
+
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+    </li>
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><span class='object_link'><a href="#mute_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.mute_live_loop (method)">mute_live_loop</a></span></li>
+    
+      <li><span class='object_link'><a href="#unmute_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.unmute_live_loop (method)">unmute_live_loop</a></span></li>
+    
+  </ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+57</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/utils/live_loops.rb', line 57</span>
+
+<span class='id identifier rubyid_module_function'>module_function</span> <span class='kw'>def</span> <span class='id identifier rubyid_loop_is_muted?'>loop_is_muted?</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'>State</span><span class='period'>.</span><span class='id identifier rubyid_loop_mute_states'>loop_mute_states</span><span class='lbracket'>[</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='kw'>false</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="mutable_live_loop-class_method">
+  
+    .<strong>mutable_live_loop</strong>(loop_name, start_muted: false) {|muted, arg| ... } 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Starts a new <code>live_loop</code> that can be muted with <span class='object_link'><a href="#mute_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.mute_live_loop (method)">mute_live_loop</a></span>. What
+&quot;mute&quot; means must be implemented by the given block; this function merely
+manages the muted state and informs the block of it.</p>
+<p>Any additional named arguments (e.g. <code>sync</code> or <code>init</code>) to this function are
+passed verbatim to the internal <code>live_loop</code>.</p>
+<p>The arguments passed to the block differe from a normal <code>live_loop</code>. Namely,
+the first argument is a boolean indicating whether the loop is muted.</p>
+<p>Muting is not instantaneous. The block is only made aware of the muted
+status the next time it executes, via its first argument. So, muting will
+happen only between cycles of a loop, not in the middle of one.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>loop_name</span>
+      
+      
+        <span class='type'>(<tt>Symbol</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The name of the live loop.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>start_muted</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The initial state of the muted flag.</p></div>
+      
+    </li>
+  
+</ul>
+
+
+
+
+
+
+
+
+<p class="tag_title">Yield Parameters:</p>
+<ul class="yieldparam">
+  
+    <li>
+      
+        <span class='name'>muted</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>Whether the loop is muted.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>arg</span>
+      
+      
+        <span class='type'>(<tt>Object</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>(optional) The usual argument for a <code>live_loop</code>:
+the value of the <code>init</code> argument on the first iteration, and the return of
+the prior execution of the block afterwards.</p></div>
+      
+    </li>
+  
+</ul>
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><span class='object_link'><a href="#cc_mutable_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.cc_mutable_live_loop (method)">cc_mutable_live_loop</a></span></li>
+    
+      <li><span class='object_link'><a href="../Playback.html#track_live_loop-class_method" title="SpiSeq::Playback.track_live_loop (method)">track_live_loop</a></span></li>
+    
+  </ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/utils/live_loops.rb', line 82</span>
+
+<span class='id identifier rubyid_module_function'>module_function</span> <span class='kw'>def</span> <span class='id identifier rubyid_mutable_live_loop'>mutable_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='label'>start_muted:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='op'>**</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Block must take 1 or 2 arguments</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>==</span> <span class='int'>0</span> <span class='op'>||</span> <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>&gt;</span> <span class='int'>2</span>
+
+  <span class='comment'># Only apply start_muted if this is a fresh definition of the loop (i.e, not
+</span>  <span class='comment'># a restart of the same sketch).
+</span>  <span class='id identifier rubyid_mute_live_loop'><span class='object_link'><a href="#mute_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.mute_live_loop (method)">mute_live_loop</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_start_muted'>start_muted</span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='const'>Internal</span><span class='op'>::</span><span class='const'>ThreadTracker</span><span class='period'>.</span><span class='id identifier rubyid_is_running?'>is_running?</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rparen'>)</span>
+
+  <span class='id identifier rubyid_ll'>ll</span> <span class='op'>=</span> <span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_live_loop'>live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='op'>**</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_arg'>arg</span><span class='op'>|</span>
+    <span class='const'>Internal</span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_call_varargs'>call_varargs</span><span class='lparen'>(</span><span class='id identifier rubyid_block'>block</span><span class='comma'>,</span> <span class='id identifier rubyid_loop_is_muted?'><span class='object_link'><a href="#loop_is_muted%3F-class_method" title="SpiSeq::Utils::LiveLoops.loop_is_muted? (method)">loop_is_muted?</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='id identifier rubyid_arg'>arg</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+
+  <span class='const'>Internal</span><span class='op'>::</span><span class='const'>ThreadTracker</span><span class='period'>.</span><span class='id identifier rubyid_register'>register</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_ll'>ll</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_ll'>ll</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="mute_live_loop-class_method">
+  
+    .<strong>mute_live_loop</strong>(loop_name, mute = true)  
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Mutes or unmutes the given <code>live_loop</code>, assuming it was created by
+<span class='object_link'><a href="#mutable_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.mutable_live_loop (method)">mutable_live_loop</a></span>, <span class='object_link'><a href="#cc_mutable_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.cc_mutable_live_loop (method)">cc_mutable_live_loop</a></span>, or <span class='object_link'><a href="../Playback.html#track_live_loop-class_method" title="SpiSeq::Playback.track_live_loop (method)">track_live_loop</a></span>.
+Muting is not instantaneous; it takes effect after a cycle of the live
+loop's block. See <span class='object_link'><a href="#mutable_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.mutable_live_loop (method)">mutable_live_loop</a></span> for details.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>loop_name</span>
+      
+      
+        <span class='type'>(<tt>Symbol</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The name of the target live loop.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>mute</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>Whether to mute or unmute the loop.</p></div>
+      
+    </li>
+  
+</ul>
+
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><span class='object_link'><a href="#unmute_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.unmute_live_loop (method)">unmute_live_loop</a></span></li>
+    
+      <li><span class='object_link'><a href="#loop_is_muted%3F-class_method" title="SpiSeq::Utils::LiveLoops.loop_is_muted? (method)">loop_is_muted?</a></span></li>
+    
+  </ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+33
+34
+35
+36
+37
+38
+39
+40</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/utils/live_loops.rb', line 33</span>
+
+<span class='id identifier rubyid_module_function'>module_function</span> <span class='kw'>def</span> <span class='id identifier rubyid_mute_live_loop'>mute_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_mute'>mute</span> <span class='op'>=</span> <span class='kw'>true</span><span class='rparen'>)</span>
+  <span class='comment'># It could potentially make sense to store this state as a thread variable
+</span>  <span class='comment'># on the loop, but we want it in place before the thread exists in
+</span>  <span class='comment'># mutable_live_loop. And if it only lived on the thread, we&#39;d have to find
+</span>  <span class='comment'># a way to inherit it when swapping to new track_live_loops. So it seems
+</span>  <span class='comment'># cleaner to just hold the state locally.
+</span>  <span class='const'>State</span><span class='period'>.</span><span class='id identifier rubyid_loop_mute_states'>loop_mute_states</span><span class='lbracket'>[</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_mute'>mute</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="unmute_live_loop-class_method">
+  
+    .<strong>unmute_live_loop</strong>(loop_name)  
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Unmutes the given mutable <code>live_loop</code> (i.e., one created by
+<span class='object_link'><a href="#mutable_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.mutable_live_loop (method)">mutable_live_loop</a></span>, <span class='object_link'><a href="#cc_mutable_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.cc_mutable_live_loop (method)">cc_mutable_live_loop</a></span>, or <span class='object_link'><a href="../Playback.html#track_live_loop-class_method" title="SpiSeq::Playback.track_live_loop (method)">track_live_loop</a></span>).
+An alias passing false to <span class='object_link'><a href="#mute_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.mute_live_loop (method)">mute_live_loop</a></span>.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>loop_name</span>
+      
+      
+        <span class='type'>(<tt>Symbol</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The name of the target live loop.</p></div>
+      
+    </li>
+  
+</ul>
+
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><span class='object_link'><a href="#loop_is_muted%3F-class_method" title="SpiSeq::Utils::LiveLoops.loop_is_muted? (method)">loop_is_muted?</a></span></li>
+    
+  </ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+48</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/utils/live_loops.rb', line 48</span>
+
+<span class='id identifier rubyid_module_function'>module_function</span> <span class='kw'>def</span> <span class='id identifier rubyid_unmute_live_loop'>unmute_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='id identifier rubyid_mute_live_loop'><span class='object_link'><a href="#mute_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.mute_live_loop (method)">mute_live_loop</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='kw'>false</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+
+      
+
+    </div>
+  </body>
+</html>

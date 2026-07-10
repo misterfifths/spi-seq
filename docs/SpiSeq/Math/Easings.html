@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Module: SpiSeq::Math::Easings
+  
+    &mdash; spi-seq Documentation
+  
+</title>
+
+  <link rel="stylesheet" href="../../css/style.css" type="text/css">
+
+  <link rel="stylesheet" href="../../css/common.css" type="text/css">
+
+<script type="text/javascript">
+  pathId = "SpiSeq::Math::Easings";
+  relpath = '../../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="main_progress" aria-hidden="true"></div>
+
+    <div class="nav_wrap">
+      <iframe id="nav" src="../../class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../../_index.html">Index (E)</a> &raquo;
+    <span class='title'><span class='object_link'><a href="../../SpiSeq.html" title="SpiSeq (module)">SpiSeq</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../Math.html" title="SpiSeq::Math (module)">Math</a></span></span>
+     &raquo; 
+    <span class="title">Easings</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="../../class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Module: SpiSeq::Math::Easings
+  
+  
+  
+</h1>
+<div class="box_info">
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>lib/spiseq/math/easings.rb
+</dd>
+  </dl>
+  
+</div>
+
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    <p>Collects a number of curves suitable for smoothly transitioning a value
+between a minimum and maximum along a curve. These may be useful for
+functions like <span class='object_link'><a href="../Tracks/CCTrack.html#add_curve-instance_method" title="SpiSeq::Tracks::CCTrack#add_curve (method)">CCTrack#add_curve</a></span> or
+<span class='object_link'><a href="../Tracks/Track.html#with_vel_curve-instance_method" title="SpiSeq::Tracks::Track#with_vel_curve (method)">Track#with_vel_curve</a></span>.</p>
+<p>All of the constants on this module share the following behaviors:</p>
+<ul>
+<li>Each can be called with a single numeric argument using <code>call</code> (like a
+Proc or lambda).</li>
+<li>For each constant <code>f</code>, <code>f.call(0) == 0</code> and <code>f.call(1) == 1</code>.</li>
+<li>For <code>t</code> in 0 - 1 inclusive, <code>f.call(t)</code> is roughly in the range of 0 - 1
+inclusive. If it is outside of that range, it represents some &quot;bouncing&quot;.
+Curves that return values outside of 0 - 1 are documented as such, and if
+used for transitioning a value, results may be outside of the specified
+range.</li>
+<li>For <code>t</code> outside of 0 - 1, <code>f.call(t)</code> is not an error but should be
+considered undefined.</li>
+</ul>
+<p>These curves differ from those in the <span class='object_link'><a href="Curves.html" title="SpiSeq::Math::Curves (module)">Curves</a></span> module in that their results
+always begin at 0 and end at 1.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+  
+    <h2>
+      Named CSS easings
+      <small><a href="#" class="constants_summary_toggle">collapse</a></small>
+    </h2>
+
+    <dl class="constants">
+      
+        <dt id="Linear-constant" class="">Linear =
+          <div class="docstring">
+  <div class="discussion">
+    <p>The identity function; linearly moves between 0 and 1.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_t'>t</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_t'>t</span> <span class='rbrace'>}</span></pre></dd>
+      
+        <dt id="Default-constant" class="">Default =
+          <div class="docstring">
+  <div class="discussion">
+    <p>The default CSS cubic Bézier easing curve (&quot;ease&quot; in CSS).</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/easing-function#ease" target="_parent" title="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/easing-function#ease">https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/easing-function#ease</a></li>
+    
+  </ul>
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'>CubicBezier</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='float'>0.25</span><span class='comma'>,</span> <span class='float'>0.1</span><span class='comma'>,</span> <span class='float'>0.25</span><span class='comma'>,</span> <span class='float'>1.0</span><span class='rparen'>)</span></pre></dd>
+      
+        <dt id="In-constant" class="">In =
+          <div class="docstring">
+  <div class="discussion">
+    <p>The &quot;ease-in&quot; CSS cubic Bézier easing curve.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/easing-function#ease-in" target="_parent" title="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/easing-function#ease-in">https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/easing-function#ease-in</a></li>
+    
+  </ul>
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'>CubicBezier</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='float'>0.42</span><span class='comma'>,</span> <span class='float'>0.0</span><span class='comma'>,</span> <span class='float'>1.0</span><span class='comma'>,</span> <span class='float'>1.0</span><span class='rparen'>)</span></pre></dd>
+      
+        <dt id="Out-constant" class="">Out =
+          <div class="docstring">
+  <div class="discussion">
+    <p>The &quot;ease-out&quot; CSS cubic Bézier easing curve.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/easing-function#ease-out" target="_parent" title="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/easing-function#ease-out">https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/easing-function#ease-out</a></li>
+    
+  </ul>
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'>CubicBezier</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='float'>0.0</span><span class='comma'>,</span> <span class='float'>0.0</span><span class='comma'>,</span> <span class='float'>0.58</span><span class='comma'>,</span> <span class='float'>1.0</span><span class='rparen'>)</span></pre></dd>
+      
+        <dt id="InOut-constant" class="">InOut =
+          <div class="docstring">
+  <div class="discussion">
+    <p>The &quot;ease-in-out&quot; CSS cubic Bézier easing curve.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/easing-function#ease-in-out" target="_parent" title="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/easing-function#ease-in-out">https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/easing-function#ease-in-out</a></li>
+    
+  </ul>
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'>CubicBezier</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='float'>0.42</span><span class='comma'>,</span> <span class='float'>0.0</span><span class='comma'>,</span> <span class='float'>0.58</span><span class='comma'>,</span> <span class='float'>1.0</span><span class='rparen'>)</span></pre></dd>
+      
+    </dl>
+  
+    <h2>
+      Other easings
+      <small><a href="#" class="constants_summary_toggle">collapse</a></small>
+    </h2>
+
+    <dl class="constants">
+      
+        <dt id="InSine-constant" class="">InSine =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A cubic Bézier curve as described. See <a href="https://easings.net">https://easings.net</a> for a graphical
+representation of the curve.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'>CubicBezier</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='float'>0.12</span><span class='comma'>,</span> <span class='int'>0</span><span class='comma'>,</span> <span class='float'>0.39</span><span class='comma'>,</span> <span class='int'>0</span><span class='rparen'>)</span></pre></dd>
+      
+        <dt id="OutSine-constant" class="">OutSine =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A cubic Bézier curve as described. See <a href="https://easings.net">https://easings.net</a> for a graphical
+representation of the curve.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'>CubicBezier</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='float'>0.61</span><span class='comma'>,</span> <span class='int'>1</span><span class='comma'>,</span> <span class='float'>0.88</span><span class='comma'>,</span> <span class='int'>1</span><span class='rparen'>)</span></pre></dd>
+      
+        <dt id="InOutSine-constant" class="">InOutSine =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A cubic Bézier curve as described. See <a href="https://easings.net">https://easings.net</a> for a graphical
+representation of the curve.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'>CubicBezier</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='float'>0.37</span><span class='comma'>,</span> <span class='int'>0</span><span class='comma'>,</span> <span class='float'>0.63</span><span class='comma'>,</span> <span class='int'>1</span><span class='rparen'>)</span></pre></dd>
+      
+        <dt id="InQuad-constant" class="">InQuad =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A cubic Bézier curve as described. See <a href="https://easings.net">https://easings.net</a> for a graphical
+representation of the curve.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'>CubicBezier</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='float'>0.11</span><span class='comma'>,</span> <span class='int'>0</span><span class='comma'>,</span> <span class='float'>0.5</span><span class='comma'>,</span> <span class='int'>0</span><span class='rparen'>)</span></pre></dd>
+      
+        <dt id="OutQuad-constant" class="">OutQuad =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A cubic Bézier curve as described. See <a href="https://easings.net">https://easings.net</a> for a graphical
+representation of the curve.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'>CubicBezier</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='float'>0.5</span><span class='comma'>,</span> <span class='int'>1</span><span class='comma'>,</span> <span class='float'>0.89</span><span class='comma'>,</span> <span class='int'>1</span><span class='rparen'>)</span></pre></dd>
+      
+        <dt id="InOutQuad-constant" class="">InOutQuad =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A cubic Bézier curve as described. See <a href="https://easings.net">https://easings.net</a> for a graphical
+representation of the curve.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'>CubicBezier</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='float'>0.45</span><span class='comma'>,</span> <span class='int'>0</span><span class='comma'>,</span> <span class='float'>0.55</span><span class='comma'>,</span> <span class='int'>1</span><span class='rparen'>)</span></pre></dd>
+      
+        <dt id="InCubic-constant" class="">InCubic =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A cubic Bézier curve as described. See <a href="https://easings.net">https://easings.net</a> for a graphical
+representation of the curve.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'>CubicBezier</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='float'>0.32</span><span class='comma'>,</span> <span class='int'>0</span><span class='comma'>,</span> <span class='float'>0.67</span><span class='comma'>,</span> <span class='int'>0</span><span class='rparen'>)</span></pre></dd>
+      
+        <dt id="OutCubic-constant" class="">OutCubic =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A cubic Bézier curve as described. See <a href="https://easings.net">https://easings.net</a> for a graphical
+representation of the curve.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'>CubicBezier</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='float'>0.33</span><span class='comma'>,</span> <span class='int'>1</span><span class='comma'>,</span> <span class='float'>0.68</span><span class='comma'>,</span> <span class='int'>1</span><span class='rparen'>)</span></pre></dd>
+      
+        <dt id="InOutCubic-constant" class="">InOutCubic =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A cubic Bézier curve as described. See <a href="https://easings.net">https://easings.net</a> for a graphical
+representation of the curve.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'>CubicBezier</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='float'>0.65</span><span class='comma'>,</span> <span class='int'>0</span><span class='comma'>,</span> <span class='float'>0.35</span><span class='comma'>,</span> <span class='int'>1</span><span class='rparen'>)</span></pre></dd>
+      
+        <dt id="InQuart-constant" class="">InQuart =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A cubic Bézier curve as described. See <a href="https://easings.net">https://easings.net</a> for a graphical
+representation of the curve.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'>CubicBezier</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='float'>0.5</span><span class='comma'>,</span> <span class='int'>0</span><span class='comma'>,</span> <span class='float'>0.75</span><span class='comma'>,</span> <span class='int'>0</span><span class='rparen'>)</span></pre></dd>
+      
+        <dt id="OutQuart-constant" class="">OutQuart =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A cubic Bézier curve as described. See <a href="https://easings.net">https://easings.net</a> for a graphical
+representation of the curve.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'>CubicBezier</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='float'>0.25</span><span class='comma'>,</span> <span class='int'>1</span><span class='comma'>,</span> <span class='float'>0.5</span><span class='comma'>,</span> <span class='int'>1</span><span class='rparen'>)</span></pre></dd>
+      
+        <dt id="InOutQuart-constant" class="">InOutQuart =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A cubic Bézier curve as described. See <a href="https://easings.net">https://easings.net</a> for a graphical
+representation of the curve.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'>CubicBezier</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='float'>0.76</span><span class='comma'>,</span> <span class='int'>0</span><span class='comma'>,</span> <span class='float'>0.24</span><span class='comma'>,</span> <span class='int'>1</span><span class='rparen'>)</span></pre></dd>
+      
+        <dt id="InQuint-constant" class="">InQuint =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A cubic Bézier curve as described. See <a href="https://easings.net">https://easings.net</a> for a graphical
+representation of the curve.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'>CubicBezier</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='float'>0.64</span><span class='comma'>,</span> <span class='int'>0</span><span class='comma'>,</span> <span class='float'>0.78</span><span class='comma'>,</span> <span class='int'>0</span><span class='rparen'>)</span></pre></dd>
+      
+        <dt id="OutQuint-constant" class="">OutQuint =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A cubic Bézier curve as described. See <a href="https://easings.net">https://easings.net</a> for a graphical
+representation of the curve.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'>CubicBezier</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='float'>0.22</span><span class='comma'>,</span> <span class='int'>1</span><span class='comma'>,</span> <span class='float'>0.36</span><span class='comma'>,</span> <span class='int'>1</span><span class='rparen'>)</span></pre></dd>
+      
+        <dt id="InOutQuint-constant" class="">InOutQuint =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A cubic Bézier curve as described. See <a href="https://easings.net">https://easings.net</a> for a graphical
+representation of the curve.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'>CubicBezier</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='float'>0.83</span><span class='comma'>,</span> <span class='int'>0</span><span class='comma'>,</span> <span class='float'>0.17</span><span class='comma'>,</span> <span class='int'>1</span><span class='rparen'>)</span></pre></dd>
+      
+        <dt id="InExpo-constant" class="">InExpo =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A cubic Bézier curve as described. See <a href="https://easings.net">https://easings.net</a> for a graphical
+representation of the curve.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'>CubicBezier</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='float'>0.7</span><span class='comma'>,</span> <span class='int'>0</span><span class='comma'>,</span> <span class='float'>0.84</span><span class='comma'>,</span> <span class='int'>0</span><span class='rparen'>)</span></pre></dd>
+      
+        <dt id="OutExpo-constant" class="">OutExpo =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A cubic Bézier curve as described. See <a href="https://easings.net">https://easings.net</a> for a graphical
+representation of the curve.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'>CubicBezier</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='float'>0.16</span><span class='comma'>,</span> <span class='int'>1</span><span class='comma'>,</span> <span class='float'>0.3</span><span class='comma'>,</span> <span class='int'>1</span><span class='rparen'>)</span></pre></dd>
+      
+        <dt id="InOutExpo-constant" class="">InOutExpo =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A cubic Bézier curve as described. See <a href="https://easings.net">https://easings.net</a> for a graphical
+representation of the curve.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'>CubicBezier</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='float'>0.87</span><span class='comma'>,</span> <span class='int'>0</span><span class='comma'>,</span> <span class='float'>0.13</span><span class='comma'>,</span> <span class='int'>1</span><span class='rparen'>)</span></pre></dd>
+      
+        <dt id="InCirc-constant" class="">InCirc =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A cubic Bézier curve as described. See <a href="https://easings.net">https://easings.net</a> for a graphical
+representation of the curve.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'>CubicBezier</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='float'>0.55</span><span class='comma'>,</span> <span class='int'>0</span><span class='comma'>,</span> <span class='int'>1</span><span class='comma'>,</span> <span class='float'>0.45</span><span class='rparen'>)</span></pre></dd>
+      
+        <dt id="OutCirc-constant" class="">OutCirc =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A cubic Bézier curve as described. See <a href="https://easings.net">https://easings.net</a> for a graphical
+representation of the curve.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'>CubicBezier</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='int'>0</span><span class='comma'>,</span> <span class='float'>0.55</span><span class='comma'>,</span> <span class='float'>0.45</span><span class='comma'>,</span> <span class='int'>1</span><span class='rparen'>)</span></pre></dd>
+      
+        <dt id="InOutCirc-constant" class="">InOutCirc =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A cubic Bézier curve as described. See <a href="https://easings.net">https://easings.net</a> for a graphical
+representation of the curve.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'>CubicBezier</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='float'>0.85</span><span class='comma'>,</span> <span class='int'>0</span><span class='comma'>,</span> <span class='float'>0.15</span><span class='comma'>,</span> <span class='int'>1</span><span class='rparen'>)</span></pre></dd>
+      
+        <dt id="InBack-constant" class="">InBack =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A cubic Bézier curve as described. See <a href="https://easings.net">https://easings.net</a> for a graphical
+representation of the curve.</p>
+<p>This curve's output exceeds the range 0 - 1.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'>CubicBezier</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='float'>0.36</span><span class='comma'>,</span> <span class='int'>0</span><span class='comma'>,</span> <span class='float'>0.66</span><span class='comma'>,</span> <span class='op'>-</span><span class='float'>0.56</span><span class='rparen'>)</span></pre></dd>
+      
+        <dt id="OutBack-constant" class="">OutBack =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A cubic Bézier curve as described. See <a href="https://easings.net">https://easings.net</a> for a graphical
+representation of the curve.</p>
+<p>This curve's output exceeds the range 0 - 1.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'>CubicBezier</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='float'>0.34</span><span class='comma'>,</span> <span class='float'>1.56</span><span class='comma'>,</span> <span class='float'>0.64</span><span class='comma'>,</span> <span class='int'>1</span><span class='rparen'>)</span></pre></dd>
+      
+        <dt id="InOutBack-constant" class="">InOutBack =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A cubic Bézier curve as described. See <a href="https://easings.net">https://easings.net</a> for a graphical
+representation of the curve.</p>
+<p>This curve's output exceeds the range 0 - 1.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'>CubicBezier</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='float'>0.68</span><span class='comma'>,</span> <span class='op'>-</span><span class='float'>0.6</span><span class='comma'>,</span> <span class='float'>0.32</span><span class='comma'>,</span> <span class='float'>1.6</span><span class='rparen'>)</span></pre></dd>
+      
+        <dt id="InElastic-constant" class="">InElastic =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A cubic Bézier curve as described. See <a href="https://easings.net">https://easings.net</a> for a graphical
+representation of the curve.</p>
+<p>This curve's output exceeds the range 0 - 1.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='id identifier rubyid_lambda'>lambda</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_t'>t</span><span class='op'>|</span>
+  <span class='kw'>return</span> <span class='int'>0</span> <span class='kw'>if</span> <span class='id identifier rubyid_t'>t</span> <span class='op'>&lt;=</span> <span class='int'>0</span>
+  <span class='kw'>return</span> <span class='int'>1</span> <span class='kw'>if</span> <span class='id identifier rubyid_t'>t</span> <span class='op'>&gt;=</span> <span class='int'>1</span>
+  <span class='id identifier rubyid_c4'>c4</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='int'>2</span> <span class='op'>*</span> <span class='op'>::</span><span class='const'>Math</span><span class='op'>::</span><span class='const'>PI</span><span class='rparen'>)</span> <span class='op'>/</span> <span class='int'>3</span>
+  <span class='op'>-</span><span class='lparen'>(</span><span class='float'>2.0</span> <span class='op'>**</span> <span class='lparen'>(</span><span class='int'>10</span> <span class='op'>*</span> <span class='id identifier rubyid_t'>t</span> <span class='op'>-</span> <span class='int'>10</span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='op'>*</span> <span class='op'>::</span><span class='const'>Math</span><span class='period'>.</span><span class='id identifier rubyid_sin'>sin</span><span class='lparen'>(</span><span class='lparen'>(</span><span class='id identifier rubyid_t'>t</span> <span class='op'>*</span> <span class='int'>10</span> <span class='op'>-</span> <span class='float'>10.75</span><span class='rparen'>)</span> <span class='op'>*</span> <span class='id identifier rubyid_c4'>c4</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre></dd>
+      
+        <dt id="OutElastic-constant" class="">OutElastic =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A cubic Bézier curve as described. See <a href="https://easings.net">https://easings.net</a> for a graphical
+representation of the curve.</p>
+<p>This curve's output exceeds the range 0 - 1.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='id identifier rubyid_lambda'>lambda</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_t'>t</span><span class='op'>|</span>
+  <span class='kw'>return</span> <span class='int'>0</span> <span class='kw'>if</span> <span class='id identifier rubyid_t'>t</span> <span class='op'>&lt;=</span> <span class='int'>0</span>
+  <span class='kw'>return</span> <span class='int'>1</span> <span class='kw'>if</span> <span class='id identifier rubyid_t'>t</span> <span class='op'>&gt;=</span> <span class='int'>1</span>
+  <span class='id identifier rubyid_c4'>c4</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='int'>2</span> <span class='op'>*</span> <span class='op'>::</span><span class='const'>Math</span><span class='op'>::</span><span class='const'>PI</span><span class='rparen'>)</span> <span class='op'>/</span> <span class='int'>3</span>
+  <span class='lparen'>(</span><span class='int'>2</span> <span class='op'>**</span> <span class='lparen'>(</span><span class='op'>-</span><span class='int'>10</span> <span class='op'>*</span> <span class='id identifier rubyid_t'>t</span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='op'>*</span> <span class='op'>::</span><span class='const'>Math</span><span class='period'>.</span><span class='id identifier rubyid_sin'>sin</span><span class='lparen'>(</span><span class='lparen'>(</span><span class='id identifier rubyid_t'>t</span> <span class='op'>*</span> <span class='int'>10</span> <span class='op'>-</span> <span class='float'>0.75</span><span class='rparen'>)</span> <span class='op'>*</span> <span class='id identifier rubyid_c4'>c4</span><span class='rparen'>)</span> <span class='op'>+</span> <span class='int'>1</span>
+<span class='kw'>end</span></pre></dd>
+      
+        <dt id="InOutElastic-constant" class="">InOutElastic =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A cubic Bézier curve as described. See <a href="https://easings.net">https://easings.net</a> for a graphical
+representation of the curve.</p>
+<p>This curve's output exceeds the range 0 - 1.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='id identifier rubyid_lambda'>lambda</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_t'>t</span><span class='op'>|</span>
+  <span class='kw'>return</span> <span class='int'>0</span> <span class='kw'>if</span> <span class='id identifier rubyid_t'>t</span> <span class='op'>&lt;=</span> <span class='int'>0</span>
+  <span class='kw'>return</span> <span class='int'>1</span> <span class='kw'>if</span> <span class='id identifier rubyid_t'>t</span> <span class='op'>&gt;=</span> <span class='int'>1</span>
+  <span class='id identifier rubyid_c5'>c5</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='int'>2</span> <span class='op'>*</span> <span class='op'>::</span><span class='const'>Math</span><span class='op'>::</span><span class='const'>PI</span><span class='rparen'>)</span> <span class='op'>/</span> <span class='float'>4.5</span>
+  <span class='kw'>if</span> <span class='id identifier rubyid_t'>t</span> <span class='op'>&lt;</span> <span class='float'>0.5</span>
+    <span class='op'>-</span><span class='lparen'>(</span><span class='lparen'>(</span><span class='int'>2</span> <span class='op'>**</span> <span class='lparen'>(</span><span class='int'>20</span> <span class='op'>*</span> <span class='id identifier rubyid_t'>t</span> <span class='op'>-</span> <span class='int'>10</span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='op'>*</span> <span class='op'>::</span><span class='const'>Math</span><span class='period'>.</span><span class='id identifier rubyid_sin'>sin</span><span class='lparen'>(</span><span class='lparen'>(</span><span class='int'>20</span> <span class='op'>*</span> <span class='id identifier rubyid_t'>t</span> <span class='op'>-</span> <span class='float'>11.125</span><span class='rparen'>)</span> <span class='op'>*</span> <span class='id identifier rubyid_c5'>c5</span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='op'>/</span> <span class='float'>2.0</span>
+  <span class='kw'>else</span>
+    <span class='lparen'>(</span><span class='lparen'>(</span><span class='int'>2</span> <span class='op'>**</span> <span class='lparen'>(</span><span class='op'>-</span><span class='int'>20</span> <span class='op'>*</span> <span class='id identifier rubyid_t'>t</span> <span class='op'>+</span> <span class='int'>10</span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='op'>*</span> <span class='op'>::</span><span class='const'>Math</span><span class='period'>.</span><span class='id identifier rubyid_sin'>sin</span><span class='lparen'>(</span><span class='lparen'>(</span><span class='int'>20</span> <span class='op'>*</span> <span class='id identifier rubyid_t'>t</span> <span class='op'>-</span> <span class='float'>11.125</span><span class='rparen'>)</span> <span class='op'>*</span> <span class='id identifier rubyid_c5'>c5</span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='op'>/</span> <span class='float'>2.0</span> <span class='op'>+</span> <span class='int'>1</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre></dd>
+      
+        <dt id="InBounce-constant" class="">InBounce =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A cubic Bézier curve as described. See <a href="https://easings.net">https://easings.net</a> for a graphical
+representation of the curve.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='id identifier rubyid_lambda'>lambda</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_t'>t</span><span class='op'>|</span>
+  <span class='int'>1</span> <span class='op'>-</span> <span class='const'><span class='object_link'><a href="#OutBounce-constant" title="SpiSeq::Math::Easings::OutBounce (constant)">OutBounce</a></span></span><span class='lbracket'>[</span><span class='int'>1</span> <span class='op'>-</span> <span class='id identifier rubyid_t'>t</span><span class='rbracket'>]</span>
+<span class='kw'>end</span></pre></dd>
+      
+        <dt id="OutBounce-constant" class="">OutBounce =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A cubic Bézier curve as described. See <a href="https://easings.net">https://easings.net</a> for a graphical
+representation of the curve.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='id identifier rubyid_lambda'>lambda</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_t'>t</span><span class='op'>|</span>
+  <span class='id identifier rubyid_n1'>n1</span> <span class='op'>=</span> <span class='float'>7.5625</span>
+  <span class='id identifier rubyid_d1'>d1</span> <span class='op'>=</span> <span class='float'>2.75</span>
+
+  <span class='kw'>if</span> <span class='id identifier rubyid_t'>t</span> <span class='op'>&lt;</span> <span class='int'>1</span> <span class='op'>/</span> <span class='id identifier rubyid_d1'>d1</span>
+    <span class='id identifier rubyid_n1'>n1</span> <span class='op'>*</span> <span class='id identifier rubyid_t'>t</span> <span class='op'>*</span> <span class='id identifier rubyid_t'>t</span>
+  <span class='kw'>elsif</span> <span class='id identifier rubyid_t'>t</span> <span class='op'>&lt;</span> <span class='int'>2</span> <span class='op'>/</span> <span class='id identifier rubyid_d1'>d1</span>
+    <span class='id identifier rubyid_t'>t</span> <span class='op'>-=</span> <span class='float'>1.5</span> <span class='op'>/</span> <span class='id identifier rubyid_d1'>d1</span>
+    <span class='id identifier rubyid_n1'>n1</span> <span class='op'>*</span> <span class='id identifier rubyid_t'>t</span> <span class='op'>*</span> <span class='id identifier rubyid_t'>t</span> <span class='op'>+</span> <span class='float'>0.75</span>
+  <span class='kw'>elsif</span> <span class='id identifier rubyid_t'>t</span> <span class='op'>&lt;</span> <span class='float'>2.5</span> <span class='op'>/</span> <span class='id identifier rubyid_d1'>d1</span>
+    <span class='id identifier rubyid_t'>t</span> <span class='op'>-=</span> <span class='float'>2.25</span> <span class='op'>/</span> <span class='id identifier rubyid_d1'>d1</span>
+    <span class='id identifier rubyid_n1'>n1</span> <span class='op'>*</span> <span class='id identifier rubyid_t'>t</span> <span class='op'>*</span> <span class='id identifier rubyid_t'>t</span> <span class='op'>+</span> <span class='float'>0.9375</span>
+  <span class='kw'>else</span>
+    <span class='id identifier rubyid_t'>t</span> <span class='op'>-=</span> <span class='float'>2.625</span> <span class='op'>/</span> <span class='id identifier rubyid_d1'>d1</span>
+    <span class='id identifier rubyid_n1'>n1</span> <span class='op'>*</span> <span class='id identifier rubyid_t'>t</span> <span class='op'>*</span> <span class='id identifier rubyid_t'>t</span> <span class='op'>+</span> <span class='float'>0.984375</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre></dd>
+      
+        <dt id="InOutBounce-constant" class="">InOutBounce =
+          <div class="docstring">
+  <div class="discussion">
+    <p>A cubic Bézier curve as described. See <a href="https://easings.net">https://easings.net</a> for a graphical
+representation of the curve.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='id identifier rubyid_lambda'>lambda</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_t'>t</span><span class='op'>|</span>
+  <span class='kw'>if</span> <span class='id identifier rubyid_t'>t</span> <span class='op'>&lt;</span> <span class='float'>0.5</span>
+    <span class='lparen'>(</span><span class='int'>1</span> <span class='op'>-</span> <span class='const'><span class='object_link'><a href="#OutBounce-constant" title="SpiSeq::Math::Easings::OutBounce (constant)">OutBounce</a></span></span><span class='lbracket'>[</span><span class='int'>1</span> <span class='op'>-</span> <span class='int'>2</span> <span class='op'>*</span> <span class='id identifier rubyid_t'>t</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='op'>/</span> <span class='float'>2.0</span>
+  <span class='kw'>else</span>
+    <span class='lparen'>(</span><span class='int'>1</span> <span class='op'>+</span> <span class='const'><span class='object_link'><a href="#OutBounce-constant" title="SpiSeq::Math::Easings::OutBounce (constant)">OutBounce</a></span></span><span class='lbracket'>[</span><span class='int'>2</span> <span class='op'>*</span> <span class='id identifier rubyid_t'>t</span> <span class='op'>-</span> <span class='int'>1</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='op'>/</span> <span class='float'>2.0</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre></dd>
+      
+    </dl>
+  
+
+
+
+
+
+
+
+
+
+</div>
+
+      
+
+    </div>
+  </body>
+</html>

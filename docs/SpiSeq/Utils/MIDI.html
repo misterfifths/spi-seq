@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Module: SpiSeq::Utils::MIDI
+  
+    &mdash; spi-seq Documentation
+  
+</title>
+
+  <link rel="stylesheet" href="../../css/style.css" type="text/css">
+
+  <link rel="stylesheet" href="../../css/common.css" type="text/css">
+
+<script type="text/javascript">
+  pathId = "SpiSeq::Utils::MIDI";
+  relpath = '../../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="main_progress" aria-hidden="true"></div>
+
+    <div class="nav_wrap">
+      <iframe id="nav" src="../../class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../../_index.html">Index (M)</a> &raquo;
+    <span class='title'><span class='object_link'><a href="../../SpiSeq.html" title="SpiSeq (module)">SpiSeq</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../Utils.html" title="SpiSeq::Utils (module)">Utils</a></span></span>
+     &raquo; 
+    <span class="title">MIDI</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="../../class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Module: SpiSeq::Utils::MIDI
+  
+  
+  
+</h1>
+<div class="box_info">
+  
+
+  
+  
+  
+  
+  
+
+  
+
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>lib/spiseq/utils/midi.rb
+</dd>
+  </dl>
+  
+</div>
+
+
+
+
+
+
+
+
+  
+    <h2>
+      Default settings
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#current_cc_control_defaults-class_method" title="current_cc_control_defaults (class method)">.<strong>current_cc_control_defaults</strong>  &#x21d2; Hash{Symbol =&gt; Object} </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns the current CC control defaults as set by <span class='object_link'><a href="#use_cc_control_defaults-class_method" title="SpiSeq::Utils::MIDI.use_cc_control_defaults (method)">use_cc_control_defaults</a></span>, or an empty hash if no defaults have been set.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#use_cc_control_defaults-class_method" title="use_cc_control_defaults (class method)">.<strong>use_cc_control_defaults</strong>(port: nil, channel: nil)  </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Set global default MIDI parameters to use when watching for incoming CC messages.</p></div></span>
+  
+</li>
+
+      
+    </ul>
+    
+  
+    <h2>
+      MIDI utilities
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#cc_watcher_live_loop-class_method" title="cc_watcher_live_loop (class method)">.<strong>cc_watcher_live_loop</strong>(loop_name, port: nil, channel: nil) {|cc_num, cc_val| ... } </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Starts a <code>live_loop</code> that listens for MIDI CC events.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#midi_clock_live_loop-class_method" title="midi_clock_live_loop (class method)">.<strong>midi_clock_live_loop</strong>(loop_name = :midi_clock, send_start: false, send_stop: true, port: nil, start_port: nil, start_channel: nil)  </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Starts a <code>live_loop</code> named <code>loop_name</code> that sends MIDI clock beats for the global BPM.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#midi_panic-class_method" title="midi_panic (class method)">.<strong>midi_panic</strong>(*ports_and_channels, port: nil, channel: nil)  </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Tries very hard to silence a MIDI device.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#midi_panic_on_stop-class_method" title="midi_panic_on_stop (class method)">.<strong>midi_panic_on_stop</strong>(*ports_and_channels, hook_name: :midi_panic, port: nil, channel: nil)  </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Registers a hook with <span class='object_link'><a href="Lifecycle.html#on_stop-class_method" title="SpiSeq::Utils::Lifecycle.on_stop (method)">on_stop</a></span> that will call <span class='object_link'><a href="#midi_panic-class_method" title="SpiSeq::Utils::MIDI.midi_panic (method)">midi_panic</a></span> when playback in Sonic Pi is stopped or when the application exits.</p></div></span>
+  
+</li>
+
+      
+    </ul>
+    
+  
+
+
+
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="cc_watcher_live_loop-class_method">
+  
+    .<strong>cc_watcher_live_loop</strong>(loop_name, port: nil, channel: nil) {|cc_num, cc_val| ... } 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Starts a <code>live_loop</code> that listens for MIDI CC events. The provided block is
+called whenever any CC message is received on the given device(s).</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>loop_name</span>
+      
+      
+        <span class='type'>(<tt>Symbol</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The name for the live loop.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>channel</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>, <tt>String</tt>, <tt>nil</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The MIDI channel to watch for CC
+messages. If nil, falls back to the global default set by
+<span class='object_link'><a href="#use_cc_control_defaults-class_method" title="SpiSeq::Utils::MIDI.use_cc_control_defaults (method)">use_cc_control_defaults</a></span>, or to all channels (i.e. &quot;*&quot;) if that was not
+set.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>port</span>
+      
+      
+        <span class='type'>(<tt>String</tt>, <tt>nil</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The MIDI device to monitor. If nil, falls back in
+the same manner as <code>channel</code>.</p></div>
+      
+    </li>
+  
+</ul>
+
+
+
+
+
+
+
+
+<p class="tag_title">Yield Parameters:</p>
+<ul class="yieldparam">
+  
+    <li>
+      
+        <span class='name'>cc_num</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The CC number (0 - 127) of a received message.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>cc_val</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>(optional) The value for the CC event (0 -
+127).</p></div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/utils/midi.rb', line 95</span>
+
+<span class='id identifier rubyid_module_function'>module_function</span> <span class='kw'>def</span> <span class='id identifier rubyid_cc_watcher_live_loop'>cc_watcher_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='label'>port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>block must take 1 - 2 arguments</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>==</span> <span class='int'>0</span> <span class='op'>||</span> <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>&gt;</span> <span class='int'>2</span>
+
+  <span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='id identifier rubyid_channel'>channel</span> <span class='op'>=</span> <span class='const'>Internal</span><span class='op'>::</span><span class='const'>MIDI</span><span class='period'>.</span><span class='id identifier rubyid_resolve_cc_port_and_channel'>resolve_cc_port_and_channel</span><span class='lparen'>(</span><span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='id identifier rubyid_channel'>channel</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_cue_path'>cue_path</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>/midi:</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_port'>port</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_channel'>channel</span><span class='embexpr_end'>}</span><span class='tstring_content'>/control_change</span><span class='tstring_end'>&quot;</span></span>
+
+  <span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_live_loop'>live_loop</span> <span class='id identifier rubyid_loop_name'>loop_name</span> <span class='kw'>do</span>
+    <span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_with_real_time'>with_real_time</span> <span class='kw'>do</span>
+      <span class='id identifier rubyid_cc'>cc</span><span class='comma'>,</span> <span class='id identifier rubyid_val'>val</span> <span class='op'>=</span> <span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_sync'>sync</span><span class='lparen'>(</span><span class='id identifier rubyid_cue_path'>cue_path</span><span class='rparen'>)</span>
+      <span class='const'>Internal</span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_call_varargs'>call_varargs</span><span class='lparen'>(</span><span class='id identifier rubyid_block'>block</span><span class='comma'>,</span> <span class='id identifier rubyid_cc'>cc</span><span class='comma'>,</span> <span class='id identifier rubyid_val'>val</span><span class='rparen'>)</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="current_cc_control_defaults-class_method">
+  
+    .<strong>current_cc_control_defaults</strong>  &#x21d2; <tt>Hash{Symbol =&gt; Object}</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns the current CC control defaults as set by <span class='object_link'><a href="#use_cc_control_defaults-class_method" title="SpiSeq::Utils::MIDI.use_cc_control_defaults (method)">use_cc_control_defaults</a></span>,
+or an empty hash if no defaults have been set.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Hash{Symbol =&gt; Object}</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+42</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/utils/midi.rb', line 42</span>
+
+<span class='id identifier rubyid_module_function'>module_function</span> <span class='kw'>def</span> <span class='id identifier rubyid_current_cc_control_defaults'>current_cc_control_defaults</span> <span class='op'>=</span> <span class='const'>State</span><span class='period'>.</span><span class='id identifier rubyid_cc_control_defaults'>cc_control_defaults</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="midi_clock_live_loop-class_method">
+  
+    .<strong>midi_clock_live_loop</strong>(loop_name = :midi_clock, send_start: false, send_stop: true, port: nil, start_port: nil, start_channel: nil)  
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Starts a <code>live_loop</code> named <code>loop_name</code> that sends MIDI clock beats for the
+global BPM.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>loop_name</span>
+      
+      
+        <span class='type'>(<tt>Symbol</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>:midi_clock</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The name for the live loop.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>send_start</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>false</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>If true, a MIDI start message will be sent on
+the first iteration of the live loop, after the first clock pulse.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>send_stop</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>If true, a MIDI stop message will be sent on the
+first iteration of the live loop, before the first clock pulse.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>port</span>
+      
+      
+        <span class='type'>(<tt>String</tt>, <tt>nil</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The MIDI port on which to send the clock signal,
+or &quot;*&quot; to send to all ports. If nil, falls back to the global default set
+by Sonic Pi's <code>use_midi_defaults</code>, or to all channels if that was not set.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>start_port</span>
+      
+      
+        <span class='type'>(<tt>String</tt>, <tt>nil</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The MIDI port on which to send the start and
+stop messages, if <code>send_start</code> or <code>send_stop</code> is true. Falls back in the
+same manner as <code>port</code>.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>start_channel</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>, <tt>String</tt>, <tt>nil</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The MIDI channel on which to
+send the start and stop messages, if <code>send_start</code> or <code>send_stop</code> is true.
+Falls back in the same manner as <code>port</code>.</p></div>
+      
+    </li>
+  
+</ul>
+
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/utils/midi.rb', line 64</span>
+
+<span class='id identifier rubyid_module_function'>module_function</span> <span class='kw'>def</span> <span class='id identifier rubyid_midi_clock_live_loop'>midi_clock_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span> <span class='op'>=</span> <span class='symbol'>:midi_clock</span><span class='comma'>,</span> <span class='label'>send_start:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>send_stop:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>start_port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>start_channel:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_beat_kwargs'>beat_kwargs</span> <span class='op'>=</span> <span class='id identifier rubyid_port'>port</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>?</span> <span class='lbrace'>{</span><span class='rbrace'>}</span> <span class='op'>:</span> <span class='lbrace'>{</span> <span class='label'>port:</span> <span class='rbrace'>}</span>
+  <span class='id identifier rubyid_start_stop_kwargs'>start_stop_kwargs</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>port:</span> <span class='id identifier rubyid_start_port'>start_port</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='id identifier rubyid_start_channel'>start_channel</span> <span class='rbrace'>}</span>
+  <span class='id identifier rubyid_start_stop_kwargs'>start_stop_kwargs</span><span class='period'>.</span><span class='id identifier rubyid_compact!'>compact!</span>
+
+  <span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_live_loop'>live_loop</span> <span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='label'>init:</span> <span class='kw'>false</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_inited'>inited</span><span class='op'>|</span>
+    <span class='const'>External</span><span class='op'>::</span><span class='const'>MIDI</span><span class='period'>.</span><span class='id identifier rubyid_midi_stop'>midi_stop</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_start_stop_kwargs'>start_stop_kwargs</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='op'>!</span><span class='id identifier rubyid_inited'>inited</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_send_stop'>send_stop</span>
+
+    <span class='const'>External</span><span class='op'>::</span><span class='const'>MIDI</span><span class='period'>.</span><span class='id identifier rubyid_midi_clock_beat'>midi_clock_beat</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_beat_kwargs'>beat_kwargs</span><span class='rparen'>)</span>
+    <span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_sleep'>sleep</span> <span class='int'>1</span>
+
+    <span class='const'>External</span><span class='op'>::</span><span class='const'>MIDI</span><span class='period'>.</span><span class='id identifier rubyid_midi_start'>midi_start</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_start_stop_kwargs'>start_stop_kwargs</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='op'>!</span><span class='id identifier rubyid_inited'>inited</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_send_start'>send_start</span>
+
+    <span class='kw'>true</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="midi_panic-class_method">
+  
+    .<strong>midi_panic</strong>(*ports_and_channels, port: nil, channel: nil)  
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Tries very hard to silence a MIDI device.</p>
+<p>Some synths do not respond well to MIDI all note off or sound off messages.
+This function sends a MIDI stop, all notes off, sound off, and individual
+note offs for every MIDI note.</p>
+<p>You can call this function with either <code>port</code> and/or <code>channel</code> kwargs, or a
+number of hashes of the same, in which case all provided devices will be
+stopped. E.g.:</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_midi_panic'>midi_panic</span><span class='lparen'>(</span><span class='label'>port:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>my_device</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='int'>7</span><span class='rparen'>)</span>  <span class='comment'># stops one device
+</span><span class='id identifier rubyid_midi_panic'>midi_panic</span><span class='lparen'>(</span><span class='lbrace'>{</span> <span class='label'>channel:</span> <span class='int'>2</span> <span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span> <span class='label'>port:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>another</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='int'>5</span> <span class='rbrace'>}</span><span class='rparen'>)</span>  <span class='comment'># stops 2
+</span></code></pre>
+<p>If no arguments are provided, or a port or channel is unspecified in any
+circumstance, the default Sonic Pi target from <code>use_midi_defaults</code> is used.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>ports_and_channels</span>
+      
+      
+        <span class='type'>(<tt>Array&lt;Hash&gt;</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>An number of hashes specifying MIDI
+ports and/or channels to silence. Mutually exclusive with the <code>port</code> and
+<code>channel</code> arguments.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>port</span>
+      
+      
+        <span class='type'>(<tt>String</tt>, <tt>nil</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The MIDI port to silence. Mutually exclusive with
+the positional hashes.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>channel</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>, <tt>String</tt>, <tt>nil</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The MIDI channel to silence. Mutually
+exclusive with the positional hashes.</p></div>
+      
+    </li>
+  
+</ul>
+
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/utils/midi.rb', line 132</span>
+
+<span class='id identifier rubyid_module_function'>module_function</span> <span class='kw'>def</span> <span class='id identifier rubyid_midi_panic'>midi_panic</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_ports_and_channels'>ports_and_channels</span><span class='comma'>,</span> <span class='label'>port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_panic'>panic</span> <span class='op'>=</span> <span class='id identifier rubyid_lambda'>lambda</span> <span class='kw'>do</span> <span class='op'>|</span><span class='label'>port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='kw'>nil</span><span class='op'>|</span>
+    <span class='id identifier rubyid_midi_kwargs'>midi_kwargs</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>port:</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='rbrace'>}</span>
+    <span class='id identifier rubyid_midi_kwargs'>midi_kwargs</span><span class='period'>.</span><span class='id identifier rubyid_compact!'>compact!</span>
+
+    <span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_with_real_time'>with_real_time</span> <span class='kw'>do</span>
+      <span class='const'>External</span><span class='op'>::</span><span class='const'>MIDI</span><span class='period'>.</span><span class='id identifier rubyid_midi_stop'>midi_stop</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_midi_kwargs'>midi_kwargs</span><span class='rparen'>)</span>
+      <span class='const'>External</span><span class='op'>::</span><span class='const'>MIDI</span><span class='period'>.</span><span class='id identifier rubyid_midi_all_notes_off'>midi_all_notes_off</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_midi_kwargs'>midi_kwargs</span><span class='rparen'>)</span>
+      <span class='const'>External</span><span class='op'>::</span><span class='const'>MIDI</span><span class='period'>.</span><span class='id identifier rubyid_midi_sound_off'>midi_sound_off</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_midi_kwargs'>midi_kwargs</span><span class='rparen'>)</span>
+      <span class='int'>0</span><span class='period'>.</span><span class='id identifier rubyid_upto'>upto</span><span class='lparen'>(</span><span class='int'>127</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_n'>n</span><span class='op'>|</span> <span class='const'>External</span><span class='op'>::</span><span class='const'>MIDI</span><span class='period'>.</span><span class='id identifier rubyid_midi_note_off'>midi_note_off</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_midi_kwargs'>midi_kwargs</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+
+  <span class='kw'>if</span> <span class='id identifier rubyid_port'>port</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_channel'>channel</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+    <span class='kw'>if</span> <span class='id identifier rubyid_ports_and_channels'>ports_and_channels</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
+      <span class='id identifier rubyid_panic'>panic</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span>
+    <span class='kw'>else</span>
+      <span class='id identifier rubyid_ports_and_channels'>ports_and_channels</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_h'>h</span><span class='op'>|</span> <span class='id identifier rubyid_panic'>panic</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_h'>h</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
+    <span class='kw'>end</span>
+  <span class='kw'>else</span>
+    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>positional and keyword arguments are mutually exclusive</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_ports_and_channels'>ports_and_channels</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
+    <span class='id identifier rubyid_panic'>panic</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='label'>port:</span><span class='comma'>,</span> <span class='label'>channel:</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="midi_panic_on_stop-class_method">
+  
+    .<strong>midi_panic_on_stop</strong>(*ports_and_channels, hook_name: :midi_panic, port: nil, channel: nil)  
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Registers a hook with <span class='object_link'><a href="Lifecycle.html#on_stop-class_method" title="SpiSeq::Utils::Lifecycle.on_stop (method)">on_stop</a></span> that will call <span class='object_link'><a href="#midi_panic-class_method" title="SpiSeq::Utils::MIDI.midi_panic (method)">midi_panic</a></span> when
+playback in Sonic Pi is stopped or when the application exits.</p>
+<p><code>hook_name</code> is used as the <code>name</code> passed to <code>on_stop</code>. If you need more than
+one hook, you must give them each different <code>hook_name</code>s; calling this
+function a second time with the same name will remove the previous hook with
+that name.</p>
+<p>Takes the same arguments as <span class='object_link'><a href="#midi_panic-class_method" title="SpiSeq::Utils::MIDI.midi_panic (method)">midi_panic</a></span>, with the addition of <code>hook_name</code>.</p>
+<p><code>midi_panic</code> will <em>not</em> be called if a Sonic Pi sketch exits gracefully
+(e.g. if it has no <code>live_loops</code> or they all stop). It is only executed when
+hitting the stop button or quitting the app.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>hook_name</span>
+      
+      
+        <span class='type'>(<tt>Symbol</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>:midi_panic</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The name of the stop hook. See
+<span class='object_link'><a href="Lifecycle.html#on_stop-class_method" title="SpiSeq::Utils::Lifecycle.on_stop (method)">on_stop</a></span>.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>ports_and_channels</span>
+      
+      
+        <span class='type'>(<tt>Array&lt;Hash&gt;</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>An number of hashes specifying MIDI
+ports and/or channels to silence. Mutually exclusive with the <code>port</code> and
+<code>channel</code> arguments.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>port</span>
+      
+      
+        <span class='type'>(<tt>String</tt>, <tt>nil</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The MIDI port to silence. Mutually exclusive with
+the positional hashes.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>channel</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>, <tt>String</tt>, <tt>nil</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The MIDI channel to silence. Mutually
+exclusive with the positional hashes.</p></div>
+      
+    </li>
+  
+</ul>
+
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+175
+176
+177
+178
+179</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/utils/midi.rb', line 175</span>
+
+<span class='id identifier rubyid_module_function'>module_function</span> <span class='kw'>def</span> <span class='id identifier rubyid_midi_panic_on_stop'>midi_panic_on_stop</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_ports_and_channels'>ports_and_channels</span><span class='comma'>,</span> <span class='label'>hook_name:</span> <span class='symbol'>:midi_panic</span><span class='comma'>,</span> <span class='label'>port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="Lifecycle.html" title="SpiSeq::Utils::Lifecycle (module)">Lifecycle</a></span></span><span class='period'>.</span><span class='id identifier rubyid_on_stop'><span class='object_link'><a href="Lifecycle.html#on_stop-class_method" title="SpiSeq::Utils::Lifecycle.on_stop (method)">on_stop</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_hook_name'>hook_name</span><span class='rparen'>)</span> <span class='kw'>do</span>
+    <span class='id identifier rubyid_midi_panic'><span class='object_link'><a href="#midi_panic-class_method" title="SpiSeq::Utils::MIDI.midi_panic (method)">midi_panic</a></span></span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_ports_and_channels'>ports_and_channels</span><span class='comma'>,</span> <span class='label'>port:</span><span class='comma'>,</span> <span class='label'>channel:</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="use_cc_control_defaults-class_method">
+  
+    .<strong>use_cc_control_defaults</strong>(port: nil, channel: nil)  
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Set global default MIDI parameters to use when watching for incoming CC
+messages. Such events are used to control various features, such as muting
+live loops (e.g. those made from <span class='object_link'><a href="LiveLoops.html#cc_mutable_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.cc_mutable_live_loop (method)">cc_mutable_live_loop</a></span> and
+<span class='object_link'><a href="../Playback.html#track_live_loop-class_method" title="SpiSeq::Playback.track_live_loop (method)">track_live_loop</a></span>), toggling fill mode in <code>track_live_loop</code>, and
+controlling recording in <span class='object_link'><a href="../Tracks/Track.html#record-class_method" title="SpiSeq::Tracks::Track.record (method)">Track.record</a></span>.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>channel</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>, <tt>String</tt>, <tt>nil</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The default MIDI channel to watch for
+CC events. If nil, defaults to all channels (i.e. &quot;*&quot;).</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>port</span>
+      
+      
+        <span class='type'>(<tt>String</tt>, <tt>nil</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The MIDI device to watch for CC events. If nil,
+also falls back to &quot;*&quot;.</p></div>
+      
+    </li>
+  
+</ul>
+
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><span class='object_link'><a href="#current_cc_control_defaults-class_method" title="SpiSeq::Utils::MIDI.current_cc_control_defaults (method)">current_cc_control_defaults</a></span></li>
+    
+  </ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+33
+34
+35
+36
+37</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/utils/midi.rb', line 33</span>
+
+<span class='id identifier rubyid_module_function'>module_function</span> <span class='kw'>def</span> <span class='id identifier rubyid_use_cc_control_defaults'>use_cc_control_defaults</span><span class='lparen'>(</span><span class='label'>port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_defaults'>defaults</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>port:</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='rbrace'>}</span>
+  <span class='id identifier rubyid_defaults'>defaults</span><span class='period'>.</span><span class='id identifier rubyid_compact!'>compact!</span>
+  <span class='const'>State</span><span class='period'>.</span><span class='id identifier rubyid_cc_control_defaults'>cc_control_defaults</span> <span class='op'>=</span> <span class='id identifier rubyid_defaults'>defaults</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+
+      
+
+    </div>
+  </body>
+</html>

@@ -339,7 +339,7 @@ the new track; see above.</p></div>
         <span class='name'>granularity</span>
       
       
-        <span class='type'>(<tt><span class='object_link'><a href="NoteLength.html" title="NoteLength (class)">NoteLength</a></span></tt>, <tt>Number</tt>, <tt><span class='object_link'>Symbol</span></tt>)</span>
+        <span class='type'>(<tt>NoteLength</tt>, <tt>Number</tt>, <tt><span class='object_link'>Symbol</span></tt>)</span>
       
       
         <em class="default">(defaults to: <tt>NoteLength::Eighth</tt>)</em>
@@ -347,8 +347,8 @@ the new track; see above.</p></div>
       
         &mdash;
         <div class='inline'><p>The <span class='object_link'><a href="TrackBase.html#granularity-instance_method" title="TrackBase#granularity (method)">TrackBase#granularity</a></span> for the
-new track. Can be a <span class='object_link'><a href="NoteLength.html" title="NoteLength (class)">NoteLength</a></span> or a value understood by
-<span class='object_link'><a href="NoteLength.html#new-class_method" title="NoteLength.new (method)">NoteLength.new</a></span>.</p></div>
+new track. Can be a NoteLength or a value understood by
+NoteLength.new.</p></div>
       
     </li>
   
@@ -385,7 +385,7 @@ new track. Can be a <span class='object_link'><a href="NoteLength.html" title="N
     <td>
       <pre class="code"><span class="info file"># File 'cctrack.rb', line 66</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_gridish'>gridish</span><span class='comma'>,</span> <span class='label'>granularity:</span> <span class='const'><span class='object_link'><a href="NoteLength.html" title="NoteLength (class)">NoteLength</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="NoteLength.html#Eighth-constant" title="NoteLength::Eighth (constant)">Eighth</a></span></span><span class='comma'>,</span> <span class='label'>timescale:</span> <span class='int'>1</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_gridish'>gridish</span><span class='comma'>,</span> <span class='label'>granularity:</span> <span class='const'>NoteLength</span><span class='op'>::</span><span class='const'>Eighth</span><span class='comma'>,</span> <span class='label'>timescale:</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='comment'># Overridden purely to provide documentation.
 </span>  <span class='kw'>super</span>
 <span class='kw'>end</span></pre>
@@ -596,7 +596,7 @@ own slot. Each element of <code>slots</code> can be:</p>
 <li>An integer, which is used as the <span class='object_link'><a href="CCStep.html#value-instance_method" title="CCStep#value (method)">value</a></span> in a <span class='object_link'><a href="CCStep.html" title="CCStep (class)">CCStep</a></span> with
 <span class='object_link'><a href="CCStep.html#number-instance_method" title="CCStep#number (method)">number</a></span> <code>cc_number</code>.</li>
 <li>A <span class='object_link'><a href="CCStep.html" title="CCStep (class)">CCStep</a></span> instance, which will be passed through verbatim.</li>
-<li>A rest (see <span class='object_link'><a href="MIDINote.html#rest%3F-class_method" title="MIDINote.rest? (method)">MIDINote.rest?</a></span>), which will result in an empty slot.</li>
+<li>A rest (see MIDINote.rest?), which will result in an empty slot.</li>
 </ul>
 
   </div>
@@ -657,7 +657,7 @@ of the slots in the resulting track. See above.</p></div>
         <span class='name'>granularity</span>
       
       
-        <span class='type'>(<tt><span class='object_link'><a href="NoteLength.html" title="NoteLength (class)">NoteLength</a></span></tt>, <tt>Number</tt>, <tt><span class='object_link'>Symbol</span></tt>)</span>
+        <span class='type'>(<tt>NoteLength</tt>, <tt>Number</tt>, <tt><span class='object_link'>Symbol</span></tt>)</span>
       
       
         <em class="default">(defaults to: <tt>NoteLength::Eighth</tt>)</em>
@@ -733,9 +733,9 @@ of the slots in the resulting track. See above.</p></div>
     <td>
       <pre class="code"><span class="info file"># File 'cctrack.rb', line 94</span>
 
-<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_simple'>simple</span><span class='lparen'>(</span><span class='id identifier rubyid_cc_number'>cc_number</span><span class='comma'>,</span> <span class='id identifier rubyid_slots'>slots</span><span class='comma'>,</span> <span class='label'>granularity:</span> <span class='const'><span class='object_link'><a href="NoteLength.html" title="NoteLength (class)">NoteLength</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="NoteLength.html#Eighth-constant" title="NoteLength::Eighth (constant)">Eighth</a></span></span><span class='comma'>,</span> <span class='label'>timescale:</span> <span class='int'>1</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_simple'>simple</span><span class='lparen'>(</span><span class='id identifier rubyid_cc_number'>cc_number</span><span class='comma'>,</span> <span class='id identifier rubyid_slots'>slots</span><span class='comma'>,</span> <span class='label'>granularity:</span> <span class='const'>NoteLength</span><span class='op'>::</span><span class='const'>Eighth</span><span class='comma'>,</span> <span class='label'>timescale:</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_slots'>slots</span> <span class='op'>=</span> <span class='id identifier rubyid_slots'>slots</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_slot'>slot</span><span class='op'>|</span>
-    <span class='kw'>next</span> <span class='symbol'>:r</span> <span class='kw'>if</span> <span class='const'><span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_rest?'><span class='object_link'><a href="MIDINote.html#rest%3F-class_method" title="MIDINote.rest? (method)">rest?</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_slot'>slot</span><span class='rparen'>)</span>
+    <span class='kw'>next</span> <span class='symbol'>:r</span> <span class='kw'>if</span> <span class='const'>MIDINote</span><span class='period'>.</span><span class='id identifier rubyid_rest?'>rest?</span><span class='lparen'>(</span><span class='id identifier rubyid_slot'>slot</span><span class='rparen'>)</span>
 
     <span class='kw'>case</span> <span class='id identifier rubyid_slot'>slot</span>
     <span class='kw'>when</span> <span class='const'><span class='object_link'><a href="CCStep.html" title="CCStep (class)">CCStep</a></span></span>

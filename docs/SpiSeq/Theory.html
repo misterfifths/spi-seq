@@ -80,12 +80,67 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>theory/euclid.rb
+    <dd>lib/spiseq/theory/arp.rb<span class="defines">,<br>
+  lib/spiseq/theory/rest.rb,<br> lib/spiseq/theory/chord.rb,<br> lib/spiseq/theory/scale.rb,<br> lib/spiseq/theory/euclid.rb,<br> lib/spiseq/theory/interval.rb,<br> lib/spiseq/theory/midinote.rb,<br> lib/spiseq/theory/notelength.rb,<br> lib/spiseq/theory/chord_voicing.rb</span>
+
 </dd>
   </dl>
   
 </div>
 
+<h2>Defined Under Namespace</h2>
+<p class="children">
+  
+    
+      <strong class="modules">Modules:</strong> <span class='object_link'><a href="Theory/Arp.html" title="SpiSeq::Theory::Arp (module)">Arp</a></span>
+    
+  
+    
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="Theory/Chord.html" title="SpiSeq::Theory::Chord (class)">Chord</a></span>, <span class='object_link'><a href="Theory/Interval.html" title="SpiSeq::Theory::Interval (class)">Interval</a></span>, <span class='object_link'><a href="Theory/MIDINote.html" title="SpiSeq::Theory::MIDINote (class)">MIDINote</a></span>, <span class='object_link'><a href="Theory/NoteLength.html" title="SpiSeq::Theory::NoteLength (class)">NoteLength</a></span>, <span class='object_link'><a href="Theory/Scale.html" title="SpiSeq::Theory::Scale (class)">Scale</a></span>
+    
+  
+</p>
+
+  
+    <h2>
+      Class aliases
+      <small><a href="#" class="constants_summary_toggle">collapse</a></small>
+    </h2>
+
+    <dl class="constants">
+      
+        <dt id="Ch-constant" class="">Ch =
+          <div class="docstring">
+  <div class="discussion">
+    <p>An alias for the <span class='object_link'><a href="Theory/Chord.html" title="SpiSeq::Theory::Chord (class)">Chord</a></span> class since Sonic Pi already has a class with that
+name. See also <span class='object_link'><a href="#C-class_method" title="SpiSeq::Theory.C (method)">C</a></span>, a helper that creates and immediately voices a chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'><span class='object_link'><a href="Theory/Chord.html" title="SpiSeq::Theory::Chord (class)">Chord</a></span></span></pre></dd>
+      
+        <dt id="Sc-constant" class="">Sc =
+          <div class="docstring">
+  <div class="discussion">
+    <p>An alias for the <span class='object_link'><a href="Theory/Scale.html" title="SpiSeq::Theory::Scale (class)">Scale</a></span> class since Sonic Pi already has a class with that
+name. See also <span class='object_link'><a href="#SC-class_method" title="SpiSeq::Theory.SC (method)">SC</a></span>, an alias for the initializer.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'><span class='object_link'><a href="Theory/Scale.html" title="SpiSeq::Theory::Scale (class)">Scale</a></span></span></pre></dd>
+      
+    </dl>
+  
 
 
 
@@ -100,6 +155,50 @@
     </h2>
 
     <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#arp-class_method" title="arp (class method)">.<strong>arp</strong>  &#x21d2; Array&lt;MIDINote&gt; </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>An alias for <span class='object_link'><a href="Theory/Arp.html#arp-class_method" title="SpiSeq::Theory::Arp.arp (method)">arp</a></span>.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#C-class_method" title="C (class method)">.<strong>C</strong>  &#x21d2; Array&lt;MIDINote&gt; </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>An alias for <span class='object_link'><a href="Theory/Chord.html#voiced-class_method" title="SpiSeq::Theory::Chord.voiced (method)">Chord.voiced</a></span>.</p></div></span>
+  
+</li>
+
       
         <li class="public ">
   <span class="summary_signature">
@@ -123,6 +222,104 @@
 </li>
 
       
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#I-class_method" title="I (class method)">.<strong>I</strong>  &#x21d2; Interval </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>An alias for <span class='object_link'><a href="Theory/Interval.html#new-class_method" title="SpiSeq::Theory::Interval.new (method)">Interval.new</a></span>.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#N-class_method" title="N (class method)">.<strong>N</strong>  &#x21d2; MIDINote </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>An alias for <span class='object_link'><a href="Theory/MIDINote.html#new-class_method" title="SpiSeq::Theory::MIDINote.new (method)">MIDINote.new</a></span>.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#SC-class_method" title="SC (class method)">.<strong>SC</strong>  &#x21d2; Scale </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>An alias for <span class='object_link'><a href="Theory/Scale.html#initialize-instance_method" title="SpiSeq::Theory::Scale#initialize (method)">Scale.new</a></span>.</p></div></span>
+  
+</li>
+
+      
+    </ul>
+    
+  
+    <h2>
+      Class Method Summary
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#rest%3F-class_method" title="rest? (class method)">.<strong>rest?</strong>(val)  &#x21d2; Boolean </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns true if the given value represents a rest.</p></div></span>
+  
+</li>
+
+      
     </ul>
     
   
@@ -134,7 +331,117 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="euclid-class_method">
+  <h3 class="signature first" id="arp-class_method">
+  
+    .<strong>arp</strong>  &#x21d2; <tt>Array&lt;<span class='object_link'><a href="Theory/MIDINote.html" title="MIDINote (class)">MIDINote</a></span>&gt;</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>An alias for <span class='object_link'><a href="Theory/Arp.html#arp-class_method" title="SpiSeq::Theory::Arp.arp (method)">arp</a></span>.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Array&lt;<span class='object_link'><a href="Theory/MIDINote.html" title="SpiSeq::Theory::MIDINote (class)">MIDINote</a></span>&gt;</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+348</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/arp.rb', line 348</span>
+
+<span class='id identifier rubyid_module_function'>module_function</span> <span class='kw'>def</span> <span class='id identifier rubyid_arp'>arp</span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Theory/Arp.html" title="SpiSeq::Theory::Arp (module)">Arp</a></span></span><span class='period'>.</span><span class='id identifier rubyid_arp'><span class='object_link'><a href="Theory/Arp.html#arp-class_method" title="SpiSeq::Theory::Arp.arp (method)">arp</a></span></span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="C-class_method">
+  
+    .<strong>C</strong>  &#x21d2; <tt>Array&lt;<span class='object_link'><a href="Theory/MIDINote.html" title="MIDINote (class)">MIDINote</a></span>&gt;</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>An alias for <span class='object_link'><a href="Theory/Chord.html#voiced-class_method" title="SpiSeq::Theory::Chord.voiced (method)">Chord.voiced</a></span>.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Array&lt;<span class='object_link'><a href="Theory/MIDINote.html" title="SpiSeq::Theory::MIDINote (class)">MIDINote</a></span>&gt;</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+383</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord_voicing.rb', line 383</span>
+
+<span class='id identifier rubyid_module_function'>module_function</span> <span class='kw'>def</span> <span class='const'>C</span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Theory/Chord.html" title="SpiSeq::Theory::Chord (class)">Chord</a></span></span><span class='period'>.</span><span class='id identifier rubyid_voiced'><span class='object_link'><a href="Theory/Chord.html#voiced-class_method" title="SpiSeq::Theory::Chord.voiced (method)">voiced</a></span></span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="euclid-class_method">
   
     .<strong>euclid</strong>(pulses, length, rotate: 0)  &#x21d2; <tt>Array&lt;Boolean&gt;</tt> 
   
@@ -144,11 +451,11 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p>Returns an array representing a Euclidean rhythm that evenly spreads <code>pulses</code>
-hits over <code>length</code> many beats. The array contains booleans, true for hits and
-false for rests.</p>
-<p>This is analogous to Sonic Pi's <code>spread</code> function, although it does not always
-return hits in the same order.</p>
+    <p>Returns an array representing a Euclidean rhythm that evenly spreads
+<code>pulses</code> hits over <code>length</code> many beats. The array contains booleans, true
+for hits and false for rests.</p>
+<p>This is analogous to Sonic Pi's <code>spread</code> function, although it does not
+always return hits in the same order.</p>
 <p>If <code>pulses</code> is &gt; 0, the first element of the result will always be true. If
 <code>pulses</code> &gt;= <code>length</code>, all values in the result will be true. If <code>pulses</code> is
 0, all values will be false. It is an error to pass negative numbers or
@@ -239,7 +546,7 @@ element is a hit, this many times.</p></div>
   <p class="tag_title">See Also:</p>
   <ul class="see">
     
-      <li><span class='object_link'><a href="../TrackBase.html#euclid-class_method" title="TrackBase.euclid (method)">TrackBase.euclid</a></span></li>
+      <li><span class='object_link'><a href="Tracks/TrackBase.html#euclid-class_method" title="SpiSeq::Tracks::TrackBase.euclid (method)">TrackBase.euclid</a></span></li>
     
   </ul>
 
@@ -249,6 +556,7 @@ element is a hit, this many times.</p></div>
       <pre class="lines">
 
 
+25
 26
 27
 28
@@ -273,11 +581,10 @@ element is a hit, this many times.</p></div>
 47
 48
 49
-50
-51</pre>
+50</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'theory/euclid.rb', line 26</span>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/euclid.rb', line 25</span>
 
 <span class='id identifier rubyid_module_function'>module_function</span> <span class='kw'>def</span> <span class='id identifier rubyid_euclid'>euclid</span><span class='lparen'>(</span><span class='id identifier rubyid_pulses'>pulses</span><span class='comma'>,</span> <span class='id identifier rubyid_length'>length</span><span class='comma'>,</span> <span class='label'>rotate:</span> <span class='int'>0</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>all arguments must be integers</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_pulses'>pulses</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Integer</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_length'>length</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Integer</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_rotate'>rotate</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Integer</span><span class='rparen'>)</span>
@@ -291,8 +598,8 @@ element is a hit, this many times.</p></div>
   <span class='id identifier rubyid_res'>res</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
   <span class='id identifier rubyid_length'>length</span><span class='period'>.</span><span class='id identifier rubyid_times'>times</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_i'>i</span><span class='op'>|</span>
     <span class='comment'># See the &quot;Stateless One-Liners&quot; section here: https://paulbatchelor.github.io/sndkit/euclid/
-</span>    <span class='comment'># But we are using a different definition of rotation - we rotate so the nth
-</span>    <span class='comment'># hit is in the first slot, like Sonic Pi.
+</span>    <span class='comment'># But we are using a different definition of rotation - we rotate so the
+</span>    <span class='comment'># nth hit is in the first slot, like Sonic Pi.
 </span>    <span class='id identifier rubyid_res'>res</span> <span class='op'>&lt;&lt;</span> <span class='lparen'>(</span><span class='lparen'>(</span><span class='id identifier rubyid_pulses'>pulses</span> <span class='op'>*</span> <span class='id identifier rubyid_i'>i</span><span class='rparen'>)</span> <span class='op'>%</span> <span class='id identifier rubyid_length'>length</span> <span class='op'>&lt;</span> <span class='id identifier rubyid_pulses'>pulses</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
 
@@ -305,6 +612,266 @@ element is a hit, this many times.</p></div>
 </span>
   <span class='id identifier rubyid_res'>res</span>
 <span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="I-class_method">
+  
+    .<strong>I</strong>  &#x21d2; <tt><span class='object_link'><a href="Theory/Interval.html" title="Interval (class)">Interval</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>An alias for <span class='object_link'><a href="Theory/Interval.html#new-class_method" title="SpiSeq::Theory::Interval.new (method)">Interval.new</a></span>.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Theory/Interval.html" title="SpiSeq::Theory::Interval (class)">Interval</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+455</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/interval.rb', line 455</span>
+
+<span class='id identifier rubyid_module_function'>module_function</span> <span class='kw'>def</span> <span class='const'>I</span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Theory/Interval.html" title="SpiSeq::Theory::Interval (class)">Interval</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Theory/Interval.html#new-class_method" title="SpiSeq::Theory::Interval.new (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="N-class_method">
+  
+    .<strong>N</strong>  &#x21d2; <tt><span class='object_link'><a href="Theory/MIDINote.html" title="MIDINote (class)">MIDINote</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>An alias for <span class='object_link'><a href="Theory/MIDINote.html#new-class_method" title="SpiSeq::Theory::MIDINote.new (method)">MIDINote.new</a></span>.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Theory/MIDINote.html" title="SpiSeq::Theory::MIDINote (class)">MIDINote</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+400</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/midinote.rb', line 400</span>
+
+<span class='id identifier rubyid_module_function'>module_function</span> <span class='kw'>def</span> <span class='const'>N</span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Theory/MIDINote.html" title="SpiSeq::Theory::MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Theory/MIDINote.html#new-class_method" title="SpiSeq::Theory::MIDINote.new (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="rest?-class_method">
+  
+    .<strong>rest?</strong>(val)  &#x21d2; <tt>Boolean</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns true if the given value represents a rest. nil, <code>:r</code>, and <code>:rest</code>
+are considered rests.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>val</span>
+      
+      
+        <span class='type'>(<tt>Object</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+    </li>
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+8
+9
+10
+11
+12</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/rest.rb', line 8</span>
+
+<span class='id identifier rubyid_module_function'>module_function</span> <span class='kw'>def</span> <span class='id identifier rubyid_rest?'>rest?</span><span class='lparen'>(</span><span class='id identifier rubyid_val'>val</span><span class='rparen'>)</span>
+  <span class='kw'>return</span> <span class='kw'>true</span> <span class='kw'>if</span> <span class='id identifier rubyid_val'>val</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+  <span class='kw'>return</span> <span class='kw'>false</span> <span class='kw'>unless</span> <span class='id identifier rubyid_val'>val</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Symbol</span><span class='rparen'>)</span>
+  <span class='lbracket'>[</span><span class='symbol'>:r</span><span class='comma'>,</span> <span class='symbol'>:rest</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_val'>val</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="SC-class_method">
+  
+    .<strong>SC</strong>  &#x21d2; <tt><span class='object_link'><a href="Theory/Scale.html" title="Scale (class)">Scale</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>An alias for <span class='object_link'><a href="Theory/Scale.html#initialize-instance_method" title="SpiSeq::Theory::Scale#initialize (method)">Scale.new</a></span>.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Theory/Scale.html" title="SpiSeq::Theory::Scale (class)">Scale</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+502</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/scale.rb', line 502</span>
+
+<span class='id identifier rubyid_module_function'>module_function</span> <span class='kw'>def</span> <span class='const'>SC</span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Theory/Scale.html" title="SpiSeq::Theory::Scale (class)">Scale</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Theory/Scale.html#initialize-instance_method" title="SpiSeq::Theory::Scale#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='op'>...</span><span class='rparen'>)</span></pre>
     </td>
   </tr>
 </table>

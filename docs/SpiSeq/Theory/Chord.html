@@ -1,0 +1,5973 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Class: SpiSeq::Theory::Chord
+  
+    &mdash; spi-seq Documentation
+  
+</title>
+
+  <link rel="stylesheet" href="../../css/style.css" type="text/css">
+
+  <link rel="stylesheet" href="../../css/common.css" type="text/css">
+
+<script type="text/javascript">
+  pathId = "SpiSeq::Theory::Chord";
+  relpath = '../../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="main_progress" aria-hidden="true"></div>
+
+    <div class="nav_wrap">
+      <iframe id="nav" src="../../class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../../_index.html">Index (C)</a> &raquo;
+    <span class='title'><span class='object_link'><a href="../../SpiSeq.html" title="SpiSeq (module)">SpiSeq</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../Theory.html" title="SpiSeq::Theory (module)">Theory</a></span></span>
+     &raquo; 
+    <span class="title">Chord</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="../../class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Class: SpiSeq::Theory::Chord
+  
+  
+  
+</h1>
+<div class="box_info">
+  
+  <dl>
+    <dt>Inherits:</dt>
+    <dd>
+      <span class="inheritName">Object</span>
+      
+        <ul class="fullTree">
+          <li>Object</li>
+          
+            <li class="next">SpiSeq::Theory::Chord</li>
+          
+        </ul>
+        <a href="#" class="inheritanceTree">show all</a>
+      
+    </dd>
+  </dl>
+  
+
+  
+  
+  <dl>
+      <dt>Extended by:</dt>
+      <dd>Forwardable</dd>
+  </dl>
+  
+  
+  
+  <dl>
+      <dt>Includes:</dt>
+      <dd>Enumerable</dd>
+  </dl>
+  
+  
+
+  
+
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>lib/spiseq/theory/chord.rb<span class="defines">,<br>
+  lib/spiseq/theory/chord_voicing.rb</span>
+
+</dd>
+  </dl>
+  
+</div>
+
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    <p>A grouping of Intervals that represents a chord.</p>
+<p>Sonic Pi already provides a class called <code>Chord</code>, so this class is aliased
+to <span class='object_link'><a href="../Theory.html#Ch-constant" title="SpiSeq::Theory::Ch (constant)">Ch</a></span>.</p>
+<p>Enumerable over its <span class='object_link'><a href="#intervals-instance_method" title="SpiSeq::Theory::Chord#intervals (method)">#intervals</a></span>, and has most of the read-only methods of
+Array. The intervals are always sorted ascending and will never contain
+duplicates, even if a mutation might produce one.</p>
+<p>This class only represents intervals; it does not track a root note or
+inversions. Instances can be concretely expressed (i.e., converted to actual
+<span class='object_link'><a href="MIDINote.html" title="SpiSeq::Theory::MIDINote (class)">MIDINote</a></span>s) on a particular root note with <span class='object_link'><a href="#voice-instance_method" title="SpiSeq::Theory::Chord#voice (method)">#voice</a></span>, <span class='object_link'><a href="#voiced-class_method" title="SpiSeq::Theory::Chord.voiced (method)">voiced</a></span> or the <span class='object_link'><a href="../Theory.html#C-class_method" title="SpiSeq::Theory.C (method)">C</a></span>
+helper function. Inversions also happen at voice-time.</p>
+<p><strong>Chord objects are immutable.</strong> The various mutation methods it provides
+(e.g. <span class='object_link'><a href="#flat-instance_method" title="SpiSeq::Theory::Chord#flat (method)">#flat</a></span>, <span class='object_link'><a href="#sus4-instance_method" title="SpiSeq::Theory::Chord#sus4 (method)">#sus4</a></span>, <span class='object_link'><a href="#add-instance_method" title="SpiSeq::Theory::Chord#add (method)">#add</a></span>) return new Chord instances with different
+intervals.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+  
+    <h2>
+      Constant Summary
+      <small><a href="#" class="constants_summary_toggle">collapse</a></small>
+    </h2>
+
+    <dl class="constants">
+      
+        <dt id="CHORD_NAMES-constant" class="">CHORD_NAMES =
+          <div class="docstring">
+  <div class="discussion">
+    <p>All chord names supported by this class. The keys of this hash are valid
+values to pass to <span class='object_link'><a href="#new-class_method" title="SpiSeq::Theory::Chord.new (method)">new</a></span>.</p>
+<p>Valid chord names:</p>
+<ul>
+<li><code>maj</code>: Major triad</li>
+<li><code>maj6</code>: Major 6th</li>
+<li><code>maj7</code>: Major 7th</li>
+<li><code>maj9</code>: Major 9th</li>
+<li><code>maj11</code>: Major 11th</li>
+<li><code>maj13</code>: Major 13th</li>
+<li><code>min</code>: Minor triad</li>
+<li><code>min6</code>: Minor 6th</li>
+<li><code>min7</code>: Minor 7th</li>
+<li><code>min9</code>: Minor 9th</li>
+<li><code>min11</code>: Minor 11th</li>
+<li><code>min13</code>: Minor 13th</li>
+<li><code>mM7</code>: Minor/major 7th</li>
+<li><code>mM9</code>: Minor/major 9th</li>
+<li><code>mM11</code>: Minor/major 11th</li>
+<li><code>mM13</code>: Minor/major 13th</li>
+<li><code>aug</code>: Augmented triad</li>
+<li><code>aug6</code>: Augmented 6th (German)</li>
+<li><code>fr6</code>: Augmented 6th (French)</li>
+<li><code>it6</code>: Augmented 6th (Italian)</li>
+<li><code>aug7</code>: Augmented 7th</li>
+<li><code>aug9</code>: Augmented 9th</li>
+<li><code>aug11</code>: Augmented 11th</li>
+<li><code>aug13</code>: Augmented 13th</li>
+<li><code>augM7</code>: Augmented major 7th</li>
+<li><code>augM9</code>: Augmented major 9th</li>
+<li><code>augM11</code>: Augmented major 11th</li>
+<li><code>augM13</code>: Augmented major 13th</li>
+<li><code>dim</code>: Diminished triad</li>
+<li><code>dim7</code>: Diminished 7th</li>
+<li><code>dim9</code>: Diminished 9th</li>
+<li><code>dim11</code>: Diminished 11th</li>
+<li><code>dim13</code>: Diminished 13th</li>
+<li><code>halfdim7</code>: Half-diminished 7th</li>
+<li><code>halfdim9</code>: Half-diminished 9th</li>
+<li><code>halfdim11</code>: Half-diminished 11th</li>
+<li><code>halfdim13</code>: Half-diminished 13th</li>
+<li><code>dom</code>: Dominant triad</li>
+<li><code>dompar</code>: Dominant parallel triad</li>
+<li><code>dom7</code>: Dominant 7th</li>
+<li><code>dom9</code>: Dominant 9th</li>
+<li><code>dom11</code>: Dominant 11th</li>
+<li><code>dom13</code>: Dominant 13th</li>
+<li><code>power</code>: Power chord (root + fifth)</li>
+<li><code>power2</code>: Power chord spanning two octaves</li>
+</ul>
+<p>And some abbreviations from Sonic Pi:
+<code>1</code>, <code>add2</code>, <code>add4</code>, <code>add9</code>, <code>add11</code>, <code>add13</code>, <code>sus2</code>, <code>sus4</code>, <code>6*9</code>,
+<code>madd2</code>, <code>madd4</code>, <code>madd9</code>, <code>madd11</code>, <code>madd13</code>, <code>m+5</code>, <code>m6*9</code>, <code>m7+5</code>,
+<code>m7+5-9</code>, <code>m7-9</code>, <code>9sus4</code>, <code>m11</code>, <code>7-9</code>, <code>7-10</code>, <code>7-11</code>, <code>7-13</code>, <code>7+5-9</code>,
+<code>7sus2</code>, <code>7sus4</code>, <code>11</code>, <code>9+5</code>, <code>m9+5</code></p>
+<p>There are aliases for many of the above names; print this array to see all
+possible names. This class understands all of the same chord names as
+Sonic Pi's <code>chord</code> function and more.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Array&lt;Symbol&gt;</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'>ABBREVS</span><span class='period'>.</span><span class='id identifier rubyid_keys'>keys</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+      
+        <dt id="VOICING_STYLES-constant" class="">VOICING_STYLES =
+          <div class="docstring">
+  <div class="discussion">
+    <p>The names of all voicing styles supported by this class. These are the
+valid values to pass to <span class='object_link'><a href="#voice-instance_method" title="SpiSeq::Theory::Chord#voice (method)">#voice</a></span>.</p>
+<p>Valid voicing styles:</p>
+<ul>
+<li><code>closed</code>: The simplest voicing: uses the intervals in the chord as-is.</li>
+<li><code>rootless</code>: The same as closed voicing, but omits the root note. If the
+only interval in the chord is the root, this voicing will return an
+empty array.</li>
+<li><code>shell</code>: Only the root, thirds, and seventh intervals (in any octave)
+are included. If none of those intervals are present in the chord, this
+voicing will return an empty array.</li>
+<li><code>drop2</code>: Applies a closed voicing, then drops the 2nd highest note in
+the result an octave.</li>
+<li><code>drop3</code>: Same as drop2, but drops the third highest note.</li>
+<li><code>drop4</code>: Same as drop2, but only drops the 4th highest note.</li>
+<li><code>drop23</code>: Combines drop2 and drop3.</li>
+<li><code>drop24</code>: Combines drop2 and drop4.</li>
+<li><code>drop34</code>: Combines drop3 and drop4.</li>
+<li><code>double_bass</code>: Applies a closed voicing, then adds a note that is an
+octave below the lowest note in the result.</li>
+<li><code>double_bass_up</code>: Like double_bass, but adds the new note an octave up.</li>
+<li><code>double3</code>: Applies a closed voicing, then adds a note an octave below
+any major or minor 3rd (in all octaves).</li>
+<li><code>double3_up</code>: Same as double 3, but adds the new note an octave up.</li>
+<li><code>double5</code>: Same as double3, but looks for perfect fifths in the chord.</li>
+<li><code>double5_up</code>: Same as double3_up, but looks for perfect fifths in the
+chord.</li>
+<li><code>double7</code>: Same as double3, but looks for major or minor 7ths in the
+chord.</li>
+<li><code>double7_up</code>: Same as double3_up, but looks for major or minor 7ths in
+the chord.</li>
+<li><code>open</code>: Applies a closed voicing, then raises the second-lowest note an
+octave.</li>
+<li><code>open2</code>: Applies a closed voicing, then raises the lowest note an octave
+and lowers the third lowest note an octave.</li>
+<li><code>open3</code>: Applies a closed voicing, then lowers the second-lowest note an
+octave.</li>
+</ul>
+<p>There are aliases for many of the above styles; print this array to see
+all possible names.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Array&lt;Symbol&gt;</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='const'>VOICINGS</span><span class='period'>.</span><span class='id identifier rubyid_keys'>keys</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+      
+    </dl>
+  
+
+
+
+
+  <h2>Instance Attribute Summary <small><a href="#" class="summary_toggle">collapse</a></small></h2>
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#intervals-instance_method" title="#intervals (instance method)">#<strong>intervals</strong>  &#x21d2; Array&lt;Interval&gt; </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+      <span class="note title readonly">readonly</span>
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>The <span class='object_link'><a href="Interval.html" title="SpiSeq::Theory::Interval (class)">Interval</a></span>s this chord represents.</p></div></span>
+  
+</li>
+
+    
+  </ul>
+
+
+
+
+  
+    <h2>
+      Initialization
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#new-class_method" title="new (class method)">.<strong>new</strong>(intervals_or_name)  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Creates a new Chord.</p></div></span>
+  
+</li>
+
+      
+    </ul>
+    
+  
+    <h2>
+      Manipulating intervals
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#append-instance_method" title="#append (instance method)">#<strong>append</strong>(other)  &#x21d2; Chord </a>
+    
+
+    
+      (also: #add, #add_intervals, #concat, #+)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new Chord with the given interval(s) added.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#flat-instance_method" title="#flat (instance method)">#<strong>flat</strong>(interval)  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new Chord with the given interval flattened (i.e., lowered by one semitone).</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#flat_five-instance_method" title="#flat_five (instance method)">#<strong>flat_five</strong>  &#x21d2; Chord </a>
+    
+
+    
+      (also: #flat5)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new Chord with the perfect fifth flattened to a diminished fifth.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#flat_nine-instance_method" title="#flat_nine (instance method)">#<strong>flat_nine</strong>  &#x21d2; Chord </a>
+    
+
+    
+      (also: #flat9)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new Chord with the major ninth flattened to a minor.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#flat_three-instance_method" title="#flat_three (instance method)">#<strong>flat_three</strong>  &#x21d2; Chord </a>
+    
+
+    
+      (also: #flat3)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new Chord with the major third flattened to a minor.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#remove-instance_method" title="#remove (instance method)">#<strong>remove</strong>(interval)  &#x21d2; Chord </a>
+    
+
+    
+      (also: #without)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new Chord with the given interval removed.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#sharp-instance_method" title="#sharp (instance method)">#<strong>sharp</strong>(interval)  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new Chord with the given interval sharpened (i.e., raised by one semitone).</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#sharp_five-instance_method" title="#sharp_five (instance method)">#<strong>sharp_five</strong>  &#x21d2; Chord </a>
+    
+
+    
+      (also: #sharp5)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new Chord with the perfect fifth sharpened to an augmented fifth.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#sharp_nine-instance_method" title="#sharp_nine (instance method)">#<strong>sharp_nine</strong>  &#x21d2; Chord </a>
+    
+
+    
+      (also: #sharp9)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new Chord with the major ninth sharpened to an augmented ninth.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#sharp_three-instance_method" title="#sharp_three (instance method)">#<strong>sharp_three</strong>  &#x21d2; Chord </a>
+    
+
+    
+      (also: #sharp3)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new Chord with the major third sharpened to an augmented third.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#sus2-instance_method" title="#sus2 (instance method)">#<strong>sus2</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new chord with the (major or minor) third replaced with a major second.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#sus4-instance_method" title="#sus4 (instance method)">#<strong>sus4</strong>  &#x21d2; Chord </a>
+    
+
+    
+      (also: #sus)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new chord with the (major or minor) third replaced with a perfect fourth.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#sus9-instance_method" title="#sus9 (instance method)">#<strong>sus9</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a new chord with the (major or minor) third replaced with a perfect fourth, and an added major ninth.</p></div></span>
+  
+</li>
+
+      
+    </ul>
+    
+  
+    <h2>
+      Common chords
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#aug_eleventh-class_method" title="aug_eleventh (class method)">.<strong>aug_eleventh</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns an augmented 11th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#aug_major_eleventh-class_method" title="aug_major_eleventh (class method)">.<strong>aug_major_eleventh</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns an augmented major 11th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#aug_major_ninth-class_method" title="aug_major_ninth (class method)">.<strong>aug_major_ninth</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns an augmented major 9th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#aug_major_seventh-class_method" title="aug_major_seventh (class method)">.<strong>aug_major_seventh</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns an augmented major 7th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#aug_major_thirteenth-class_method" title="aug_major_thirteenth (class method)">.<strong>aug_major_thirteenth</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns an augmented major 13th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#aug_ninth-class_method" title="aug_ninth (class method)">.<strong>aug_ninth</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns an augmented 9th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#aug_seventh-class_method" title="aug_seventh (class method)">.<strong>aug_seventh</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns an augmented 7th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#aug_sixth-class_method" title="aug_sixth (class method)">.<strong>aug_sixth</strong>(variation = :ger)  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns an augmented sixth chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#aug_thirteenth-class_method" title="aug_thirteenth (class method)">.<strong>aug_thirteenth</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns an augmented 13th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#aug_triad-class_method" title="aug_triad (class method)">.<strong>aug_triad</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns an augmented triad chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#dim_eleventh-class_method" title="dim_eleventh (class method)">.<strong>dim_eleventh</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a diminished 11th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#dim_ninth-class_method" title="dim_ninth (class method)">.<strong>dim_ninth</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a diminished 9th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#dim_seventh-class_method" title="dim_seventh (class method)">.<strong>dim_seventh</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a diminished 7th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#dim_sixth-class_method" title="dim_sixth (class method)">.<strong>dim_sixth</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a diminished 6th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#dim_thirteenth-class_method" title="dim_thirteenth (class method)">.<strong>dim_thirteenth</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a diminished 13th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#dim_triad-class_method" title="dim_triad (class method)">.<strong>dim_triad</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a diminished triad chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#dom_eleventh-class_method" title="dom_eleventh (class method)">.<strong>dom_eleventh</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a dominant 11th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#dom_ninth-class_method" title="dom_ninth (class method)">.<strong>dom_ninth</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a dominant 9th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#dom_parallel-class_method" title="dom_parallel (class method)">.<strong>dom_parallel</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a dominant parallel triad chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#dom_seventh-class_method" title="dom_seventh (class method)">.<strong>dom_seventh</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a dominant 7th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#dom_thirteenth-class_method" title="dom_thirteenth (class method)">.<strong>dom_thirteenth</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a dominant 13th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#dom_triad-class_method" title="dom_triad (class method)">.<strong>dom_triad</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a dominant triad chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#fifth-class_method" title="fifth (class method)">.<strong>fifth</strong>(octaves = 1)  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns fifth or &quot;power&quot; chord (P1 and P5) spanning the given number of octaves.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#halfdim_eleventh-class_method" title="halfdim_eleventh (class method)">.<strong>halfdim_eleventh</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a half-diminished 11th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#halfdim_ninth-class_method" title="halfdim_ninth (class method)">.<strong>halfdim_ninth</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a half-diminished 9th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#halfdim_seventh-class_method" title="halfdim_seventh (class method)">.<strong>halfdim_seventh</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a half-diminished seventh chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#halfdim_thirteenth-class_method" title="halfdim_thirteenth (class method)">.<strong>halfdim_thirteenth</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a half-diminished 13th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#major_eleventh-class_method" title="major_eleventh (class method)">.<strong>major_eleventh</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a major 11th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#major_ninth-class_method" title="major_ninth (class method)">.<strong>major_ninth</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a major 9th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#major_seventh-class_method" title="major_seventh (class method)">.<strong>major_seventh</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a major 7th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#major_sixth-class_method" title="major_sixth (class method)">.<strong>major_sixth</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a major 6th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#major_thirteenth-class_method" title="major_thirteenth (class method)">.<strong>major_thirteenth</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a major 13th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#major_triad-class_method" title="major_triad (class method)">.<strong>major_triad</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a major triad chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#minor_eleventh-class_method" title="minor_eleventh (class method)">.<strong>minor_eleventh</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a minor 11th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#minor_major_eleventh-class_method" title="minor_major_eleventh (class method)">.<strong>minor_major_eleventh</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a minor/major 11th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#minor_major_ninth-class_method" title="minor_major_ninth (class method)">.<strong>minor_major_ninth</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a minor/major 9th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#minor_major_seventh-class_method" title="minor_major_seventh (class method)">.<strong>minor_major_seventh</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a minor/major 7th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#minor_major_thirteenth-class_method" title="minor_major_thirteenth (class method)">.<strong>minor_major_thirteenth</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a minor/major 13th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#minor_ninth-class_method" title="minor_ninth (class method)">.<strong>minor_ninth</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a minor 9th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#minor_seventh-class_method" title="minor_seventh (class method)">.<strong>minor_seventh</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a minor 7th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#minor_sixth-class_method" title="minor_sixth (class method)">.<strong>minor_sixth</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a minor 6th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#minor_thirteenth-class_method" title="minor_thirteenth (class method)">.<strong>minor_thirteenth</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a minor 13th chord.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#minor_triad-class_method" title="minor_triad (class method)">.<strong>minor_triad</strong>  &#x21d2; Chord </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a minor triad chord.</p></div></span>
+  
+</li>
+
+      
+    </ul>
+    
+  
+    <h2>
+      Voicing
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#degree-class_method" title="degree (class method)">.<strong>degree</strong>(d, tonic, scale_name, number_of_notes = 4, voicing = :closed, invert: 0)  &#x21d2; Array&lt;MIDINote&gt; </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns a set of notes for a chord of the given degree on a scale.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#voiced-class_method" title="voiced (class method)">.<strong>voiced</strong>(root, name, voicing = :closed, num_octaves: 1, invert: 0)  &#x21d2; Array&lt;MIDINote&gt; </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Returns an array of <span class='object_link'><a href="MIDINote.html" title="SpiSeq::Theory::MIDINote (class)">MIDINote</a></span>s that express a named chord on the given root note, using a particular voicing style and inversion.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#voice-instance_method" title="#voice (instance method)">#<strong>voice</strong>(root, voicing = :closed, num_octaves: 1, invert: 0)  &#x21d2; Array&lt;MIDINote&gt; </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Voices the chord.</p></div></span>
+  
+</li>
+
+      
+    </ul>
+    
+  
+
+
+  
+  
+  <div id="instance_attr_details" class="attr_details">
+    <h2>Instance Attribute Details</h2>
+    
+      
+      <span id=""></span>
+      <div class="method_details first">
+  <h3 class="signature first" id="intervals-instance_method">
+  
+    #<strong>intervals</strong>  &#x21d2; <tt>Array&lt;<span class='object_link'><a href="Interval.html" title="Interval (class)">Interval</a></span>&gt;</tt>  <span class="extras">(readonly)</span>
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>The <span class='object_link'><a href="Interval.html" title="SpiSeq::Theory::Interval (class)">Interval</a></span>s this chord represents. These will always be sorted
+ascending by <span class='object_link'><a href="Interval.html#size-instance_method" title="SpiSeq::Theory::Interval#size (method)">size</a></span> and will contain no duplicates.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Array&lt;<span class='object_link'><a href="Interval.html" title="SpiSeq::Theory::Interval (class)">Interval</a></span>&gt;</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+33
+34
+35</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 33</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_intervals'>intervals</span>
+  <span class='ivar'>@intervals</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="aug_eleventh-class_method">
+  
+    .<strong>aug_eleventh</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns an augmented 11th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+547</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 547</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_aug_eleventh'>aug_eleventh</span> <span class='op'>=</span> <span class='id identifier rubyid_aug_ninth'>aug_ninth</span> <span class='op'>+</span> <span class='symbol'>:P11</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="aug_major_eleventh-class_method">
+  
+    .<strong>aug_major_eleventh</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns an augmented major 11th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+564</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 564</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_aug_major_eleventh'>aug_major_eleventh</span> <span class='op'>=</span> <span class='id identifier rubyid_major_eleventh'>major_eleventh</span><span class='period'>.</span><span class='id identifier rubyid_sharp_five'>sharp_five</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="aug_major_ninth-class_method">
+  
+    .<strong>aug_major_ninth</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns an augmented major 9th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+560</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 560</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_aug_major_ninth'>aug_major_ninth</span> <span class='op'>=</span> <span class='id identifier rubyid_major_ninth'>major_ninth</span><span class='period'>.</span><span class='id identifier rubyid_sharp_five'>sharp_five</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="aug_major_seventh-class_method">
+  
+    .<strong>aug_major_seventh</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns an augmented major 7th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+556</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 556</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_aug_major_seventh'>aug_major_seventh</span> <span class='op'>=</span> <span class='id identifier rubyid_major_seventh'>major_seventh</span><span class='period'>.</span><span class='id identifier rubyid_sharp_five'>sharp_five</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="aug_major_thirteenth-class_method">
+  
+    .<strong>aug_major_thirteenth</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns an augmented major 13th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+568</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 568</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_aug_major_thirteenth'>aug_major_thirteenth</span> <span class='op'>=</span> <span class='id identifier rubyid_major_thirteenth'>major_thirteenth</span><span class='period'>.</span><span class='id identifier rubyid_sharp_five'>sharp_five</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="aug_ninth-class_method">
+  
+    .<strong>aug_ninth</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns an augmented 9th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+543</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 543</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_aug_ninth'>aug_ninth</span> <span class='op'>=</span> <span class='id identifier rubyid_aug_seventh'>aug_seventh</span> <span class='op'>+</span> <span class='symbol'>:M9</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="aug_seventh-class_method">
+  
+    .<strong>aug_seventh</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns an augmented 7th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+539</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 539</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_aug_seventh'>aug_seventh</span> <span class='op'>=</span> <span class='id identifier rubyid_aug_triad'>aug_triad</span> <span class='op'>+</span> <span class='symbol'>:m7</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="aug_sixth-class_method">
+  
+    .<strong>aug_sixth</strong>(variation = :ger)  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns an augmented sixth chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>variation</span>
+      
+      
+        <span class='type'>(<tt>:ger</tt>, <tt>:fr</tt>, <tt>:it</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>:ger</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The desired variation of the 6th, either
+German, French, or Italian.</p></div>
+      
+    </li>
+  
+</ul>
+
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+524
+525
+526
+527
+528
+529
+530
+531
+532
+533
+534
+535</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 524</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_aug_sixth'>aug_sixth</span><span class='lparen'>(</span><span class='id identifier rubyid_variation'>variation</span> <span class='op'>=</span> <span class='symbol'>:ger</span><span class='rparen'>)</span>
+  <span class='kw'>case</span> <span class='id identifier rubyid_variation'>variation</span>
+  <span class='kw'>when</span> <span class='symbol'>:ger</span>
+    <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='qsymbols_beg'>%i[</span><span class='tstring_content'>P1</span><span class='words_sep'> </span><span class='tstring_content'>M3</span><span class='words_sep'> </span><span class='tstring_content'>P5</span><span class='words_sep'> </span><span class='tstring_content'>A6</span><span class='tstring_end'>]</span></span><span class='rparen'>)</span>
+  <span class='kw'>when</span> <span class='symbol'>:fr</span>
+    <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='qsymbols_beg'>%i[</span><span class='tstring_content'>P1</span><span class='words_sep'> </span><span class='tstring_content'>M3</span><span class='words_sep'> </span><span class='tstring_content'>A4</span><span class='words_sep'> </span><span class='tstring_content'>A6</span><span class='tstring_end'>]</span></span><span class='rparen'>)</span>
+  <span class='kw'>when</span> <span class='symbol'>:it</span>
+    <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='qsymbols_beg'>%i[</span><span class='tstring_content'>P1</span><span class='words_sep'> </span><span class='tstring_content'>M3</span><span class='words_sep'> </span><span class='tstring_content'>A6</span><span class='tstring_end'>]</span></span><span class='rparen'>)</span>
+  <span class='kw'>else</span>
+    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unknown augmented 6th variation</span><span class='tstring_end'>&quot;</span></span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="aug_thirteenth-class_method">
+  
+    .<strong>aug_thirteenth</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns an augmented 13th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+551</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 551</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_aug_thirteenth'>aug_thirteenth</span> <span class='op'>=</span> <span class='id identifier rubyid_aug_eleventh'>aug_eleventh</span> <span class='op'>+</span> <span class='symbol'>:M13</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="aug_triad-class_method">
+  
+    .<strong>aug_triad</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns an augmented triad chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+518</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 518</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_aug_triad'>aug_triad</span> <span class='op'>=</span> <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='qsymbols_beg'>%i[</span><span class='tstring_content'>P1</span><span class='words_sep'> </span><span class='tstring_content'>M3</span><span class='words_sep'> </span><span class='tstring_content'>A5</span><span class='tstring_end'>]</span></span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="degree-class_method">
+  
+    .<strong>degree</strong>(d, tonic, scale_name, number_of_notes = 4, voicing = :closed, invert: 0)  &#x21d2; <tt>Array&lt;<span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span>&gt;</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a set of notes for a chord of the given degree on a scale. The
+root note of the chord is the note at degree <code>d</code> on the scale starting at
+<code>tonic</code>. From there, subsequent thirds (major or minor) on the scale are
+added.</p>
+<p>This process ends when <code>number_of_notes</code> notes have been accumulated, or
+when the next third is not on the scale. So, on non-diatonic scales (e.g.
+pentatonic), which are not built on thirds, this function has limited
+utility. For example, it is not possible to build a chord on the second
+degree of C major pentatonic; the root is D, but there is no third after
+D on the scale.</p>
+<p>This is equivalent to Sonic Pi's <code>chord_degree</code> on diatonic scales, though
+it does add <code>voicing</code>.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+  <div class="examples">
+    <h4 class="tag_title">Examples:</h4>
+    
+      
+      <pre class="example code"><code><span class='const'><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></span><span class='period'>.</span><span class='id identifier rubyid_degree'>degree</span><span class='lparen'>(</span><span class='symbol'>:i</span><span class='comma'>,</span> <span class='symbol'>:a3</span><span class='comma'>,</span> <span class='symbol'>:major</span><span class='rparen'>)</span>  <span class='comment'># [:a3, :cs4, :e4, :gs4] - A3 maj7
+</span><span class='const'><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></span><span class='period'>.</span><span class='id identifier rubyid_degree'>degree</span><span class='lparen'>(</span><span class='symbol'>:ii</span><span class='comma'>,</span> <span class='symbol'>:a3</span><span class='comma'>,</span> <span class='symbol'>:major</span><span class='comma'>,</span> <span class='int'>5</span><span class='rparen'>)</span>  <span class='comment'># [:b3, :d4, :fs4, :a4, :cs5] - B3 min9
+</span><span class='const'><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></span><span class='period'>.</span><span class='id identifier rubyid_degree'>degree</span><span class='lparen'>(</span><span class='symbol'>:vii</span><span class='comma'>,</span> <span class='symbol'>:g4</span><span class='comma'>,</span> <span class='symbol'>:major</span><span class='comma'>,</span> <span class='int'>3</span><span class='rparen'>)</span>  <span class='comment'># [:fs5, :a5, :c6] - F#5 dim
+</span>
+<span class='const'><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></span><span class='period'>.</span><span class='id identifier rubyid_degree'>degree</span><span class='lparen'>(</span><span class='symbol'>:v</span><span class='comma'>,</span> <span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:major</span><span class='comma'>,</span> <span class='int'>3</span><span class='comma'>,</span> <span class='symbol'>:drop2</span><span class='rparen'>)</span>  <span class='comment'># [:b3, :g4, :d5] - G4 maj, drop2 voicing
+</span>
+<span class='comment'># Probably best avoided on non-diatonic scales:
+</span><span class='const'><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></span><span class='period'>.</span><span class='id identifier rubyid_degree'>degree</span><span class='lparen'>(</span><span class='int'>2</span><span class='comma'>,</span> <span class='symbol'>:c4</span><span class='comma'>,</span> <span class='symbol'>:major_pentatonic</span><span class='comma'>,</span> <span class='int'>5</span><span class='rparen'>)</span>  <span class='comment'># [:d4]; see above</span></code></pre>
+    
+  </div>
+
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>d</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>, <tt>String</tt>, <tt>Symbol</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The chord degree. May be an integer or
+a Roman numeral string or symbol (e.g. <code>:ii</code> or &quot;ix&quot;). See
+<span class='object_link'><a href="Scale.html#degree-instance_method" title="SpiSeq::Theory::Scale#degree (method)">Scale#degree</a></span> for details.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>tonic</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="MIDINote.html" title="SpiSeq::Theory::MIDINote (class)">MIDINote</a></span></tt>, <tt>String</tt>, <tt>Symbol</tt>, <tt>Integer</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The root note of the
+scale. May be a <span class='object_link'><a href="MIDINote.html" title="SpiSeq::Theory::MIDINote (class)">MIDINote</a></span> or any value understood by <span class='object_link'><a href="MIDINote.html#new-class_method" title="SpiSeq::Theory::MIDINote.new (method)">MIDINote.new</a></span>.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>scale_name</span>
+      
+      
+        <span class='type'>(<tt>Symbol</tt>, <tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The name of the scale to use, one of
+the values in <span class='object_link'><a href="Scale.html#SCALE_NAMES-constant" title="SpiSeq::Theory::Scale::SCALE_NAMES (constant)">SCALE_NAMES</a></span>. Most of the scale name recognized by
+Sonic Pi's <code>scale</code> function are supported, and some others.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>number_of_notes</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>4</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The number of notes from the chord to
+return. This function will never return notes outside of the MIDI range
+(0 - 127), or notes that are not on the scale, so the result may contain
+fewer than this many elements.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>voicing</span>
+      
+      
+        <span class='type'>(<tt>Symbol</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>:closed</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The voicing style to use. Valid values are listed
+in the <span class='object_link'><a href="#VOICING_STYLES-constant" title="SpiSeq::Theory::Chord::VOICING_STYLES (constant)">VOICING_STYLES</a></span> array</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>invert</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>0</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>How many times to invert the chord's intervals
+before applying the <code>voicing</code>. This must be &lt; <code>number_of_notes</code>.</p></div>
+      
+    </li>
+  
+</ul>
+
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Array&lt;<span class='object_link'><a href="MIDINote.html" title="SpiSeq::Theory::MIDINote (class)">MIDINote</a></span>&gt;</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><span class='object_link'><a href="#voice-instance_method" title="SpiSeq::Theory::Chord#voice (method)">#voice</a></span></li>
+    
+      <li><span class='object_link'><a href="Scale.html#degree-class_method" title="SpiSeq::Theory::Scale.degree (method)">Scale.degree</a></span></li>
+    
+  </ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord_voicing.rb', line 250</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_degree'>degree</span><span class='lparen'>(</span><span class='id identifier rubyid_d'>d</span><span class='comma'>,</span> <span class='id identifier rubyid_tonic'>tonic</span><span class='comma'>,</span> <span class='id identifier rubyid_scale_name'>scale_name</span><span class='comma'>,</span> <span class='id identifier rubyid_number_of_notes'>number_of_notes</span> <span class='op'>=</span> <span class='int'>4</span><span class='comma'>,</span> <span class='id identifier rubyid_voicing'>voicing</span> <span class='op'>=</span> <span class='symbol'>:closed</span><span class='comma'>,</span> <span class='label'>invert:</span> <span class='int'>0</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>RangeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>chord only has </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_number_of_notes'>number_of_notes</span> <span class='op'>-</span> <span class='int'>1</span><span class='embexpr_end'>}</span><span class='tstring_content'> inversions</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_invert'>invert</span> <span class='op'>&gt;=</span> <span class='id identifier rubyid_number_of_notes'>number_of_notes</span>
+
+  <span class='id identifier rubyid_scale'>scale</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Scale.html" title="SpiSeq::Theory::Scale (class)">Scale</a></span></span><span class='period'>.</span><span class='id identifier rubyid_full_scale'><span class='object_link'><a href="Scale.html#full_scale-class_method" title="SpiSeq::Theory::Scale.full_scale (method)">full_scale</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_tonic'>tonic</span><span class='comma'>,</span> <span class='id identifier rubyid_scale_name'>scale_name</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_root'><span class='object_link'><a href="../../top-level-namespace.html" title="Top Level Namespace (root)">root</a></span></span> <span class='op'>=</span> <span class='id identifier rubyid_scale'>scale</span><span class='period'>.</span><span class='id identifier rubyid_degree'>degree</span><span class='lparen'>(</span><span class='id identifier rubyid_d'>d</span><span class='comma'>,</span> <span class='label'>relative_tonic:</span> <span class='id identifier rubyid_tonic'>tonic</span><span class='rparen'>)</span>
+
+  <span class='comment'># Scale#degree accepts degrees like :aii, which can result in root notes
+</span>  <span class='comment'># that are not actually on the scale.
+</span>  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>the note at degree </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_d'>d</span><span class='embexpr_end'>}</span><span class='tstring_content'> is not on the scale</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_scale'>scale</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_root'><span class='object_link'><a href="../../top-level-namespace.html" title="Top Level Namespace (root)">root</a></span></span><span class='rparen'>)</span>
+
+  <span class='comment'># Select subsequent 3rds (major or minor), until we hit one that is not on
+</span>  <span class='comment'># the scale. Outside of diatonic scales this behavior differs quite a bit
+</span>  <span class='comment'># from Sonic Pi, which just selects every other note on the scale. Our
+</span>  <span class='comment'># behavior seems more sensible.
+</span>  <span class='id identifier rubyid_maj3'>maj3</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Interval.html" title="SpiSeq::Theory::Interval (class)">Interval</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Interval.html#new-class_method" title="SpiSeq::Theory::Interval.new (method)">new</a></span></span><span class='lparen'>(</span><span class='symbol'>:M3</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_min3'>min3</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Interval.html" title="SpiSeq::Theory::Interval (class)">Interval</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Interval.html#new-class_method" title="SpiSeq::Theory::Interval.new (method)">new</a></span></span><span class='lparen'>(</span><span class='symbol'>:m3</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_notes'>notes</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='id identifier rubyid_root'><span class='object_link'><a href="../../top-level-namespace.html" title="Top Level Namespace (root)">root</a></span></span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_intervals'>intervals</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='const'><span class='object_link'><a href="Interval.html" title="SpiSeq::Theory::Interval (class)">Interval</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Interval.html#new-class_method" title="SpiSeq::Theory::Interval.new (method)">new</a></span></span><span class='lparen'>(</span><span class='symbol'>:P1</span><span class='rparen'>)</span><span class='rbracket'>]</span>
+  <span class='lparen'>(</span><span class='id identifier rubyid_number_of_notes'>number_of_notes</span> <span class='op'>-</span> <span class='int'>1</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_times'>times</span> <span class='kw'>do</span>
+    <span class='id identifier rubyid_n'>n</span> <span class='op'>=</span> <span class='id identifier rubyid_notes'>notes</span><span class='lbracket'>[</span><span class='op'>-</span><span class='int'>1</span><span class='rbracket'>]</span> <span class='op'>+</span> <span class='id identifier rubyid_maj3'>maj3</span>
+    <span class='kw'>if</span> <span class='id identifier rubyid_scale'>scale</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span>
+      <span class='id identifier rubyid_notes'>notes</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_n'>n</span>
+      <span class='id identifier rubyid_intervals'>intervals</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_intervals'>intervals</span><span class='lbracket'>[</span><span class='op'>-</span><span class='int'>1</span><span class='rbracket'>]</span> <span class='op'>+</span> <span class='id identifier rubyid_maj3'>maj3</span>
+    <span class='kw'>else</span>
+      <span class='id identifier rubyid_n'>n</span> <span class='op'>=</span> <span class='id identifier rubyid_notes'>notes</span><span class='lbracket'>[</span><span class='op'>-</span><span class='int'>1</span><span class='rbracket'>]</span> <span class='op'>+</span> <span class='id identifier rubyid_min3'>min3</span>
+      <span class='kw'>break</span> <span class='kw'>unless</span> <span class='id identifier rubyid_scale'>scale</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span>
+      <span class='id identifier rubyid_notes'>notes</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_n'>n</span>
+      <span class='id identifier rubyid_intervals'>intervals</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_intervals'>intervals</span><span class='lbracket'>[</span><span class='op'>-</span><span class='int'>1</span><span class='rbracket'>]</span> <span class='op'>+</span> <span class='id identifier rubyid_min3'>min3</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+
+  <span class='comment'># A slightly silly round-trip between notes &amp; intervals, but this lets us
+</span>  <span class='comment'># piggyback on chord voicing.
+</span>  <span class='id identifier rubyid_chord'>chord</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-class_method" title="SpiSeq::Theory::Chord.new (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_intervals'>intervals</span><span class='rparen'>)</span>
+
+  <span class='comment'># We may have wound up with fewer notes than `number_of_notes`, so
+</span>  <span class='comment'># `invert` may now be &gt; notes.length. Quite the edge case; I&#39;m just going
+</span>  <span class='comment'># to take it down to the minimum.
+</span>  <span class='id identifier rubyid_invert'>invert</span> <span class='op'>=</span> <span class='id identifier rubyid_intervals'>intervals</span><span class='period'>.</span><span class='id identifier rubyid_length'>length</span> <span class='op'>-</span> <span class='int'>1</span> <span class='kw'>if</span> <span class='id identifier rubyid_invert'>invert</span> <span class='op'>&gt;=</span> <span class='id identifier rubyid_intervals'>intervals</span><span class='period'>.</span><span class='id identifier rubyid_length'>length</span>
+  <span class='id identifier rubyid_chord'>chord</span><span class='period'>.</span><span class='id identifier rubyid_voice'>voice</span><span class='lparen'>(</span><span class='id identifier rubyid_root'><span class='object_link'><a href="../../top-level-namespace.html" title="Top Level Namespace (root)">root</a></span></span><span class='comma'>,</span> <span class='id identifier rubyid_voicing'>voicing</span><span class='comma'>,</span> <span class='label'>invert:</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="dim_eleventh-class_method">
+  
+    .<strong>dim_eleventh</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a diminished 11th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+589</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 589</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_dim_eleventh'>dim_eleventh</span> <span class='op'>=</span> <span class='id identifier rubyid_dim_ninth'>dim_ninth</span> <span class='op'>+</span> <span class='symbol'>:P11</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="dim_ninth-class_method">
+  
+    .<strong>dim_ninth</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a diminished 9th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+585</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 585</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_dim_ninth'>dim_ninth</span> <span class='op'>=</span> <span class='id identifier rubyid_dim_seventh'>dim_seventh</span> <span class='op'>+</span> <span class='symbol'>:M9</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="dim_seventh-class_method">
+  
+    .<strong>dim_seventh</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a diminished 7th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+581</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 581</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_dim_seventh'>dim_seventh</span> <span class='op'>=</span> <span class='id identifier rubyid_dim_triad'>dim_triad</span> <span class='op'>+</span> <span class='symbol'>:d7</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="dim_sixth-class_method">
+  
+    .<strong>dim_sixth</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a diminished 6th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+577</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 577</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_dim_sixth'>dim_sixth</span> <span class='op'>=</span> <span class='id identifier rubyid_dim_triad'>dim_triad</span> <span class='op'>+</span> <span class='symbol'>:m6</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="dim_thirteenth-class_method">
+  
+    .<strong>dim_thirteenth</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a diminished 13th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+593</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 593</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_dim_thirteenth'>dim_thirteenth</span> <span class='op'>=</span> <span class='id identifier rubyid_dim_eleventh'>dim_eleventh</span> <span class='op'>+</span> <span class='symbol'>:M13</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="dim_triad-class_method">
+  
+    .<strong>dim_triad</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a diminished triad chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+573</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 573</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_dim_triad'>dim_triad</span> <span class='op'>=</span> <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='qsymbols_beg'>%i[</span><span class='tstring_content'>P1</span><span class='words_sep'> </span><span class='tstring_content'>m3</span><span class='words_sep'> </span><span class='tstring_content'>d5</span><span class='tstring_end'>]</span></span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="dom_eleventh-class_method">
+  
+    .<strong>dom_eleventh</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a dominant 11th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+631</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 631</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_dom_eleventh'>dom_eleventh</span> <span class='op'>=</span> <span class='id identifier rubyid_dom_ninth'>dom_ninth</span> <span class='op'>+</span> <span class='symbol'>:P11</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="dom_ninth-class_method">
+  
+    .<strong>dom_ninth</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a dominant 9th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+627</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 627</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_dom_ninth'>dom_ninth</span> <span class='op'>=</span> <span class='id identifier rubyid_dom_seventh'>dom_seventh</span> <span class='op'>+</span> <span class='symbol'>:M9</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="dom_parallel-class_method">
+  
+    .<strong>dom_parallel</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a dominant parallel triad chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+619</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 619</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_dom_parallel'>dom_parallel</span> <span class='op'>=</span> <span class='id identifier rubyid_dom_triad'>dom_triad</span><span class='period'>.</span><span class='id identifier rubyid_flat_three'>flat_three</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="dom_seventh-class_method">
+  
+    .<strong>dom_seventh</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a dominant 7th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+623</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 623</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_dom_seventh'>dom_seventh</span> <span class='op'>=</span> <span class='id identifier rubyid_dom_triad'>dom_triad</span> <span class='op'>+</span> <span class='symbol'>:m7</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="dom_thirteenth-class_method">
+  
+    .<strong>dom_thirteenth</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a dominant 13th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+635</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 635</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_dom_thirteenth'>dom_thirteenth</span> <span class='op'>=</span> <span class='id identifier rubyid_dom_eleventh'>dom_eleventh</span> <span class='op'>+</span> <span class='symbol'>:M13</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="dom_triad-class_method">
+  
+    .<strong>dom_triad</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a dominant triad chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+615</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 615</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_dom_triad'>dom_triad</span> <span class='op'>=</span> <span class='id identifier rubyid_major_triad'>major_triad</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="fifth-class_method">
+  
+    .<strong>fifth</strong>(octaves = 1)  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns fifth or &quot;power&quot; chord (P1 and P5) spanning the given number of
+octaves.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>octaves</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>1</tt>)</em>
+      
+      
+    </li>
+  
+</ul>
+
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+642
+643
+644
+645
+646
+647
+648
+649
+650
+651</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 642</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_fifth'>fifth</span><span class='lparen'>(</span><span class='id identifier rubyid_octaves'>octaves</span> <span class='op'>=</span> <span class='int'>1</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_p1'>p1</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Interval.html" title="SpiSeq::Theory::Interval (class)">Interval</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Interval.html#new-class_method" title="SpiSeq::Theory::Interval.new (method)">new</a></span></span><span class='lparen'>(</span><span class='symbol'>:P1</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_p5'>p5</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Interval.html" title="SpiSeq::Theory::Interval (class)">Interval</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Interval.html#new-class_method" title="SpiSeq::Theory::Interval.new (method)">new</a></span></span><span class='lparen'>(</span><span class='symbol'>:P5</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_intervals'>intervals</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_octaves'>octaves</span><span class='period'>.</span><span class='id identifier rubyid_times'>times</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_i'>i</span><span class='op'>|</span>
+    <span class='id identifier rubyid_intervals'>intervals</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_p1'>p1</span> <span class='op'>+</span> <span class='int'>12</span> <span class='op'>*</span> <span class='id identifier rubyid_i'>i</span>
+    <span class='id identifier rubyid_intervals'>intervals</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_p5'>p5</span> <span class='op'>+</span> <span class='int'>12</span> <span class='op'>*</span> <span class='id identifier rubyid_i'>i</span>
+  <span class='kw'>end</span>
+  <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_intervals'>intervals</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="halfdim_eleventh-class_method">
+  
+    .<strong>halfdim_eleventh</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a half-diminished 11th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+606</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 606</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_halfdim_eleventh'>halfdim_eleventh</span> <span class='op'>=</span> <span class='id identifier rubyid_minor_eleventh'>minor_eleventh</span><span class='period'>.</span><span class='id identifier rubyid_flat_five'>flat_five</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="halfdim_ninth-class_method">
+  
+    .<strong>halfdim_ninth</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a half-diminished 9th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+602</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 602</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_halfdim_ninth'>halfdim_ninth</span> <span class='op'>=</span> <span class='id identifier rubyid_minor_ninth'>minor_ninth</span><span class='period'>.</span><span class='id identifier rubyid_flat_five'>flat_five</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="halfdim_seventh-class_method">
+  
+    .<strong>halfdim_seventh</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a half-diminished seventh chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+598</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 598</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_halfdim_seventh'>halfdim_seventh</span> <span class='op'>=</span> <span class='id identifier rubyid_minor_seventh'>minor_seventh</span><span class='period'>.</span><span class='id identifier rubyid_flat_five'>flat_five</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="halfdim_thirteenth-class_method">
+  
+    .<strong>halfdim_thirteenth</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a half-diminished 13th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+610</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 610</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_halfdim_thirteenth'>halfdim_thirteenth</span> <span class='op'>=</span> <span class='id identifier rubyid_minor_thirteenth'>minor_thirteenth</span><span class='period'>.</span><span class='id identifier rubyid_flat_five'>flat_five</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="major_eleventh-class_method">
+  
+    .<strong>major_eleventh</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a major 11th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+467</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 467</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_major_eleventh'>major_eleventh</span> <span class='op'>=</span> <span class='id identifier rubyid_major_ninth'>major_ninth</span> <span class='op'>+</span> <span class='symbol'>:P11</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="major_ninth-class_method">
+  
+    .<strong>major_ninth</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a major 9th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+463</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 463</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_major_ninth'>major_ninth</span> <span class='op'>=</span> <span class='id identifier rubyid_major_seventh'>major_seventh</span> <span class='op'>+</span> <span class='symbol'>:M9</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="major_seventh-class_method">
+  
+    .<strong>major_seventh</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a major 7th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+459</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 459</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_major_seventh'>major_seventh</span> <span class='op'>=</span> <span class='id identifier rubyid_major_triad'>major_triad</span> <span class='op'>+</span> <span class='symbol'>:M7</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="major_sixth-class_method">
+  
+    .<strong>major_sixth</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a major 6th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+455</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 455</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_major_sixth'>major_sixth</span> <span class='op'>=</span> <span class='id identifier rubyid_major_triad'>major_triad</span> <span class='op'>+</span> <span class='symbol'>:M6</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="major_thirteenth-class_method">
+  
+    .<strong>major_thirteenth</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a major 13th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+471</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 471</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_major_thirteenth'>major_thirteenth</span> <span class='op'>=</span> <span class='id identifier rubyid_major_eleventh'>major_eleventh</span> <span class='op'>+</span> <span class='symbol'>:M13</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="major_triad-class_method">
+  
+    .<strong>major_triad</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a major triad chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+451</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 451</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_major_triad'>major_triad</span> <span class='op'>=</span> <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='qsymbols_beg'>%i[</span><span class='tstring_content'>P1</span><span class='words_sep'> </span><span class='tstring_content'>M3</span><span class='words_sep'> </span><span class='tstring_content'>P5</span><span class='tstring_end'>]</span></span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="minor_eleventh-class_method">
+  
+    .<strong>minor_eleventh</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a minor 11th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+492</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 492</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_minor_eleventh'>minor_eleventh</span> <span class='op'>=</span> <span class='id identifier rubyid_minor_ninth'>minor_ninth</span> <span class='op'>+</span> <span class='symbol'>:P11</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="minor_major_eleventh-class_method">
+  
+    .<strong>minor_major_eleventh</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a minor/major 11th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+509</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 509</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_minor_major_eleventh'>minor_major_eleventh</span> <span class='op'>=</span> <span class='id identifier rubyid_major_eleventh'>major_eleventh</span><span class='period'>.</span><span class='id identifier rubyid_flat_three'>flat_three</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="minor_major_ninth-class_method">
+  
+    .<strong>minor_major_ninth</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a minor/major 9th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+505</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 505</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_minor_major_ninth'>minor_major_ninth</span> <span class='op'>=</span> <span class='id identifier rubyid_major_ninth'>major_ninth</span><span class='period'>.</span><span class='id identifier rubyid_flat_three'>flat_three</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="minor_major_seventh-class_method">
+  
+    .<strong>minor_major_seventh</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a minor/major 7th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+501</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 501</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_minor_major_seventh'>minor_major_seventh</span> <span class='op'>=</span> <span class='id identifier rubyid_major_seventh'>major_seventh</span><span class='period'>.</span><span class='id identifier rubyid_flat_three'>flat_three</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="minor_major_thirteenth-class_method">
+  
+    .<strong>minor_major_thirteenth</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a minor/major 13th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+513</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 513</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_minor_major_thirteenth'>minor_major_thirteenth</span> <span class='op'>=</span> <span class='id identifier rubyid_major_thirteenth'>major_thirteenth</span><span class='period'>.</span><span class='id identifier rubyid_flat_three'>flat_three</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="minor_ninth-class_method">
+  
+    .<strong>minor_ninth</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a minor 9th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+488</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 488</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_minor_ninth'>minor_ninth</span> <span class='op'>=</span> <span class='id identifier rubyid_minor_seventh'>minor_seventh</span> <span class='op'>+</span> <span class='symbol'>:M9</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="minor_seventh-class_method">
+  
+    .<strong>minor_seventh</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a minor 7th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+484</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 484</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_minor_seventh'>minor_seventh</span> <span class='op'>=</span> <span class='id identifier rubyid_minor_triad'>minor_triad</span> <span class='op'>+</span> <span class='symbol'>:m7</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="minor_sixth-class_method">
+  
+    .<strong>minor_sixth</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a minor 6th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+480</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 480</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_minor_sixth'>minor_sixth</span> <span class='op'>=</span> <span class='id identifier rubyid_minor_triad'>minor_triad</span> <span class='op'>+</span> <span class='symbol'>:M6</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="minor_thirteenth-class_method">
+  
+    .<strong>minor_thirteenth</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a minor 13th chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+496</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 496</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_minor_thirteenth'>minor_thirteenth</span> <span class='op'>=</span> <span class='id identifier rubyid_minor_eleventh'>minor_eleventh</span> <span class='op'>+</span> <span class='symbol'>:M13</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="minor_triad-class_method">
+  
+    .<strong>minor_triad</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a minor triad chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+476</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 476</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_minor_triad'>minor_triad</span> <span class='op'>=</span> <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='qsymbols_beg'>%i[</span><span class='tstring_content'>P1</span><span class='words_sep'> </span><span class='tstring_content'>m3</span><span class='words_sep'> </span><span class='tstring_content'>P5</span><span class='tstring_end'>]</span></span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="new-class_method">
+  
+    .<strong>new</strong>(intervals_or_name)  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Creates a new Chord. The argument may be one of two things:</p>
+<ol>
+<li>An abbreviated name of a chord (Symbol or String) as found in the
+<span class='object_link'><a href="#CHORD_NAMES-constant" title="SpiSeq::Theory::Chord::CHORD_NAMES (constant)">CHORD_NAMES</a></span> array. This class understands all of the same chord
+names as Sonic Pi's <code>chord</code> function and more.</li>
+<li>An array of <span class='object_link'><a href="Interval.html" title="SpiSeq::Theory::Interval (class)">Interval</a></span>s, symbols, strings, or numbers that represent
+the intervals that define the chord. Non-Interval values must be things
+understood by <span class='object_link'><a href="Interval.html#new-class_method" title="SpiSeq::Theory::Interval.new (method)">Interval.new</a></span>; they will be passed to it for conversion.
+Such an array must have at least one element.</li>
+</ol>
+<p>To create and immediately <span class='object_link'><a href="#voice-instance_method" title="SpiSeq::Theory::Chord#voice (method)">voice</a></span> a chord, you can use <span class='object_link'><a href="#voiced-class_method" title="SpiSeq::Theory::Chord.voiced (method)">voiced</a></span> or
+the <span class='object_link'><a href="../Theory.html#C-class_method" title="SpiSeq::Theory.C (method)">C</a></span> helper function.</p>
+<p>You can also create Chords using the class methods named after common
+chords, such as <span class='object_link'><a href="#major_triad-class_method" title="SpiSeq::Theory::Chord.major_triad (method)">major_triad</a></span> or <span class='object_link'><a href="#dom_ninth-class_method" title="SpiSeq::Theory::Chord.dom_ninth (method)">dom_ninth</a></span>.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>intervals_or_name</span>
+      
+      
+        <span class='type'>(<tt>Symbol</tt>, <tt>String</tt>, <tt>Array&lt;<span class='object_link'><a href="Interval.html" title="SpiSeq::Theory::Interval (class)">Interval</a></span>, Symbol, String,
+Integer&gt;</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 247</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_intervals_or_name'>intervals_or_name</span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='id identifier rubyid_intervals_or_name'>intervals_or_name</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Symbol</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_intervals_or_name'>intervals_or_name</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>String</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_abbrev_val'>abbrev_val</span> <span class='op'>=</span> <span class='const'>ABBREVS</span><span class='lbracket'>[</span><span class='id identifier rubyid_intervals_or_name'>intervals_or_name</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span><span class='rbracket'>]</span>
+    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unknown chord name </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_intervals_or_name'>intervals_or_name</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_abbrev_val'>abbrev_val</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+
+    <span class='kw'>return</span> <span class='id identifier rubyid_method'>method</span><span class='lparen'>(</span><span class='id identifier rubyid_abbrev_val'>abbrev_val</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span> <span class='kw'>if</span> <span class='id identifier rubyid_abbrev_val'>abbrev_val</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Symbol</span><span class='rparen'>)</span>
+    <span class='kw'>return</span> <span class='id identifier rubyid_abbrev_val'>abbrev_val</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span>
+  <span class='kw'>end</span>
+
+  <span class='kw'>super</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="voiced-class_method">
+  
+    .<strong>voiced</strong>(root, name, voicing = :closed, num_octaves: 1, invert: 0)  &#x21d2; <tt>Array&lt;<span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span>&gt;</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns an array of <span class='object_link'><a href="MIDINote.html" title="SpiSeq::Theory::MIDINote (class)">MIDINote</a></span>s that express a named chord on the given
+root note, using a particular voicing style and inversion. A shortcut for
+creating a <span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span> and immediately <span class='object_link'><a href="#voice-instance_method" title="SpiSeq::Theory::Chord#voice (method)">voicing</a></span> it.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>root</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="MIDINote.html" title="SpiSeq::Theory::MIDINote (class)">MIDINote</a></span></tt>, <tt>String</tt>, <tt>Symbol</tt>, <tt>Integer</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The root note of the
+chord. May be a <span class='object_link'><a href="MIDINote.html" title="SpiSeq::Theory::MIDINote (class)">MIDINote</a></span> or anything understood by <span class='object_link'><a href="MIDINote.html#new-class_method" title="SpiSeq::Theory::MIDINote.new (method)">MIDINote.new</a></span>.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>name</span>
+      
+      
+        <span class='type'>(<tt>Symbol</tt>, <tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The name of the chord, a value accepted by
+<span class='object_link'><a href="#new-class_method" title="SpiSeq::Theory::Chord.new (method)">new</a></span>.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>voicing</span>
+      
+      
+        <span class='type'>(<tt>Symbol</tt>, <tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>:closed</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The voicing style to use, a value accepted
+by <span class='object_link'><a href="#voice-instance_method" title="SpiSeq::Theory::Chord#voice (method)">#voice</a></span>.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>num_octaves</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>1</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>How many octaves of the chord to express.
+This many copies of the chord's intervals will be added, each an octave
+higher, before inverting and voicing.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>invert</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>0</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The number of inversions to apply to the chord
+before voicing it.</p></div>
+      
+    </li>
+  
+</ul>
+
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Array&lt;<span class='object_link'><a href="MIDINote.html" title="SpiSeq::Theory::MIDINote (class)">MIDINote</a></span>&gt;</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><span class='object_link'><a href="#new-class_method" title="SpiSeq::Theory::Chord.new (method)">new</a></span></li>
+    
+      <li><span class='object_link'><a href="#voice-instance_method" title="SpiSeq::Theory::Chord#voice (method)">#voice</a></span></li>
+    
+  </ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+142
+143
+144</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord_voicing.rb', line 142</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_voiced'>voiced</span><span class='lparen'>(</span><span class='id identifier rubyid_root'><span class='object_link'><a href="../../top-level-namespace.html" title="Top Level Namespace (root)">root</a></span></span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_voicing'>voicing</span> <span class='op'>=</span> <span class='symbol'>:closed</span><span class='comma'>,</span> <span class='label'>num_octaves:</span> <span class='int'>1</span><span class='comma'>,</span> <span class='label'>invert:</span> <span class='int'>0</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_voice'>voice</span><span class='lparen'>(</span><span class='id identifier rubyid_root'><span class='object_link'><a href="../../top-level-namespace.html" title="Top Level Namespace (root)">root</a></span></span><span class='comma'>,</span> <span class='id identifier rubyid_voicing'>voicing</span><span class='comma'>,</span> <span class='label'>num_octaves:</span><span class='comma'>,</span> <span class='label'>invert:</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="append-instance_method">
+  
+    #<strong>append</strong>(other)  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='add-instance_method'>add</span>, <span id='add_intervals-instance_method'>add_intervals</span>, <span id='concat-instance_method'>concat</span>, <span id='+-instance_method'>+</span></span>
+    </span>
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a new Chord with the given interval(s) added. The argument must
+be:</p>
+<ol>
+<li>An <span class='object_link'><a href="Interval.html" title="SpiSeq::Theory::Interval (class)">Interval</a></span>.</li>
+<li>Another Chord, whose intervals will all be added.</li>
+<li>A symbol or string, which is taken as an abbreviated name of an
+<span class='object_link'><a href="Interval.html" title="SpiSeq::Theory::Interval (class)">Interval</a></span>. See <span class='object_link'><a href="Interval.html#new-class_method" title="SpiSeq::Theory::Interval.new (method)">Interval.new</a></span> for details on abbreviated interval
+names.</li>
+<li>A number, which is taken as the number of a major or perfect
+<span class='object_link'><a href="Interval.html" title="SpiSeq::Theory::Interval (class)">Interval</a></span>.</li>
+<li>An enumerable of Intervals, symbols, strings, or numbers, each element
+of which will be treated as in cases 2 - 5.</li>
+</ol>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>other</span>
+      
+      
+        <span class='type'></span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+295
+296
+297
+298
+299
+300
+301
+302
+303</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 295</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_append'>append</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
+  <span class='kw'>if</span> <span class='const'>Internal</span><span class='op'>::</span><span class='const'>Enumerables</span><span class='period'>.</span><span class='id identifier rubyid_enumerable?'>enumerable?</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_other'>other</span> <span class='op'>=</span> <span class='const'>Internal</span><span class='op'>::</span><span class='const'>Enumerables</span><span class='period'>.</span><span class='id identifier rubyid_arrayify'>arrayify</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>  <span class='comment'># see note in enumerable?
+</span>  <span class='kw'>else</span>
+    <span class='id identifier rubyid_other'>other</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='id identifier rubyid_other'>other</span><span class='rbracket'>]</span>
+  <span class='kw'>end</span>
+
+  <span class='const'><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-class_method" title="SpiSeq::Theory::Chord.new (method)">new</a></span></span><span class='lparen'>(</span><span class='ivar'>@intervals</span> <span class='op'>+</span> <span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="flat-instance_method">
+  
+    #<strong>flat</strong>(interval)  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a new Chord with the given interval flattened (i.e., lowered by
+one semitone). The argument must be one of:</p>
+<ol>
+<li>An Interval instance.</li>
+<li>A String or Symbol, which must be the abbreviated name of an Interval.</li>
+<li>A number, which is taken as the number of a major or perfect Interval.</li>
+</ol>
+<p>Raises an ArgumentError if the chord does not contain the given interval.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>interval</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Interval.html" title="SpiSeq::Theory::Interval (class)">Interval</a></span></tt>, <tt>String</tt>, <tt>Symbol</tt>, <tt>Integer</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+394</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 394</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_flat'>flat</span><span class='lparen'>(</span><span class='id identifier rubyid_interval'>interval</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='id identifier rubyid_with_altered_interval'>with_altered_interval</span><span class='lparen'>(</span><span class='id identifier rubyid_interval'>interval</span><span class='comma'>,</span> <span class='op'>-</span><span class='int'>1</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="flat_five-instance_method">
+  
+    #<strong>flat_five</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='flat5-instance_method'>flat5</span></span>
+    </span>
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a new Chord with the perfect fifth flattened to a diminished
+fifth. Raises an ArgumentError if the chord does not contain a perfect
+fifth.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+418</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 418</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_flat_five'>flat_five</span> <span class='op'>=</span> <span class='id identifier rubyid_flat'>flat</span><span class='lparen'>(</span><span class='int'>5</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="flat_nine-instance_method">
+  
+    #<strong>flat_nine</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='flat9-instance_method'>flat9</span></span>
+    </span>
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a new Chord with the major ninth flattened to a minor. Raises an
+ArgumentError if the chord does not contain a major ninth.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+424</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 424</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_flat_nine'>flat_nine</span> <span class='op'>=</span> <span class='id identifier rubyid_flat'>flat</span><span class='lparen'>(</span><span class='int'>9</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="flat_three-instance_method">
+  
+    #<strong>flat_three</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='flat3-instance_method'>flat3</span></span>
+    </span>
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a new Chord with the major third flattened to a minor. Raises an
+ArgumentError if the chord does not contain a major third.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+411</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 411</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_flat_three'>flat_three</span> <span class='op'>=</span> <span class='id identifier rubyid_flat'>flat</span><span class='lparen'>(</span><span class='int'>3</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="remove-instance_method">
+  
+    #<strong>remove</strong>(interval)  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='without-instance_method'>without</span></span>
+    </span>
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a new Chord with the given interval removed. The argument must be
+one of:</p>
+<ol>
+<li>An <span class='object_link'><a href="Interval.html" title="SpiSeq::Theory::Interval (class)">Interval</a></span> instance.</li>
+<li>A String or Symbol, which must be the abbreviated name of an Interval.</li>
+<li>A number, which is taken as the number of a major or perfect Interval.</li>
+</ol>
+<p>Raises an ArgumentError if the chord does not contain the given interval,
+or if the interval to remove is the only one in the chord.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>interval</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Interval.html" title="SpiSeq::Theory::Interval (class)">Interval</a></span></tt>, <tt>String</tt>, <tt>Symbol</tt>, <tt>Integer</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+321
+322
+323
+324
+325
+326
+327
+328</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 321</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_remove'>remove</span><span class='lparen'>(</span><span class='id identifier rubyid_interval'>interval</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_interval'>interval</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Interval.html" title="SpiSeq::Theory::Interval (class)">Interval</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Interval.html#new-class_method" title="SpiSeq::Theory::Interval.new (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>number:</span> <span class='id identifier rubyid_interval'>interval</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_interval'>interval</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Numeric</span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='id identifier rubyid_interval'>interval</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="Interval.html" title="SpiSeq::Theory::Interval (class)">Interval</a></span></span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_i'>i</span> <span class='op'>=</span> <span class='ivar'>@intervals</span><span class='period'>.</span><span class='id identifier rubyid_find_index'>find_index</span><span class='lparen'>(</span><span class='id identifier rubyid_interval'>interval</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>chord does not have a </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_interval'>interval</span><span class='embexpr_end'>}</span><span class='tstring_content'> interval</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_i'>i</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+  <span class='id identifier rubyid_new_intervals'>new_intervals</span> <span class='op'>=</span> <span class='ivar'>@intervals</span><span class='period'>.</span><span class='id identifier rubyid_dup'>dup</span>
+  <span class='id identifier rubyid_new_intervals'>new_intervals</span><span class='period'>.</span><span class='id identifier rubyid_delete_at'>delete_at</span><span class='lparen'>(</span><span class='id identifier rubyid_i'>i</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#new-class_method" title="SpiSeq::Theory::Chord.new (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_new_intervals'>new_intervals</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="sharp-instance_method">
+  
+    #<strong>sharp</strong>(interval)  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a new Chord with the given interval sharpened (i.e., raised by one
+semitone). The argument must be one of:</p>
+<ol>
+<li>An Interval instance.</li>
+<li>A String or Symbol, which must be the abbreviated name of an Interval.</li>
+<li>A number, which is taken as the number of a major or perfect Interval.</li>
+</ol>
+<p>Raises an ArgumentError if the chord does not contain the given interval.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>interval</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="Interval.html" title="SpiSeq::Theory::Interval (class)">Interval</a></span></tt>, <tt>String</tt>, <tt>Symbol</tt>, <tt>Integer</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+406</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 406</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_sharp'>sharp</span><span class='lparen'>(</span><span class='id identifier rubyid_interval'>interval</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='id identifier rubyid_with_altered_interval'>with_altered_interval</span><span class='lparen'>(</span><span class='id identifier rubyid_interval'>interval</span><span class='comma'>,</span> <span class='int'>1</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="sharp_five-instance_method">
+  
+    #<strong>sharp_five</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='sharp5-instance_method'>sharp5</span></span>
+    </span>
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a new Chord with the perfect fifth sharpened to an augmented
+fifth. Raises an ArgumentError if the chord does not contain a perfect
+fifth.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+437</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 437</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_sharp_five'>sharp_five</span> <span class='op'>=</span> <span class='id identifier rubyid_sharp'>sharp</span><span class='lparen'>(</span><span class='int'>5</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="sharp_nine-instance_method">
+  
+    #<strong>sharp_nine</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='sharp9-instance_method'>sharp9</span></span>
+    </span>
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a new Chord with the major ninth sharpened to an augmented ninth.
+Raises an ArgumentError if the chord does not contain a major ninth.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+443</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 443</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_sharp_nine'>sharp_nine</span> <span class='op'>=</span> <span class='id identifier rubyid_sharp'>sharp</span><span class='lparen'>(</span><span class='int'>9</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="sharp_three-instance_method">
+  
+    #<strong>sharp_three</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='sharp3-instance_method'>sharp3</span></span>
+    </span>
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a new Chord with the major third sharpened to an augmented third.
+Raises an ArgumentError if the chord does not contain a major third.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+430</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 430</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_sharp_three'>sharp_three</span> <span class='op'>=</span> <span class='id identifier rubyid_sharp'>sharp</span><span class='lparen'>(</span><span class='int'>3</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="sus2-instance_method">
+  
+    #<strong>sus2</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a new chord with the (major or minor) third replaced with a major
+second. Raises an ArgumentError if the chord has no third, or if it has
+both a major and a minor third.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+362</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 362</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_sus2'>sus2</span> <span class='op'>=</span> <span class='id identifier rubyid_suspend'>suspend</span><span class='lparen'>(</span><span class='symbol'>:M2</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="sus4-instance_method">
+  
+    #<strong>sus4</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='sus-instance_method'>sus</span></span>
+    </span>
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a new chord with the (major or minor) third replaced with a
+perfect fourth. Raises an ArgumentError if the chord has no third, or if
+it has both a major and a minor third.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+355</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 355</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_sus4'>sus4</span> <span class='op'>=</span> <span class='id identifier rubyid_suspend'>suspend</span><span class='lparen'>(</span><span class='symbol'>:P4</span><span class='rparen'>)</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="sus9-instance_method">
+  
+    #<strong>sus9</strong>  &#x21d2; <tt><span class='object_link'><a href="" title="Chord (class)">Chord</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Returns a new chord with the (major or minor) third replaced with a
+perfect fourth, and an added major ninth. Raises an ArgumentError if the
+chord has no third, or if it has both a major and a minor third.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+368</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord.rb', line 368</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_sus9'>sus9</span> <span class='op'>=</span> <span class='id identifier rubyid_sus4'>sus4</span> <span class='op'>+</span> <span class='symbol'>:M9</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="voice-instance_method">
+  
+    #<strong>voice</strong>(root, voicing = :closed, num_octaves: 1, invert: 0)  &#x21d2; <tt>Array&lt;<span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span>&gt;</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Voices the chord. That is, converts the <span class='object_link'><a href="#intervals-instance_method" title="SpiSeq::Theory::Chord#intervals (method)">#intervals</a></span> to concrete notes,
+after potentially applying an inversion and a voicing technique.</p>
+<p>You can create and voice a chord in one shot using <span class='object_link'><a href="#voiced-class_method" title="SpiSeq::Theory::Chord.voiced (method)">voiced</a></span> or the <span class='object_link'><a href="../Theory.html#C-class_method" title="SpiSeq::Theory.C (method)">C</a></span>
+helper function.</p>
+
+  </div>
+</div>
+<div class="tags">
+  
+
+
+
+
+
+
+<p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>root</span>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="MIDINote.html" title="SpiSeq::Theory::MIDINote (class)">MIDINote</a></span></tt>, <tt>String</tt>, <tt>Symbol</tt>, <tt>Integer</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'><p>The root note upon which
+to voice the chord. Must be a <span class='object_link'><a href="MIDINote.html" title="SpiSeq::Theory::MIDINote (class)">MIDINote</a></span> or something understood by
+<span class='object_link'><a href="MIDINote.html#new-class_method" title="SpiSeq::Theory::MIDINote.new (method)">MIDINote.new</a></span>.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>voicing</span>
+      
+      
+        <span class='type'>(<tt>Symbol</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>:closed</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>The voicing style to use. Valid values are listed
+in the <span class='object_link'><a href="#VOICING_STYLES-constant" title="SpiSeq::Theory::Chord::VOICING_STYLES (constant)">VOICING_STYLES</a></span> array.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>num_octaves</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>1</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>How many octaves of the chord to express.
+This many copies of the chord's intervals will be added, each an octave
+higher, before inverting and voicing. Combining this with inversion is
+likely to result in duplicate intervals, which will not result in
+duplicate notes in the output.</p></div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>invert</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>0</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>How many times to invert the chord's intervals
+before applying the <code>voicing</code>.</p></div>
+      
+    </li>
+  
+</ul>
+
+
+
+
+
+
+
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Array&lt;<span class='object_link'><a href="MIDINote.html" title="SpiSeq::Theory::MIDINote (class)">MIDINote</a></span>&gt;</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><span class='object_link'><a href="../Theory.html#C-class_method" title="SpiSeq::Theory.C (method)">C</a></span></li>
+    
+      <li><span class='object_link'><a href="#voiced-class_method" title="SpiSeq::Theory::Chord.voiced (method)">voiced</a></span></li>
+    
+  </ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/chord_voicing.rb', line 167</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_voice'>voice</span><span class='lparen'>(</span><span class='id identifier rubyid_root'><span class='object_link'><a href="../../top-level-namespace.html" title="Top Level Namespace (root)">root</a></span></span><span class='comma'>,</span> <span class='id identifier rubyid_voicing'>voicing</span> <span class='op'>=</span> <span class='symbol'>:closed</span><span class='comma'>,</span> <span class='label'>num_octaves:</span> <span class='int'>1</span><span class='comma'>,</span> <span class='label'>invert:</span> <span class='int'>0</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>RangeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>inversion must be &gt;= 0</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_invert'>invert</span> <span class='op'>&gt;=</span> <span class='int'>0</span>
+
+  <span class='id identifier rubyid_root'><span class='object_link'><a href="../../top-level-namespace.html" title="Top Level Namespace (root)">root</a></span></span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="MIDINote.html" title="SpiSeq::Theory::MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="MIDINote.html#new-class_method" title="SpiSeq::Theory::MIDINote.new (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_root'><span class='object_link'><a href="../../top-level-namespace.html" title="Top Level Namespace (root)">root</a></span></span><span class='rparen'>)</span>
+
+  <span class='id identifier rubyid_intervals'>intervals</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_num_octaves'>num_octaves</span><span class='period'>.</span><span class='id identifier rubyid_times'>times</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_octave'>octave</span><span class='op'>|</span>
+    <span class='ivar'>@intervals</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_interval'>interval</span><span class='op'>|</span>
+      <span class='id identifier rubyid_intervals'>intervals</span> <span class='op'>&lt;&lt;</span> <span class='id identifier rubyid_interval'>interval</span> <span class='op'>+</span> <span class='int'>12</span> <span class='op'>*</span> <span class='id identifier rubyid_octave'>octave</span>
+    <span class='kw'>end</span>
+  <span class='kw'>end</span>
+  <span class='id identifier rubyid_intervals'>intervals</span><span class='period'>.</span><span class='id identifier rubyid_sort!'>sort!</span>
+  <span class='id identifier rubyid_intervals'>intervals</span><span class='period'>.</span><span class='id identifier rubyid_uniq!'>uniq!</span>
+
+  <span class='comment'># Inversions apply before voicing.
+</span>  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>RangeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>chord only has </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_intervals'>intervals</span><span class='period'>.</span><span class='id identifier rubyid_length'>length</span> <span class='op'>-</span> <span class='int'>1</span><span class='embexpr_end'>}</span><span class='tstring_content'> inversions</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_invert'>invert</span> <span class='op'>&gt;=</span> <span class='id identifier rubyid_intervals'>intervals</span><span class='period'>.</span><span class='id identifier rubyid_length'>length</span>
+
+  <span class='kw'>if</span> <span class='id identifier rubyid_invert'>invert</span> <span class='op'>&gt;</span> <span class='int'>0</span>
+    <span class='id identifier rubyid_shifted_intervals'>shifted_intervals</span> <span class='op'>=</span> <span class='id identifier rubyid_intervals'>intervals</span><span class='period'>.</span><span class='id identifier rubyid_shift'>shift</span><span class='lparen'>(</span><span class='id identifier rubyid_invert'>invert</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map!'>map!</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_i'>i</span><span class='op'>|</span> <span class='id identifier rubyid_i'>i</span> <span class='op'>+</span> <span class='int'>12</span> <span class='rbrace'>}</span>
+    <span class='id identifier rubyid_intervals'>intervals</span> <span class='op'>+=</span> <span class='id identifier rubyid_shifted_intervals'>shifted_intervals</span>
+
+    <span class='comment'># Inversion may have duplicated an interval.
+</span>    <span class='id identifier rubyid_intervals'>intervals</span><span class='period'>.</span><span class='id identifier rubyid_sort!'>sort!</span>
+    <span class='id identifier rubyid_intervals'>intervals</span><span class='period'>.</span><span class='id identifier rubyid_uniq!'>uniq!</span>
+  <span class='kw'>end</span>
+
+  <span class='id identifier rubyid_voice_val'>voice_val</span> <span class='op'>=</span> <span class='const'>VOICINGS</span><span class='lbracket'>[</span><span class='id identifier rubyid_voicing'>voicing</span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>unknown voicing </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_voicing'>voicing</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_voice_val'>voice_val</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+  <span class='id identifier rubyid_notes'>notes</span> <span class='op'>=</span> <span class='kw'>case</span> <span class='id identifier rubyid_voice_val'>voice_val</span>
+  <span class='kw'>when</span> <span class='const'>Symbol</span>
+    <span class='const'><span class='object_link'><a href="" title="SpiSeq::Theory::Chord (class)">Chord</a></span></span><span class='period'>.</span><span class='id identifier rubyid_method'>method</span><span class='lparen'>(</span><span class='id identifier rubyid_voice_val'>voice_val</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='id identifier rubyid_intervals'>intervals</span><span class='comma'>,</span> <span class='id identifier rubyid_root'><span class='object_link'><a href="../../top-level-namespace.html" title="Top Level Namespace (root)">root</a></span></span><span class='rparen'>)</span>
+  <span class='kw'>else</span>
+    <span class='id identifier rubyid_voice_val'>voice_val</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='id identifier rubyid_intervals'>intervals</span><span class='comma'>,</span> <span class='id identifier rubyid_root'><span class='object_link'><a href="../../top-level-namespace.html" title="Top Level Namespace (root)">root</a></span></span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+  <span class='id identifier rubyid_notes'>notes</span><span class='period'>.</span><span class='id identifier rubyid_sort!'>sort!</span>
+  <span class='id identifier rubyid_notes'>notes</span><span class='period'>.</span><span class='id identifier rubyid_uniq!'>uniq!</span>
+  <span class='id identifier rubyid_notes'>notes</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+
+      
+
+    </div>
+  </body>
+</html>

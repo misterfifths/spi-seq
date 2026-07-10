@@ -157,7 +157,7 @@ documentation for the basics of the grid, slots, and mutation methods.</p>
   
 
   
-    <span class="summary_desc"><div class='inline'><p>The <span class='object_link'><a href="Scale.html" title="Scale (class)">Scale</a></span> to which notes in this track will be <span class='object_link'><a href="Scale.html#snap-instance_method" title="Scale#snap (method)">snapped</a></span> when it is played.</p></div></span>
+    <span class="summary_desc"><div class='inline'><p>The Scale to which notes in this track will be snapped when it is played.</p></div></span>
   
 </li>
 
@@ -582,7 +582,7 @@ documentation for the basics of the grid, slots, and mutation methods.</p>
   
 
   
-    <span class="summary_desc"><div class='inline'><p>Return a new Track in which each step has its <span class='object_link'><a href="Step.html#note-instance_method" title="Step#note (method)">note</a></span> <span class='object_link'><a href="MIDINote.html#snap-instance_method" title="MIDINote#snap (method)">snapped</a></span> to the nearest note in the given array.</p></div></span>
+    <span class="summary_desc"><div class='inline'><p>Return a new Track in which each step has its <span class='object_link'><a href="Step.html#note-instance_method" title="Step#note (method)">note</a></span> snapped to the nearest note in the given array.</p></div></span>
   
 </li>
 
@@ -1272,13 +1272,13 @@ can instantiate a Track with <code>T[...]</code>.</p>
 <p>The positional arguments may be some mix of:</p>
 <ul>
 <li>
-<p>Single &quot;stepish&quot; values: a <span class='object_link'><a href="Step.html" title="Step (class)">Step</a></span>, <span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span>, something convertible to a
-MIDINote (a string, symbol, or number; see <span class='object_link'><a href="MIDINote.html#new-class_method" title="MIDINote.new (method)">MIDINote.new</a></span>), or a rest
+<p>Single &quot;stepish&quot; values: a <span class='object_link'><a href="Step.html" title="Step (class)">Step</a></span>, MIDINote, something convertible to a
+MIDINote (a string, symbol, or number; see MIDINote.new), or a rest
 (nil, <code>:r</code>, <code>:rest</code>). Such values will be converted to a <span class='object_link'><a href="Step.html" title="Step (class)">Step</a></span> if needed,
 using the default gate (1.0) and velocity (127). The result will be a
 single-slot track containing just that step (or a rest). For example:</p>
 <pre class="code ruby"><code class="ruby"><span class='const'><span class='object_link'><a href="top-level-namespace.html#T-constant" title="T (constant)">T</a></span></span><span class='lbracket'>[</span><span class='const'><span class='object_link'><a href="top-level-namespace.html#S-instance_method" title="#S (method)">S</a></span></span><span class='lparen'>(</span><span class='symbol'>:c4</span><span class='comma'>,</span> <span class='label'>gate:</span> <span class='float'>0.5</span><span class='rparen'>)</span><span class='rbracket'>]</span>  <span class='comment'># grid is [[S(:c4, gate: 0.5)]]
-</span><span class='const'><span class='object_link'><a href="top-level-namespace.html#T-constant" title="T (constant)">T</a></span></span><span class='lbracket'>[</span><span class='const'><span class='object_link'><a href="top-level-namespace.html#N-instance_method" title="#N (method)">N</a></span></span><span class='lparen'>(</span><span class='symbol'>:c4</span><span class='rparen'>)</span><span class='rbracket'>]</span>  <span class='comment'># grid is [[S(:c4)]]
+</span><span class='const'><span class='object_link'><a href="top-level-namespace.html#T-constant" title="T (constant)">T</a></span></span><span class='lbracket'>[</span><span class='const'>N</span><span class='lparen'>(</span><span class='symbol'>:c4</span><span class='rparen'>)</span><span class='rbracket'>]</span>  <span class='comment'># grid is [[S(:c4)]]
 </span><span class='const'><span class='object_link'><a href="top-level-namespace.html#T-constant" title="T (constant)">T</a></span></span><span class='lbracket'>[</span><span class='symbol'>:c4</span><span class='rbracket'>]</span>  <span class='comment'># grid is also [[S(:c4)]]; manually calling N is rarely necessary
 </span><span class='const'><span class='object_link'><a href="top-level-namespace.html#T-constant" title="T (constant)">T</a></span></span><span class='lbracket'>[</span><span class='symbol'>:r</span><span class='rbracket'>]</span>  <span class='comment'># grid is [[]]
 </span></code></pre>
@@ -1298,7 +1298,7 @@ example:</p>
 <p>In the end, the grid conversion should be relatively natural. Non-array
 value will get their own slot, and values grouped into an array will share a
 slot. Note-like values will be converted to default <span class='object_link'><a href="Step.html" title="Step (class)">Step</a></span>s.</p>
-<p>It is never necessary to use actual <span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span> instances when constructing a
+<p>It is never necessary to use actual MIDINote instances when constructing a
 Track - you can just use the symbols, strings, or note numbers directly.
 Similarly, you only need to manually make <span class='object_link'><a href="Step.html" title="Step (class)">Step</a></span>s (probably via <span class='object_link'><a href="top-level-namespace.html#S-instance_method" title="#S (method)">#S</a></span>) if you
 need to specify a non-default velocity or gate.</p>
@@ -1307,9 +1307,9 @@ So, <code>T[]</code> without any arguments is an error.</p>
 <p>A single slot cannot contain more than one step with the same <span class='object_link'><a href="Step.html#note-instance_method" title="Step#note (method)">note</a></span>. If that would happen, the step with the highest <span class='object_link'><a href="Step.html#gate-instance_method" title="Step#gate (method)">gate</a></span> is
 is chosen, and the other colliding steps are discarded.</p>
 <h3 id="Scale">Scale</h3>
-<p>A Track may have a <span class='object_link'><a href="#scale-instance_method" title="Track#scale (method)">#scale</a></span> assigned, an instance of <span class='object_link'><a href="Scale.html" title="Scale (class)">Scale</a></span> (probably one
-from <span class='object_link'><a href="Scale.html#full_scale-class_method" title="Scale.full_scale (method)">Scale.full_scale</a></span>). If one is provided, all the notes in the track
-are <span class='object_link'><a href="Scale.html#snap-instance_method" title="Scale#snap (method)">quantized to that scale</a></span> before they are played. This
+<p>A Track may have a <span class='object_link'><a href="#scale-instance_method" title="Track#scale (method)">#scale</a></span> assigned, an instance of Scale (probably one
+from Scale.full_scale). If one is provided, all the notes in the track
+are quantized to that scale before they are played. This
 operation is non-destructive; a Track with a scale can contain <span class='object_link'><a href="Step.html" title="Step (class)">Step</a></span>s with
 notes that are not on the scale, and they will be snapped to the scale just
 in time for playback. The snapping operation may result in duplicate notes
@@ -1352,7 +1352,7 @@ above.</p></div>
         <span class='name'>granularity</span>
       
       
-        <span class='type'>(<tt><span class='object_link'><a href="NoteLength.html" title="NoteLength (class)">NoteLength</a></span></tt>, <tt>Number</tt>, <tt><span class='object_link'>Symbol</span></tt>)</span>
+        <span class='type'>(<tt>NoteLength</tt>, <tt>Number</tt>, <tt><span class='object_link'>Symbol</span></tt>)</span>
       
       
         <em class="default">(defaults to: <tt>NoteLength::Eighth</tt>)</em>
@@ -1360,8 +1360,8 @@ above.</p></div>
       
         &mdash;
         <div class='inline'><p>The <span class='object_link'><a href="TrackBase.html#granularity-instance_method" title="TrackBase#granularity (method)">TrackBase#granularity</a></span> for the
-new track. Can be a <span class='object_link'><a href="NoteLength.html" title="NoteLength (class)">NoteLength</a></span> or a value understood by
-<span class='object_link'><a href="NoteLength.html#new-class_method" title="NoteLength.new (method)">NoteLength.new</a></span>.</p></div>
+new track. Can be a NoteLength or a value understood by
+NoteLength.new.</p></div>
       
     </li>
   
@@ -1386,7 +1386,7 @@ new track. Can be a <span class='object_link'><a href="NoteLength.html" title="N
         <span class='name'>scale</span>
       
       
-        <span class='type'>(<tt><span class='object_link'><a href="Scale.html" title="Scale (class)">Scale</a></span></tt>, <tt>nil</tt>)</span>
+        <span class='type'>(<tt>Scale</tt>, <tt>nil</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>nil</tt>)</em>
@@ -1417,7 +1417,7 @@ new track. Can be a <span class='object_link'><a href="NoteLength.html" title="N
     <td>
       <pre class="code"><span class="info file"># File 'track.rb', line 110</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_gridish'>gridish</span><span class='comma'>,</span> <span class='label'>granularity:</span> <span class='const'><span class='object_link'><a href="NoteLength.html" title="NoteLength (class)">NoteLength</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="NoteLength.html#Eighth-constant" title="NoteLength::Eighth (constant)">Eighth</a></span></span><span class='comma'>,</span> <span class='label'>scale:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>timescale:</span> <span class='int'>1</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_gridish'>gridish</span><span class='comma'>,</span> <span class='label'>granularity:</span> <span class='const'>NoteLength</span><span class='op'>::</span><span class='const'>Eighth</span><span class='comma'>,</span> <span class='label'>scale:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>timescale:</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='comment'># Track itself does basically nothing with the scale; it&#39;s all handled by
 </span>  <span class='comment'># the Player.
 </span>  <span class='ivar'>@scale</span> <span class='op'>=</span> <span class='id identifier rubyid_scale'>scale</span>
@@ -1439,7 +1439,7 @@ new track. Can be a <span class='object_link'><a href="NoteLength.html" title="N
       <div class="method_details first">
   <h3 class="signature first" id="scale-instance_method">
   
-    #<strong>scale</strong>  &#x21d2; <tt><span class='object_link'><a href="Scale.html" title="Scale (class)">Scale</a></span></tt>  <span class="extras">(readonly)</span>
+    #<strong>scale</strong>  &#x21d2; <tt>Scale</tt>  <span class="extras">(readonly)</span>
   
 
   
@@ -1447,7 +1447,7 @@ new track. Can be a <span class='object_link'><a href="NoteLength.html" title="N
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p>The <span class='object_link'><a href="Scale.html" title="Scale (class)">Scale</a></span> to which notes in this track will be <span class='object_link'><a href="Scale.html#snap-instance_method" title="Scale#snap (method)">snapped</a></span> when
+    <p>The Scale to which notes in this track will be snapped when
 it is played. See <span class='object_link'><a href="#initialize-instance_method" title="Track#initialize (method)">#initialize</a></span> for details.</p>
 
   </div>
@@ -1467,7 +1467,7 @@ it is played. See <span class='object_link'><a href="#initialize-instance_method
     <li>
       
       
-        <span class='type'>(<tt><span class='object_link'><a href="Scale.html" title="Scale (class)">Scale</a></span></tt>)</span>
+        <span class='type'>(<tt>Scale</tt>)</span>
       
       
       
@@ -1527,7 +1527,7 @@ it is played. See <span class='object_link'><a href="#initialize-instance_method
 created for each note with the default gate and velocity (1.0 and 127), and
 each step will be placed in a slot by itself.</p>
 <p>The <code>direction</code>, <code>spread</code>, and <code>extra_octaves</code> arguments are the same as
-those passed to <span class='object_link'><a href="Arp.html#arpeggiate-class_method" title="Arp.arpeggiate (method)">Arp.arpeggiate</a></span>.</p>
+those passed to Arp.arpeggiate.</p>
 <p>Additionally, after arpeggiating the notes, this method can place them in
 the new track according to a Euclidean rhythm. The <code>pulses</code>, <code>length</code>,
 <code>rotate</code>, and <code>full_cycle</code> arguments are the same as those passed to
@@ -1568,14 +1568,14 @@ the new track according to a Euclidean rhythm. The <code>pulses</code>, <code>le
         <span class='name'>notes</span>
       
       
-        <span class='type'>(<tt>Array&lt;<span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span>, <span class='object_link'>String</span>, <span class='object_link'>Symbol</span>, Integer&gt;</tt>)</span>
+        <span class='type'>(<tt>Array&lt;MIDINote, <span class='object_link'>String</span>, <span class='object_link'>Symbol</span>, Integer&gt;</tt>)</span>
       
       
       
         &mdash;
         <div class='inline'><p>The notes to
-arpeggiate, an array of <span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span>s or any of the values understood by
-<span class='object_link'><a href="MIDINote.html#new-class_method" title="MIDINote.new (method)">MIDINote.new</a></span>.</p></div>
+arpeggiate, an array of MIDINotes or any of the values understood by
+MIDINote.new.</p></div>
       
     </li>
   
@@ -1591,8 +1591,8 @@ arpeggiate, an array of <span class='object_link'><a href="MIDINote.html" title=
       
       
         &mdash;
-        <div class='inline'><p>One of the direction symbols defined on <span class='object_link'><a href="Arp.html" title="Arp (module)">Arp</a></span>,
-e.g. <span class='object_link'><a href="Arp.html#Pinky-constant" title="Arp::Pinky (constant)">:pinky</a></span> or <span class='object_link'><a href="Arp.html#UpDown-constant" title="Arp::UpDown (constant)">:updown</a></span>.</p></div>
+        <div class='inline'><p>One of the direction symbols defined on Arp,
+e.g. :pinky or :updown.</p></div>
       
     </li>
   
@@ -1609,7 +1609,7 @@ e.g. <span class='object_link'><a href="Arp.html#Pinky-constant" title="Arp::Pin
       
         &mdash;
         <div class='inline'><p>Adds notes an octave above some number of the lowest
-notes in the result. See <span class='object_link'><a href="Arp.html#arpeggiate-class_method" title="Arp.arpeggiate (method)">Arp.arpeggiate</a></span> for details.</p></div>
+notes in the result. See Arp.arpeggiate for details.</p></div>
       
     </li>
   
@@ -1627,7 +1627,7 @@ notes in the result. See <span class='object_link'><a href="Arp.html#arpeggiate-
         &mdash;
         <div class='inline'><p>Adds a copy of the incoming notes
 shifted by some number of octaves before arpeggiating. See
-<span class='object_link'><a href="Arp.html#arpeggiate-class_method" title="Arp.arpeggiate (method)">Arp.arpeggiate</a></span> for details.</p></div>
+Arp.arpeggiate for details.</p></div>
       
     </li>
   
@@ -1706,15 +1706,15 @@ used and the track loops cleanly. See <span class='object_link'><a href="TrackBa
         <span class='name'>granularity</span>
       
       
-        <span class='type'>(<tt><span class='object_link'><a href="NoteLength.html" title="NoteLength (class)">NoteLength</a></span></tt>, <tt>Number</tt>, <tt><span class='object_link'>Symbol</span></tt>)</span>
+        <span class='type'>(<tt>NoteLength</tt>, <tt>Number</tt>, <tt><span class='object_link'>Symbol</span></tt>)</span>
       
       
         <em class="default">(defaults to: <tt>NoteLength::Eighth</tt>)</em>
       
       
         &mdash;
-        <div class='inline'><p>The <span class='object_link'><a href="TrackBase.html#granularity-instance_method" title="TrackBase#granularity (method)">granularity</a></span> for the new track. Can be a <span class='object_link'><a href="NoteLength.html" title="NoteLength (class)">NoteLength</a></span> or a value understood
-by <span class='object_link'><a href="NoteLength.html#new-class_method" title="NoteLength.new (method)">NoteLength.new</a></span>.</p></div>
+        <div class='inline'><p>The <span class='object_link'><a href="TrackBase.html#granularity-instance_method" title="TrackBase#granularity (method)">granularity</a></span> for the new track. Can be a NoteLength or a value understood
+by NoteLength.new.</p></div>
       
     </li>
   
@@ -1760,7 +1760,7 @@ by <span class='object_link'><a href="NoteLength.html#new-class_method" title="N
   <p class="tag_title">See Also:</p>
   <ul class="see">
     
-      <li><span class='object_link'><a href="Arp.html#arpeggiate-class_method" title="Arp.arpeggiate (method)">Arp.arpeggiate</a></span></li>
+      <li>Arp.arpeggiate</li>
     
       <li><span class='object_link'><a href="TrackBase.html#euclid-class_method" title="TrackBase.euclid (method)">TrackBase.euclid</a></span></li>
     
@@ -1786,14 +1786,14 @@ by <span class='object_link'><a href="NoteLength.html#new-class_method" title="N
     <td>
       <pre class="code"><span class="info file"># File 'track.rb', line 169</span>
 
-<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_arp'><span class='object_link'><a href="top-level-namespace.html#arp-instance_method" title="#arp (method)">arp</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_notes'>notes</span><span class='comma'>,</span> <span class='id identifier rubyid_direction'>direction</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Arp.html" title="Arp (module)">Arp</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Arp.html#Up-constant" title="Arp::Up (constant)">Up</a></span></span><span class='comma'>,</span> <span class='label'>spread:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>extra_octaves:</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>pulses:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>length:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>rotate:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>full_cycle:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>granularity:</span> <span class='const'><span class='object_link'><a href="NoteLength.html" title="NoteLength (class)">NoteLength</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="NoteLength.html#Eighth-constant" title="NoteLength::Eighth (constant)">Eighth</a></span></span><span class='comma'>,</span> <span class='label'>timescale:</span> <span class='int'>1</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_notes'>notes</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Arp.html" title="Arp (module)">Arp</a></span></span><span class='period'>.</span><span class='id identifier rubyid_arpeggiate'><span class='object_link'><a href="Arp.html#arpeggiate-class_method" title="Arp.arpeggiate (method)">arpeggiate</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_notes'>notes</span><span class='comma'>,</span> <span class='id identifier rubyid_direction'>direction</span><span class='comma'>,</span> <span class='label'>spread:</span> <span class='id identifier rubyid_spread'>spread</span><span class='comma'>,</span> <span class='label'>extra_octaves:</span> <span class='id identifier rubyid_extra_octaves'>extra_octaves</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_arp'>arp</span><span class='lparen'>(</span><span class='id identifier rubyid_notes'>notes</span><span class='comma'>,</span> <span class='id identifier rubyid_direction'>direction</span> <span class='op'>=</span> <span class='const'>Arp</span><span class='op'>::</span><span class='const'>Up</span><span class='comma'>,</span> <span class='label'>spread:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>extra_octaves:</span> <span class='lbracket'>[</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>pulses:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>length:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>rotate:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>full_cycle:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>granularity:</span> <span class='const'>NoteLength</span><span class='op'>::</span><span class='const'>Eighth</span><span class='comma'>,</span> <span class='label'>timescale:</span> <span class='int'>1</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_notes'>notes</span> <span class='op'>=</span> <span class='const'>Arp</span><span class='period'>.</span><span class='id identifier rubyid_arpeggiate'>arpeggiate</span><span class='lparen'>(</span><span class='id identifier rubyid_notes'>notes</span><span class='comma'>,</span> <span class='id identifier rubyid_direction'>direction</span><span class='comma'>,</span> <span class='label'>spread:</span> <span class='id identifier rubyid_spread'>spread</span><span class='comma'>,</span> <span class='label'>extra_octaves:</span> <span class='id identifier rubyid_extra_octaves'>extra_octaves</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_pulses'>pulses</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
     <span class='id identifier rubyid_grid'>grid</span> <span class='op'>=</span> <span class='id identifier rubyid_notes'>notes</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_n'>n</span><span class='op'>|</span> <span class='lbracket'>[</span><span class='const'><span class='object_link'><a href="Step.html" title="Step (class)">Step</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Step.html#initialize-instance_method" title="Step#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span><span class='rbracket'>]</span> <span class='rbrace'>}</span>
     <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_grid'>grid</span><span class='comma'>,</span> <span class='label'>granularity:</span> <span class='id identifier rubyid_granularity'>granularity</span><span class='comma'>,</span> <span class='label'>timescale:</span> <span class='id identifier rubyid_timescale'>timescale</span><span class='rparen'>)</span>
   <span class='kw'>else</span>
     <span class='id identifier rubyid_raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>pulses and length must both be nil or both be integers</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_length'>length</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
-    <span class='id identifier rubyid_euclid'><span class='object_link'><a href="top-level-namespace.html#euclid-instance_method" title="#euclid (method)">euclid</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_notes'>notes</span><span class='comma'>,</span> <span class='id identifier rubyid_pulses'>pulses</span><span class='comma'>,</span> <span class='id identifier rubyid_length'>length</span><span class='comma'>,</span> <span class='label'>rotate:</span> <span class='id identifier rubyid_rotate'>rotate</span><span class='comma'>,</span> <span class='label'>full_cycle:</span> <span class='id identifier rubyid_full_cycle'>full_cycle</span><span class='comma'>,</span> <span class='label'>granularity:</span> <span class='id identifier rubyid_granularity'>granularity</span><span class='comma'>,</span> <span class='label'>timescale:</span> <span class='id identifier rubyid_timescale'>timescale</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_euclid'>euclid</span><span class='lparen'>(</span><span class='id identifier rubyid_notes'>notes</span><span class='comma'>,</span> <span class='id identifier rubyid_pulses'>pulses</span><span class='comma'>,</span> <span class='id identifier rubyid_length'>length</span><span class='comma'>,</span> <span class='label'>rotate:</span> <span class='id identifier rubyid_rotate'>rotate</span><span class='comma'>,</span> <span class='label'>full_cycle:</span> <span class='id identifier rubyid_full_cycle'>full_cycle</span><span class='comma'>,</span> <span class='label'>granularity:</span> <span class='id identifier rubyid_granularity'>granularity</span><span class='comma'>,</span> <span class='label'>timescale:</span> <span class='id identifier rubyid_timescale'>timescale</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -1868,14 +1868,14 @@ more than one slot.</p>
         <span class='name'>notes</span>
       
       
-        <span class='type'>(<tt>Array&lt;<span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span>, <span class='object_link'>String</span>, <span class='object_link'>Symbol</span>, Integer&gt;</tt>)</span>
+        <span class='type'>(<tt>Array&lt;MIDINote, <span class='object_link'>String</span>, <span class='object_link'>Symbol</span>, Integer&gt;</tt>)</span>
       
       
       
         &mdash;
         <div class='inline'><p>The notes to apply
 to the rhythm in the new track, an array of MIDINotes or any of the values
-understood by <span class='object_link'><a href="MIDINote.html#new-class_method" title="MIDINote.new (method)">MIDINote.new</a></span>.</p></div>
+understood by MIDINote.new.</p></div>
       
     </li>
   
@@ -1899,7 +1899,7 @@ the track.</p></div>
         <span class='name'>granularity</span>
       
       
-        <span class='type'>(<tt><span class='object_link'><a href="NoteLength.html" title="NoteLength (class)">NoteLength</a></span></tt>, <tt>Number</tt>, <tt><span class='object_link'>Symbol</span></tt>)</span>
+        <span class='type'>(<tt>NoteLength</tt>, <tt>Number</tt>, <tt><span class='object_link'>Symbol</span></tt>)</span>
       
       
         <em class="default">(defaults to: <tt>NoteLength::Eighth</tt>)</em>
@@ -1907,8 +1907,8 @@ the track.</p></div>
       
         &mdash;
         <div class='inline'><p>The <span class='object_link'><a href="TrackBase.html#granularity-instance_method" title="TrackBase#granularity (method)">TrackBase#granularity</a></span> for the
-new track. Can be a <span class='object_link'><a href="NoteLength.html" title="NoteLength (class)">NoteLength</a></span> or a value understood by
-<span class='object_link'><a href="NoteLength.html#new-class_method" title="NoteLength.new (method)">NoteLength.new</a></span>.</p></div>
+new track. Can be a NoteLength or a value understood by
+NoteLength.new.</p></div>
       
     </li>
   
@@ -2029,7 +2029,7 @@ new track. Can be a <span class='object_link'><a href="NoteLength.html" title="N
     <td>
       <pre class="code"><span class="info file"># File 'track.rb', line 225</span>
 
-<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_isorhythm'>isorhythm</span><span class='lparen'>(</span><span class='id identifier rubyid_notes'>notes</span><span class='comma'>,</span> <span class='id identifier rubyid_gates'>gates</span><span class='comma'>,</span> <span class='label'>granularity:</span> <span class='const'><span class='object_link'><a href="NoteLength.html" title="NoteLength (class)">NoteLength</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="NoteLength.html#Eighth-constant" title="NoteLength::Eighth (constant)">Eighth</a></span></span><span class='comma'>,</span> <span class='label'>timescale:</span> <span class='int'>1</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_isorhythm'>isorhythm</span><span class='lparen'>(</span><span class='id identifier rubyid_notes'>notes</span><span class='comma'>,</span> <span class='id identifier rubyid_gates'>gates</span><span class='comma'>,</span> <span class='label'>granularity:</span> <span class='const'>NoteLength</span><span class='op'>::</span><span class='const'>Eighth</span><span class='comma'>,</span> <span class='label'>timescale:</span> <span class='int'>1</span><span class='rparen'>)</span>
   <span class='comment'># Gameplan:
 </span>  <span class='comment'># This is a variation on `euclid` above, really, with the added complication
 </span>  <span class='comment'># that a &quot;hit&quot; can last more than one slot.
@@ -2250,7 +2250,7 @@ Pi BPM.</p></div>
         <span class='name'>granularity</span>
       
       
-        <span class='type'>(<tt><span class='object_link'>Symbol</span></tt>, <tt>Number</tt>, <tt><span class='object_link'><a href="NoteLength.html" title="NoteLength (class)">NoteLength</a></span></tt>)</span>
+        <span class='type'>(<tt><span class='object_link'>Symbol</span></tt>, <tt>Number</tt>, <tt>NoteLength</tt>)</span>
       
       
         <em class="default">(defaults to: <tt>NoteLength::Eighth</tt>)</em>
@@ -2258,8 +2258,8 @@ Pi BPM.</p></div>
       
         &mdash;
         <div class='inline'><p>The granularity of the
-resulting track. Can be a <span class='object_link'><a href="NoteLength.html" title="NoteLength (class)">NoteLength</a></span> or a value understood by
-<span class='object_link'><a href="NoteLength.html#new-class_method" title="NoteLength.new (method)">NoteLength.new</a></span>.</p></div>
+resulting track. Can be a NoteLength or a value understood by
+NoteLength.new.</p></div>
       
     </li>
   
@@ -2405,12 +2405,12 @@ of 127.</p></div>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_record'>record</span><span class='lparen'>(</span><span class='label'>cc:</span><span class='comma'>,</span> <span class='label'>cc_port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>cc_channel:</span> <span class='kw'>nil</span><span class='comma'>,</span>
                 <span class='label'>port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='kw'>nil</span><span class='comma'>,</span>
-                <span class='label'>bpm:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>granularity:</span> <span class='const'><span class='object_link'><a href="NoteLength.html" title="NoteLength (class)">NoteLength</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="NoteLength.html#Eighth-constant" title="NoteLength::Eighth (constant)">Eighth</a></span></span><span class='comma'>,</span>
+                <span class='label'>bpm:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>granularity:</span> <span class='const'>NoteLength</span><span class='op'>::</span><span class='const'>Eighth</span><span class='comma'>,</span>
                 <span class='label'>trim_start:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>trim_end:</span> <span class='kw'>false</span><span class='comma'>,</span>
                 <span class='label'>min_gate:</span> <span class='float'>0.1</span><span class='comma'>,</span> <span class='label'>quantize_gates:</span> <span class='kw'>true</span><span class='comma'>,</span>
                 <span class='label'>ignore_vel:</span> <span class='kw'>false</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_start_time'>start_time</span> <span class='op'>=</span> <span class='id identifier rubyid_end_time'>end_time</span> <span class='op'>=</span> <span class='id identifier rubyid_timeline'>timeline</span> <span class='op'>=</span> <span class='kw'>nil</span>
-  <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_with_real_time'>with_real_time</span> <span class='kw'>do</span>
+  <span class='const'><span class='object_link'><a href="SpiSeq.html" title="SpiSeq (module)">SpiSeq</a></span></span><span class='op'>::</span><span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_with_real_time'>with_real_time</span> <span class='kw'>do</span>
     <span class='id identifier rubyid_start_time'>start_time</span><span class='comma'>,</span> <span class='id identifier rubyid_end_time'>end_time</span><span class='comma'>,</span> <span class='id identifier rubyid_timeline'>timeline</span> <span class='op'>=</span> <span class='id identifier rubyid_record_timeline'>record_timeline</span><span class='lparen'>(</span><span class='label'>control_cc:</span> <span class='id identifier rubyid_cc'>cc</span><span class='comma'>,</span> <span class='label'>cc_port:</span> <span class='id identifier rubyid_cc_port'>cc_port</span><span class='comma'>,</span> <span class='label'>cc_channel:</span> <span class='id identifier rubyid_cc_channel'>cc_channel</span><span class='comma'>,</span>
                                                      <span class='label'>port:</span> <span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='id identifier rubyid_channel'>channel</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
@@ -2914,9 +2914,9 @@ a step, 0 - 1.</p></div>
   <span class='id identifier rubyid_tone_shifts'>tone_shifts</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='int'>0</span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id identifier rubyid_tone_shifts'>tone_shifts</span> <span class='op'>==</span> <span class='int'>0</span> <span class='op'>||</span> <span class='id identifier rubyid_tone_shifts'>tone_shifts</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
 
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span>
-    <span class='id identifier rubyid_tone_shift'>tone_shift</span> <span class='op'>=</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Random</span><span class='period'>.</span><span class='id identifier rubyid_chance'>chance</span><span class='lparen'>(</span><span class='id identifier rubyid_p'>p</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='id identifier rubyid_tone_shifts'>tone_shifts</span><span class='period'>.</span><span class='id identifier rubyid_sample'>sample</span> <span class='op'>:</span> <span class='int'>0</span>
-    <span class='id identifier rubyid_gate_shift'>gate_shift</span> <span class='op'>=</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Random</span><span class='period'>.</span><span class='id identifier rubyid_chance'>chance</span><span class='lparen'>(</span><span class='id identifier rubyid_p'>p</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Random</span><span class='period'>.</span><span class='id identifier rubyid_rand_f'>rand_f</span><span class='lparen'>(</span><span class='id identifier rubyid_gate_delta'>gate_delta</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='int'>0</span>
-    <span class='id identifier rubyid_velf_shift'>velf_shift</span> <span class='op'>=</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Random</span><span class='period'>.</span><span class='id identifier rubyid_chance'>chance</span><span class='lparen'>(</span><span class='id identifier rubyid_p'>p</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Random</span><span class='period'>.</span><span class='id identifier rubyid_rand_f'>rand_f</span><span class='lparen'>(</span><span class='id identifier rubyid_velf_delta'>velf_delta</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='int'>0</span>
+    <span class='id identifier rubyid_tone_shift'>tone_shift</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="SpiSeq.html" title="SpiSeq (module)">SpiSeq</a></span></span><span class='op'>::</span><span class='const'>Random</span><span class='period'>.</span><span class='id identifier rubyid_chance'>chance</span><span class='lparen'>(</span><span class='id identifier rubyid_p'>p</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='id identifier rubyid_tone_shifts'>tone_shifts</span><span class='period'>.</span><span class='id identifier rubyid_sample'>sample</span> <span class='op'>:</span> <span class='int'>0</span>
+    <span class='id identifier rubyid_gate_shift'>gate_shift</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="SpiSeq.html" title="SpiSeq (module)">SpiSeq</a></span></span><span class='op'>::</span><span class='const'>Random</span><span class='period'>.</span><span class='id identifier rubyid_chance'>chance</span><span class='lparen'>(</span><span class='id identifier rubyid_p'>p</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='const'><span class='object_link'><a href="SpiSeq.html" title="SpiSeq (module)">SpiSeq</a></span></span><span class='op'>::</span><span class='const'>Random</span><span class='period'>.</span><span class='id identifier rubyid_rand_f'>rand_f</span><span class='lparen'>(</span><span class='id identifier rubyid_gate_delta'>gate_delta</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='int'>0</span>
+    <span class='id identifier rubyid_velf_shift'>velf_shift</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="SpiSeq.html" title="SpiSeq (module)">SpiSeq</a></span></span><span class='op'>::</span><span class='const'>Random</span><span class='period'>.</span><span class='id identifier rubyid_chance'>chance</span><span class='lparen'>(</span><span class='id identifier rubyid_p'>p</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='const'><span class='object_link'><a href="SpiSeq.html" title="SpiSeq (module)">SpiSeq</a></span></span><span class='op'>::</span><span class='const'>Random</span><span class='period'>.</span><span class='id identifier rubyid_rand_f'>rand_f</span><span class='lparen'>(</span><span class='id identifier rubyid_velf_delta'>velf_delta</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='int'>0</span>
 
     <span class='kw'>if</span> <span class='id identifier rubyid_tone_shift'>tone_shift</span> <span class='op'>!=</span> <span class='int'>0</span>
       <span class='id identifier rubyid_step'>step</span> <span class='op'>=</span> <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_transpose'>transpose</span><span class='lparen'>(</span><span class='id identifier rubyid_tone_shift'>tone_shift</span><span class='rparen'>)</span>
@@ -3783,7 +3783,7 @@ velocity of <code>max</code>, and ones thereafter will decrease along the curve 
 </h3><div class="docstring">
   <div class="discussion">
     <p>Returns two Tracks by extracting steps that match the given note. Matches
-are evaluated with <span class='object_link'><a href="MIDINote.html#match%3F-instance_method" title="MIDINote#match? (method)">MIDINote#match?</a></span>. The first returned track contains the
+are evaluated with MIDINote#match?. The first returned track contains the
 matching steps, and the second contains the non-matching ones.</p>
 
   </div>
@@ -3817,13 +3817,13 @@ matching steps, and the second contains the non-matching ones.</p>
         <span class='name'>note</span>
       
       
-        <span class='type'>(<tt><span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span></tt>, <tt><span class='object_link'>String</span></tt>, <tt><span class='object_link'>Symbol</span></tt>, <tt>Integer</tt>)</span>
+        <span class='type'>(<tt>MIDINote</tt>, <tt><span class='object_link'>String</span></tt>, <tt><span class='object_link'>Symbol</span></tt>, <tt>Integer</tt>)</span>
       
       
       
         &mdash;
         <div class='inline'><p>The note or pitch class to
-match. See <span class='object_link'><a href="MIDINote.html#match%3F-instance_method" title="MIDINote#match? (method)">MIDINote#match?</a></span> for precise rules.</p></div>
+match. See MIDINote#match? for precise rules.</p></div>
       
     </li>
   
@@ -3853,7 +3853,7 @@ match. See <span class='object_link'><a href="MIDINote.html#match%3F-instance_me
   <p class="tag_title">See Also:</p>
   <ul class="see">
     
-      <li><span class='object_link'><a href="MIDINote.html#match%3F-instance_method" title="MIDINote#match? (method)">MIDINote#match?</a></span></li>
+      <li>MIDINote#match?</li>
     
       <li><span class='object_link'><a href="TrackBase.html#partition-instance_method" title="TrackBase#partition (method)">TrackBase#partition</a></span></li>
     
@@ -4021,16 +4021,16 @@ shifted.</p></div>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_rand_octave'>rand_octave</span><span class='lparen'>(</span><span class='id identifier rubyid_range'>range</span> <span class='op'>=</span> <span class='int'>1</span><span class='comma'>,</span> <span class='label'>p:</span> <span class='float'>0.5</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span>
-    <span class='kw'>next</span> <span class='id identifier rubyid_step'>step</span> <span class='kw'>unless</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Random</span><span class='period'>.</span><span class='id identifier rubyid_chance'>chance</span><span class='lparen'>(</span><span class='id identifier rubyid_p'>p</span><span class='rparen'>)</span>
+    <span class='kw'>next</span> <span class='id identifier rubyid_step'>step</span> <span class='kw'>unless</span> <span class='const'><span class='object_link'><a href="SpiSeq.html" title="SpiSeq (module)">SpiSeq</a></span></span><span class='op'>::</span><span class='const'>Random</span><span class='period'>.</span><span class='id identifier rubyid_chance'>chance</span><span class='lparen'>(</span><span class='id identifier rubyid_p'>p</span><span class='rparen'>)</span>
 
     <span class='comment'># We&#39;ve already decided to shift, so ignore random 0 values. Not using
 </span>    <span class='comment'># rand_i here since it&#39;s exclusive. rand is too, but we&#39;re rounding.
 </span>    <span class='id identifier rubyid_shift'>shift</span> <span class='op'>=</span> <span class='int'>0</span>
     <span class='kw'>while</span> <span class='id identifier rubyid_shift'>shift</span> <span class='op'>==</span> <span class='int'>0</span>
       <span class='kw'>if</span> <span class='id identifier rubyid_range'>range</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Range</span><span class='rparen'>)</span>
-        <span class='id identifier rubyid_shift'>shift</span> <span class='op'>=</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Random</span><span class='period'>.</span><span class='id identifier rubyid_rand_f'>rand_f</span><span class='lparen'>(</span><span class='id identifier rubyid_range'>range</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_round'>round</span>
+        <span class='id identifier rubyid_shift'>shift</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="SpiSeq.html" title="SpiSeq (module)">SpiSeq</a></span></span><span class='op'>::</span><span class='const'>Random</span><span class='period'>.</span><span class='id identifier rubyid_rand_f'>rand_f</span><span class='lparen'>(</span><span class='id identifier rubyid_range'>range</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_round'>round</span>
       <span class='kw'>else</span>
-        <span class='id identifier rubyid_shift'>shift</span> <span class='op'>=</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Random</span><span class='period'>.</span><span class='id identifier rubyid_rand_f'>rand_f</span><span class='lparen'>(</span><span class='op'>-</span><span class='id identifier rubyid_range'>range</span><span class='op'>..</span><span class='id identifier rubyid_range'>range</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_round'>round</span>
+        <span class='id identifier rubyid_shift'>shift</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="SpiSeq.html" title="SpiSeq (module)">SpiSeq</a></span></span><span class='op'>::</span><span class='const'>Random</span><span class='period'>.</span><span class='id identifier rubyid_rand_f'>rand_f</span><span class='lparen'>(</span><span class='op'>-</span><span class='id identifier rubyid_range'>range</span><span class='op'>..</span><span class='id identifier rubyid_range'>range</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_round'>round</span>
       <span class='kw'>end</span>
     <span class='kw'>end</span>
 
@@ -4090,13 +4090,13 @@ to return a new Track with the given <span class='object_link'><a href="TrackBas
         <span class='name'>new_granularity</span>
       
       
-        <span class='type'>(<tt><span class='object_link'><a href="NoteLength.html" title="NoteLength (class)">NoteLength</a></span></tt>, <tt>Number</tt>, <tt><span class='object_link'>Symbol</span></tt>)</span>
+        <span class='type'>(<tt>NoteLength</tt>, <tt>Number</tt>, <tt><span class='object_link'>Symbol</span></tt>)</span>
       
       
       
         &mdash;
-        <div class='inline'><p>The <span class='object_link'><a href="TrackBase.html#granularity-instance_method" title="TrackBase#granularity (method)">granularity</a></span> for the new track. Can be a <span class='object_link'><a href="NoteLength.html" title="NoteLength (class)">NoteLength</a></span> or a value
-understood by <span class='object_link'><a href="NoteLength.html#new-class_method" title="NoteLength.new (method)">NoteLength.new</a></span>.</p></div>
+        <div class='inline'><p>The <span class='object_link'><a href="TrackBase.html#granularity-instance_method" title="TrackBase#granularity (method)">granularity</a></span> for the new track. Can be a NoteLength or a value
+understood by NoteLength.new.</p></div>
       
     </li>
   
@@ -4153,7 +4153,7 @@ understood by <span class='object_link'><a href="NoteLength.html#new-class_metho
       <pre class="code"><span class="info file"># File 'track.rb', line 517</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_regranularize'>regranularize</span><span class='lparen'>(</span><span class='id identifier rubyid_new_granularity'>new_granularity</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_new_granularity'>new_granularity</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="NoteLength.html" title="NoteLength (class)">NoteLength</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="NoteLength.html#new-class_method" title="NoteLength.new (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_new_granularity'>new_granularity</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_new_granularity'>new_granularity</span> <span class='op'>=</span> <span class='const'>NoteLength</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_new_granularity'>new_granularity</span><span class='rparen'>)</span>
 
   <span class='kw'>return</span> <span class='kw'>self</span> <span class='kw'>if</span> <span class='ivar'>@granularity</span> <span class='op'>==</span> <span class='id identifier rubyid_new_granularity'>new_granularity</span>
 
@@ -4182,7 +4182,7 @@ understood by <span class='object_link'><a href="NoteLength.html#new-class_metho
   <div class="discussion">
     <p>Returns a new track containing only steps that do not match the given note.
 The new track will have the same length as this one, but will only contain
-steps that do not match. Matches are evaluated with <span class='object_link'><a href="MIDINote.html#match%3F-instance_method" title="MIDINote#match? (method)">MIDINote#match?</a></span>.</p>
+steps that do not match. Matches are evaluated with MIDINote#match?.</p>
 <p>The result is equivalent to the second track returned by <span class='object_link'><a href="#partition_notes-instance_method" title="Track#partition_notes (method)">#partition_notes</a></span>.
 The complement of this function is <span class='object_link'><a href="#select_notes-instance_method" title="Track#select_notes (method)">#select_notes</a></span>.</p>
 
@@ -4204,13 +4204,13 @@ The complement of this function is <span class='object_link'><a href="#select_no
         <span class='name'>note</span>
       
       
-        <span class='type'>(<tt><span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span></tt>, <tt><span class='object_link'>String</span></tt>, <tt><span class='object_link'>Symbol</span></tt>, <tt>Integer</tt>)</span>
+        <span class='type'>(<tt>MIDINote</tt>, <tt><span class='object_link'>String</span></tt>, <tt><span class='object_link'>Symbol</span></tt>, <tt>Integer</tt>)</span>
       
       
       
         &mdash;
         <div class='inline'><p>The note or pitch class to
-match. See <span class='object_link'><a href="MIDINote.html#match%3F-instance_method" title="MIDINote#match? (method)">MIDINote#match?</a></span> for precise rules.</p></div>
+match. See MIDINote#match? for precise rules.</p></div>
       
     </li>
   
@@ -4496,7 +4496,7 @@ given factor.</p>
   <div class="discussion">
     <p>Returns a new track containing only steps that match the given note. The new
 track will have the same length as this one, but will only contain steps
-that match. Matches are evaluated with <span class='object_link'><a href="MIDINote.html#match%3F-instance_method" title="MIDINote#match? (method)">MIDINote#match?</a></span>.</p>
+that match. Matches are evaluated with MIDINote#match?.</p>
 <p>The result is equivalent to the first track returned by <span class='object_link'><a href="#partition_notes-instance_method" title="Track#partition_notes (method)">#partition_notes</a></span>.
 The complement of this function is <span class='object_link'><a href="#reject_notes-instance_method" title="Track#reject_notes (method)">#reject_notes</a></span>.</p>
 
@@ -4518,13 +4518,13 @@ The complement of this function is <span class='object_link'><a href="#reject_no
         <span class='name'>note</span>
       
       
-        <span class='type'>(<tt><span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span></tt>, <tt><span class='object_link'>String</span></tt>, <tt><span class='object_link'>Symbol</span></tt>, <tt>Integer</tt>)</span>
+        <span class='type'>(<tt>MIDINote</tt>, <tt><span class='object_link'>String</span></tt>, <tt><span class='object_link'>Symbol</span></tt>, <tt>Integer</tt>)</span>
       
       
       
         &mdash;
         <div class='inline'><p>The note or pitch class to
-match. See <span class='object_link'><a href="MIDINote.html#match%3F-instance_method" title="MIDINote#match? (method)">MIDINote#match?</a></span> for precise rules.</p></div>
+match. See MIDINote#match? for precise rules.</p></div>
       
     </li>
   
@@ -4893,7 +4893,7 @@ by the given amount.</p>
 </h3><div class="docstring">
   <div class="discussion">
     <p>Return a new Track in which each step has its <span class='object_link'><a href="Step.html#note-instance_method" title="Step#note (method)">note</a></span>
-<span class='object_link'><a href="MIDINote.html#snap-instance_method" title="MIDINote#snap (method)">snapped</a></span> to the nearest note in the given array.</p>
+snapped to the nearest note in the given array.</p>
 
   </div>
 </div>
@@ -4924,14 +4924,14 @@ by the given amount.</p>
         <span class='name'>notes</span>
       
       
-        <span class='type'>(<tt>Array&lt;<span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span>, <span class='object_link'>String</span>, <span class='object_link'>Symbol</span>, Integer&gt;</tt>)</span>
+        <span class='type'>(<tt>Array&lt;MIDINote, <span class='object_link'>String</span>, <span class='object_link'>Symbol</span>, Integer&gt;</tt>)</span>
       
       
       
         &mdash;
         <div class='inline'><p>The notes which
-steps will be snapped. Elements can be <span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span>s or anything understood
-by <span class='object_link'><a href="MIDINote.html#new-class_method" title="MIDINote.new (method)">MIDINote.new</a></span>.</p></div>
+steps will be snapped. Elements can be MIDINotes or anything understood
+by MIDINote.new.</p></div>
       
     </li>
   
@@ -4963,7 +4963,7 @@ by <span class='object_link'><a href="MIDINote.html#new-class_method" title="MID
     
       <li><span class='object_link'><a href="#snap_to_scale-instance_method" title="Track#snap_to_scale (method)">#snap_to_scale</a></span></li>
     
-      <li><span class='object_link'><a href="MIDINote.html#snap-instance_method" title="MIDINote#snap (method)">MIDINote#snap</a></span></li>
+      <li>MIDINote#snap</li>
     
   </ul>
 
@@ -5044,7 +5044,7 @@ scale, e.g. <code>:c</code>.</p></div>
       
         &mdash;
         <div class='inline'><p>The name of the scale to use, one of the
-values in <span class='object_link'><a href="Scale.html#SCALE_NAMES-constant" title="Scale::SCALE_NAMES (constant)">Scale::SCALE_NAMES</a></span>.</p></div>
+values in Scale.SCALE_NAMES.</p></div>
       
     </li>
   
@@ -5076,9 +5076,9 @@ values in <span class='object_link'><a href="Scale.html#SCALE_NAMES-constant" ti
     
       <li><span class='object_link'><a href="#scale-instance_method" title="Track#scale (method)">#scale</a></span></li>
     
-      <li><span class='object_link'><a href="Scale.html#full_scale-class_method" title="Scale.full_scale (method)">Scale.full_scale</a></span></li>
+      <li>Scale.full_scale</li>
     
-      <li><span class='object_link'><a href="Scale.html#snap-instance_method" title="Scale#snap (method)">Scale#snap</a></span></li>
+      <li>Scale#snap</li>
     
   </ul>
 
@@ -5097,7 +5097,7 @@ values in <span class='object_link'><a href="Scale.html#SCALE_NAMES-constant" ti
       <pre class="code"><span class="info file"># File 'track.rb', line 803</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_snap_to_scale'>snap_to_scale</span><span class='lparen'>(</span><span class='id identifier rubyid_tonic'>tonic</span><span class='comma'>,</span> <span class='id identifier rubyid_scale_name'>scale_name</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_scale'>scale</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Scale.html" title="Scale (class)">Scale</a></span></span><span class='period'>.</span><span class='id identifier rubyid_full_scale'><span class='object_link'><a href="Scale.html#full_scale-class_method" title="Scale.full_scale (method)">full_scale</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_tonic'>tonic</span><span class='comma'>,</span> <span class='id identifier rubyid_scale_name'>scale_name</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_scale'>scale</span> <span class='op'>=</span> <span class='const'>Scale</span><span class='period'>.</span><span class='id identifier rubyid_full_scale'>full_scale</span><span class='lparen'>(</span><span class='id identifier rubyid_tonic'>tonic</span><span class='comma'>,</span> <span class='id identifier rubyid_scale_name'>scale_name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span> <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_with_note'>with_note</span><span class='lparen'>(</span><span class='id identifier rubyid_scale'>scale</span><span class='period'>.</span><span class='id identifier rubyid_snap'>snap</span><span class='lparen'>(</span><span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_note'>note</span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -5122,13 +5122,13 @@ values in <span class='object_link'><a href="Scale.html#SCALE_NAMES-constant" ti
   <div class="discussion">
     <p>Returns a new Track where each step with a matching <span class='object_link'><a href="Step.html#note-instance_method" title="Step#note (method)">note</a></span> is
 replaced with a step that has note <code>repl</code> but is otherwise identical.</p>
-<p>If <code>target</code> is a <span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span>, number, or symbol or string with an octave,
+<p>If <code>target</code> is a MIDINote, number, or symbol or string with an octave,
 only steps with that exact note are effected. If it is a symbol or string
 without an explicit octave (e.g. <code>:c</code>), all steps with that pitch class
 are effected.</p>
 <p>If <code>repl</code> is a symbol or string without an octave, targeted steps' notes
 will be in the same octave as the original step but with the pitch class of
-<code>repl</code>. If <code>repl</code> is a <span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span>, number, or symbol or string with an
+<code>repl</code>. If <code>repl</code> is a MIDINote, number, or symbol or string with an
 octave, it exactly defines the new note for targeted steps.</p>
 <p><code>repl</code> may be nil, :r, or :rest to remove the targeted steps.</p>
 
@@ -5174,7 +5174,7 @@ octave, it exactly defines the new note for targeted steps.</p>
         <span class='name'>target</span>
       
       
-        <span class='type'>(<tt><span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span></tt>, <tt><span class='object_link'>Symbol</span></tt>, <tt><span class='object_link'>String</span></tt>, <tt>Integer</tt>)</span>
+        <span class='type'>(<tt>MIDINote</tt>, <tt><span class='object_link'>Symbol</span></tt>, <tt><span class='object_link'>String</span></tt>, <tt>Integer</tt>)</span>
       
       
       
@@ -5189,7 +5189,7 @@ target; see above.</p></div>
         <span class='name'>repl</span>
       
       
-        <span class='type'>(<tt><span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span></tt>, <tt><span class='object_link'>Symbol</span></tt>, <tt><span class='object_link'>String</span></tt>, <tt>Integer</tt>, <tt>nil</tt>, <tt>:r</tt>, <tt>:rest</tt>)</span>
+        <span class='type'>(<tt>MIDINote</tt>, <tt><span class='object_link'>Symbol</span></tt>, <tt><span class='object_link'>String</span></tt>, <tt>Integer</tt>, <tt>nil</tt>, <tt>:r</tt>, <tt>:rest</tt>)</span>
       
       
       
@@ -5255,11 +5255,11 @@ above.</p></div>
       <pre class="code"><span class="info file"># File 'track.rb', line 1309</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_sub_note'>sub_note</span><span class='lparen'>(</span><span class='id identifier rubyid_target'>target</span><span class='comma'>,</span> <span class='id identifier rubyid_repl'>repl</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_orig_has_octave'>orig_has_octave</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_has_octave?'><span class='object_link'><a href="MIDINote.html#has_octave%3F-class_method" title="MIDINote.has_octave? (method)">has_octave?</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_target'>target</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_repl_is_rest'>repl_is_rest</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_rest?'><span class='object_link'><a href="MIDINote.html#rest%3F-class_method" title="MIDINote.rest? (method)">rest?</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_repl'>repl</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_repl_has_octave'>repl_has_octave</span> <span class='op'>=</span> <span class='id identifier rubyid_repl_is_rest'>repl_is_rest</span> <span class='op'>?</span> <span class='kw'>false</span> <span class='op'>:</span> <span class='const'><span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_has_octave?'><span class='object_link'><a href="MIDINote.html#has_octave%3F-class_method" title="MIDINote.has_octave? (method)">has_octave?</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_repl'>repl</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_orig_has_octave'>orig_has_octave</span> <span class='op'>=</span> <span class='const'>MIDINote</span><span class='period'>.</span><span class='id identifier rubyid_has_octave?'>has_octave?</span><span class='lparen'>(</span><span class='id identifier rubyid_target'>target</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_repl_is_rest'>repl_is_rest</span> <span class='op'>=</span> <span class='const'>MIDINote</span><span class='period'>.</span><span class='id identifier rubyid_rest?'>rest?</span><span class='lparen'>(</span><span class='id identifier rubyid_repl'>repl</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_repl_has_octave'>repl_has_octave</span> <span class='op'>=</span> <span class='id identifier rubyid_repl_is_rest'>repl_is_rest</span> <span class='op'>?</span> <span class='kw'>false</span> <span class='op'>:</span> <span class='const'>MIDINote</span><span class='period'>.</span><span class='id identifier rubyid_has_octave?'>has_octave?</span><span class='lparen'>(</span><span class='id identifier rubyid_repl'>repl</span><span class='rparen'>)</span>
 
-  <span class='id identifier rubyid_target'>target</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="MIDINote.html#new-class_method" title="MIDINote.new (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_target'>target</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_target'>target</span> <span class='op'>=</span> <span class='const'>MIDINote</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_target'>target</span><span class='rparen'>)</span>
 
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span>
     <span class='kw'>if</span> <span class='lparen'>(</span><span class='id identifier rubyid_orig_has_octave'>orig_has_octave</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_note'>note</span> <span class='op'>==</span> <span class='id identifier rubyid_target'>target</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='lparen'>(</span><span class='op'>!</span><span class='id identifier rubyid_orig_has_octave'>orig_has_octave</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_note'>note</span><span class='period'>.</span><span class='id identifier rubyid_pitch_class'>pitch_class</span> <span class='op'>==</span> <span class='id identifier rubyid_target'>target</span><span class='period'>.</span><span class='id identifier rubyid_pitch_class'>pitch_class</span><span class='rparen'>)</span>
@@ -5924,18 +5924,18 @@ the result.</li>
       <span class='id identifier rubyid_pct'>pct</span> <span class='op'>=</span> <span class='id identifier rubyid_i'>i</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span> <span class='op'>/</span> <span class='lparen'>(</span><span class='id identifier rubyid_num_slots'>num_slots</span> <span class='op'>-</span> <span class='int'>1</span><span class='rparen'>)</span>
     <span class='kw'>end</span>
 
-    <span class='id identifier rubyid_replacement'>replacement</span> <span class='op'>=</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_call_varargs'>call_varargs</span><span class='lparen'>(</span><span class='id identifier rubyid_block'>block</span><span class='comma'>,</span> <span class='id identifier rubyid_slot'>slot</span><span class='comma'>,</span> <span class='id identifier rubyid_i'>i</span><span class='comma'>,</span> <span class='id identifier rubyid_pct'>pct</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_replacement'>replacement</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="SpiSeq.html" title="SpiSeq (module)">SpiSeq</a></span></span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_call_varargs'>call_varargs</span><span class='lparen'>(</span><span class='id identifier rubyid_block'>block</span><span class='comma'>,</span> <span class='id identifier rubyid_slot'>slot</span><span class='comma'>,</span> <span class='id identifier rubyid_i'>i</span><span class='comma'>,</span> <span class='id identifier rubyid_pct'>pct</span><span class='rparen'>)</span>
 
     <span class='comment'># The block may return something convertible to a slot (a CCStep), or a
 </span>    <span class='comment'># 1d array (which we will take as a slot), or an array that contains some
 </span>    <span class='comment'># number of other arrays (which we will take as a set of slots). This
 </span>    <span class='comment'># behavior is in keeping with mutate_slots.
-</span>    <span class='id identifier rubyid_replacement'>replacement</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_enumerable?'>enumerable?</span><span class='lparen'>(</span><span class='id identifier rubyid_replacement'>replacement</span><span class='rparen'>)</span>
-      <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_arrayify'>arrayify</span><span class='lparen'>(</span><span class='id identifier rubyid_replacement'>replacement</span><span class='rparen'>)</span>  <span class='comment'># see note in enumerable?
+</span>    <span class='id identifier rubyid_replacement'>replacement</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='const'><span class='object_link'><a href="SpiSeq.html" title="SpiSeq (module)">SpiSeq</a></span></span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_enumerable?'>enumerable?</span><span class='lparen'>(</span><span class='id identifier rubyid_replacement'>replacement</span><span class='rparen'>)</span>
+      <span class='const'><span class='object_link'><a href="SpiSeq.html" title="SpiSeq (module)">SpiSeq</a></span></span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_arrayify'>arrayify</span><span class='lparen'>(</span><span class='id identifier rubyid_replacement'>replacement</span><span class='rparen'>)</span>  <span class='comment'># see note in enumerable?
 </span>    <span class='kw'>else</span>
       <span class='lbracket'>[</span><span class='id identifier rubyid_replacement'>replacement</span><span class='rbracket'>]</span>
     <span class='kw'>end</span>
-    <span class='id identifier rubyid_is_gridish'>is_gridish</span> <span class='op'>=</span> <span class='id identifier rubyid_replacement'>replacement</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_enumerable?'>enumerable?</span><span class='lparen'>(</span><span class='id identifier rubyid_e'>e</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
+    <span class='id identifier rubyid_is_gridish'>is_gridish</span> <span class='op'>=</span> <span class='id identifier rubyid_replacement'>replacement</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='const'><span class='object_link'><a href="SpiSeq.html" title="SpiSeq (module)">SpiSeq</a></span></span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_enumerable?'>enumerable?</span><span class='lparen'>(</span><span class='id identifier rubyid_e'>e</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
 
     <span class='kw'>if</span> <span class='id identifier rubyid_is_gridish'>is_gridish</span>
       <span class='id identifier rubyid_new_grid'>new_grid</span> <span class='op'>+=</span> <span class='const'><span class='object_link'><a href="CCTrack.html" title="CCTrack (class)">CCTrack</a></span></span><span class='period'>.</span><span class='id identifier rubyid_gridify'>gridify</span><span class='lparen'>(</span><span class='id identifier rubyid_replacement'>replacement</span><span class='rparen'>)</span>
@@ -6164,12 +6164,12 @@ the result.</li>
       <span class='id identifier rubyid_pct'>pct</span> <span class='op'>=</span> <span class='id identifier rubyid_i'>i</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span> <span class='op'>/</span> <span class='lparen'>(</span><span class='id identifier rubyid_num_slots'>num_slots</span> <span class='op'>-</span> <span class='int'>1</span><span class='rparen'>)</span>
     <span class='kw'>end</span>
 
-    <span class='id identifier rubyid_replacement'>replacement</span> <span class='op'>=</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_call_varargs'>call_varargs</span><span class='lparen'>(</span><span class='id identifier rubyid_block'>block</span><span class='comma'>,</span> <span class='id identifier rubyid_slot'>slot</span><span class='comma'>,</span> <span class='id identifier rubyid_i'>i</span><span class='comma'>,</span> <span class='id identifier rubyid_pct'>pct</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_replacement'>replacement</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="SpiSeq.html" title="SpiSeq (module)">SpiSeq</a></span></span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_call_varargs'>call_varargs</span><span class='lparen'>(</span><span class='id identifier rubyid_block'>block</span><span class='comma'>,</span> <span class='id identifier rubyid_slot'>slot</span><span class='comma'>,</span> <span class='id identifier rubyid_i'>i</span><span class='comma'>,</span> <span class='id identifier rubyid_pct'>pct</span><span class='rparen'>)</span>
 
     <span class='comment'># The block may return a scalar (which we take as a CC value), or an array
 </span>    <span class='comment'># (which we will take as a definition for a set of slots).
-</span>    <span class='kw'>if</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_enumerable?'>enumerable?</span><span class='lparen'>(</span><span class='id identifier rubyid_replacement'>replacement</span><span class='rparen'>)</span>
-      <span class='id identifier rubyid_replacement'>replacement</span> <span class='op'>=</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_arrayify'>arrayify</span><span class='lparen'>(</span><span class='id identifier rubyid_replacement'>replacement</span><span class='rparen'>)</span>  <span class='comment'># see note in enumerable?
+</span>    <span class='kw'>if</span> <span class='const'><span class='object_link'><a href="SpiSeq.html" title="SpiSeq (module)">SpiSeq</a></span></span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_enumerable?'>enumerable?</span><span class='lparen'>(</span><span class='id identifier rubyid_replacement'>replacement</span><span class='rparen'>)</span>
+      <span class='id identifier rubyid_replacement'>replacement</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="SpiSeq.html" title="SpiSeq (module)">SpiSeq</a></span></span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_arrayify'>arrayify</span><span class='lparen'>(</span><span class='id identifier rubyid_replacement'>replacement</span><span class='rparen'>)</span>  <span class='comment'># see note in enumerable?
 </span>      <span class='kw'>if</span> <span class='id identifier rubyid_replacement'>replacement</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
         <span class='id identifier rubyid_slots'>slots</span> <span class='op'>&lt;&lt;</span> <span class='symbol'>:r</span>
       <span class='kw'>else</span>
@@ -6654,7 +6654,7 @@ range 0 - 1.</p>
   <span class='kw'>end</span>
 
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='comma'>,</span> <span class='id identifier rubyid_slot_idx'>slot_idx</span><span class='comma'>,</span> <span class='id identifier rubyid_pct'>pct</span><span class='op'>|</span>
-    <span class='id identifier rubyid_gate'>gate</span> <span class='op'>=</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_call_varargs'>call_varargs</span><span class='lparen'>(</span><span class='id identifier rubyid_curve_func'>curve_func</span><span class='comma'>,</span> <span class='id identifier rubyid_pct'>pct</span><span class='comma'>,</span> <span class='id identifier rubyid_slot_idx'>slot_idx</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_gate'>gate</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="SpiSeq.html" title="SpiSeq (module)">SpiSeq</a></span></span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_call_varargs'>call_varargs</span><span class='lparen'>(</span><span class='id identifier rubyid_curve_func'>curve_func</span><span class='comma'>,</span> <span class='id identifier rubyid_pct'>pct</span><span class='comma'>,</span> <span class='id identifier rubyid_slot_idx'>slot_idx</span><span class='rparen'>)</span>
     <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_with_gate'>with_gate</span><span class='lparen'>(</span><span class='id identifier rubyid_gate'>gate</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
@@ -6804,7 +6804,7 @@ on this functionality.</p>
         <span class='name'>scale</span>
       
       
-        <span class='type'>(<tt><span class='object_link'><a href="Scale.html" title="Scale (class)">Scale</a></span></tt>)</span>
+        <span class='type'>(<tt>Scale</tt>)</span>
       
       
       
@@ -7155,7 +7155,7 @@ range (0 - 127 if <code>zero_to_one</code> is false, otherwise 0 - 1).</p>
   <span class='kw'>end</span>
 
   <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='comma'>,</span> <span class='id identifier rubyid_slot_idx'>slot_idx</span><span class='comma'>,</span> <span class='id identifier rubyid_pct'>pct</span><span class='op'>|</span>
-    <span class='id identifier rubyid_vel'>vel</span> <span class='op'>=</span> <span class='const'>SpiSeq</span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_call_varargs'>call_varargs</span><span class='lparen'>(</span><span class='id identifier rubyid_curve_func'>curve_func</span><span class='comma'>,</span> <span class='id identifier rubyid_pct'>pct</span><span class='comma'>,</span> <span class='id identifier rubyid_slot_idx'>slot_idx</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_vel'>vel</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="SpiSeq.html" title="SpiSeq (module)">SpiSeq</a></span></span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_call_varargs'>call_varargs</span><span class='lparen'>(</span><span class='id identifier rubyid_curve_func'>curve_func</span><span class='comma'>,</span> <span class='id identifier rubyid_pct'>pct</span><span class='comma'>,</span> <span class='id identifier rubyid_slot_idx'>slot_idx</span><span class='rparen'>)</span>
     <span class='id identifier rubyid_vel'>vel</span> <span class='op'>*=</span> <span class='int'>127</span> <span class='kw'>if</span> <span class='id identifier rubyid_zero_to_one'>zero_to_one</span>  <span class='comment'># with_vel will round &amp; clamp this
 </span>    <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_with_vel'>with_vel</span><span class='lparen'>(</span><span class='id identifier rubyid_vel'>vel</span><span class='rparen'>)</span>
   <span class='kw'>end</span>

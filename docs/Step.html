@@ -616,13 +616,13 @@ constructing a step with the <span class='object_link'><a href="StepBase.html#ac
         <span class='name'>note</span>
       
       
-        <span class='type'>(<tt><span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span></tt>, <tt><span class='object_link'>String</span></tt>, <tt><span class='object_link'>Symbol</span></tt>, <tt>Integer</tt>)</span>
+        <span class='type'>(<tt>MIDINote</tt>, <tt><span class='object_link'>String</span></tt>, <tt><span class='object_link'>Symbol</span></tt>, <tt>Integer</tt>)</span>
       
       
       
         &mdash;
         <div class='inline'><p>The note this step will
-play when triggered. May be any value understood by <span class='object_link'><a href="MIDINote.html#new-class_method" title="MIDINote.new (method)">MIDINote.new</a></span>.</p></div>
+play when triggered. May be any value understood by MIDINote.new.</p></div>
       
     </li>
   
@@ -826,7 +826,7 @@ the only valid option for CCSteps. You may pass <code>:note</code>, <code>:gate<
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_note'>note</span><span class='comma'>,</span> <span class='label'>vel:</span> <span class='int'>127</span><span class='comma'>,</span> <span class='label'>gate:</span> <span class='float'>1.0</span><span class='comma'>,</span> <span class='label'>prob:</span> <span class='kw'>nil</span><span class='comma'>,</span>
                <span class='label'>accum_delta:</span> <span class='int'>0</span><span class='comma'>,</span> <span class='label'>accum_max:</span> <span class='int'>12</span><span class='comma'>,</span> <span class='label'>accum_min:</span> <span class='int'>0</span><span class='comma'>,</span>
                <span class='label'>accum_mode:</span> <span class='symbol'>:wrap</span><span class='comma'>,</span> <span class='label'>accum_prob:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>accum_target:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
-  <span class='ivar'>@note</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="MIDINote.html#new-class_method" title="MIDINote.new (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_note'>note</span><span class='rparen'>)</span>
+  <span class='ivar'>@note</span> <span class='op'>=</span> <span class='const'>MIDINote</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_note'>note</span><span class='rparen'>)</span>
 
   <span class='ivar'>@vel</span> <span class='op'>=</span> <span class='id identifier rubyid_vel'>vel</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span>
   <span class='kw'>if</span> <span class='ivar'>@vel</span> <span class='op'>&lt;</span> <span class='int'>0</span>
@@ -928,7 +928,7 @@ the next played slot with the same note.</p>
       <div class="method_details ">
   <h3 class="signature " id="note-instance_method">
   
-    #<strong>note</strong>  &#x21d2; <tt><span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span></tt>  <span class="extras">(readonly)</span>
+    #<strong>note</strong>  &#x21d2; <tt>MIDINote</tt>  <span class="extras">(readonly)</span>
   
 
   
@@ -955,7 +955,7 @@ the next played slot with the same note.</p>
     <li>
       
       
-        <span class='type'>(<tt><span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span></tt>)</span>
+        <span class='type'>(<tt>MIDINote</tt>)</span>
       
       
       
@@ -1875,13 +1875,13 @@ it will be clamped.</p>
         <span class='name'>new_note</span>
       
       
-        <span class='type'>(<tt><span class='object_link'><a href="MIDINote.html" title="MIDINote (class)">MIDINote</a></span></tt>, <tt><span class='object_link'>String</span></tt>, <tt><span class='object_link'>Symbol</span></tt>, <tt>Integer</tt>)</span>
+        <span class='type'>(<tt>MIDINote</tt>, <tt><span class='object_link'>String</span></tt>, <tt><span class='object_link'>Symbol</span></tt>, <tt>Integer</tt>)</span>
       
       
       
         &mdash;
         <div class='inline'><p>A MIDINote or any value
-understood by <span class='object_link'><a href="MIDINote.html#new-class_method" title="MIDINote.new (method)">MIDINote.new</a></span>.</p></div>
+understood by MIDINote.new.</p></div>
       
     </li>
   
