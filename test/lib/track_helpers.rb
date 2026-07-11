@@ -25,7 +25,7 @@ module TrackHelpers
     assert_equal track.granularity, granularity
     assert_equal track.timescale, timescale
 
-    if track.is_a?(Track)
+    if track.is_a?(SpiSeq::Tracks::Track)
       if scale.nil?
         assert_nil track.scale
       else
@@ -59,12 +59,12 @@ module TrackHelpers
   # track. This method does not check the grid of the returned track; it only
   # checks for a correct granularity and timescale.
   def assert_merge_gt(method, *, **)
-    t8_1 = T[:c1]
+    t8_1 = SpiSeq::Tracks::Track[:c1]
     c_maj = SpiSeq::Theory::Scale.full_scale(:c, :major)
-    t8_1_cmajor = T[:c1, scale: c_maj]
-    t8_2 = T[:c2, timescale: 2]
-    t16_1 = T[:c3, granularity: :sixteenth]
-    t32_2 = T[:c4, granularity: :thirty_second, timescale: 2]
+    t8_1_cmajor = SpiSeq::Tracks::Track[:c1, scale: c_maj]
+    t8_2 = SpiSeq::Tracks::Track[:c2, timescale: 2]
+    t16_1 = SpiSeq::Tracks::Track[:c3, granularity: :sixteenth]
+    t32_2 = SpiSeq::Tracks::Track[:c4, granularity: :thirty_second, timescale: 2]
 
     assert_gt t8_1.send(method, t8_1_cmajor, *, **), :eighth, 1
     assert_gt t8_1_cmajor.send(method, t8_1, *, **), :eighth, 1, scale: c_maj
