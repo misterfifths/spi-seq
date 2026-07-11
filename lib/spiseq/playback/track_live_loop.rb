@@ -59,7 +59,7 @@ module SpiSeq; module Internal; module TrackLiveLoopUtils
                                        cycle: player.cycle, track: player.track,
                                        muted:, was_muted:, arg: block_arg)
 
-        if block_res.is_a?(TrackBase)
+        if block_res.is_a?(Tracks::TrackBase)
           raise TypeError, "cannot switch track live loop #{loop_name} between track types" unless block_res.instance_of?(player.track.class)
           Log.log("#{loop_name}: swapping track on cycle #{player.cycle}", "track_live_loop") if debug
           player.swap_track(block_res)
@@ -273,12 +273,12 @@ module SpiSeq; module Playback
 
     ### Make the player (and possibly track)
     track ||= Tracks::Track.rest
-    raise ArgumentError, "The fade parameters cannot be used with CCTracks" if track.is_a?(CCTrack) && (fade_in || fade_out)
+    raise ArgumentError, "The fade parameters cannot be used with CCTracks" if track.is_a?(Tracks::CCTrack) && (fade_in || fade_out)
 
     player = case track
-    when Track
+    when Tracks::Track
       Player.new(track, midi:, port:, channel:, debug:)
-    when CCTrack
+    when Tracks::CCTrack
       CCPlayer.new(track, port:, channel:, debug:)
     end
 
