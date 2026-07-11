@@ -56,7 +56,7 @@ module SpiSeq; module Tracks
   # class are also available for use with {CCTrack}s.
   #
   # @abstract Subclasses of TrackBase must provide the following methods:
-  #   - `stepify` - optional, used to convert non-step values to steps.
+  #   - `convert_to_step` - optional, used to convert non-step values to steps.
   #   - `preferred_step` and `step_class` - used to implement `slotify` and
   #     `gridify`.
   #   - `ctor_kwargs` - optional, used to implement `mutate` and {#repr}, and to
@@ -1742,12 +1742,17 @@ module SpiSeq; module Tracks
     # The method should not raise an exception.
     #
     # The default implementation returns nil. That is, it does no conversion.
-    private_class_method def self.stepify(_) = nil
+    private_class_method def self.convert_to_step(_) = nil
 
-    # Same as stepify, but raises an ArgumentError if the conversion fails.
-    private_class_method def self.throwing_stepify(x)
-      res = stepify(x)
-      raise ArgumentError, "invalid value for a step: #{x.inspect}" if res.nil?
+    # Returns the argument if it is an instance of step_class. Otherwise
+    # attempts to convert it to one using convert_to_step, and returns the
+    # result. If the conversion fails, raises if `raise` is true or returns nil
+    # otherwise.
+    # @private
+    def self.stepify(x, raise: true)
+      return x if x.is_a?(step_class)
+      res = convert_to_step(x)
+      raise ArgumentError, "invalid value for a step: #{x.inspect}" if res.nil? && raise
       res
     end
 
@@ -1776,13 +1781,13 @@ module SpiSeq; module Tracks
     end
 
     # Attempts to convert its argument to a grid slot (i.e. an array of steps).
-    # Implemented using `stepify` and `step_class`, which subclassers must
-    # provide.
+    # Implemented using `stepify`, `convert_to_step`, and `step_class` which
+    # subclassers must provide.
     #
     # Rests (`Theory.rest?`) become single empty slots. Steps or things
-    # convertible to them (via `stepify`) become a single-element slot with that
-    # step. Elements of enumerables are treated with the same logic, and the
-    # resulting steps are deduplicated on `Step#unique_slot_key` with
+    # convertible to them (via `convert_to_step`) become a single-element slot
+    # with that step. Elements of enumerables are treated with the same logic,
+    # and the resulting steps are deduplicated on `Step#unique_slot_key` with
     # `dedupe_slot`. Subclassers must implement `preferred_step` for
     # `dedupe_slot`.
     #
@@ -1791,9 +1796,8 @@ module SpiSeq; module Tracks
     # @private
     def self.slotify(x)
       return [].freeze if Theory.rest?(x)
-      return [x].freeze if x.is_a?(step_class)
 
-      step = stepify(x)
+      step = stepify(x, raise: false)
       return [step].freeze unless step.nil?
 
       raise ArgumentError, "invalid value for a slot: #{x.inspect}" unless Internal::Enumerables.enumerable?(x)
@@ -1801,14 +1805,15 @@ module SpiSeq; module Tracks
       # See the note in enumerable? about arrayify.
       raw_slot = Internal::Enumerables.arrayify(x)
                    .reject { |s| Theory.rest?(s) }
-                   .map { |s| s.is_a?(step_class) ? s : throwing_stepify(s) }
+                   .map { |s| stepify(s) }
                    .sort { |s1, s2| s1.unique_slot_key <=> s2.unique_slot_key }
       dedupe_slot(raw_slot).freeze
     end
 
     # Attempts to convert its argument to a grid (a 2d array of steps).
-    # Implemented using `slotify` and ultimately `stepify` and `step_class`,
-    # which subclassers must provide. The result and its subarrays are frozen.
+    # Implemented using `slotify`, `stepify`, `convert_to_step`, and
+    # `step_class`, which subclassers must provide. The result and its
+    # subarrays are frozen.
     #
     # If passed an instance of this class, returns its `grid` attribute.
     #
@@ -1817,9 +1822,8 @@ module SpiSeq; module Tracks
       return x.grid if x.is_a?(self)
 
       return [[].freeze].freeze if Theory.rest?(x)
-      return [[x].freeze].freeze if x.is_a?(step_class)
 
-      step = stepify(x)
+      step = stepify(x, raise: false)
       return [[step].freeze].freeze unless step.nil?
 
       raise ArgumentError, "invalid value for a grid: #{x.inspect}" unless Internal::Enumerables.enumerable?(x)

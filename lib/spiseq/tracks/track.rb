@@ -1536,13 +1536,13 @@ module SpiSeq; module Tracks
     # things (symbols, strings, numbers and MIDINote instances) are converted to
     # Steps using that value as the note and the default values for the other
     # arguments of Step's initializer.
-    private_class_method def self.stepify(x)
+    private_class_method def self.convert_to_step(x)
       case x
       when Symbol, String, Numeric, Theory::MIDINote
         begin
           Step.new(x)
         rescue StandardError
-          # Don't want to raise; TrackBase#slotify wants nil on failure
+          # The contract is to return nil on failure.
         end
       end
     end
