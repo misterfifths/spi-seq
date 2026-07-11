@@ -1584,12 +1584,12 @@ module SpiSeq; module Tracks
     # the slot. The result of the block will replace the step it is called with.
     #
     # The block should return:
-    # - A single step, which will replace the given step in the slot.
-    # - An array of steps, which will all be added to the slot in place of the
-    #   given step.
+    # - A single step (or something convertible to one), which will replace the
+    #   given step in the slot.
+    # - An array of steps (or things convertible to them), which will all be
+    #   added to the slot in place of the given step.
     # - An empty array or a rest, which will remove the given step from the
     #   slot.
-    # - Equivalents of any of the above (see `slotify`).
     #
     # If the slot at the given index is empty, the block will not be called and
     # no changes will be made.
