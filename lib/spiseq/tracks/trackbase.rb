@@ -1834,7 +1834,7 @@ module SpiSeq; module Tracks
     end
 
 
-    protected
+    private
 
     # Does a deep dup of the grid, returning a version where the grid itself and
     # each slot is mutable.

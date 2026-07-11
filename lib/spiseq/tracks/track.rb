@@ -1553,7 +1553,7 @@ module SpiSeq; module Tracks
     end
 
 
-    protected
+    private
 
     def ctor_kwargs
       kwargs = super

@@ -127,6 +127,9 @@ module SpiSeq; module Playback
 
     attr_reader :active_synth_nodes, :active_midi_notes, :attrs_for_prev_steps
 
+
+    private
+
     def slot_advanced = @effective_attrs_cache.clear
 
     # accum_delta is no longer peeking at potential accumulations once this is

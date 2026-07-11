@@ -44,7 +44,7 @@ module SpiSeq; module Playback
     end
 
 
-    protected
+    private
 
     def accum_should_trigger?(step) = step.accum_should_trigger?(cycle: @cycle, fill: @fill)
 

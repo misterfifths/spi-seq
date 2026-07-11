@@ -217,7 +217,7 @@ module SpiSeq; module Tracks
     end
 
 
-    protected
+    private
 
     def repr_ctor_method = "CCT"
   end

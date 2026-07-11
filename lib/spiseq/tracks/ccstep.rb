@@ -86,7 +86,8 @@ module SpiSeq; module Tracks
     # @private
     def unique_slot_key = @cc
 
-    protected
+
+    private
 
     def ctor_args = [:cc, :value]
     def default_accum_target = :value

@@ -172,7 +172,7 @@ module SpiSeq; module Playback
     end
 
 
-    protected
+    private
 
     # Note to subclassers:
     # The flow during playback is a little tricky.
@@ -276,7 +276,7 @@ module SpiSeq; module Playback
     def end_all_steps; end
 
 
-    private
+    ### These methods are not intended for use by subclassers.
 
     # We store accum data by slot index and then `unique_slot_key`, which
     # uniquely identifies a step within its slot, but it is probably not

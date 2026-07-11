@@ -354,7 +354,7 @@ module SpiSeq; module Tracks
     def unique_slot_key = raise(NotImplementedError, "subclasses must implement unique_slot_key")
 
 
-    protected
+    private
 
     # Symbols for additional positional arguments to the initializer, in order
     # as they are passed to it. Subclasses should override this method if they
@@ -395,7 +395,7 @@ module SpiSeq; module Tracks
     def valid_accum_targets = raise(NotImplementedError, "subclasses must implement valid_accum_targets")
 
 
-    private
+    ### These methods are not intended for use by subclassers.
 
     # Converts its argument into an instance of Prob, if possible.
     def probify(prob)

@@ -178,7 +178,7 @@ module SpiSeq; module Tracks
     def unique_slot_key = @note.to_sym
 
 
-    protected
+    private
 
     def ctor_args = [:note]
     def ctor_kwargs
