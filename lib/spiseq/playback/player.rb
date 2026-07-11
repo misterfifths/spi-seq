@@ -88,7 +88,7 @@ module SpiSeq; module Playback
     #   about its state during playback.
     def initialize(track, midi: nil, channel: nil, port: nil, debug: false)
       @midi = midi
-      @midi = current_player_defaults[:midi] || false if @midi.nil?
+      @midi = Playback.current_player_defaults[:midi] || false if @midi.nil?
       @channel = channel
       @port = port
       @midi_spi_kwargs = { channel:, port: }
