@@ -78,9 +78,16 @@ module TrackHelpers
   # Asserts that the given track round-trips to an equivalent one if its repr
   # is evaluated.
   def assert_repr(t)
+    # repr assumes things like T and Scale are in scope, so we have to eval in
+    # such an environment.
+    tracks_binding = Class.new do
+      include SpiSeq::Theory
+      include SpiSeq::Tracks
+    end.new
+
     # Testing different groupings to make sure syntax errors don't sneak in.
     [nil, 8, 4, 1].each do |group|
-      roundtrip = eval(t.repr(group:))  # rubocop:disable Security/Eval
+      roundtrip = tracks_binding.instance_eval(t.repr(group:))
       assert_gt roundtrip, t.granularity, t.timescale, scale: t.is_a?(SpiSeq::Tracks::Track) ? t.scale : nil
       assert_grid roundtrip, t.grid
     end
