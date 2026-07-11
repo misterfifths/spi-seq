@@ -1063,7 +1063,7 @@ module SpiSeq; module Tracks
       new_grid = mutable_grid_dup
 
       orig_steps.each_with_index do |orig_step, i|
-        new_grid[starting_slot_idx + i].delete orig_step
+        new_grid[starting_slot_idx + i].delete(orig_step)
       end
 
       # TODO: gridify new_steps?

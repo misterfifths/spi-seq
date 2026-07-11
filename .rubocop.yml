@@ -16,6 +16,15 @@ Style/MixinUsage:
 Style/TrailingBodyOnModule:
   Enabled: false
 
+Style/MethodCallWithArgsParentheses:
+  Enabled: true
+  AllowedPatterns:
+    - '^raise$'
+    - '^yield$'
+    - '_eval$'
+  Exclude:
+    - 'test/**/*.rb'
+
 Style/RedundantException:
   Enabled: false
 

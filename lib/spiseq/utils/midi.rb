@@ -66,11 +66,11 @@ module SpiSeq; module Utils; module MIDI
     start_stop_kwargs = { port: start_port, channel: start_channel }
     start_stop_kwargs.compact!
 
-    External::Sync.live_loop loop_name, init: false do |inited|
+    External::Sync.live_loop(loop_name, init: false) do |inited|
       External::MIDI.midi_stop(**start_stop_kwargs) if !inited && send_stop
 
       External::MIDI.midi_clock_beat(**beat_kwargs)
-      External::Sync.sleep 1
+      External::Sync.sleep(1)
 
       External::MIDI.midi_start(**start_stop_kwargs) if !inited && send_start
 
@@ -98,7 +98,7 @@ module SpiSeq; module Utils; module MIDI
     port, channel = Internal::MIDI.resolve_cc_port_and_channel(port, channel)
     cue_path = "/midi:#{port}:#{channel}/control_change"
 
-    External::Sync.live_loop loop_name do
+    External::Sync.live_loop(loop_name) do
       External::Sync.with_real_time do
         cc, val = External::Sync.sync(cue_path)
         Internal::Utils.call_varargs(block, cc, val)
