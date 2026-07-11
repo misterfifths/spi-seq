@@ -70,4 +70,21 @@ module SpiSeq; module Internal; module Utils
   end
 
   module_function def is_macos? = RUBY_PLATFORM.include?("darwin")
+
+  # A simplified version of Forwardable that defines module_functions rather
+  # than plain methods. Extend a module with this and call
+  # def_mod_func_delegators to define module_functions that delegate to the
+  # given methods on the object. This is not as flexible as Forwardable! Namely
+  # it assumes that this module is extending another module, and that the object
+  # to which you are forwarding is the name of a constant.
+  module ModuleFunctionForwardable
+    private def def_mod_func_delegators(obj, *methods)
+      methods.each do |m|
+        module_eval <<-RUBY, __FILE__, __LINE__ + 1
+          # module_function def f(...) = Target.f(...)
+          module_function def #{m}(...) = #{obj}.#{m}(...)
+        RUBY
+      end
+    end
+  end
 end; end; end

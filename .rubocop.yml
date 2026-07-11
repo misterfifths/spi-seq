@@ -16,13 +16,6 @@ Style/MixinUsage:
 Style/TrailingBodyOnModule:
   Enabled: false
 
-# Allow `extend self` on modules that are all delegations.
-Style/ModuleFunction:
-  Exclude:
-    - 'lib/spiseq/external/midi.rb'
-    - 'lib/spiseq/external/sync.rb'
-    - 'lib/spiseq/external/synth.rb'
-
 Style/RedundantException:
   Enabled: false
 
