@@ -7,11 +7,10 @@ require_relative "../lib/spiseq/math/curves"
 require_relative "../lib/spiseq/tracks/cctrack"
 require_relative "../lib/spiseq/tracks/track"
 
-include SpiSeq::Math
-include SpiSeq::Tracks
-
 class CCTrackTest < Test::Unit::TestCase
   include TrackHelpers
+  include SpiSeq::Math
+  include SpiSeq::Tracks
 
   def assert_grid(track, slots)
     assert_equal track.length, slots.length, "grid length mismatch between #{track.repr} and #{slots.inspect}"

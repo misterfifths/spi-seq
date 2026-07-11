@@ -6,13 +6,13 @@ require_relative "lib/init"
 require_relative "lib/player_helpers"
 require_relative "../lib/spiseq/playback/track_live_loop"
 
-include SpiSeq::Playback
-include SpiSeq::Tracks
 
 class TrackLiveLoopTest < Test::Unit::TestCase
   BROKEN_IN_SONIC_PI = true
 
   include PlayerHelpers
+  include SpiSeq::Playback
+  include SpiSeq::Tracks
 
   def setup
     # We only stub MIDI sends, not internal synths, and we don't want to test

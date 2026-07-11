@@ -6,12 +6,11 @@ require_relative "lib/track_helpers"
 require_relative "../lib/spiseq/theory/notelength"
 require_relative "../lib/spiseq/tracks/track"
 
-include SpiSeq::Theory
-include SpiSeq::Tracks
-
 # Test Track's methods for regranularizing.
 class TrackRegrainTest < Test::Unit::TestCase
   include TrackHelpers
+  include SpiSeq::Theory
+  include SpiSeq::Tracks
 
   def test_expand
     x = T[S(:a1, gate: 0.25), S(:b1, gate: 0.5), S(:c1, gate: 0.75), :d1]

@@ -7,12 +7,11 @@ require_relative "../lib/spiseq/theory/arp"
 require_relative "../lib/spiseq/theory/notelength"
 require_relative "../lib/spiseq/tracks/track"
 
-include SpiSeq::Theory
-include SpiSeq::Tracks
-
 # Test simple Track initialization, Track.new and Track.rest.
 class TrackInitTest < Test::Unit::TestCase
   include TrackHelpers
+  include SpiSeq::Theory
+  include SpiSeq::Tracks
 
   def test_simple
     assert_grid T[[:a1]], [[:a1]]

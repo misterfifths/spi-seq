@@ -9,7 +9,6 @@ AllCops:
 # Allow global `include`
 Style/MixinUsage:
   Exclude:
-    - 'test/*.rb'
     - 'core.rb'
 
 # Allow `module X; module Y; ...`. Look, I just refuse to start with like 8

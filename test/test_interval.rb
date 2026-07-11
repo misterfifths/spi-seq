@@ -4,9 +4,9 @@
 require_relative "lib/init"
 require_relative "../lib/spiseq/theory/interval"
 
-include SpiSeq::Theory
-
 class IntervalTest < Test::Unit::TestCase
+  include SpiSeq::Theory
+
   def assert_attrs(i, size, quality, number, sym, octave_span = 1, simple_interval = nil)
     assert_equal i.size, size
     assert_equal i.to_i, size

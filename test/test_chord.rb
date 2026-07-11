@@ -4,9 +4,9 @@
 require_relative "lib/init"
 require_relative "../lib/spiseq/theory/chord"
 
-include SpiSeq::Theory
-
 class ChordTest < Test::Unit::TestCase
+  include SpiSeq::Theory
+
   def test_initializer
     assert_equal Chord.new([:P1]).intervals, [:P1]
     assert_equal Chord.new([:P1, :M3]).intervals, [:P1, :M3]

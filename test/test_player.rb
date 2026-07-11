@@ -6,11 +6,10 @@ require_relative "lib/player_helpers"
 require_relative "../lib/spiseq/playback/player"
 require_relative "../lib/spiseq/theory/scale"
 
-include SpiSeq::Playback
-include SpiSeq::Theory
-include SpiSeq::Tracks
-
 class PlayerTest < Test::Unit::TestCase
+  include SpiSeq::Playback
+  include SpiSeq::Theory
+  include SpiSeq::Tracks
   include PlayerHelpers
 
   def setup

@@ -9,8 +9,6 @@ require_relative "lib/player_mocks"
 require_relative "../lib/spiseq/external/sync"
 require_relative "../lib/spiseq/utils/lifecycle"
 
-include SpiSeq::Utils::Lifecycle
-
 # We obviously can't test an actual shutdown of the hosting process, but we can
 # simulate it by killing the threads that serve this functionality and seeing
 # that everything reacts appropriately.
@@ -51,6 +49,8 @@ module SpiSeq; module External; module Sync
 end; end; end
 
 class LifeCycleTest < Test::Unit::TestCase
+  include SpiSeq::Utils::Lifecycle
+
   def kill_in_threads
     SpiSeq::External::Sync._kill_in_threads
   end

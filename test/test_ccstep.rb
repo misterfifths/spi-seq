@@ -4,9 +4,9 @@
 require_relative "lib/init"
 require_relative "../lib/spiseq/tracks/ccstep"
 
-include SpiSeq::Tracks
-
 class CCStepTest < Test::Unit::TestCase
+  include SpiSeq::Tracks
+
   def assert_attrs(step, cc, val, prob = nil)
     assert_equal step.cc, cc
     assert_equal step.value, val

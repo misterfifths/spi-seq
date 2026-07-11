@@ -4,9 +4,9 @@
 require_relative "lib/init"
 require_relative "../lib/spiseq/theory/arp"
 
-include SpiSeq::Theory
-
 class ArpTest < Test::Unit::TestCase
+  include SpiSeq::Theory
+
   def assert_arp(notes, order, result, **)
     assert_equal arp(notes, order, **), result
   end

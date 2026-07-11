@@ -4,10 +4,10 @@
 require_relative "lib/init"
 require_relative "../lib/spiseq/tracks/step"
 
-include SpiSeq::Theory
-include SpiSeq::Tracks
-
 class StepTest < Test::Unit::TestCase
+  include SpiSeq::Theory
+  include SpiSeq::Tracks
+
   def assert_attrs(step, note, vel, gate, prob = nil)
     assert_instance_of MIDINote, step.note
     assert_equal step.note, note

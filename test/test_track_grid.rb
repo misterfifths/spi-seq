@@ -6,15 +6,14 @@ require_relative "lib/track_helpers"
 require_relative "../lib/spiseq/theory/notelength"
 require_relative "../lib/spiseq/tracks/track"
 
-include SpiSeq::Theory
-include SpiSeq::Tracks
-
 # Test Track's grid manipulation methods.
 # Boundary's a little fuzzy here, but this is mostly things that deal with the
 # grid as a whole, or that act on slots rather than directly on the steps within
 # them.
 class TrackGridTest < Test::Unit::TestCase
   include TrackHelpers
+  include SpiSeq::Theory
+  include SpiSeq::Tracks
 
   def assert_mutate_slots(track, grid, &)
     t = track.mutate_each_slot(&)

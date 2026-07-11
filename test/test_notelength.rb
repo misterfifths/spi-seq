@@ -4,9 +4,9 @@
 require_relative "lib/init"
 require_relative "../lib/spiseq/theory/notelength"
 
-include SpiSeq::Theory
-
 class NoteLengthTest < Test::Unit::TestCase
+  include SpiSeq::Theory
+
   LENGTHS_IN_ORDER = [
     NoteLength.new(:whole),
     NoteLength.new(:half),

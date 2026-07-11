@@ -4,9 +4,9 @@
 require_relative "lib/init"
 require_relative "../lib/spiseq/theory/scale"
 
-include SpiSeq::Theory
-
 class ScaleTest < Test::Unit::TestCase
+  include SpiSeq::Theory
+
   def test_basics
     sc = Scale.new(:c4, :major)
     assert_equal sc.name, :major

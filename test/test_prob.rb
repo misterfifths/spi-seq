@@ -6,12 +6,11 @@ require_relative "lib/player_helpers"
 require_relative "../lib/spiseq/playback/player"
 require_relative "../lib/spiseq/tracks/prob"
 
-include SpiSeq::Playback
-include SpiSeq::Tracks
-
 # Tests for step probabilities during playback
 class ProbTest < Test::Unit::TestCase
   include PlayerHelpers
+  include SpiSeq::Playback
+  include SpiSeq::Tracks
 
   def setup
     use_bpm 60

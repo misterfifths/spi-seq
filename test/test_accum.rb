@@ -7,13 +7,12 @@ require_relative "../lib/spiseq/playback/ccplayer"
 require_relative "../lib/spiseq/playback/player"
 require_relative "../lib/spiseq/theory/midinote"
 
-include SpiSeq::Playback
-include SpiSeq::Theory
-include SpiSeq::Tracks
-
 # Tests for accumulation during playback
 class AccumTest < Test::Unit::TestCase
   include PlayerHelpers
+  include SpiSeq::Playback
+  include SpiSeq::Theory
+  include SpiSeq::Tracks
 
   def setup
     use_bpm 60

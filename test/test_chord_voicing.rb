@@ -4,9 +4,9 @@
 require_relative "lib/init"
 require_relative "../lib/spiseq/theory/chord_voicing"
 
-include SpiSeq::Theory
-
 class ChordVoicingTest < Test::Unit::TestCase
+  include SpiSeq::Theory
+
   MAJOR_CHORD_DEGREES = [
     :major,
     :minor,

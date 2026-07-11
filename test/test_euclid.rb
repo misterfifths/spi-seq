@@ -4,9 +4,9 @@
 require_relative "lib/init"
 require_relative "../lib/spiseq/theory/euclid"
 
-include SpiSeq::Theory
-
 class EuclidTest < Test::Unit::TestCase
+  include SpiSeq::Theory
+
   def test_args
     assert_raises { euclid("nope", 2) }
     assert_raises { euclid(2, "nope") }

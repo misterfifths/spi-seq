@@ -6,12 +6,11 @@ require_relative "lib/track_helpers"
 require_relative "../lib/spiseq/theory/scale"
 require_relative "../lib/spiseq/tracks/track"
 
-include SpiSeq::Tracks
-include SpiSeq::Theory
-
 # Test basic Track methods - simple methods, direct attr mutators, etc.
 class TrackBasicTest < Test::Unit::TestCase
   include TrackHelpers
+  include SpiSeq::Tracks
+  include SpiSeq::Theory
 
   def test_basic_methods
     assert_equal T[:c4].num_slots, 1

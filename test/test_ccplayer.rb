@@ -5,14 +5,14 @@ require_relative "lib/init"
 require_relative "lib/player_helpers"
 require_relative "../lib/spiseq/playback/ccplayer"
 
-include SpiSeq::Playback
-include SpiSeq::Tracks
-
 # Most of CCPlayer's behavior is inherited from PlayerBase, so there's no real
 # need to retest e.g. sleep, stop, and MIDI device targeting.
 
 class CCPlayerTest < Test::Unit::TestCase
   include PlayerHelpers
+  include SpiSeq::Playback
+  include SpiSeq::Tracks
+  extend SpiSeq::Tracks  # for class-level calls to CC
 
   def setup
     use_bpm 60

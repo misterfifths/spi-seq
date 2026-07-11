@@ -5,12 +5,12 @@ require_relative "lib/init"
 require_relative "../lib/spiseq/math/easings"
 require_relative "../lib/spiseq/math/curves"
 
-include SpiSeq::Math
-
 # The methods on Curves (scale and the fades) are already tested by the Track
 # methods that move gate/velocity along a curve, so we'll skip them here. These
 # are very simple tests of the expected endpoints and ranges.
 class CurvesAndEasingsTest < Test::Unit::TestCase
+  include SpiSeq::Math
+
   TOLERANCE = 0.0001
   MAX_BOUNCE = 0.5  # How far outside of 0 - 1 bouncing easings are allowed to fall
 

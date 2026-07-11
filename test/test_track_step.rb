@@ -8,14 +8,13 @@ require_relative "../lib/spiseq/internal/utils"
 require_relative "../lib/spiseq/math/curves"
 require_relative "../lib/spiseq/tracks/track"
 
-include SpiSeq::Math
-include SpiSeq::Tracks
-
 # Test Track's step manipulation methods.
 # This is mostly things that deal with individual steps in the Track, rather
 # than the track or slots as a whole.
 class TrackStepTest < Test::Unit::TestCase
   include TrackHelpers
+  include SpiSeq::Math
+  include SpiSeq::Tracks
 
   def assert_mutate_steps(track, grid, &)
     t = track.mutate_steps(&)

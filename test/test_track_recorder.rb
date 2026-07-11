@@ -5,12 +5,11 @@ require_relative "lib/init"
 require_relative "lib/track_helpers"
 require_relative "../lib/spiseq/tracks/track_recorder"
 
-include SpiSeq::Tracks
-
 # The record method is very Sonic Pi-specific, obviously, so we can only really
 # test from_timeline (which is the most important part anyway).
 class TrackRecorderTest < Test::Unit::TestCase
   include TrackHelpers
+  include SpiSeq::Tracks
 
   def test_simple
     # 1 sec / slot:

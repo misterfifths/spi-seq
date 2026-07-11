@@ -5,9 +5,9 @@ require_relative "lib/init"
 require_relative "../lib/spiseq/theory/midinote"
 require_relative "../lib/spiseq/theory/rest"
 
-include SpiSeq::Theory
-
 class MIDINoteTest < Test::Unit::TestCase
+  include SpiSeq::Theory
+
   def test_initialization
     assert_instance_of MIDINote, N(:c4)
     assert_instance_of MIDINote, N(:c)
