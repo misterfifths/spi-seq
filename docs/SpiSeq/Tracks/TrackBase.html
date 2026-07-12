@@ -110,7 +110,7 @@
   <strong>This class is abstract.</strong>
   <div class='inline'><p>Subclasses of TrackBase must provide the following methods:</p>
 <ul>
-<li><code>stepify</code> - optional, used to convert non-step values to steps.</li>
+<li><code>convert_to_step</code> - optional, used to convert non-step values to steps.</li>
 <li><code>preferred_step</code> and <code>step_class</code> - used to implement <code>slotify</code> and
 <code>gridify</code>.</li>
 <li><code>ctor_kwargs</code> - optional, used to implement <code>mutate</code> and <span class='object_link'><a href="#repr-instance_method" title="SpiSeq::Tracks::TrackBase#repr (method)">#repr</a></span>, and to
@@ -3079,7 +3079,7 @@ by <span class='object_link'><a href="../Theory/NoteLength.html#new-class_method
   <span class='comment'># TODO: this is a different notion of rotation than that of Theory.euclid.
 </span>  <span class='comment'># Should we standardize it?
 </span>  <span class='id identifier rubyid_hits'>hits</span><span class='period'>.</span><span class='id identifier rubyid_rotate!'>rotate!</span><span class='lparen'>(</span><span class='id identifier rubyid_rotate'>rotate</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_rotate'>rotate</span> <span class='op'>!=</span> <span class='int'>0</span>
-  <span class='id identifier rubyid_hits'>hits</span><span class='period'>.</span><span class='id identifier rubyid_map!'>map!</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_hit'>hit</span><span class='op'>|</span> <span class='op'>!</span><span class='id identifier rubyid_hit'>hit</span> <span class='rbrace'>}</span> <span class='kw'>if</span> <span class='id identifier rubyid_invert'>invert</span>
+  <span class='id identifier rubyid_hits'>hits</span><span class='period'>.</span><span class='id identifier rubyid_map!'>map!</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:!</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_invert'>invert</span>
 
   <span class='id identifier rubyid_gridish'>gridish</span> <span class='op'>=</span> <span class='id identifier rubyid_gridify'>gridify</span><span class='lparen'>(</span><span class='id identifier rubyid_gridish'>gridish</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>you must provide at least one slot</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_gridish'>gridish</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
@@ -5613,7 +5613,7 @@ Raises an exception if this would result in an empty track.</p>
     <td>
       <pre class="code"><span class="info file"># File 'lib/spiseq/tracks/trackbase.rb', line 681</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_compact'>compact</span> <span class='op'>=</span> <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>grid:</span> <span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_reject'>reject</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_slot'>slot</span><span class='op'>|</span> <span class='id identifier rubyid_slot'>slot</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span> <span class='rbrace'>}</span><span class='rparen'>)</span></pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_compact'>compact</span> <span class='op'>=</span> <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>grid:</span> <span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_reject'>reject</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:empty?</span><span class='rparen'>)</span><span class='rparen'>)</span></pre>
     </td>
   </tr>
 </table>
@@ -6231,7 +6231,7 @@ together into single slots.</p></div>
     <td>
       <pre class="code"><span class="info file"># File 'lib/spiseq/tracks/trackbase.rb', line 300</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_empty?'>empty?</span> <span class='op'>=</span> <span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_all?'>all?</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_slot'>slot</span><span class='op'>|</span> <span class='id identifier rubyid_slot'>slot</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span> <span class='rbrace'>}</span></pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_empty?'>empty?</span> <span class='op'>=</span> <span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_all?'>all?</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:empty?</span><span class='rparen'>)</span></pre>
     </td>
   </tr>
 </table>
@@ -6456,7 +6456,7 @@ original track, the final slot will merge the remaining slots.</p>
       <pre class="code"><span class="info file"># File 'lib/spiseq/tracks/trackbase.rb', line 1316</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_grouped_merge'>grouped_merge</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_new_grid'>new_grid</span> <span class='op'>=</span> <span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_each_slice'>each_slice</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_slots'>slots</span><span class='op'>|</span> <span class='id identifier rubyid_slots'>slots</span><span class='period'>.</span><span class='id identifier rubyid_flatten'>flatten</span> <span class='rbrace'>}</span>
+  <span class='id identifier rubyid_new_grid'>new_grid</span> <span class='op'>=</span> <span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_each_slice'>each_slice</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:flatten</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>grid:</span> <span class='id identifier rubyid_new_grid'>new_grid</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -7052,7 +7052,7 @@ empty track.</p>
     <td>
       <pre class="code"><span class="info file"># File 'lib/spiseq/tracks/trackbase.rb', line 692</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_ltrim'>ltrim</span> <span class='op'>=</span> <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>grid:</span> <span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_drop_while'>drop_while</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_slot'>slot</span><span class='op'>|</span> <span class='id identifier rubyid_slot'>slot</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span> <span class='rbrace'>}</span><span class='rparen'>)</span></pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_ltrim'>ltrim</span> <span class='op'>=</span> <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>grid:</span> <span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_drop_while'>drop_while</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:empty?</span><span class='rparen'>)</span><span class='rparen'>)</span></pre>
     </td>
   </tr>
 </table>
@@ -7559,12 +7559,12 @@ of the slot in the resulting track; see above.</p></div>
 
   <span class='id identifier rubyid_new_grid'>new_grid</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
   <span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_each_with_index'>each_with_index</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_slot'>slot</span><span class='comma'>,</span> <span class='id identifier rubyid_i'>i</span><span class='op'>|</span>
-    <span class='kw'>if</span> <span class='id identifier rubyid_i'>i</span> <span class='op'>==</span> <span class='int'>0</span>
-      <span class='id identifier rubyid_pct'>pct</span> <span class='op'>=</span> <span class='float'>0.0</span>
+    <span class='id identifier rubyid_pct'>pct</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='id identifier rubyid_i'>i</span> <span class='op'>==</span> <span class='int'>0</span>
+      <span class='float'>0.0</span>
     <span class='kw'>elsif</span> <span class='id identifier rubyid_i'>i</span> <span class='op'>==</span> <span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_length'>length</span> <span class='op'>-</span> <span class='int'>1</span>
-      <span class='id identifier rubyid_pct'>pct</span> <span class='op'>=</span> <span class='float'>1.0</span>
+      <span class='float'>1.0</span>
     <span class='kw'>else</span>
-      <span class='id identifier rubyid_pct'>pct</span> <span class='op'>=</span> <span class='id identifier rubyid_i'>i</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span> <span class='op'>/</span> <span class='lparen'>(</span><span class='id identifier rubyid_num_slots'>num_slots</span> <span class='op'>-</span> <span class='int'>1</span><span class='rparen'>)</span>
+      <span class='id identifier rubyid_i'>i</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span> <span class='op'>/</span> <span class='lparen'>(</span><span class='id identifier rubyid_num_slots'>num_slots</span> <span class='op'>-</span> <span class='int'>1</span><span class='rparen'>)</span>
     <span class='kw'>end</span>
 
     <span class='id identifier rubyid_replacement'>replacement</span> <span class='op'>=</span> <span class='const'>Internal</span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_call_varargs'>call_varargs</span><span class='lparen'>(</span><span class='id identifier rubyid_block'>block</span><span class='comma'>,</span> <span class='id identifier rubyid_slot'>slot</span><span class='comma'>,</span> <span class='id identifier rubyid_i'>i</span><span class='comma'>,</span> <span class='id identifier rubyid_pct'>pct</span><span class='rparen'>)</span>
@@ -7790,12 +7790,12 @@ step in the resulting track; see above.</p></div>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Block must take 1-3 arguments</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>==</span> <span class='int'>0</span> <span class='op'>||</span> <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>&gt;</span> <span class='int'>3</span>
 
   <span class='id identifier rubyid_new_grid'>new_grid</span> <span class='op'>=</span> <span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='period'>.</span><span class='id identifier rubyid_with_index'>with_index</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_slot'>slot</span><span class='comma'>,</span> <span class='id identifier rubyid_i'>i</span><span class='op'>|</span>
-    <span class='kw'>if</span> <span class='id identifier rubyid_i'>i</span> <span class='op'>==</span> <span class='int'>0</span>
-      <span class='id identifier rubyid_pct'>pct</span> <span class='op'>=</span> <span class='float'>0.0</span>
+    <span class='id identifier rubyid_pct'>pct</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='id identifier rubyid_i'>i</span> <span class='op'>==</span> <span class='int'>0</span>
+      <span class='float'>0.0</span>
     <span class='kw'>elsif</span> <span class='id identifier rubyid_i'>i</span> <span class='op'>==</span> <span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_length'>length</span> <span class='op'>-</span> <span class='int'>1</span>
-      <span class='id identifier rubyid_pct'>pct</span> <span class='op'>=</span> <span class='float'>1.0</span>
+      <span class='float'>1.0</span>
     <span class='kw'>else</span>
-      <span class='id identifier rubyid_pct'>pct</span> <span class='op'>=</span> <span class='id identifier rubyid_i'>i</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span> <span class='op'>/</span> <span class='lparen'>(</span><span class='id identifier rubyid_num_slots'>num_slots</span> <span class='op'>-</span> <span class='int'>1</span><span class='rparen'>)</span>
+      <span class='id identifier rubyid_i'>i</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span> <span class='op'>/</span> <span class='lparen'>(</span><span class='id identifier rubyid_num_slots'>num_slots</span> <span class='op'>-</span> <span class='int'>1</span><span class='rparen'>)</span>
     <span class='kw'>end</span>
 
     <span class='id identifier rubyid_new_slot'>new_slot</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
@@ -7988,12 +7988,12 @@ result of the given block. The block will be called once with each step in
 the slot. The result of the block will replace the step it is called with.</p>
 <p>The block should return:</p>
 <ul>
-<li>A single step, which will replace the given step in the slot.</li>
-<li>An array of steps, which will all be added to the slot in place of the
-given step.</li>
+<li>A single step (or something convertible to one), which will replace the
+given step in the slot.</li>
+<li>An array of steps (or things convertible to them), which will all be
+added to the slot in place of the given step.</li>
 <li>An empty array or a rest, which will remove the given step from the
 slot.</li>
-<li>Equivalents of any of the above (see <code>slotify</code>).</li>
 </ul>
 <p>If the slot at the given index is empty, the block will not be called and
 no changes will be made.</p>
@@ -8528,7 +8528,7 @@ it.</p></div>
 <span class='kw'>def</span> <span class='id identifier rubyid_partition_every'>partition_every</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_gaps'>gaps</span><span class='comma'>,</span> <span class='label'>drop:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>skip_empty:</span> <span class='kw'>false</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>you must pass at least one argument</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_gaps'>gaps</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
   <span class='id identifier rubyid_gaps'>gaps</span><span class='period'>.</span><span class='id identifier rubyid_map!'>map!</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_n'>n</span><span class='op'>|</span> <span class='const'>Integer</span><span class='period'>.</span><span class='id identifier rubyid_try_convert'>try_convert</span><span class='lparen'>(</span><span class='id identifier rubyid_n'>n</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
-  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>all arguments must be convertible to integers</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_gaps'>gaps</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_n'>n</span><span class='op'>|</span> <span class='id identifier rubyid_n'>n</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='rbrace'>}</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>TypeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>all arguments must be convertible to integers</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_gaps'>gaps</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:nil?</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>RangeError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>all arguments must be &gt; 0</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_gaps'>gaps</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_n'>n</span><span class='op'>|</span> <span class='id identifier rubyid_n'>n</span> <span class='op'>&lt;=</span> <span class='int'>0</span> <span class='rbrace'>}</span>
 
   <span class='comment'># e.g., drop every 3:
@@ -11174,10 +11174,10 @@ slots on the same line.</p></div>
 </span>    <span class='kw'>end</span>
   <span class='kw'>end</span>
 
-  <span class='kw'>if</span> <span class='id identifier rubyid_group'>group</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
-    <span class='id identifier rubyid_grouped_slot_reprs'>grouped_slot_reprs</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='id identifier rubyid_slot_reprs'>slot_reprs</span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_grouped_slot_reprs'>grouped_slot_reprs</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='id identifier rubyid_group'>group</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+    <span class='lbracket'>[</span><span class='id identifier rubyid_slot_reprs'>slot_reprs</span><span class='rbracket'>]</span>
   <span class='kw'>else</span>
-    <span class='id identifier rubyid_grouped_slot_reprs'>grouped_slot_reprs</span> <span class='op'>=</span> <span class='id identifier rubyid_slot_reprs'>slot_reprs</span><span class='period'>.</span><span class='id identifier rubyid_each_slice'>each_slice</span><span class='lparen'>(</span><span class='id identifier rubyid_group'>group</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_a'>to_a</span>
+    <span class='id identifier rubyid_slot_reprs'>slot_reprs</span><span class='period'>.</span><span class='id identifier rubyid_each_slice'>each_slice</span><span class='lparen'>(</span><span class='id identifier rubyid_group'>group</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_a'>to_a</span>
   <span class='kw'>end</span>
 
   <span class='id identifier rubyid_total_slot_repr'>total_slot_repr</span> <span class='op'>=</span> <span class='id identifier rubyid_grouped_slot_reprs'>grouped_slot_reprs</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_chunk'>chunk</span><span class='op'>|</span> <span class='id identifier rubyid_chunk'>chunk</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>, </span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>,\n</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_slot_line_indent'>slot_line_indent</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
@@ -11189,10 +11189,10 @@ slots on the same line.</p></div>
     <span class='id identifier rubyid_ctor_args'>ctor_args</span><span class='lbracket'>[</span><span class='id identifier rubyid_kwarg'>kwarg</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_raw_val'>raw_val</span><span class='period'>.</span><span class='id identifier rubyid_respond_to?'>respond_to?</span><span class='lparen'>(</span><span class='symbol'>:repr</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='id identifier rubyid_raw_val'>raw_val</span><span class='period'>.</span><span class='id identifier rubyid_repr'>repr</span> <span class='op'>:</span> <span class='id identifier rubyid_raw_val'>raw_val</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
   <span class='kw'>end</span>
 
-  <span class='kw'>if</span> <span class='id identifier rubyid_ctor_args'>ctor_args</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
-    <span class='id identifier rubyid_kwargs'>kwargs</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span>
+  <span class='id identifier rubyid_kwargs'>kwargs</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='id identifier rubyid_ctor_args'>ctor_args</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_end'>&quot;</span></span>
   <span class='kw'>else</span>
-    <span class='id identifier rubyid_kwargs'>kwargs</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>, </span><span class='tstring_end'>&quot;</span></span> <span class='op'>+</span> <span class='id identifier rubyid_ctor_args'>ctor_args</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_k'>k</span><span class='comma'>,</span> <span class='id identifier rubyid_v'>v</span><span class='op'>|</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_k'>k</span><span class='embexpr_end'>}</span><span class='tstring_content'>: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_v'>v</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>, </span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>  <span class='comment'># rubocop:disable Style/StringConcatenation
+    <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>, </span><span class='tstring_end'>&quot;</span></span> <span class='op'>+</span> <span class='id identifier rubyid_ctor_args'>ctor_args</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_k'>k</span><span class='comma'>,</span> <span class='id identifier rubyid_v'>v</span><span class='op'>|</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_k'>k</span><span class='embexpr_end'>}</span><span class='tstring_content'>: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_v'>v</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>, </span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>  <span class='comment'># rubocop:disable Style/StringConcatenation
 </span>  <span class='kw'>end</span>
 
   <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_ctor_invocation'>ctor_invocation</span><span class='embexpr_end'>}</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_total_slot_repr'>total_slot_repr</span><span class='embexpr_end'>}</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='embexpr_end'>}</span><span class='tstring_content'>]</span><span class='tstring_end'>&quot;</span></span>
@@ -11642,7 +11642,7 @@ this track. Raises an exception if this would result in an empty track.</p>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_rtrim'>rtrim</span>
   <span class='comment'># We could obviously be more clever about this but I&#39;m feeling lazy.
-</span>  <span class='id identifier rubyid_new_grid'>new_grid</span> <span class='op'>=</span> <span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_reverse'>reverse</span><span class='period'>.</span><span class='id identifier rubyid_drop_while'>drop_while</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_slot'>slot</span><span class='op'>|</span> <span class='id identifier rubyid_slot'>slot</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_reverse!'>reverse!</span>
+</span>  <span class='id identifier rubyid_new_grid'>new_grid</span> <span class='op'>=</span> <span class='ivar'>@grid</span><span class='period'>.</span><span class='id identifier rubyid_reverse'>reverse</span><span class='period'>.</span><span class='id identifier rubyid_drop_while'>drop_while</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:empty?</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_reverse!'>reverse!</span>
   <span class='id identifier rubyid_mutate'>mutate</span><span class='lparen'>(</span><span class='label'>grid:</span> <span class='id identifier rubyid_new_grid'>new_grid</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -13994,7 +13994,7 @@ step.</p>
     <td>
       <pre class="code"><span class="info file"># File 'lib/spiseq/tracks/trackbase.rb', line 1720</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_without_accum'>without_accum</span> <span class='op'>=</span> <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span> <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_without_accum'>without_accum</span> <span class='rbrace'>}</span></pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_without_accum'>without_accum</span> <span class='op'>=</span> <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:without_accum</span><span class='rparen'>)</span></pre>
     </td>
   </tr>
 </table>
@@ -14065,7 +14065,7 @@ step. That is, the steps in the resulting track will always trigger.</p>
     <td>
       <pre class="code"><span class="info file"># File 'lib/spiseq/tracks/trackbase.rb', line 1676</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_without_prob'>without_prob</span> <span class='op'>=</span> <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_step'>step</span><span class='op'>|</span> <span class='id identifier rubyid_step'>step</span><span class='period'>.</span><span class='id identifier rubyid_without_prob'>without_prob</span> <span class='rbrace'>}</span></pre>
+<span class='kw'>def</span> <span class='id identifier rubyid_without_prob'>without_prob</span> <span class='op'>=</span> <span class='id identifier rubyid_mutate_each_step'>mutate_each_step</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:without_prob</span><span class='rparen'>)</span></pre>
     </td>
   </tr>
 </table>
