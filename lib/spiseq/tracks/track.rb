@@ -267,10 +267,9 @@ module SpiSeq; module Tracks
       needed_cycles = run_count.lcm(notes.length) / run_count
 
       # Now build up the track by mutating hit_track, needed_cycle times.
-      track = nil
       note_idx = 0
-      needed_cycles.times do
-        this_track = hit_track.send(:mutate_runs) do |_, orig_steps|
+      needed_cycles.times.map do
+        hit_track.send(:mutate_runs) do |_, orig_steps|
           # Replace each note in the run with the proper note at note_idx. Aside
           # from the note, the Steps in hit_track already have the correct
           # properties.
@@ -282,15 +281,7 @@ module SpiSeq; module Tracks
 
           new_steps
         end
-
-        if track.nil?
-          track = this_track
-        else
-          track += this_track
-        end
-      end
-
-      track
+      end.reduce(&:+)
     end
     class << self; alias iso isorhythm; end
 

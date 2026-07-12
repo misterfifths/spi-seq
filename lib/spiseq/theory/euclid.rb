@@ -31,12 +31,11 @@ module SpiSeq; module Theory
     return [true] * length if pulses >= length
     return [false] * length if pulses == 0
 
-    res = []
-    length.times do |i|
+    res = length.times.map do |i|
       # See the "Stateless One-Liners" section here: https://paulbatchelor.github.io/sndkit/euclid/
       # But we are using a different definition of rotation - we rotate so the
       # nth hit is in the first slot, like Sonic Pi.
-      res << ((pulses * i) % length < pulses)
+      (pulses * i) % length < pulses
     end
 
     rotate += 1 unless res.first  # Always want a hit in the first slot
