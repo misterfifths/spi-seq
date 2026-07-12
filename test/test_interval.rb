@@ -231,7 +231,7 @@ class IntervalTest < Test::Unit::TestCase
 
     # This behavior is a little surprising. Doing arithmetic on an Interval will
     # collapse it to its default quality, which for 1 semitone is minor.
-    assert_attrs aug1 + 0, 1, :minor, 2, :m2
+    assert_attrs aug1 + 0, 1, :minor, 2, :m2  # rubocop:disable Lint/UselessNumericOperation
 
     assert_attrs aug1 + 1, 2, :major, 2, :M2
     assert_attrs aug1 + 2, 3, :minor, 3, :m3

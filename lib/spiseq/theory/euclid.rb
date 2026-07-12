@@ -40,11 +40,9 @@ module SpiSeq; module Theory
     end
 
     rotate += 1 unless res.first  # Always want a hit in the first slot
-    # rubocop:disable Style/WhileUntilModifier
     while rotate > 0
       rotate -= 1 if res.rotate!.first
     end
-    # rubocop:enable Style/WhileUntilModifier
 
     res
   end

@@ -202,7 +202,7 @@ class TrackGridTest < Test::Unit::TestCase
     t = T[:a1, :b2]
 
     assert_raises { t * 0 }
-    assert_grid t * 1, t.grid
+    assert_grid t * 1, t.grid  # rubocop:disable Lint/UselessNumericOperation
     assert_grid t * 2, [[:a1], [:b2], [:a1], [:b2]]
     assert_grid t * 3, [[:a1], [:b2], [:a1], [:b2], [:a1], [:b2]]
   end
