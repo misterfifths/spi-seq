@@ -74,7 +74,7 @@ class TrackGridTest < Test::Unit::TestCase
     assert_grid T[:c4] | T[:d4], [[:c4, :d4]]
     assert_grid T[:c4] | :d4, [[:c4, :d4]]
     assert_grid T[:c4] | [:d4], [[:c4, :d4]]
-    assert_grid T[:c4] | T[:c4], [[:c4]]  # rubocop:disable Lint/BinaryOperatorWithIdenticalOperands
+    assert_grid T[:c4] | T[:c4], [[:c4]]
     assert_grid T[:r, :d4] | T[:c4, :r], [[:c4], [:d4]]
     assert_grid T[:r, :d4] | [:c4, :r], [[:c4], [:d4]]
     assert_grid T[[:a1, :b2], [:d4, :e5]] | T[:c3, :f6], [[:a1, :b2, :c3], [:d4, :e5, :f6]]

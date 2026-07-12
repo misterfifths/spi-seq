@@ -2,6 +2,7 @@
 
 require_relative "lib/spiseq"
 
+# rubocop:disable Style/MixinUsage
 include SpiSeq::Math
 include SpiSeq::Playback
 include SpiSeq::Theory
@@ -9,3 +10,4 @@ include SpiSeq::Tracks
 include SpiSeq::Utils::Lifecycle
 include SpiSeq::Utils::LiveLoops
 include SpiSeq::Utils::MIDI
+# rubocop:enable Style/MixinUsage
