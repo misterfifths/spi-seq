@@ -114,7 +114,7 @@ module SpiSeq; module Theory
     VOICING_STYLES = VOICINGS.keys.freeze
 
 
-    SHELL_INTERVALS = [:P1, :m3, :M3, :m7, :M7].map { |i| Interval.new(i) }
+    SHELL_INTERVALS = %i[P1 m3 M3 m7 M7].map { |i| Interval.new(i) }
     SHELL_INTERVALS.freeze
     private_constant :SHELL_INTERVALS
 

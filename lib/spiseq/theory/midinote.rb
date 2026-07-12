@@ -48,18 +48,18 @@ module SpiSeq; module Theory
     # pitch class array, the first element is the canonical representation of
     # that class (e.g. :db will be normalized to :cs because :cs is the first
     # element of the corresponding array).
-    PITCH_CLASSES = [[:c, :bs, :dbb, :dff],
-                     [:cs, :db, :df, :bss],
-                     [:d, :css, :ebb, :eff],
-                     [:ds, :eb, :ef, :fbb, :fff],
-                     [:e, :fb, :ff, :dss],
-                     [:f, :es, :gbb, :gff],
-                     [:fs, :gb, :gf, :ess],
-                     [:g, :fss, :abb, :aff],
-                     [:gs, :ab, :af],
-                     [:a, :gss, :bbb, :bff],
-                     [:as, :bb, :bf, :cbb, :cff],
-                     [:b, :cb, :cf, :ass]].freeze
+    PITCH_CLASSES = [%i[c bs dbb dff],
+                     %i[cs db df bss],
+                     %i[d css ebb eff],
+                     %i[ds eb ef fbb fff],
+                     %i[e fb ff dss],
+                     %i[f es gbb gff],
+                     %i[fs gb gf ess],
+                     %i[g fss abb aff],
+                     %i[gs ab af],
+                     %i[a gss bbb bff],
+                     %i[as bb bf cbb cff],
+                     %i[b cb cf ass]].freeze
     PITCH_CLASSES.each { |classes| classes.freeze }
     private_constant :PITCH_CLASSES
 
@@ -169,8 +169,8 @@ module SpiSeq; module Theory
         # Check for octave boundary crossings: c flats will normalize to a note
         # an octave down (e.g. cb4 -> b3) and b sharps will go up (e.g. bss2 ->
         # cs3).
-        @octave -= 1 if [:cb, :cf, :cbb, :cff].include?(@pitch_class)
-        @octave += 1 if [:bs, :bss].include?(@pitch_class)
+        @octave -= 1 if %i[cb cf cbb cff].include?(@pitch_class)
+        @octave += 1 if %i[bs bss].include?(@pitch_class)
 
         cls_idx = PITCH_CLASSES.find_index { |classes| classes.include?(@pitch_class) }
         @pitch_class = PITCH_CLASSES[cls_idx][0]  # normalize
@@ -289,8 +289,8 @@ module SpiSeq; module Theory
       @names = []
       PITCH_CLASSES[@number % 12].each do |cls|
         octave = @octave
-        octave += 1 if [:cb, :cf, :cbb, :cff].include?(cls)
-        octave -= 1 if [:bs, :bss].include?(cls)
+        octave += 1 if %i[cb cf cbb cff].include?(cls)
+        octave -= 1 if %i[bs bss].include?(cls)
         @names << :"#{cls}#{octave}"
         @names << :"#{cls}" if octave == DEFAULT_OCTAVE
       end

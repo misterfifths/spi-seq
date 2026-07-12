@@ -30,7 +30,7 @@ module SpiSeq; module Internal; module Utils
 
     # We want the key names from parameters that look like [:key, :keyname] or
     # [:keyreq, :keyname].
-    key_args = params.filter { |p| [:key, :keyreq].member?(p[0]) }.map { |p| p[1] }
+    key_args = params.filter { |p| %i[key keyreq].member?(p[0]) }.map { |p| p[1] }
     kwargs.filter { |k, _| key_args.member?(k) }
   end
 

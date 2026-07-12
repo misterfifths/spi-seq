@@ -53,7 +53,8 @@ Style/TernaryParentheses:
   EnforcedStyle: require_parentheses_when_complex
 
 Style/SymbolArray:
-  Enabled: false
+  Exclude:
+    - 'test/**/*.rb'
 
 Style/SymbolProc:
   Enabled: false

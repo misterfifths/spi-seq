@@ -89,7 +89,7 @@ module SpiSeq; module Tracks
 
     private
 
-    def ctor_args = [:cc, :value]
+    def ctor_args = %i[cc value]
     def default_accum_target = :value
     def valid_accum_targets = [:value]
     def repr_ctor_method = "CC"

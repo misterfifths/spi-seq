@@ -8,6 +8,6 @@ module SpiSeq; module Theory
   module_function def rest?(val)
     return true if val.nil?
     return false unless val.is_a?(Symbol)
-    [:r, :rest].include?(val)
+    %i[r rest].include?(val)
   end
 end; end
