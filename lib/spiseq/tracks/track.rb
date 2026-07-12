@@ -428,10 +428,10 @@ module SpiSeq; module Tracks
         # condensing.
         return nil if step1.nil?
 
-        if step2.nil?
-          total_gate = step1.gate / 2.0
+        total_gate = if step2.nil?
+          step1.gate / 2.0
         else
-          total_gate = (step1.gate + step2.gate) / 2.0
+          (step1.gate + step2.gate) / 2.0
         end
 
         # The probability and velocity of the second step is discarded; the
@@ -705,10 +705,10 @@ module SpiSeq; module Tracks
         # rand_i here since it's exclusive. rand is too, but we're rounding.
         shift = 0
         while shift == 0
-          if range.is_a?(Range)
-            shift = Internal::Random.rand_f(range).round
+          shift = if range.is_a?(Range)
+            Internal::Random.rand_f(range).round
           else
-            shift = Internal::Random.rand_f(-range..range).round
+            Internal::Random.rand_f(-range..range).round
           end
         end
 
@@ -1425,12 +1425,12 @@ module SpiSeq; module Tracks
 
       new_grid = []
       @grid.each_with_index do |slot, i|
-        if i == 0
-          pct = 0.0
+        pct = if i == 0
+          0.0
         elsif i == @grid.length - 1
-          pct = 1.0
+          1.0
         else
-          pct = i.to_f / (num_slots - 1)
+          i.to_f / (num_slots - 1)
         end
 
         replacement = Internal::Utils.call_varargs(block, slot, i, pct)
@@ -1497,12 +1497,12 @@ module SpiSeq; module Tracks
 
       slots = []
       @grid.each_with_index do |slot, i|
-        if i == 0
-          pct = 0.0
+        pct = if i == 0
+          0.0
         elsif i == @grid.length - 1
-          pct = 1.0
+          1.0
         else
-          pct = i.to_f / (num_slots - 1)
+          i.to_f / (num_slots - 1)
         end
 
         replacement = Internal::Utils.call_varargs(block, slot, i, pct)

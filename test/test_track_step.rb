@@ -254,12 +254,12 @@ class TrackStepTest < Test::Unit::TestCase
 
   def assert_curve(track, curve_func, attr, attr_scale_factor = 1, integer = false, tol = 0.01)
     track.grid.each_with_index do |slot, idx|
-      if idx == 0
-        pct = 0.0
+      pct = if idx == 0
+        0.0
       elsif idx == track.length - 1
-        pct = 1.0
+        1.0
       else
-        pct = idx.to_f / (track.length - 1)
+        idx.to_f / (track.length - 1)
       end
 
       slot.each do |step|

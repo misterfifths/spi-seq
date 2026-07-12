@@ -116,24 +116,24 @@ module SpiSeq; module Math
       @ay = 1.0 - @cy - @by
 
       # end-point gradients for stepping outside of [0, 1]
-      if @p1x > 0
-        @start_gradient = @p1y / @p1x
+      @start_gradient = if @p1x > 0
+        @p1y / @p1x
       elsif @p1y != 0 && @p2x > 0
-        @start_gradient = @p2y / @p2x
+        @p2y / @p2x
       elsif @p1y != 0 && @p2y != 0
-        @start_gradient = 1.0
+        1.0
       else
-        @start_gradient = 0.0
+        0.0
       end
 
-      if @p2x < 1
-        @end_gradient = (@p2y - 1)/ (@p2x - 1)
+      @end_gradient = if @p2x < 1
+        (@p2y - 1)/ (@p2x - 1)
       elsif @p2y == 1 && @p1x < 1
-        @end_gradient = (@p1y - 1) / (@p1x - 1)
+        (@p1y - 1) / (@p1x - 1)
       elsif @p2y == 1 && @p1y == 1
-        @end_gradient = 1.0
+        1.0
       else
-        @end_gradient = 0.0
+        0.0
       end
 
       delta_t = 1.0 / (SPLINE_SAMPLES - 1)

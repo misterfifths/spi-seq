@@ -293,10 +293,10 @@ module SpiSeq; module Theory
     # @param other
     # @return [Chord]
     def append(other)
-      if Internal::Enumerables.enumerable?(other)
-        other = Internal::Enumerables.arrayify(other)  # see note in enumerable?
+      other = if Internal::Enumerables.enumerable?(other)
+        Internal::Enumerables.arrayify(other)  # see note in enumerable?
       else
-        other = [other]
+        [other]
       end
 
       Chord.new(@intervals + other)

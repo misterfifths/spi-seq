@@ -354,10 +354,10 @@ module SpiSeq; module Tracks
         end
       end
 
-      if group.nil?
-        grouped_slot_reprs = [slot_reprs]
+      grouped_slot_reprs = if group.nil?
+        [slot_reprs]
       else
-        grouped_slot_reprs = slot_reprs.each_slice(group).to_a
+        slot_reprs.each_slice(group).to_a
       end
 
       total_slot_repr = grouped_slot_reprs.map { |chunk| chunk.join(", ") }.join(",\n#{slot_line_indent}")
@@ -369,10 +369,10 @@ module SpiSeq; module Tracks
         ctor_args[kwarg] = raw_val.respond_to?(:repr) ? raw_val.repr : raw_val.to_s
       end
 
-      if ctor_args.empty?
-        kwargs = ""
+      kwargs = if ctor_args.empty?
+        ""
       else
-        kwargs = ", " + ctor_args.map { |k, v| "#{k}: #{v}" }.join(", ")  # rubocop:disable Style/StringConcatenation
+        ", " + ctor_args.map { |k, v| "#{k}: #{v}" }.join(", ")  # rubocop:disable Style/StringConcatenation
       end
 
       "#{ctor_invocation}#{total_slot_repr}#{kwargs}]"
@@ -916,12 +916,12 @@ module SpiSeq; module Tracks
 
       new_grid = []
       @grid.each_with_index do |slot, i|
-        if i == 0
-          pct = 0.0
+        pct = if i == 0
+          0.0
         elsif i == @grid.length - 1
-          pct = 1.0
+          1.0
         else
-          pct = i.to_f / (num_slots - 1)
+          i.to_f / (num_slots - 1)
         end
 
         replacement = Internal::Utils.call_varargs(block, slot, i, pct)
@@ -1557,12 +1557,12 @@ module SpiSeq; module Tracks
       raise ArgumentError, "Block must take 1-3 arguments" if block.arity == 0 || block.arity > 3
 
       new_grid = @grid.map.with_index do |slot, i|
-        if i == 0
-          pct = 0.0
+        pct = if i == 0
+          0.0
         elsif i == @grid.length - 1
-          pct = 1.0
+          1.0
         else
-          pct = i.to_f / (num_slots - 1)
+          i.to_f / (num_slots - 1)
         end
 
         new_slot = []
