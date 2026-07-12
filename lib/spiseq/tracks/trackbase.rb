@@ -1845,12 +1845,7 @@ module SpiSeq; module Tracks
     # attributes of the class. This hash is used to implement `mutate` and
     # `repr`. Subclasses should override this method to add any additional
     # arguments their initializer accepts.
-    def ctor_kwargs
-      {
-        granularity: :eighth,
-        timescale: 1
-      }
-    end
+    def ctor_kwargs = { granularity: :eighth, timescale: 1 }
 
     # The string representation of the method to call to create a new instance
     # of this track subclass. Defaults to the name of the class; if there is a

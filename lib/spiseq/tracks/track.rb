@@ -1555,12 +1555,7 @@ module SpiSeq; module Tracks
 
     private
 
-    def ctor_kwargs
-      kwargs = super
-      kwargs[:scale] = nil
-      kwargs
-    end
-
+    def ctor_kwargs = { scale: nil, **super }
     def repr_ctor_method = "T"
   end
 

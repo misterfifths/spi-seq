@@ -181,12 +181,7 @@ module SpiSeq; module Tracks
     private
 
     def ctor_args = [:note]
-    def ctor_kwargs
-      kwargs = super
-      kwargs[:vel] = 127
-      kwargs[:gate] = 1
-      kwargs
-    end
+    def ctor_kwargs = { vel: 127, gate: 1, **super }
     def default_accum_target = :note
     def valid_accum_targets = %i[note gate vel]
     def repr_ctor_method = "S"
