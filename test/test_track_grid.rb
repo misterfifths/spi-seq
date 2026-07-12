@@ -708,7 +708,7 @@ class TrackGridTest < Test::Unit::TestCase
   end
 
   def _assert_compact_grid_or_nil(track, grid)
-    compact_grid = grid.reject { |slot| slot.empty? }
+    compact_grid = grid.reject(&:empty?)
     if compact_grid.empty?
       assert_nil track
     else

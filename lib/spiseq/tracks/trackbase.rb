@@ -242,7 +242,7 @@ module SpiSeq; module Tracks
       # TODO: this is a different notion of rotation than that of Theory.euclid.
       # Should we standardize it?
       hits.rotate!(rotate) if rotate != 0
-      hits.map! { |hit| !hit } if invert
+      hits.map!(&:!) if invert
 
       gridish = gridify(gridish)
       raise ArgumentError, "you must provide at least one slot" if gridish.empty?
@@ -297,7 +297,7 @@ module SpiSeq; module Tracks
     # @return [Boolean]
     # @see #mono?
     # @see #poly?
-    def empty? = @grid.all? { |slot| slot.empty? }
+    def empty? = @grid.all?(&:empty?)
     alias all_rests? empty?
     alias rest? empty?
 
@@ -678,7 +678,7 @@ module SpiSeq; module Tracks
     # @see #ltrim
     # @see #rtrim
     # @see #trim
-    def compact = mutate(grid: @grid.reject { |slot| slot.empty? })
+    def compact = mutate(grid: @grid.reject(&:empty?))
 
     # Returns a new track with all empty slots (rests) removed from the
     # beginning of this track. Raises an exception if this would result in an
@@ -689,7 +689,7 @@ module SpiSeq; module Tracks
     # @see #trim
     # @see #lpad
     # @see #rpad
-    def ltrim = mutate(grid: @grid.drop_while { |slot| slot.empty? })
+    def ltrim = mutate(grid: @grid.drop_while(&:empty?))
 
     # Returns a new track with all empty slots (rests) removed from the end of
     # this track. Raises an exception if this would result in an empty track.
@@ -701,7 +701,7 @@ module SpiSeq; module Tracks
     # @see #rpad
     def rtrim
       # We could obviously be more clever about this but I'm feeling lazy.
-      new_grid = @grid.reverse.drop_while { |slot| slot.empty? }.reverse!
+      new_grid = @grid.reverse.drop_while(&:empty?).reverse!
       mutate(grid: new_grid)
     end
 
@@ -1314,7 +1314,7 @@ module SpiSeq; module Tracks
     # @return [TrackBase]
     # @see #each_cons
     def grouped_merge(n)
-      new_grid = @grid.each_slice(n).map { |slots| slots.flatten }
+      new_grid = @grid.each_slice(n).map(&:flatten)
       mutate(grid: new_grid)
     end
     alias gmerge grouped_merge
@@ -1673,7 +1673,7 @@ module SpiSeq; module Tracks
     # @see #with_prob
     # @see StepBase#prob
     # @see Prob
-    def without_prob = mutate_each_step { |step| step.without_prob }
+    def without_prob = mutate_each_step(&:without_prob)
     alias clear_prob without_prob
 
     # Returns a new track where every step has the {Prob.fill fill probability}.
@@ -1717,7 +1717,7 @@ module SpiSeq; module Tracks
     # @return [TrackBase]
     # @see StepBase#accum
     # @see #with_accum
-    def without_accum = mutate_each_step { |step| step.without_accum }
+    def without_accum = mutate_each_step(&:without_accum)
     alias clear_accum without_accum
 
     # @!endgroup
@@ -1765,7 +1765,7 @@ module SpiSeq; module Tracks
     # share the same `unique_slot_key`. If two steps share a key, the one
     # returned from `preferred_step` is returned.
     private_class_method def self.dedupe_slot(slot)
-      key_getter = ->(step) { step.unique_slot_key }
+      key_getter = lambda(&:unique_slot_key)
 
       yelled = false
       tie_breaker = lambda do |step1, step2|
@@ -1838,7 +1838,7 @@ module SpiSeq; module Tracks
 
     # Does a deep dup of the grid, returning a version where the grid itself and
     # each slot is mutable.
-    def mutable_grid_dup = @grid.map { |slot| slot.dup }
+    def mutable_grid_dup = @grid.map(&:dup)
 
     # Returns a hash of the keyword arguments to the initializer and their
     # default values. The keys of the hash are assumed to also be readable

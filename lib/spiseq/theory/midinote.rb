@@ -60,7 +60,7 @@ module SpiSeq; module Theory
                      %i[a gss bbb bff],
                      %i[as bb bf cbb cff],
                      %i[b cb cf ass]].freeze
-    PITCH_CLASSES.each { |classes| classes.freeze }
+    PITCH_CLASSES.each(&:freeze)
     private_constant :PITCH_CLASSES
 
     # The default octave for note symbols/strings without one.

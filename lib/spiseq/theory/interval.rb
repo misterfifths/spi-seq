@@ -81,7 +81,7 @@ module SpiSeq; module Theory
       11 => { major:   7, dim: 8 },
       12 => { perfect: 8, aug: 7, dim: 9 }  # d9 is from compound territory
     }.freeze
-    SIZES_TO_NUMBERS.each_value { |h| h.freeze }
+    SIZES_TO_NUMBERS.each_value(&:freeze)
     private_constant :SIZES_TO_NUMBERS
 
     # number -> { quality -> semitones }
@@ -96,7 +96,7 @@ module SpiSeq; module Theory
       7 => { dim:  9, minor: 10, major:   11, aug: 12 },
       8 => { dim: 11,            perfect: 12, aug: 13 }  # A8 is compound
     }.freeze
-    NUMBERS_TO_SIZES.each_value { |h| h.freeze }
+    NUMBERS_TO_SIZES.each_value(&:freeze)
     private_constant :NUMBERS_TO_SIZES
 
     QUALITY_PREFIXES = {

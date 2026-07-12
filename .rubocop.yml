@@ -56,9 +56,6 @@ Style/SymbolArray:
   Exclude:
     - 'test/**/*.rb'
 
-Style/SymbolProc:
-  Enabled: false
-
 Style/PreferredHashMethods:
   EnforcedStyle: verbose
 

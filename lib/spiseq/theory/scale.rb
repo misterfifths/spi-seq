@@ -151,7 +151,7 @@ module SpiSeq; module Theory
         lydian_min: :lydian_minor
       }.each { |alias_name, name| scales[alias_name] = scales[name] }
 
-      scales.each_value { |steps| steps.freeze }
+      scales.each_value(&:freeze)
       scales.freeze
 
       scales

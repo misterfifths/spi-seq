@@ -454,7 +454,7 @@ module SpiSeq; module Tracks
     def partition_every(*gaps, drop: true, skip_empty: false)
       raise ArgumentError, "you must pass at least one argument" if gaps.empty?
       gaps.map! { |n| Integer.try_convert(n) }
-      raise TypeError, "all arguments must be convertible to integers" if gaps.any? { |n| n.nil? }
+      raise TypeError, "all arguments must be convertible to integers" if gaps.any?(&:nil?)
       raise RangeError, "all arguments must be > 0" if gaps.any? { |n| n <= 0 }
 
       # e.g., drop every 3:
