@@ -35,12 +35,16 @@ module SpiSeq; module Internal; module Utils
   end
 
   # Calls a given proc or lambda with an appropriate subset of the provided
-  # arguments. `arity` many of the positional arguments are passed, and only
-  # the valid keyword arguments (as found by filter_kwargs_for_proc). Does not
-  # raise if the proc/lambda takes more positional arguments than are
+  # arguments. `proc.arity` many of the positional arguments are passed, and
+  # only the valid keyword arguments (as found by filter_kwargs_for_proc). Does
+  # not raise if the proc/lambda takes more positional arguments than are
   # provided.
   module_function def call_varargs(proc, *args, **kwargs)
-    args = args.take(proc.arity)
+    # If there are optional arguments, arity is -n - 1, where n is the number of
+    # mandatory arguments. We'll only try n many arguments in that case.
+    arity = proc.arity
+    arity = -(arity + 1) if arity < 0
+    args = args.take(arity)
     kwargs = filter_kwargs_for_proc(proc, kwargs)
     proc.call(*args, **kwargs)
   end
