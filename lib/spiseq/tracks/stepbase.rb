@@ -367,7 +367,7 @@ module SpiSeq; module Tracks
     # that they accept. The keys are expected to correspond to readable instance
     # attributes. The standard accumulation arguments should *not* appear in
     # this hash. Used to implement `repr` and `mutate`.
-    def ctor_kwargs = {prob: nil}
+    def ctor_kwargs = { prob: nil }
 
     # The string representation of the method to call to create a new instance
     # of this step class. Defaults to "<class name>.new"; if there is a

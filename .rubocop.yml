@@ -25,6 +25,12 @@ Style/MethodCallWithArgsParentheses:
   Exclude:
     - 'test/**/*.rb'
 
+Layout/SpaceInsideHashLiteralBraces:
+  Enabled: true
+  EnforcedStyle: compact
+  Exclude:
+    - 'test/**/*.rb'
+
 Style/RedundantException:
   Enabled: false
 

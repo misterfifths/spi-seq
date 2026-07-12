@@ -33,7 +33,7 @@ module SpiSeq; module Internal; module TrackLiveLoopUtils
     # the block's return between iterations even across recreations however, so
     # that's a more appropriate mechanism.
     lambda do |muted, smuggled_state|
-      smuggled_state => {was_muted:, unfaded_track:, block_arg:}
+      smuggled_state => { was_muted:, unfaded_track:, block_arg: }
 
       ### Inherit state from an old player
       # If old_player is not nil, this must be our first iteration after it
