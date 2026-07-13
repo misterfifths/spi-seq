@@ -11,10 +11,19 @@ require_relative "../internal/utils"
 module SpiSeq; module Utils; module LiveLoops
   # @private
   module State
+    # It could potentially make sense to store this state as a thread variable
+    # on the loop, but we want it in place before the thread exists in
+    # mutable_live_loop. And if it only lived on the thread, we'd have to find
+    # a way to inherit it when swapping to new track_live_loops. So it seems
+    # cleaner to just hold the state externally.
     @loop_mute_states = {}
-    class << self
-      attr_accessor :loop_mute_states
-    end
+
+    def self.mute_loop(name, mute = true) = @loop_mute_states[name] = mute
+
+    # This returns the current stored value, which changes immediately upon
+    # (un)muting, so it may not reflect the effective status in the middle of a
+    # cycle of playback.
+    def self.loop_is_muted?(name) = @loop_mute_states[name] || false
   end
   private_constant :State
 
@@ -29,32 +38,14 @@ module SpiSeq; module Utils; module LiveLoops
   # @param mute [Boolean] Whether to mute or unmute the loop.
   # @return [void]
   # @see unmute_live_loop
-  # @see loop_is_muted?
-  module_function def mute_live_loop(loop_name, mute = true)
-    # It could potentially make sense to store this state as a thread variable
-    # on the loop, but we want it in place before the thread exists in
-    # mutable_live_loop. And if it only lived on the thread, we'd have to find
-    # a way to inherit it when swapping to new track_live_loops. So it seems
-    # cleaner to just hold the state locally.
-    State.loop_mute_states[loop_name] = mute
-  end
+  module_function def mute_live_loop(loop_name, mute = true) = State.mute_loop(loop_name, mute)
 
   # Unmutes the given mutable `live_loop` (i.e., one created by
   # {mutable_live_loop}, {cc_mutable_live_loop}, or {Playback.track_live_loop}).
   # An alias passing false to {mute_live_loop}.
   # @param loop_name [Symbol] The name of the target live loop.
   # @return [void]
-  # @see loop_is_muted?
   module_function def unmute_live_loop(loop_name) = mute_live_loop(loop_name, false)
-
-  # Returns whether the given mutable `live_loop` (i.e., one created by
-  # {mutable_live_loop}, {cc_mutable_live_loop}, or {Playback.track_live_loop})
-  # is muted.
-  # @param loop_name [Symbol] The name of the target live loop.
-  # @return [Boolean]
-  # @see mute_live_loop
-  # @see unmute_live_loop
-  module_function def loop_is_muted?(loop_name) = State.loop_mute_states[loop_name] || false
 
   # Starts a new `live_loop` that can be muted with {mute_live_loop}. What
   # "mute" means must be implemented by the given block; this function merely
@@ -87,7 +78,7 @@ module SpiSeq; module Utils; module LiveLoops
     mute_live_loop(loop_name, start_muted) unless Internal::ThreadTracker.is_running?(loop_name)
 
     ll = External::Sync.live_loop(loop_name, **) do |arg|
-      Internal::Utils.call_varargs(block, loop_is_muted?(loop_name), arg)
+      Internal::Utils.call_varargs(block, State.loop_is_muted?(loop_name), arg)
     end
 
     Internal::ThreadTracker.register(loop_name, ll)
