@@ -19,38 +19,27 @@
 
 module SpiSeq; module External
   module SonicPi
-    extend self
-
-    private def ensure_inited
-      return if @tried_init
-      @tried_init = true
-
-      # Other extensions seem to get away with just calling Sonic Pi methods
-      # without any preamble, but I've never been able to get that to work
-      # from a `require`d file. Unfortunately it's pretty tricky to get
-      # ahold of the context in which user code runs. This is the best thing
-      # I've come up with.
-      #
-      # See server/ruby/bin/spider-server.rb in Sonic Pi. User code is
-      # eval'd in an instance of a dynamic class named SonicPiLang. There
-      # should be only one instance of it, so let's hackily try to find it.
-
-      begin
-        instances = ObjectSpace.each_object(SonicPiLang).to_a
-      rescue NameError
-        # We're not in Sonic Pi.
-        return
-      end
-
+    # Other extensions seem to get away with just calling Sonic Pi methods
+    # without any preamble, but I've never been able to get that to work from a
+    # `require`d file. Unfortunately it's pretty tricky to get ahold of the
+    # context in which user code runs. This is the best thing I've come up with.
+    #
+    # See server/ruby/bin/spider-server.rb in Sonic Pi. User code is eval'd in
+    # an instance of a dynamic class named SonicPiLang. There should be only one
+    # instance of it, so let's hackily try to find it.
+    @spi = begin
+      instances = ObjectSpace.each_object(SonicPiLang).to_a
       raise RuntimeError, "Didn't find exactly one instance of SonicPiLang. This is a spi-seq bug; please report it" unless instances.one?
-      @spi = instances[0]
+      instances[0]
+    rescue NameError
+      # We're not in Sonic Pi.
     end
 
     [
-      # Output: the IO module, expanded in SpiSeq::Log
+      # Output: the IO module, expanded in Log
       :puts,
 
-      # Randomness: the Random module, expanded in SpiSeq::Random
+      # Randomness: the Random module, expanded in Random
       :rand,
 
       # Internal synth playback: the Synth module
@@ -71,22 +60,19 @@ module SpiSeq; module External
       :live_loop,
       :in_thread, :at,
       :cue, :sync,
-      :get_event  # undocumented; see trackrecorder.rb for some notes
+      :get_event  # undocumented; see track_recorder.rb for some notes
     ].each do |fwd|
-      define_method(fwd) do |*args, **kwargs, &block|
-        spi_call(fwd, *args, **kwargs, &block)
-      end
+      module_eval <<-RUBY, __FILE__, __LINE__ + 1
+        # def self.f(...) = spi_call(:f, ...)
+        def self.#{fwd}(...) = spi_call(:#{fwd}, ...)
+      RUBY
     end
 
-    def in_sonic_pi?
-      ensure_inited
-      !@spi.nil?
-    end
+    def self.in_sonic_pi? = !@spi.nil?
 
-    # Make a direct call to a method on the Sonic Pi context. Only for use
-    # by tests, to call methods that would not otherwise be exposed.
-    def spi_call(method, ...)
-      ensure_inited
+    # Make a direct call to a method on the Sonic Pi context. Only for use by
+    # tests, to call methods that would not otherwise be exposed.
+    def self.spi_call(method, ...)
       raise RuntimeError, "not in Sonic Pi" if @spi.nil?
       @spi.send(method, ...)
     end
