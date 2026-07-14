@@ -345,6 +345,22 @@ class MIDINoteTest < Test::Unit::TestCase
     assert_equal N(60) * N(2), N(120)
     assert_equal N(60) / 2, N(30)
     assert_equal N(60) / N(2), N(30)
+
+    # Symbols and strings should be coerced
+    # rubocop:disable Style/StringConcatenation
+    assert_equal N(:c4) - :c4, 0
+    assert_equal N(:c4) - "c4", 0
+    assert_equal N(:c5) - :c4, 12
+    assert_equal N(:c5) + :c0, :c6
+    assert_equal N(:c5) + "c0", :c6
+    assert_equal N(2) * N(12).to_sym, N(24)
+    assert_equal N(2) * N(12).to_s, N(24)
+    assert_equal N(24) / N(2).to_sym, N(12)
+    assert_equal N(24) / N(2).to_s, N(12)
+
+    assert_raises { N(:c4) + :nope }
+    assert_raises { N(:c4) + "nope" }
+    # rubocop:enable Style/StringConcatenation
   end
 
   def test_snap

@@ -330,26 +330,18 @@ module SpiSeq; module Theory
     # @private
     def coerce(other) = [MIDINote.new(other), self]
 
-    # Returns a new MIDINote by adding `other` many semitones to this one.
-    # @param other [Integer]
-    # @return [MIDINote]
-    def +(other) = transpose(other.to_i)
-
-    # Returns a new MIDINote by subtracting `other` many semitones from this
-    # one.
-    # @param other [Integer]
-    # @return [MIDINote]
-    def -(other) = transpose(-other.to_i)
-
-    # Returns a new MIDINote by multiplying this note's {#number} by `other`.
-    # @param other [Integer]
-    # @return [MIDINote]
-    def *(other) = MIDINote.new(@number * other.to_i)
-
-    # Returns a new MIDINote by dividing this note's {#number} by `other`.
-    # @param other [Integer]
-    # @return [MIDINote]
-    def /(other) = MIDINote.new(@number / other.to_i)
+    %i[+ - * /].each do |op|
+      class_eval <<-RUBY, __FILE__, __LINE__ + 1
+        # def +(other)
+        #   other = MIDINote.new(other) unless other.is_a?(Numeric)
+        #   MIDINote.new(@number + other.to_i)
+        # end
+        def #{op}(other)
+          other = MIDINote.new(other) unless other.is_a?(Numeric)
+          MIDINote.new(@number #{op} other.to_i)
+        end
+      RUBY
+    end
 
     # Returns the symbol for this note, which consists of its {#pitch_class} and
     # #{octave}. It is always lower case, and accidentals are normalized to

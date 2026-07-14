@@ -403,27 +403,18 @@ module SpiSeq; module Theory
     # @private
     def coerce(other) = [Interval.new(size: other), self]
 
-    # Returns a new Interval by adding `other` many semitones to this one's
-    # {#size}.
-    # @param other [Integer]
-    # @return [Interval]
-    def +(other) = Interval.new(size: @size + other.to_f)
-
-    # Returns a new Interval by subtracting `other` many semitones from this
-    # one's {#size}.
-    # @param other [Integer]
-    # @return [Interval]
-    def -(other) = Interval.new(size: @size - other.to_f)
-
-    # Returns a new Interval by multiplying this one's {#size} by `other`.
-    # @param other [Integer]
-    # @return [Interval]
-    def *(other) = Interval.new(size: @size * other.to_f)
-
-    # Returns a new Interval by dividing this one's {#size} by `other`.
-    # @param other [Integer]
-    # @return [Interval]
-    def /(other) = Interval.new(size: @size / other.to_f)
+    %i[+ - * /].each do |op|
+      class_eval <<-RUBY, __FILE__, __LINE__ + 1
+        # def +(other)
+        #   other = Interval.new(other) unless other.is_a?(Numeric)
+        #   Interval.new(size: @size + other.to_i)
+        # end
+        def #{op}(other)
+          other = Interval.new(other) unless other.is_a?(Numeric)
+          Interval.new(size: @size #{op} other.to_i)
+        end
+      RUBY
+    end
 
     # The string representation of this interval, in the abbreviated format
     # described by {.new}.

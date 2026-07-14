@@ -260,6 +260,23 @@ class IntervalTest < Test::Unit::TestCase
 
     # Math with a non-Interval LHS will excercise .coerce()
     assert_attrs 1 + aug1, 2, :major, 2, :M2
+
+    # Symbols and strings should be coerced
+    # rubocop:disable Style/StringConcatenation
+    assert_equal Interval.new(:P5) + :P1, :P5
+    assert_equal Interval.new(:P5) + "P1", :P5
+    assert_equal Interval.new(:P5) + :m2, :A5
+    assert_equal Interval.new(:P5) + "m2", :A5
+    assert_equal Interval.new(:A5) - :m2, :P5
+    assert_equal Interval.new(:A5) - "m2", :P5
+    assert_equal Interval.new(size: 5) * Interval.new(size: 2).to_sym, Interval.new(size: 10)
+    assert_equal Interval.new(size: 5) * Interval.new(size: 2).to_s, Interval.new(size: 10)
+    assert_equal Interval.new(size: 10) / Interval.new(size: 2).to_sym, Interval.new(size: 5)
+    assert_equal Interval.new(size: 10) / Interval.new(size: 2).to_s, Interval.new(size: 5)
+
+    assert_raises { Interval.new(:P5) + :nope }
+    assert_raises { Interval.new(:P5) + "nope" }
+    # rubocop:enable Style/StringConcatenation
   end
 
   def test_comparisons
