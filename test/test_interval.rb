@@ -37,104 +37,104 @@ class IntervalTest < Test::Unit::TestCase
   def test_initialization
     assert_raises(ArgumentError) { Interval.new }
 
-    assert_raises(ArgumentError) { Interval.new(:P1, number: 1)}
-    assert_raises(ArgumentError) { Interval.new(:P1, size: 0)}
-    assert_raises(ArgumentError) { Interval.new(:P1, quality: :perfect)}
+    assert_raises(ArgumentError) { I(:P1, number: 1)}
+    assert_raises(ArgumentError) { I(:P1, size: 0)}
+    assert_raises(ArgumentError) { I(:P1, quality: :perfect)}
 
-    assert_raises(ArgumentError) { Interval.new(number: 1, size: 0) }
-    assert_raises(RangeError) { Interval.new(number: -1) }
+    assert_raises(ArgumentError) { I(number: 1, size: 0) }
+    assert_raises(RangeError) { I(number: -1) }
   end
 
   def test_simple_intervals
     assert_new 0, :perfect, 1, :P1
     assert_new 0, :dim, 2, :d2
-    assert_raises(ArgumentError) { Interval.new(size: 0, quality: :minor) }
-    assert_raises(ArgumentError) { Interval.new(size: 0, quality: :major) }
-    assert_raises(ArgumentError) { Interval.new(size: 0, quality: :aug) }
+    assert_raises(ArgumentError) { I(size: 0, quality: :minor) }
+    assert_raises(ArgumentError) { I(size: 0, quality: :major) }
+    assert_raises(ArgumentError) { I(size: 0, quality: :aug) }
 
     assert_new 1, :minor, 2, :m2
     assert_new 1, :aug, 1, :A1
-    assert_raises(ArgumentError) { Interval.new(size: 1, quality: :perfect) }
-    assert_raises(ArgumentError) { Interval.new(size: 1, quality: :major) }
-    assert_raises(ArgumentError) { Interval.new(size: 1, quality: :dim) }
+    assert_raises(ArgumentError) { I(size: 1, quality: :perfect) }
+    assert_raises(ArgumentError) { I(size: 1, quality: :major) }
+    assert_raises(ArgumentError) { I(size: 1, quality: :dim) }
 
     assert_new 2, :major, 2, :M2
     assert_new 2, :dim, 3, :d3
-    assert_raises(ArgumentError) { Interval.new(size: 2, quality: :perfect) }
-    assert_raises(ArgumentError) { Interval.new(size: 2, quality: :minor) }
-    assert_raises(ArgumentError) { Interval.new(size: 2, quality: :aug) }
+    assert_raises(ArgumentError) { I(size: 2, quality: :perfect) }
+    assert_raises(ArgumentError) { I(size: 2, quality: :minor) }
+    assert_raises(ArgumentError) { I(size: 2, quality: :aug) }
 
     assert_new 3, :minor, 3, :m3
     assert_new 3, :aug, 2, :A2
-    assert_raises(ArgumentError) { Interval.new(size: 3, quality: :perfect) }
-    assert_raises(ArgumentError) { Interval.new(size: 3, quality: :major) }
-    assert_raises(ArgumentError) { Interval.new(size: 3, quality: :dim) }
+    assert_raises(ArgumentError) { I(size: 3, quality: :perfect) }
+    assert_raises(ArgumentError) { I(size: 3, quality: :major) }
+    assert_raises(ArgumentError) { I(size: 3, quality: :dim) }
 
     assert_new 4, :major, 3, :M3
     assert_new 4, :dim, 4, :d4
-    assert_raises(ArgumentError) { Interval.new(size: 4, quality: :perfect) }
-    assert_raises(ArgumentError) { Interval.new(size: 4, quality: :minor) }
-    assert_raises(ArgumentError) { Interval.new(size: 4, quality: :aug) }
+    assert_raises(ArgumentError) { I(size: 4, quality: :perfect) }
+    assert_raises(ArgumentError) { I(size: 4, quality: :minor) }
+    assert_raises(ArgumentError) { I(size: 4, quality: :aug) }
 
     assert_new 5, :perfect, 4, :P4
     assert_new 5, :aug, 3, :A3
-    assert_raises(ArgumentError) { Interval.new(size: 5, quality: :major) }
-    assert_raises(ArgumentError) { Interval.new(size: 5, quality: :minor) }
-    assert_raises(ArgumentError) { Interval.new(size: 5, quality: :dim) }
+    assert_raises(ArgumentError) { I(size: 5, quality: :major) }
+    assert_raises(ArgumentError) { I(size: 5, quality: :minor) }
+    assert_raises(ArgumentError) { I(size: 5, quality: :dim) }
 
     assert_new 6, :dim, 5, :d5
     assert_new 6, :aug, 4, :A4
-    assert_raises(ArgumentError) { Interval.new(size: 6, quality: :perfect) }
-    assert_raises(ArgumentError) { Interval.new(size: 6, quality: :major) }
-    assert_raises(ArgumentError) { Interval.new(size: 6, quality: :minor) }
+    assert_raises(ArgumentError) { I(size: 6, quality: :perfect) }
+    assert_raises(ArgumentError) { I(size: 6, quality: :major) }
+    assert_raises(ArgumentError) { I(size: 6, quality: :minor) }
 
     assert_new 7, :perfect, 5, :P5
     assert_new 7, :dim, 6, :d6
-    assert_raises(ArgumentError) { Interval.new(size: 7, quality: :major) }
-    assert_raises(ArgumentError) { Interval.new(size: 7, quality: :minor) }
-    assert_raises(ArgumentError) { Interval.new(size: 7, quality: :aug) }
+    assert_raises(ArgumentError) { I(size: 7, quality: :major) }
+    assert_raises(ArgumentError) { I(size: 7, quality: :minor) }
+    assert_raises(ArgumentError) { I(size: 7, quality: :aug) }
 
     assert_new 8, :minor, 6, :m6
     assert_new 8, :aug, 5, :A5
-    assert_raises(ArgumentError) { Interval.new(size: 8, quality: :perfect) }
-    assert_raises(ArgumentError) { Interval.new(size: 8, quality: :major) }
-    assert_raises(ArgumentError) { Interval.new(size: 8, quality: :dim) }
+    assert_raises(ArgumentError) { I(size: 8, quality: :perfect) }
+    assert_raises(ArgumentError) { I(size: 8, quality: :major) }
+    assert_raises(ArgumentError) { I(size: 8, quality: :dim) }
 
     assert_new 9, :major, 6, :M6
     assert_new 9, :dim, 7, :d7
-    assert_raises(ArgumentError) { Interval.new(size: 9, quality: :perfect) }
-    assert_raises(ArgumentError) { Interval.new(size: 9, quality: :minor) }
-    assert_raises(ArgumentError) { Interval.new(size: 9, quality: :aug) }
+    assert_raises(ArgumentError) { I(size: 9, quality: :perfect) }
+    assert_raises(ArgumentError) { I(size: 9, quality: :minor) }
+    assert_raises(ArgumentError) { I(size: 9, quality: :aug) }
 
     assert_new 10, :minor, 7, :m7
     assert_new 10, :aug, 6, :A6
-    assert_raises(ArgumentError) { Interval.new(size: 10, quality: :perfect) }
-    assert_raises(ArgumentError) { Interval.new(size: 10, quality: :major) }
-    assert_raises(ArgumentError) { Interval.new(size: 10, quality: :dim) }
+    assert_raises(ArgumentError) { I(size: 10, quality: :perfect) }
+    assert_raises(ArgumentError) { I(size: 10, quality: :major) }
+    assert_raises(ArgumentError) { I(size: 10, quality: :dim) }
 
     assert_new 11, :major, 7, :M7
     assert_new 11, :dim, 8, :d8
-    assert_raises(ArgumentError) { Interval.new(size: 11, quality: :perfect) }
-    assert_raises(ArgumentError) { Interval.new(size: 11, quality: :minor) }
-    assert_raises(ArgumentError) { Interval.new(size: 11, quality: :aug) }
+    assert_raises(ArgumentError) { I(size: 11, quality: :perfect) }
+    assert_raises(ArgumentError) { I(size: 11, quality: :minor) }
+    assert_raises(ArgumentError) { I(size: 11, quality: :aug) }
 
     assert_new 12, :perfect, 8, :P8, 2, :P1
     assert_new 12, :aug, 7, :A7, 2, :P1
-    assert_raises(ArgumentError) { Interval.new(size: 12, quality: :major) }
-    assert_raises(ArgumentError) { Interval.new(size: 12, quality: :minor) }
+    assert_raises(ArgumentError) { I(size: 12, quality: :major) }
+    assert_raises(ArgumentError) { I(size: 12, quality: :minor) }
     # 12 semitones with diminished quality is valid but compound (d9)
   end
 
   def assert_compound(size, quality, number, sym, octave_span = 1, simple_interval = nil)
     assert_new size, quality, number, sym, octave_span, simple_interval
-    assert Interval.new(sym).compound?
-    refute Interval.new(sym).simple?
-    assert Interval.new(number:, quality:).compound?
-    refute Interval.new(number:, quality:).simple?
+    assert I(sym).compound?
+    refute I(sym).simple?
+    assert I(number:, quality:).compound?
+    refute I(number:, quality:).simple?
     if size > 12
       # d9 is a weird case that is compound even though its size is 12.
-      assert Interval.new(size:).compound?
-      refute Interval.new(size:).simple?
+      assert I(size:).compound?
+      refute I(size:).simple?
     end
   end
 
@@ -186,12 +186,12 @@ class IntervalTest < Test::Unit::TestCase
   end
 
   def assert_def_qual_for_size(size, quality, number, sym, octave_span = 1, simple_interval = nil)
-    i = Interval.new(size:)  # Note: not passing quality here
+    i = I(size:)  # Note: not passing quality here
     assert_attrs i, size, quality, number, sym, octave_span, simple_interval
   end
 
   def assert_def_qual_for_num(size, quality, number, sym, octave_span = 1, simple_interval = nil)
-    i = Interval.new(number:)  # Note: not passing quality here
+    i = I(number:)  # Note: not passing quality here
     assert_attrs i, size, quality, number, sym, octave_span, simple_interval
   end
 
@@ -227,7 +227,7 @@ class IntervalTest < Test::Unit::TestCase
   end
 
   def test_arithmetic
-    aug1 = Interval.new(:A1)
+    aug1 = I(:A1)
 
     # This behavior is a little surprising. Doing arithmetic on an Interval will
     # collapse it to its default quality, which for 1 semitone is minor.
@@ -252,30 +252,30 @@ class IntervalTest < Test::Unit::TestCase
     assert_attrs aug1 * 12 + aug1 + 1, 14, :major, 9, :M9, 2, :M2
 
     assert_attrs aug1 - 1, 0, :perfect, 1, :P1
-    assert_attrs Interval.new(:A6) - 2, 8, :minor, 6, :m6
+    assert_attrs I(:A6) - 2, 8, :minor, 6, :m6
 
     # I don't know why anyone would use division but it's there.
-    assert_attrs Interval.new(size: 6) / 2, 3, :minor, 3, :m3
-    assert_attrs Interval.new(size: 6) / Interval.new(size: 2), 3, :minor, 3, :m3
+    assert_attrs I(size: 6) / 2, 3, :minor, 3, :m3
+    assert_attrs I(size: 6) / I(size: 2), 3, :minor, 3, :m3
 
     # Math with a non-Interval LHS will excercise .coerce()
     assert_attrs 1 + aug1, 2, :major, 2, :M2
 
     # Symbols and strings should be coerced
     # rubocop:disable Style/StringConcatenation
-    assert_equal Interval.new(:P5) + :P1, :P5
-    assert_equal Interval.new(:P5) + "P1", :P5
-    assert_equal Interval.new(:P5) + :m2, :A5
-    assert_equal Interval.new(:P5) + "m2", :A5
-    assert_equal Interval.new(:A5) - :m2, :P5
-    assert_equal Interval.new(:A5) - "m2", :P5
-    assert_equal Interval.new(size: 5) * Interval.new(size: 2).to_sym, Interval.new(size: 10)
-    assert_equal Interval.new(size: 5) * Interval.new(size: 2).to_s, Interval.new(size: 10)
-    assert_equal Interval.new(size: 10) / Interval.new(size: 2).to_sym, Interval.new(size: 5)
-    assert_equal Interval.new(size: 10) / Interval.new(size: 2).to_s, Interval.new(size: 5)
+    assert_equal I(:P5) + :P1, :P5
+    assert_equal I(:P5) + "P1", :P5
+    assert_equal I(:P5) + :m2, :A5
+    assert_equal I(:P5) + "m2", :A5
+    assert_equal I(:A5) - :m2, :P5
+    assert_equal I(:A5) - "m2", :P5
+    assert_equal I(size: 5) * I(size: 2).to_sym, I(size: 10)
+    assert_equal I(size: 5) * I(size: 2).to_s, I(size: 10)
+    assert_equal I(size: 10) / I(size: 2).to_sym, I(size: 5)
+    assert_equal I(size: 10) / I(size: 2).to_s, I(size: 5)
 
-    assert_raises { Interval.new(:P5) + :nope }
-    assert_raises { Interval.new(:P5) + "nope" }
+    assert_raises { I(:P5) + :nope }
+    assert_raises { I(:P5) + "nope" }
     # rubocop:enable Style/StringConcatenation
   end
 
@@ -288,9 +288,9 @@ class IntervalTest < Test::Unit::TestCase
       [:M9, :m13, :M24]
     ].each do |vals|
       a, b, c = *vals
-      ai = Interval.new(a)
-      bi = Interval.new(b)
-      ci = Interval.new(c)
+      ai = I(a)
+      bi = I(b)
+      ci = I(c)
 
       # a against itself
       assert_equal ai, ai
@@ -369,87 +369,87 @@ class IntervalTest < Test::Unit::TestCase
     end
 
     # Equality is based solely on the size; quality is ignored.
-    assert_equal Interval.new(size: 7, quality: :perfect), Interval.new(size: 7, quality: :dim)
-    assert_equal Interval.new(size: 7, quality: :perfect), Interval.new(number: 6, quality: :dim)
-    assert_equal Interval.new(size: 7, quality: :perfect), :d6
-    assert_equal Interval.new(size: 7, quality: :perfect), 7
-    assert_equal Interval.new(size: 8, quality: :minor), Interval.new(size: 8, quality: :aug)
-    assert_equal Interval.new(size: 8, quality: :minor), Interval.new(number: 5, quality: :aug)
-    assert_equal Interval.new(size: 8, quality: :minor), :A5
-    assert_equal Interval.new(size: 8, quality: :minor), 8
+    assert_equal I(size: 7, quality: :perfect), I(size: 7, quality: :dim)
+    assert_equal I(size: 7, quality: :perfect), I(number: 6, quality: :dim)
+    assert_equal I(size: 7, quality: :perfect), :d6
+    assert_equal I(size: 7, quality: :perfect), 7
+    assert_equal I(size: 8, quality: :minor), I(size: 8, quality: :aug)
+    assert_equal I(size: 8, quality: :minor), I(number: 5, quality: :aug)
+    assert_equal I(size: 8, quality: :minor), :A5
+    assert_equal I(size: 8, quality: :minor), 8
 
     # Comparison against non-Intervals
-    assert Interval.new(:A1) == 1.0  # rubocop:disable Lint/FloatComparison
-    assert Interval.new(:P1) != []
-    assert Interval.new(:P1) != :nope
-    assert_raises(ArgumentError) { Interval.new(:P1) > [] }
-    assert_raises(ArgumentError) { Interval.new(:P1) > :nope }
+    assert I(:A1) == 1.0  # rubocop:disable Lint/FloatComparison
+    assert I(:P1) != []
+    assert I(:P1) != :nope
+    assert_raises(ArgumentError) { I(:P1) > [] }
+    assert_raises(ArgumentError) { I(:P1) > :nope }
 
     # Right-hand side equality
     # rubocop:disable Style/YodaCondition
-    assert :P1 == Interval.new(:P1)
-    assert :P1.eql?(Interval.new(:P1))
-    assert "P1" == Interval.new(:P1)
-    assert "P1".eql?(Interval.new(:P1))
-    assert :A1 != Interval.new(:P1)
+    assert :P1 == I(:P1)
+    assert :P1.eql?(I(:P1))
+    assert "P1" == I(:P1)
+    assert "P1".eql?(I(:P1))
+    assert :A1 != I(:P1)
 
-    assert_nil :nope <=> Interval.new(:P1)
-    assert_nil "nope" <=> Interval.new(:P1)
+    assert_nil :nope <=> I(:P1)
+    assert_nil "nope" <=> I(:P1)
     # rubocop:enable Style/YodaCondition
   end
 
   def test_attrs
-    assert Interval.new(:P5).perfect?
-    refute Interval.new(:P5).minor?
-    refute Interval.new(:P5).major?
-    refute Interval.new(:P5).augmented?
-    refute Interval.new(:P5).diminished?
-    refute Interval.new(:P5).compound?
-    assert Interval.new(:P5).simple?
+    assert I(:P5).perfect?
+    refute I(:P5).minor?
+    refute I(:P5).major?
+    refute I(:P5).augmented?
+    refute I(:P5).diminished?
+    refute I(:P5).compound?
+    assert I(:P5).simple?
 
-    refute Interval.new(:M7).perfect?
-    refute Interval.new(:M7).minor?
-    assert Interval.new(:M7).major?
-    refute Interval.new(:M7).augmented?
-    refute Interval.new(:M7).diminished?
-    refute Interval.new(:M7).compound?
-    assert Interval.new(:M7).simple?
+    refute I(:M7).perfect?
+    refute I(:M7).minor?
+    assert I(:M7).major?
+    refute I(:M7).augmented?
+    refute I(:M7).diminished?
+    refute I(:M7).compound?
+    assert I(:M7).simple?
 
-    refute Interval.new(:m7).perfect?
-    assert Interval.new(:m7).minor?
-    refute Interval.new(:m7).major?
-    refute Interval.new(:m7).augmented?
-    refute Interval.new(:m7).diminished?
-    refute Interval.new(:m7).compound?
-    assert Interval.new(:m7).simple?
+    refute I(:m7).perfect?
+    assert I(:m7).minor?
+    refute I(:m7).major?
+    refute I(:m7).augmented?
+    refute I(:m7).diminished?
+    refute I(:m7).compound?
+    assert I(:m7).simple?
 
-    refute Interval.new(:d7).perfect?
-    refute Interval.new(:d7).minor?
-    refute Interval.new(:d7).major?
-    refute Interval.new(:d7).augmented?
-    assert Interval.new(:d7).diminished?
-    refute Interval.new(:d7).compound?
-    assert Interval.new(:d7).simple?
+    refute I(:d7).perfect?
+    refute I(:d7).minor?
+    refute I(:d7).major?
+    refute I(:d7).augmented?
+    assert I(:d7).diminished?
+    refute I(:d7).compound?
+    assert I(:d7).simple?
 
-    refute Interval.new(:A7).perfect?
-    refute Interval.new(:A7).minor?
-    refute Interval.new(:A7).major?
-    assert Interval.new(:A7).augmented?
-    refute Interval.new(:A7).diminished?
-    refute Interval.new(:A7).compound?
-    assert Interval.new(:A7).simple?
+    refute I(:A7).perfect?
+    refute I(:A7).minor?
+    refute I(:A7).major?
+    assert I(:A7).augmented?
+    refute I(:A7).diminished?
+    refute I(:A7).compound?
+    assert I(:A7).simple?
 
-    assert Interval.new(:A8).compound?
-    refute Interval.new(:A8).simple?
-    assert Interval.new(:d9).compound?
-    refute Interval.new(:d9).simple?
-    assert Interval.new(:M13).compound?
-    refute Interval.new(:M13).simple?
+    assert I(:A8).compound?
+    refute I(:A8).simple?
+    assert I(:d9).compound?
+    refute I(:d9).simple?
+    assert I(:M13).compound?
+    refute I(:M13).simple?
   end
 
   def assert_as(qual1, num1, qual2, num2)
-    i1 = Interval.new(number: num1, quality: qual1)
-    i2 = Interval.new(number: num2, quality: qual2)
+    i1 = I(number: num1, quality: qual1)
+    i2 = I(number: num2, quality: qual2)
 
     assert i1.expressible_as(num2)
     refute_nil i1.as(num2)
@@ -487,8 +487,8 @@ class IntervalTest < Test::Unit::TestCase
     assert_as :perfect, 5, :perfect, 5
     assert_as :major, 30, :major, 30
 
-    assert_nil Interval.new(:P5).as(7)
-    assert_nil Interval.new(:M3).as(5)
+    assert_nil I(:P5).as(7)
+    assert_nil I(:M3).as(5)
   end
 
   def test_names
@@ -505,16 +505,16 @@ class IntervalTest < Test::Unit::TestCase
       [:P22, :A21, :d23]
     ].each do |names|
       names.each do |name|
-        i = Interval.new(name)
+        i = I(name)
         assert_equal Set.new(i.names), Set.new(names), name
       end
     end
 
     0.upto(54) do |semitones|
-      i = Interval.new(size: semitones)
+      i = I(size: semitones)
       i_names = Set.new(i.names)
       i_names.map do |name|
-        other = Interval.new(name)
+        other = I(name)
         assert_equal i.size, other.size
         assert_equal i_names, Set.new(other.names)
       end
