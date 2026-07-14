@@ -128,7 +128,8 @@ module SpiSeq; module Theory
         augmented:          [3, 1, 3, 1, 3, 1],
         purvi:              [1, 3, 2, 1, 1, 3, 1],
         chinese:            [4, 2, 1, 4, 1],
-        lydian_minor:       [2, 2, 2, 1, 1, 2, 2]
+        lydian_minor:       [2, 2, 2, 1, 1, 2, 2],
+        lydian_dominant:    [2, 2, 2, 1, 2, 1, 2]
       }
 
       {
@@ -148,7 +149,12 @@ module SpiSeq; module Theory
         romanian_min: :romanian_minor,
         melodic_min: :melodic_minor,
         melodic_maj: :melodic_major,
-        lydian_min: :lydian_minor
+        lydian_min: :lydian_minor,
+        acoustic: :lydian_dominant,
+        altered: :super_locrian,
+        phrygian_dominant: :spanish,
+        double_harmonic: :bhairav,
+        byzantine: :bhairav
       }.each { |alias_name, name| scales[alias_name] = scales[name] }
 
       scales.each_value(&:freeze)
