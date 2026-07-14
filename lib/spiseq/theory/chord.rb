@@ -56,51 +56,52 @@ module SpiSeq; module Theory
       %i[minor11 min11 m11]     => :minor_eleventh,
       %i[minor13 min13 m13]     => :minor_thirteenth,
 
-      %i[minor_major7 min_maj7
-         mM7 m/M7]              => :minor_major_seventh,
-      %i[minor_major9 min_maj9
-         mM9 m/M9]              => :minor_major_ninth,
-      %i[minor_major11
-         min_maj11 mM11 m/M11]  => :minor_major_eleventh,
-      %i[minor_major13
-         min_maj13 mM13 m/M13]  => :minor_major_thirteenth,
+      %i[minor_major7  min_maj7
+         mM7  m/M7  mmaj7]      => :minor_major_seventh,
+      %i[minor_major9  min_maj9
+         mM9  m/M9  mmaj9]      => :minor_major_ninth,
+      %i[minor_major11 min_maj11
+         mM11 m/M11 mmaj11]     => :minor_major_eleventh,
+      %i[minor_major13 min_maj13
+         mM13 m/M13 mmaj13]     => :minor_major_thirteenth,
 
-      %i[aug +5 +]              => :aug_triad,
-      %i[aug6 +6 ger6 ger+6]    => :aug_sixth,
-      %i[fr6 fr+6]              => -> { Chord.aug_sixth(:fr) },
-      %i[it6 it+6]              => -> { Chord.aug_sixth(:it) },
-      %i[aug7 +7]               => :aug_seventh,
-      %i[aug9 +9]               => :aug_ninth,
-      %i[aug11 +11]             => :aug_eleventh,
-      %i[aug13 +13]             => :aug_thirteenth,
+      %i[aug   a   +5 +]        => :aug_triad,
+      %i[aug6  a6  +6]          => :aug_sixth,
+      %i[aug7  a7  +7]          => :aug_seventh,
+      %i[aug9  a9  +9]          => :aug_ninth,
+      %i[aug11 a11 +11]         => :aug_eleventh,
+      %i[aug13 a13 +13]         => :aug_thirteenth,
+      %i[ger6 ger+6]            => :aug_sixth,
+      %i[fr6  fr+6]             => -> { Chord.aug_sixth(:fr) },
+      %i[it6  it+6]             => -> { Chord.aug_sixth(:it) },
 
-      %i[aug_major7 aug_maj7
-         augM7 +M7]             => :aug_major_seventh,
-      %i[aug_major9 aug_maj9
-         augM9 +M9]             => :aug_major_ninth,
+      %i[aug_major7  aug_maj7
+         augM7  +M7]            => :aug_major_seventh,
+      %i[aug_major9  aug_maj9
+         augM9  +M9]            => :aug_major_ninth,
       %i[aug_major11 aug_maj11
          augM11 +M11]           => :aug_major_eleventh,
       %i[aug_major13 aug_maj13
          augM13 +M13]           => :aug_major_thirteenth,
 
-      %i[dim -5]                => :dim_triad,
-      %i[dim7 -7]               => :dim_seventh,
-      %i[dim9 -9]               => :dim_ninth,
-      %i[dim11 -11]             => :dim_eleventh,
-      %i[dim13 -13]             => :dim_thirteenth,
+      %i[dim   i   -5]          => :dim_triad,
+      %i[dim7  i7  -7]          => :dim_seventh,
+      %i[dim9  i9  -9]          => :dim_ninth,
+      %i[dim11 i11 -11]         => :dim_eleventh,
+      %i[dim13 i13 -13]         => :dim_thirteenth,
 
-      %i[halfdim halfdim7]      => :halfdim_seventh,
+      %i[halfdim7 halfdim]      => :halfdim_seventh,
       %i[halfdim9]              => :halfdim_ninth,
       %i[halfdim11]             => :halfdim_eleventh,
       %i[halfdim13]             => :halfdim_thirteenth,
 
-      %i[dom v]                 => :dom_triad,
-      %i[dom_parallel dom_par
-         dompar]                => :dom_parallel,
-      %i[dom7 v7 7]             => :dom_seventh,
-      %i[dom9 v9 9]             => :dom_ninth,
+      %i[dom   v]               => :dom_triad,
+      %i[dom7  v7  7]           => :dom_seventh,
+      %i[dom9  v9  9]           => :dom_ninth,
       %i[dom11 v11 11]          => :dom_eleventh,
       %i[dom13 v13 13]          => :dom_thirteenth,
+      %i[dom_parallel dom_par
+         dompar]                => :dom_parallel,
 
       %i[fifth P5 5 power]      => :fifth,
       %i[power2]                => -> { Chord.fifth(2) },
@@ -131,30 +132,29 @@ module SpiSeq; module Theory
       %i[m7+5-9]                => -> { Chord.minor_seventh.sharp5.add(:m9) },
       %i[m7-9]                  => -> { Chord.minor_seventh.add(:m9) },
       %i[m7+9]                  => :minor_ninth,
-      %i[9sus4]                 => -> { Chord.minor_ninth.sus4 },
+      %i[m9+5]                  => -> { Chord.minor_ninth.sharp5 },
       %i[m11+]                  => -> { Chord.minor_eleventh.sharp(11) },
 
       %i[7-5]                   => -> { Chord.dom_seventh.flat5 },
       %i[7-9]                   => -> { Chord.dom_seventh.add(:m9) },
-      %i[7-10]                  => -> { Chord.dom_seventh.add(:m10) },
+      %i[7-10 7+9]              => -> { Chord.dom_seventh.add(:m10) },
       %i[7-11]                  => -> { Chord.dom_seventh.add(:d11) },
       %i[7-13]                  => -> { Chord.dom_seventh.add(:m13) },
       %i[7+5]                   => -> { Chord.dom_seventh.sharp5 },  # AKA aug_seventh
       %i[7+5-9]                 => -> { Chord.dom_seventh.sharp5.add(:m9) },
       %i[7sus2]                 => -> { Chord.dom_seventh.sus2 },
       %i[7sus4]                 => -> { Chord.dom_seventh.sus4 },
+      %i[9-5]                   => -> { Chord.dom_ninth.flat5 },
+      %i[9+5]                   => -> { Chord.dom_ninth.sharp5 },
+      %i[9sus4]                 => -> { Chord.dom_ninth.sus4 },
       %i[11+]                   => -> { Chord.dom_eleventh.sharp(11) },
 
-      %i[augmented a]           => :aug_triad,
+      %i[augmented]             => :aug_triad,
 
-      %i[diminished i]          => :dim_triad,
-      %i[diminished7 i7]        => :dim_seventh,
+      %i[diminished]            => :dim_triad,
+      %i[diminished7]           => :dim_seventh,
 
-      %i[halfdiminished]        => :halfdim_seventh,
-
-      # I have no idea what these are supposed to be.
-      %i[9+5]                   => -> { Chord.new(%i[P1 m7 m9]) },
-      %i[m9+5]                  => -> { Chord.new(%i[P1 m7 M9]) }
+      %i[halfdiminished]        => :halfdim_seventh
     }.flat_map do |names, val|
       names.map { |name| [name, val] }
     end.to_h.freeze
@@ -213,8 +213,8 @@ module SpiSeq; module Theory
     # And some abbreviations from Sonic Pi:
     # `1`, `add2`, `add4`, `add9`, `add11`, `add13`, `sus2`, `sus4`, `6*9`,
     # `madd2`, `madd4`, `madd9`, `madd11`, `madd13`, `m+5`, `m6*9`, `m7+5`,
-    # `m7+5-9`, `m7-9`, `9sus4`, `m11`, `7-9`, `7-10`, `7-11`, `7-13`, `7+5-9`,
-    # `7sus2`, `7sus4`, `11`, `9+5`, `m9+5`
+    # `m7+5-9`, `m7-9`, `m9+5`, `9sus4`, `m11`, `7-9`, `7-10`, `7+9`, `7-11`,
+    # `7-13`, `7+5-9`, `7sus2`, `7sus4`, `9+5`, `9-5`, `11`.
     #
     # There are aliases for many of the above names; print this array to see all
     # possible names. This class understands all of the same chord names as
