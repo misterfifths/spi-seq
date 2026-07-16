@@ -102,25 +102,27 @@ class LifeCycleTest < Test::Unit::TestCase
   def test_on_cold_run
     # Default name
     flags = []
-    on_cold_run { flags << true }
-    on_cold_run { flags << true }
+    on_cold_run { flags << 1 }
+    on_cold_run { flags << 2 }
     kill_in_threads
-    on_cold_run { flags << true }
-    assert flags.length == 2
+    on_cold_run { flags << 3 }
+    kill_in_threads
+    assert flags == [1, 3]
 
     # Named
     flags1 = []
     flags2 = []
     flags3 = []
-    on_cold_run(:flags1) { flags1 << true }
-    on_cold_run(:flags2) { flags2 << true }
-    on_cold_run(:flags1) { flags3 << true }
+    on_cold_run(:flags1) { flags1 << 1 }
+    on_cold_run(:flags2) { flags2 << 2 }
+    on_cold_run(:flags1) { flags3 << 3 }
     kill_in_threads
-    on_cold_run(:flags1) { flags1 << true }
-    on_cold_run(:flags2) { flags2 << true }
-    on_cold_run(:flags1) { flags3 << true }
-    assert flags1.length == 2
-    assert flags2.length == 2
+    on_cold_run(:flags1) { flags1 << 4 }
+    on_cold_run(:flags2) { flags2 << 5 }
+    on_cold_run(:flags1) { flags3 << 6 }
+    kill_in_threads
+    assert flags1 == [1, 4]
+    assert flags2 == [2, 5]
     assert flags3.empty?
   end
 end
