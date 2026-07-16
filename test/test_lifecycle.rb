@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require "weakref"
 require_relative "lib/init"
 # We don't need player_mocks in any real sense, but it gets us an implementation
 # of External::Sync.sleep, which on_cold_run calls.
@@ -18,7 +17,7 @@ module SpiSeq; module External; module Sync
     @in_threads ||= {}
     if name
       t = @in_threads[name]
-      return if t&.weakref_alive? && t.alive?
+      return if t&.alive?
     end
 
     t = Thread.new do
@@ -28,7 +27,7 @@ module SpiSeq; module External; module Sync
     t.abort_on_exception = true
     t.report_on_exception = false
 
-    @in_threads[name] = WeakRef.new(t) unless name.nil?
+    @in_threads[name] = t unless name.nil?
     Kernel.sleep(0.1)  # Need to make sure the block actually started...
     t
   end
@@ -37,11 +36,9 @@ module SpiSeq; module External; module Sync
     return if @in_threads.nil?
 
     @in_threads.each_value do |t|
-      next unless t.weakref_alive? && t.alive?
+      next unless t.alive?
       t.kill
       t.join
-    rescue RefError
-      # The WeakRef was reaped out from underneath us
     end
 
     @in_threads.clear
