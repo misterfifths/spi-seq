@@ -304,7 +304,7 @@ module SpiSeq; module Playback
     ### Start a fill CC watcher if needed
     if fill_cc
       Utils::MIDI.cc_watcher_live_loop(:"__#{loop_name}_cc_fill_watcher",
-                          port: cc_port, channel: cc_channel) do |incoming_cc, cc_val|
+                                       port: cc_port, channel: cc_channel) do |incoming_cc, cc_val|
         next if incoming_cc != fill_cc
 
         player.fill = cc_val != 0

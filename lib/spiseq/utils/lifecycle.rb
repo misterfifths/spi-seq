@@ -44,8 +44,7 @@ module SpiSeq; module Utils; module Lifecycle
   # @return [void]
   # @yield
   module_function def on_cold_run(key = :default, &block)
-    thread_name = :"__cold_run_#{key}"
-    External::Sync.in_thread(name: thread_name) do
+    External::Sync.in_thread(name: :"__cold_run_#{key}") do
       block.call
 
       # Sleep for a jiffy so Sonic Pi fires off things like logging.
