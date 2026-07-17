@@ -63,8 +63,14 @@ module SpiSeq; module External
       :get_event  # undocumented; see track_recorder.rb for some notes
     ].each do |fwd|
       module_eval <<-RUBY, __FILE__, __LINE__ + 1
-        # def self.f(...) = spi_call(:f, ...)
-        def self.#{fwd}(...) = spi_call(:#{fwd}, ...)
+        # def self.f(...)
+        #   raise RuntimeError, "not in Sonic Pi" if @spi.nil?
+        #   @spi.f(...)
+        # end
+        def self.#{fwd}(...)
+          raise RuntimeError, "not in Sonic Pi" if @spi.nil?
+          @spi.#{fwd}(...)
+        end
       RUBY
     end
 
