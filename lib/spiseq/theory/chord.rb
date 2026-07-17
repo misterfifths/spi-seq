@@ -131,7 +131,7 @@ module SpiSeq; module Theory
       %i[m7-5 m7b5]             => -> { Chord.minor_seventh.flat5 },  # AKA halfdim_seventh
       %i[m7+5-9]                => -> { Chord.minor_seventh.sharp5.add(:m9) },
       %i[m7-9]                  => -> { Chord.minor_seventh.add(:m9) },
-      %i[m7+9]                  => :minor_ninth,
+      %i[m7+9]                  => :minor_ninth,  # sic? Should probably be an A9
       %i[m9+5]                  => -> { Chord.minor_ninth.sharp5 },
       %i[m11+]                  => -> { Chord.minor_eleventh.sharp(11) },
 
