@@ -243,15 +243,13 @@ provide different keys for each call to this function.</p>
 53
 54
 55
-56
-57</pre>
+56</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'lib/spiseq/utils/lifecycle.rb', line 46</span>
 
 <span class='id identifier rubyid_module_function'>module_function</span> <span class='kw'>def</span> <span class='id identifier rubyid_on_cold_run'>on_cold_run</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span> <span class='op'>=</span> <span class='symbol'>:default</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_thread_name'>thread_name</span> <span class='op'>=</span> <span class='symbol'>:&quot;__cold_run_</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_key'>key</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
-  <span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_in_thread'>in_thread</span><span class='lparen'>(</span><span class='label'>name:</span> <span class='id identifier rubyid_thread_name'>thread_name</span><span class='rparen'>)</span> <span class='kw'>do</span>
+  <span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_in_thread'>in_thread</span><span class='lparen'>(</span><span class='label'>name:</span> <span class='symbol'>:&quot;__cold_run_</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_key'>key</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>do</span>
     <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span>
 
     <span class='comment'># Sleep for a jiffy so Sonic Pi fires off things like logging.
@@ -300,6 +298,7 @@ alive.</p>
       <pre class="lines">
 
 
+87
 88
 89
 90
@@ -317,11 +316,10 @@ alive.</p>
 102
 103
 104
-105
-106</pre>
+105</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/spiseq/utils/lifecycle.rb', line 88</span>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/utils/lifecycle.rb', line 87</span>
 
 <span class='id identifier rubyid_module_function'>module_function</span> <span class='kw'>def</span> <span class='id identifier rubyid_on_stop'>on_stop</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span> <span class='op'>=</span> <span class='symbol'>:default</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='const'>State</span><span class='period'>.</span><span class='id identifier rubyid_stop_hooks'>stop_hooks</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_block'>block</span>
@@ -402,15 +400,15 @@ function.</p>
       <pre class="lines">
 
 
+65
 66
 67
 68
 69
-70
-71</pre>
+70</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/spiseq/utils/lifecycle.rb', line 66</span>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/utils/lifecycle.rb', line 65</span>
 
 <span class='id identifier rubyid_module_function'>module_function</span> <span class='kw'>def</span> <span class='id identifier rubyid_one_time_init'>one_time_init</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span> <span class='op'>=</span> <span class='symbol'>:default</span><span class='rparen'>)</span>
   <span class='kw'>unless</span> <span class='const'>State</span><span class='period'>.</span><span class='id identifier rubyid_one_time_init_keys'>one_time_init_keys</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>

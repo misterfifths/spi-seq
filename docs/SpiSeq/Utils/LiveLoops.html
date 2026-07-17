@@ -126,28 +126,6 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#loop_is_muted%3F-class_method" title="loop_is_muted? (class method)">.<strong>loop_is_muted?</strong>(loop_name)  &#x21d2; Boolean </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'><p>Returns whether the given mutable <code>live_loop</code> (i.e., one created by <span class='object_link'><a href="#mutable_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.mutable_live_loop (method)">mutable_live_loop</a></span>, <span class='object_link'><a href="#cc_mutable_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.cc_mutable_live_loop (method)">cc_mutable_live_loop</a></span>, or <span class='object_link'><a href="../Playback.html#track_live_loop-class_method" title="SpiSeq::Playback.track_live_loop (method)">track_live_loop</a></span>) is muted.</p></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
       <a href="#mutable_live_loop-class_method" title="mutable_live_loop (class method)">.<strong>mutable_live_loop</strong>(loop_name, start_muted: false) {|muted, arg| ... } </a>
     
 
@@ -392,6 +370,15 @@ the prior execution of the block afterwards.</p></div>
       <pre class="lines">
 
 
+108
+109
+110
+111
+112
+113
+114
+115
+116
 117
 118
 119
@@ -402,19 +389,10 @@ the prior execution of the block afterwards.</p></div>
 124
 125
 126
-127
-128
-129
-130
-131
-132
-133
-134
-135
-136</pre>
+127</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/spiseq/utils/live_loops.rb', line 117</span>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/utils/live_loops.rb', line 108</span>
 
 <span class='id identifier rubyid_module_function'>module_function</span> <span class='kw'>def</span> <span class='id identifier rubyid_cc_mutable_live_loop'>cc_mutable_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='label'>cc:</span><span class='comma'>,</span> <span class='label'>port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>channel:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>start_muted:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='op'>**</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='id identifier rubyid_channel'>channel</span> <span class='op'>=</span> <span class='const'>Internal</span><span class='op'>::</span><span class='const'>MIDI</span><span class='period'>.</span><span class='id identifier rubyid_resolve_cc_port_and_channel'>resolve_cc_port_and_channel</span><span class='lparen'>(</span><span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='id identifier rubyid_channel'>channel</span><span class='rparen'>)</span>
@@ -436,106 +414,6 @@ the prior execution of the block afterwards.</p></div>
 
   <span class='id identifier rubyid_mutable_live_loop'><span class='object_link'><a href="#mutable_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.mutable_live_loop (method)">mutable_live_loop</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='label'>start_muted:</span><span class='comma'>,</span> <span class='op'>**</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="loop_is_muted?-class_method">
-  
-    .<strong>loop_is_muted?</strong>(loop_name)  &#x21d2; <tt>Boolean</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    <p>Returns whether the given mutable <code>live_loop</code> (i.e., one created by
-<span class='object_link'><a href="#mutable_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.mutable_live_loop (method)">mutable_live_loop</a></span>, <span class='object_link'><a href="#cc_mutable_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.cc_mutable_live_loop (method)">cc_mutable_live_loop</a></span>, or <span class='object_link'><a href="../Playback.html#track_live_loop-class_method" title="SpiSeq::Playback.track_live_loop (method)">track_live_loop</a></span>)
-is muted.</p>
-
-  </div>
-</div>
-<div class="tags">
-  
-
-
-
-
-
-
-<p class="tag_title">Parameters:</p>
-<ul class="param">
-  
-    <li>
-      
-        <span class='name'>loop_name</span>
-      
-      
-        <span class='type'>(<tt>Symbol</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'><p>The name of the target live loop.</p></div>
-      
-    </li>
-  
-</ul>
-
-
-
-
-
-
-
-
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-    </li>
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
-
-  <p class="tag_title">See Also:</p>
-  <ul class="see">
-    
-      <li><span class='object_link'><a href="#mute_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.mute_live_loop (method)">mute_live_loop</a></span></li>
-    
-      <li><span class='object_link'><a href="#unmute_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.unmute_live_loop (method)">unmute_live_loop</a></span></li>
-    
-  </ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-57</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/spiseq/utils/live_loops.rb', line 57</span>
-
-<span class='id identifier rubyid_module_function'>module_function</span> <span class='kw'>def</span> <span class='id identifier rubyid_loop_is_muted?'>loop_is_muted?</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'>State</span><span class='period'>.</span><span class='id identifier rubyid_loop_mute_states'>loop_mute_states</span><span class='lbracket'>[</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='kw'>false</span></pre>
     </td>
   </tr>
 </table>
@@ -666,23 +544,23 @@ the prior execution of the block afterwards.</p></div>
       <pre class="lines">
 
 
+73
+74
+75
+76
+77
+78
+79
+80
+81
 82
 83
 84
 85
-86
-87
-88
-89
-90
-91
-92
-93
-94
-95</pre>
+86</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/spiseq/utils/live_loops.rb', line 82</span>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/utils/live_loops.rb', line 73</span>
 
 <span class='id identifier rubyid_module_function'>module_function</span> <span class='kw'>def</span> <span class='id identifier rubyid_mutable_live_loop'>mutable_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='label'>start_muted:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='op'>**</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Block must take 1 or 2 arguments</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>==</span> <span class='int'>0</span> <span class='op'>||</span> <span class='id identifier rubyid_block'>block</span><span class='period'>.</span><span class='id identifier rubyid_arity'>arity</span> <span class='op'>&gt;</span> <span class='int'>2</span>
@@ -692,7 +570,7 @@ the prior execution of the block afterwards.</p></div>
 </span>  <span class='id identifier rubyid_mute_live_loop'><span class='object_link'><a href="#mute_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.mute_live_loop (method)">mute_live_loop</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_start_muted'>start_muted</span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='const'>Internal</span><span class='op'>::</span><span class='const'>ThreadTracker</span><span class='period'>.</span><span class='id identifier rubyid_is_running?'>is_running?</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rparen'>)</span>
 
   <span class='id identifier rubyid_ll'>ll</span> <span class='op'>=</span> <span class='const'>External</span><span class='op'>::</span><span class='const'>Sync</span><span class='period'>.</span><span class='id identifier rubyid_live_loop'>live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='op'>**</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_arg'>arg</span><span class='op'>|</span>
-    <span class='const'>Internal</span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_call_varargs'>call_varargs</span><span class='lparen'>(</span><span class='id identifier rubyid_block'>block</span><span class='comma'>,</span> <span class='id identifier rubyid_loop_is_muted?'><span class='object_link'><a href="#loop_is_muted%3F-class_method" title="SpiSeq::Utils::LiveLoops.loop_is_muted? (method)">loop_is_muted?</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='id identifier rubyid_arg'>arg</span><span class='rparen'>)</span>
+    <span class='const'>Internal</span><span class='op'>::</span><span class='const'>Utils</span><span class='period'>.</span><span class='id identifier rubyid_call_varargs'>call_varargs</span><span class='lparen'>(</span><span class='id identifier rubyid_block'>block</span><span class='comma'>,</span> <span class='const'>State</span><span class='period'>.</span><span class='id identifier rubyid_loop_is_muted?'>loop_is_muted?</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='id identifier rubyid_arg'>arg</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
 
   <span class='const'>Internal</span><span class='op'>::</span><span class='const'>ThreadTracker</span><span class='period'>.</span><span class='id identifier rubyid_register'>register</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_ll'>ll</span><span class='rparen'>)</span>
@@ -771,8 +649,6 @@ loop's block. See <span class='object_link'><a href="#mutable_live_loop-class_me
     
       <li><span class='object_link'><a href="#unmute_live_loop-class_method" title="SpiSeq::Utils::LiveLoops.unmute_live_loop (method)">unmute_live_loop</a></span></li>
     
-      <li><span class='object_link'><a href="#loop_is_muted%3F-class_method" title="SpiSeq::Utils::LiveLoops.loop_is_muted? (method)">loop_is_muted?</a></span></li>
-    
   </ul>
 
 </div><table class="source_code">
@@ -781,26 +657,12 @@ loop's block. See <span class='object_link'><a href="#mutable_live_loop-class_me
       <pre class="lines">
 
 
-33
-34
-35
-36
-37
-38
-39
-40</pre>
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/spiseq/utils/live_loops.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/utils/live_loops.rb', line 41</span>
 
-<span class='id identifier rubyid_module_function'>module_function</span> <span class='kw'>def</span> <span class='id identifier rubyid_mute_live_loop'>mute_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_mute'>mute</span> <span class='op'>=</span> <span class='kw'>true</span><span class='rparen'>)</span>
-  <span class='comment'># It could potentially make sense to store this state as a thread variable
-</span>  <span class='comment'># on the loop, but we want it in place before the thread exists in
-</span>  <span class='comment'># mutable_live_loop. And if it only lived on the thread, we&#39;d have to find
-</span>  <span class='comment'># a way to inherit it when swapping to new track_live_loops. So it seems
-</span>  <span class='comment'># cleaner to just hold the state locally.
-</span>  <span class='const'>State</span><span class='period'>.</span><span class='id identifier rubyid_loop_mute_states'>loop_mute_states</span><span class='lbracket'>[</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_mute'>mute</span>
-<span class='kw'>end</span></pre>
+<span class='id identifier rubyid_module_function'>module_function</span> <span class='kw'>def</span> <span class='id identifier rubyid_mute_live_loop'>mute_live_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_mute'>mute</span> <span class='op'>=</span> <span class='kw'>true</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'>State</span><span class='period'>.</span><span class='id identifier rubyid_mute_loop'>mute_loop</span><span class='lparen'>(</span><span class='id identifier rubyid_loop_name'>loop_name</span><span class='comma'>,</span> <span class='id identifier rubyid_mute'>mute</span><span class='rparen'>)</span></pre>
     </td>
   </tr>
 </table>
@@ -851,13 +713,6 @@ An alias passing false to <span class='object_link'><a href="#mute_live_loop-cla
   
 </ul>
 
-
-  <p class="tag_title">See Also:</p>
-  <ul class="see">
-    
-      <li><span class='object_link'><a href="#loop_is_muted%3F-class_method" title="SpiSeq::Utils::LiveLoops.loop_is_muted? (method)">loop_is_muted?</a></span></li>
-    
-  </ul>
 
 </div><table class="source_code">
   <tr>

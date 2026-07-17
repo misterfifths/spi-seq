@@ -701,14 +701,6 @@ belonging to this many octaves of the scale.</p></div>
       <pre class="lines">
 
 
-205
-206
-207
-208
-209
-210
-211
-212
 213
 214
 215
@@ -718,10 +710,18 @@ belonging to this many octaves of the scale.</p></div>
 219
 220
 221
-222</pre>
+222
+223
+224
+225
+226
+227
+228
+229
+230</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/scale.rb', line 205</span>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/scale.rb', line 213</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_tonic'>tonic</span><span class='comma'>,</span> <span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='label'>num_octaves:</span> <span class='int'>1</span><span class='comma'>,</span> <span class='label'>clamp_to_midi:</span> <span class='kw'>false</span><span class='rparen'>)</span>
   <span class='ivar'>@tonic</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="MIDINote.html" title="SpiSeq::Theory::MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="MIDINote.html#new-class_method" title="SpiSeq::Theory::MIDINote.new (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_tonic'>tonic</span><span class='rparen'>)</span>
@@ -1178,13 +1178,13 @@ scale names as Sonic Pi's <code>scale</code> function and some it doesn't.</p></
       <pre class="lines">
 
 
-396
-397
-398
-399</pre>
+404
+405
+406
+407</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/scale.rb', line 396</span>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/scale.rb', line 404</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_degree'>degree</span><span class='lparen'>(</span><span class='id identifier rubyid_d'>d</span><span class='comma'>,</span> <span class='id identifier rubyid_tonic'>tonic</span><span class='comma'>,</span> <span class='id identifier rubyid_scale_name'>scale_name</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_scale'>scale</span> <span class='op'>=</span> <span class='id identifier rubyid_full_scale'>full_scale</span><span class='lparen'>(</span><span class='id identifier rubyid_tonic'>tonic</span><span class='comma'>,</span> <span class='id identifier rubyid_scale_name'>scale_name</span><span class='rparen'>)</span>
@@ -1288,14 +1288,6 @@ the values in <span class='object_link'><a href="#SCALE_NAMES-constant" title="S
       <pre class="lines">
 
 
-232
-233
-234
-235
-236
-237
-238
-239
 240
 241
 242
@@ -1303,10 +1295,18 @@ the values in <span class='object_link'><a href="#SCALE_NAMES-constant" title="S
 244
 245
 246
-247</pre>
+247
+248
+249
+250
+251
+252
+253
+254
+255</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/scale.rb', line 232</span>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/scale.rb', line 240</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_full_scale'>full_scale</span><span class='lparen'>(</span><span class='id identifier rubyid_tonic'>tonic</span><span class='comma'>,</span> <span class='id identifier rubyid_scale_name'>scale_name</span><span class='rparen'>)</span>
   <span class='ivar'>@full_scale_cache</span> <span class='op'>||=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
@@ -1435,18 +1435,18 @@ the octave range of the scale on which it is called. See the class method
       <pre class="lines">
 
 
-370
-371
-372
-373
-374
-375
-376
-377
-378</pre>
+378
+379
+380
+381
+382
+383
+384
+385
+386</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/scale.rb', line 370</span>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/scale.rb', line 378</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_degree'>degree</span><span class='lparen'>(</span><span class='id identifier rubyid_d'>d</span><span class='comma'>,</span> <span class='label'>relative_tonic:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_n'>n</span><span class='comma'>,</span> <span class='id identifier rubyid_mod'>mod</span> <span class='op'>=</span> <span class='id identifier rubyid_parse_degree'>parse_degree</span><span class='lparen'>(</span><span class='id identifier rubyid_d'>d</span><span class='rparen'>)</span>
@@ -1547,14 +1547,14 @@ degree -1.</p>
       <pre class="lines">
 
 
-428
-429
-430
-431
-432</pre>
+436
+437
+438
+439
+440</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/scale.rb', line 428</span>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/scale.rb', line 436</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_degree_of'>degree_of</span><span class='lparen'>(</span><span class='id identifier rubyid_note'>note</span><span class='comma'>,</span> <span class='label'>relative_tonic:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_degree'>degree</span> <span class='op'>=</span> <span class='id identifier rubyid_steps_between'>steps_between</span><span class='lparen'>(</span><span class='id identifier rubyid_relative_tonic'>relative_tonic</span> <span class='op'>||</span> <span class='ivar'>@tonic</span><span class='comma'>,</span> <span class='id identifier rubyid_note'>note</span><span class='rparen'>)</span>
@@ -1646,17 +1646,17 @@ from it.</p>
       <pre class="lines">
 
 
-257
-258
-259
-260
-261
-262
-263
-264</pre>
+265
+266
+267
+268
+269
+270
+271
+272</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/scale.rb', line 257</span>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/scale.rb', line 265</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_note_at_step'>note_at_step</span><span class='lparen'>(</span><span class='id identifier rubyid_relative_tonic'>relative_tonic</span><span class='comma'>,</span> <span class='id identifier rubyid_steps'>steps</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_tonic_idx'>tonic_idx</span> <span class='op'>=</span> <span class='ivar'>@notes</span><span class='period'>.</span><span class='id identifier rubyid_index'>index</span><span class='lparen'>(</span><span class='id identifier rubyid_relative_tonic'>relative_tonic</span><span class='rparen'>)</span>
@@ -1715,23 +1715,23 @@ from it.</p>
       <pre class="lines">
 
 
-457
-458
-459
-460
-461
-462
-463
-464
 465
 466
 467
 468
 469
-470</pre>
+470
+471
+472
+473
+474
+475
+476
+477
+478</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/scale.rb', line 457</span>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/scale.rb', line 465</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_repr'>repr</span>
   <span class='kw'>return</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Scale.full_scale(:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@tonic</span><span class='period'>.</span><span class='id identifier rubyid_pitch_class'>pitch_class</span><span class='embexpr_end'>}</span><span class='tstring_content'>, :</span><span class='embexpr_beg'>#{</span><span class='ivar'>@name</span><span class='embexpr_end'>}</span><span class='tstring_content'>)</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_full_scale?'>full_scale?</span>
@@ -1829,10 +1829,10 @@ a value understood by <span class='object_link'><a href="MIDINote.html#new-class
       <pre class="lines">
 
 
-440</pre>
+448</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/scale.rb', line 440</span>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/scale.rb', line 448</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_snap'>snap</span><span class='lparen'>(</span><span class='id identifier rubyid_note'>note</span><span class='rparen'>)</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="MIDINote.html" title="SpiSeq::Theory::MIDINote (class)">MIDINote</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="MIDINote.html#new-class_method" title="SpiSeq::Theory::MIDINote.new (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_note'>note</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_snap'><span class='object_link'><a href="MIDINote.html#snap-instance_method" title="SpiSeq::Theory::MIDINote#snap (method)">snap</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span></pre>
     </td>
@@ -1918,18 +1918,18 @@ an ArgumentError if either note is not in the scale.</p>
       <pre class="lines">
 
 
-406
-407
-408
-409
-410
-411
-412
-413
-414</pre>
+414
+415
+416
+417
+418
+419
+420
+421
+422</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/scale.rb', line 406</span>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/scale.rb', line 414</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_steps_between'>steps_between</span><span class='lparen'>(</span><span class='id identifier rubyid_relative_tonic'>relative_tonic</span><span class='comma'>,</span> <span class='id identifier rubyid_note'>note</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_tonic_idx'>tonic_idx</span> <span class='op'>=</span> <span class='ivar'>@notes</span><span class='period'>.</span><span class='id identifier rubyid_index'>index</span><span class='lparen'>(</span><span class='id identifier rubyid_relative_tonic'>relative_tonic</span><span class='rparen'>)</span>
@@ -1993,15 +1993,15 @@ an ArgumentError if either note is not in the scale.</p>
       <pre class="lines">
 
 
-446
-447
-448
-449
-450
-451</pre>
+454
+455
+456
+457
+458
+459</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/scale.rb', line 446</span>
+      <pre class="code"><span class="info file"># File 'lib/spiseq/theory/scale.rb', line 454</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_s'>to_s</span>
   <span class='kw'>return</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>&lt;Scale full </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_tonic'>tonic</span><span class='period'>.</span><span class='id identifier rubyid_pitch_class'>pitch_class</span><span class='embexpr_end'>}</span><span class='tstring_content'> </span><span class='embexpr_beg'>#{</span><span class='ivar'>@name</span><span class='embexpr_end'>}</span><span class='tstring_content'>&gt;</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_full_scale?'>full_scale?</span>
